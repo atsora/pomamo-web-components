@@ -1,0 +1,23 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-currentisofile {
+  display: block; /* To make isVisible work. Chrome: always inline */
+
+  /*&.pulse-component-not-applicable {
+    //&pulsecomponent-context-NotApplicable
+    display: none;
+  } -> moved to global */
+
+  .currentisofile-data {
+    display: inline-block;
+    // font-size:done in parent
+    width: 100%; // To help align
+  }
+
+}

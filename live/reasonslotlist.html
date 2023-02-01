@@ -1,0 +1,48 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta HTTP-EQUIV="EXPIRES" CONTENT="0">
+  <meta HTTP-EQUIV="Pragma" CONTENT="no-cache">
+  <title>Live test of web components</title>
+  <!--link rel="stylesheet" type="text/css" href="styles/global.css"-->
+  <link rel="stylesheet" type="text/css" href="styles/live.css">
+
+  <!-- External libraries -->
+  <script type="text/javascript" src="lib/jquery/jquery.js"></script>
+  <script type="text/javascript" src="lib/jquery-mockjax/jquery.mockjax.js"></script>
+  <script type="text/javascript" src="lib/moment/moment.js"></script>
+  <!-- Add d3 for graduation - global -->
+  <!--script type="text/javascript" src="lib/d3/d3.min.js"></script-->
+
+  <!-- Config / translation / basics includes -->
+  <script type="text/javascript" src="scripts/translation_pulsecomponent_default.js"></script>
+  <script type="text/javascript" src="scripts/config_pulsecomponent_default.js"></script>
+  <!-- for reporting : script type="text/javascript" src="./scripts/pulse.exports.light.js?v="></script-->
+  
+
+  <!-- Javascript libraries -->
+  <script type="text/javascript" src="es2015/reasonslotlist.js"></script>
+  <!--babel:<script type="text/javascript">//# sourceMappingURL=live.js.map</script>babel:--><!-- source map for babel -->
+  <script type="text/javascript">
+    //# sourceMappingURL=../../ocamljs/x_ml.map
+  </script>  
+</head>
+
+<body>
+  <header></header>
+  <x-reasonslotlist machine-id=18 range=[2018-02-08T12:00:00Z,2018-02-08T13:00:00Z)></x-reasonslotlist>
+  <x-checkpath></x-checkpath>
+  <footer>&copy;2018 Lemoine Automation Technologies</footer>
+
+</body>
+
+</html>

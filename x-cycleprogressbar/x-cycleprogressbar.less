@@ -1,0 +1,66 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-cycleprogressbar { /* To make is(':visible') works */ 
+  display: block;
+  
+  .cycleprogressbar-content {
+    position: relative;
+    width: auto; // 100%;
+  }
+  /*.cycleprogressbar-progressbar{ // Done in global LIKE pulse-bar-div
+  }*/
+  .cycleprogressbar-svg {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;  // For resize auto
+  }
+  .cycleprogressbar-nextstop {
+    width: 100%;
+    //font-size: 2em;
+    text-align: center;
+  }
+  .cycleprogressbar-nextstop-duration {
+    &::before {
+      content: ' '; // add ' ' 
+    }
+  }
+  
+  // COLORS -> same as pie
+  .cycleprogress-fill{ // default
+    fill: @color_blue; // @color_text_alternate; -> Problem : hide line-default
+  }
+  .cycleprogress-fill.activeevent.Error{
+    fill: @color_red;
+  }
+  .cycleprogress-fill.comingevent.Warning.threshold1{
+    fill: @color_yellow;
+  }
+  .cycleprogress-fill.comingevent.Warning.threshold2{
+    fill: @color_orange;
+  } 
+  /*TEST :
+  .cycleprogress-fill.comingevent.Info.threshold1{
+    fill: #FFEA00;
+  }*/
+
+  // LINES
+  .line-stop{
+    stroke: @widget_separator; // WAS @color_red; invisible with red background
+    //stroke-width: 1;
+  }
+  .line-optional-stop{
+    stroke: @color_gray; // WAS @color_yellow;
+    //stroke-width: 1;
+  }
+  .line-default{ // Machining or NonMachining
+    stroke: @color_gray; // WAS @color_text_alternate; too visible
+    stroke-dasharray: 3;
+  }
+}

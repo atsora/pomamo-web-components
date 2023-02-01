@@ -1,0 +1,28 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-motionpercentage{
+  display: block;  /* To make is(':visible') works */
+  //min-height: 20px; // NOT here
+  //width: 5em; // NOT HERE ! -> In web app if needed
+
+  .motionpercentage {
+    // Vertical position == TOO specific == NOT HERE -> to add in web app if needed
+    //display: inline; // NO ! NEVER !
+
+    .motionpercentage-text{
+      font-weight: bold; // Maybe move
+    }
+    .motionpercentage-svg{ // Pending...
+      width: 100%;
+      height: 100%;
+      //display: none;
+      fill: @color_text_alternate; // == pulse-mainarea color
+    }
+  }
+}

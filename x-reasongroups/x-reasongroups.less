@@ -1,0 +1,33 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-reasongroups {
+  display: block; /* To make isVisible work. Chrome: always inline */
+  
+  .reasongroups {
+    position:relative;
+  }
+  .reasongroups-label{ /*...*/
+    //display: inline-block;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis; /* for Opera*/
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 200px;
+  }
+
+  // LEGENDS - HIDE long list of yellow reasons
+  // Can easily be restored if needed (switch display)
+  .reasongroups-label-FFFF00{
+    display: none; 
+  }
+  .reasongroups-label-alt-FFFF00:after{
+    content: "Idle time";
+  }
+
+}

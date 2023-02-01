@@ -1,0 +1,24 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-clock {
+  display: block; /* To make is(':visible') works */
+}
+
+.clock-div {
+  height: 30px; /*CAN be re-defined */
+  line-height: 30px; /*MUST be the same as height*/
+  text-align: center;
+}
+
+.clock-text {
+  text-align: center;
+  display:inline-block;
+  vertical-align: middle;
+  line-height:normal; /* on rétablit le line-height */
+}

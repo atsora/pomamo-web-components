@@ -1,0 +1,67 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+@import "pulse.customdialog.less";
+@import "x-datetimepicker/x-datetimepicker.less";
+
+x-milestonesadd {
+  display: block;
+
+  .milestonesadd-content {
+    margin: 6px;
+
+    .milestonesadd-machine {
+      //visibility: hidden;
+      display: none;
+    }
+
+    .milestonesadd-inputs {
+      display: table;
+      width: 100%;
+
+      .milestonesadd-row {
+        display: table-row;
+
+        .milestonesadd-label {
+          display: table-cell;
+        }
+
+        .milestonesadd-input {
+          display: table-cell;
+          box-sizing: border-box;
+          width: 70%;
+          margin: 2px;
+          padding: 2px;
+
+          x-datetimepicker .datetimepicker-datetimediv {
+            padding-left: 0px;
+          }
+        }
+      }
+    }
+  }
+
+  .milestonesadd-button-div {
+    position: relative;
+    height: 2em;
+
+    button {
+      .button-rounded-shadow;
+      float: right;
+      margin-top: 4px;
+      cursor: pointer;
+      height: 28px;
+      min-width: 28px;
+      margin: 6px;
+
+      &:disabled {
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+    }
+  }
+}

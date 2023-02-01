@@ -1,0 +1,42 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <h3>Charts</h3>
+  <div>
+
+    <label>Chart 18 - negative values </label>
+    <div class="fixed-size2">
+      <x-chartreservecapacity id="reservecapa_18" group=18 path='http://localhost:8082/' ></x-chartreservecapacity>
+    </div>
+
+    <label>Chart 19 - positive values </label>
+    <div class="fixed-size1">
+      <x-chartreservecapacity id="reservecapa_19" group=19 path=http://localhost:8082/ ></x-chartreservecapacity>
+    </div>
+
+    <label>Chart 20 - positive AND negative values</label>
+    <div class="fixed-size2">
+      <x-chartreservecapacity id="reservecapa_20" group=20 path=http://localhost:8082/ ></x-chartreservecapacity>
+    </div>
+
+    <label>Machine20 - bad efficiency display in red</label>
+    <div class="fixed-size1">
+      <x-chartreservecapacity id="reservecapa_error" group=realERROR path=http://localhost:8082/ ></x-chartreservecapacity>
+    </div>
+
+    <label>Error: undefined machine</label>
+    <div class="fixed-size1">
+      <x-chartreservecapacity id="error_machineid" group=128 path=http://localhost:8082/ ></x-chartreservecapacity>
+    </div>
+
+    <label>Error: Not Applicable (hidden is normal)</label>
+    <div class="fixed-size1">
+      <x-chartreservecapacity id="error_notapplicable" group=129 path=http://localhost:8082/ ></x-chartreservecapacity>
+    </div>
+
+  </div>
+</div>

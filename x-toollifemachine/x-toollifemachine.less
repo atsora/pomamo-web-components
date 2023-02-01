@@ -1,0 +1,157 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-toollifemachine {
+  display: block; // To make is(':visible') works
+  position: relative; // For message position
+
+  .pulse-cellbar-main {
+    position: relative;
+    // 2.6em -> to display vertical text, 2 lines, borders...
+    line-height: 2.6em !important;
+    height: 2.6em !important;
+    //background-color: @color_window_alternate;
+    //color: @color_text_alternate;
+  }
+
+  .pulse-cellbar-current-data {
+    border-right: none; // OVERLOAD common 1px solid @color_window_border;
+    line-height: 2.6em !important;
+    height: 2.6em !important;
+  }
+
+  .pulse-cellbar-past-data {
+    line-height: 2.6em !important;
+    height: 2.6em !important;
+  }
+
+  .pulse-cellbar-last {
+    //==.toollifemachine-tools
+    line-height: 2.6em !important;
+    height: 2.6em !important;
+    box-sizing: border-box;
+  }
+
+  // <a> ON THE LEFT only
+  a.toollifemachine-operation-span-or-link {
+    color: @color_text_alternate;
+    text-decoration: none;
+  }
+
+  a.toollifemachine-operation-span-or-link:hover {
+    text-decoration: underline;
+  }
+
+  a.toollifemachine-operation-span-or-link:visited {
+    color: @color_window_alternate;
+  }
+
+  //.toollifemachine-tools-soon-expired,
+  //.toollifemachine-tools-in-error {
+  .toollifemachine-tools {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-grow: 10;
+
+    box-sizing: border-box;
+    padding: 0 2px;
+
+    font-weight: bold;
+    font-size: 1em; //to define in web app ?
+  }
+
+  .toollifemachine-singletool-div {
+    line-height: 1.1em; // Restore to allow remaining cycles display
+    height: 100%; // For vertical center
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+  }
+
+  // Common rotation + size
+  .toollifemachine-soon-title {
+    display: block;
+    height: 2.6em;
+  }
+
+  .toollifemachine-soon-title-svg {
+    height: 100%;
+    box-sizing: border-box;
+    padding: 0 2px;
+
+    .toollifemachine-soon-title-svg-background {
+      fill: @widget_separator; // background
+    }
+
+    .toollifemachine-soon-title-svg-text {
+      fill: @container_color; // text color
+      font-size: 0.8em;
+    }
+  }
+
+  .toollife-separator-svg {
+    display: block;
+    box-sizing: border-box;
+    height: 100%;
+    margin: 0 5px;
+
+    stroke: white;
+  }
+
+  .toollife-separator-line {
+    stroke: @widget_separator;
+  }
+
+  // Not added in webApp, thanks to style
+  .toollifemachine-tool-span {
+    //border-radius: @cellbar-corner-radius;
+    padding: 2px;
+    margin: 2px;
+    //filter: url(#innerShadow);
+    .bar-rounded-shadow; // Rounded border + shadow
+  }
+
+  .toollifemachine-tool-warn-span {
+    background-color: @warn_main_color;
+    color: @warn_contrasted_color;
+    filter: url(#innerShadow);
+  }
+
+  .toollifemachine-tool-in-error-span {
+    background-color: @error_main_color; // color to remove in div
+    color: @error_contrasted_color;
+    filter: url(#innerShadow);
+  }
+
+  // WITH 'a.' to avoid blinking between a and .toollifemachine-tool-in-error-span
+  a.toollifemachine-tool-in-error-span {
+    background-color: @error_main_color; // color to remove in div
+    color: @error_contrasted_color;
+    filter: url(#innerShadow);
+  }
+
+  .toollifemachine-tool-isgroup {
+    border: 2px solid @color_text_alternate;
+    padding: 0px;
+  }
+
+  .toollifemachine-tool-active:not(.toollifemachine-tool-warn-span):not(.toollifemachine-tool-in-error-span) {
+    background-color: @color_green;
+  }
+
+  .toollifemachine-tool-validsistertool {
+    opacity: 0.6;
+  }
+
+  .toollifemachine-remaining-cycles-span {
+    font-size: smaller;
+  }
+}

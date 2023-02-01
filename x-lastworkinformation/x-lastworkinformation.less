@@ -1,0 +1,51 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+
+x-lastworkinformation {
+  display: block; /* To make is(':visible') works */ 
+
+  &.pulse-lastbar{
+    .pulse-cellbar-main .pulse-cellbar-cell-missing {
+      cursor: default;
+      
+      &::after{
+        content: ': Missing';
+      }
+    }
+  }
+}
+
+.lastworkinformation-dialog {
+  padding-top: 10px;
+}
+
+/* tmp removed 2019-05
+.lastworkinformation-dialog-page2 {
+  // height to see something
+  min-height: 200px;
+  
+  .selected-daterange {
+    text-align: center;
+    font-size: 150%;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .lastworkinformation-workinformationselection-div {
+    overflow-y: auto; // Scrollbar
+    position: absolute;
+    // Position
+    top: 36px; // selected-daterange height
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    // height to see something
+    min-height: 150px;
+  }
+} // end lastworkinformation-dialog-page2
+*/

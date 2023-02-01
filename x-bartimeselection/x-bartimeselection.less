@@ -1,0 +1,31 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-bartimeselection { /* To make is(':visible') works */ 
+  display: block;
+  height: 0px; // to display any border as it should
+  position: relative;
+  
+  .bartimeselection {
+    position: relative;
+    width: auto; // 100%;
+  }
+
+  .bartimeselection-content{
+    position: relative;
+    // height :xx -> in .js
+  }
+
+  .bartimeselection-svg {
+    position: absolute;
+    left: 0px;
+    bottom: 0; // To display on the top of another bar
+    width: 100%;
+    pointer-events: initial;
+  }
+}

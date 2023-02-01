@@ -1,0 +1,1774 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "theme.less";
+
+@table-corner-radius: 10px;
+@button-font-size: 1.3em;
+
+svg {
+  .highlightcolor {
+    color: @color_highlight; // cf currentColor
+  }
+}
+
+/* SELECTION TABLE - should be changed - but always used in 2019-01 */
+.pulse-selection-table-container {
+  background-color: @color_window_alternate;
+  color: @color_text_alternate;
+
+  table {
+    width: 100%;
+    box-sizing: border-box;
+    border-collapse: collapse;
+
+    tr {
+      width: 100%;
+      border-top: 1px solid @color_window_border_light;
+
+      &:first-child {
+        border-top: 1px none @color_window_border_light;
+      }
+
+      &.selectable {
+        cursor: pointer;
+
+        &:hover {
+          color: @color_highlight;
+        }
+      }
+
+      &.missing {
+        padding-right: 10px;
+        font-style: italic;
+        background-color: @color_missing_value_highlight; // pink color  
+        color: @color_missing_text;
+
+        &:hover {
+          background-color: @color_missing_value_fade  !important; // pink color with tranparency
+        }
+      }
+
+      td {
+        padding: 3px;
+
+        &:not(first-child) {
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+
+        &.selectable {
+          cursor: pointer;
+
+          &:hover {
+            color: @color_highlight;
+          }
+        }
+
+        &.missing {
+          padding-right: 10px;
+          font-style: italic;
+          background-color: @color_missing_value_highlight; // pink color  
+          color: @color_missing_text;
+
+          &:hover {
+            background-color: @color_missing_value_fade  !important; // pink color with tranparency
+          }
+        }
+      }
+    }
+  }
+}
+
+// CODE a garder :
+@margin_graduation: 24px; // Can NOT be less because of graduation
+@border_length: 0px; // WAS pulse-bar-div border
+
+
+/* pulse-XXX-content */
+/* ICON in machineTab, for example */
+/*.pulse-icon-content{
+  //height: 32px;
+  //width:  32px;
+}*/
+
+/* ********** ********** *********** *********** */
+/* Mode categories ***** *********** *********** */
+/* ********** ********** *********** *********** */
+.pulse-mode-category-inactive{
+  background-image: url('@{imagedir}/machinemode-inactive.svg');
+  background-repeat: no-repeat;
+  svg {
+    filter: url(#innerShadow);
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.pulse-mode-category-active{
+  background-image: url('@{imagedir}/machinemode-active.svg');
+  background-repeat: no-repeat;
+  svg {
+    filter: url(#innerShadow);
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.pulse-mode-category-error{
+  background-image: url('@{imagedir}/machinemode-error.svg');
+  background-repeat: no-repeat;
+  svg {
+    filter: url(#innerShadow);
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.pulse-mode-category-unknown{
+  background-image: url('@{imagedir}/machinemode-unknown.svg');
+  background-repeat: no-repeat;
+  svg {
+    filter: url(#innerShadow);
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.pulse-mode-category-eco{
+  background-image: url('@{imagedir}/machinemode-eco.svg');
+  background-repeat: no-repeat;
+  svg {
+    filter: url(#innerShadow);
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.pulse-mode-category-stopping{
+  background-image: url('@{imagedir}/machinemode-stopping.svg');
+  background-repeat: no-repeat;
+  svg {
+    filter: url(#innerShadow);
+    height: 100%;
+    width: 100%;
+  }
+}
+
+
+/* ********** ********** *********** *********** */
+/* END Mode categories * *********** *********** */
+/* ********** ********** *********** *********** */
+
+/* ********** ********** *********** *********** */
+/* LEGENDS ** ********** *********** *********** */
+/* ********** ********** *********** *********** */
+.pulse-legend-onelegend {
+  display: flex;
+  flex-direction: row;
+  padding: 3px;
+  width: 100%;
+  box-sizing: border-box;
+
+  border-bottom: 1px solid @widget_background; // bar-rounded-shadow Background
+
+  .pulse-legend-title {
+    display: inline-block;
+    font-weight: bold;
+
+    width: 17%;
+    //text-decoration-line: underline;
+    font-size: 1.1em;
+
+    padding-top: 3px; // align with pulse-legend-element
+  }
+
+  .pulse-legend-elements {
+    display: flex;
+    flex-wrap: wrap;
+
+    text-align: left;
+    width: 83%;
+
+    .pulse-legend-empty-element-to-align {
+      height: 1px;
+    }
+
+    .pulse-legend-empty-element-to-align,
+    .pulse-legend-element {
+      flex-basis: 19%;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+
+    .pulse-legend-element {
+      display: flex;
+      flex-direction: row;
+
+      margin-top: 4px;
+      vertical-align: middle;
+      //height: 27px;
+      //max-width: 20%;
+      max-width: 100%;
+      position: relative;
+      pointer-events: initial; // in case none is restored in legend-content
+
+      .pulse-legend-icon {
+        //float: left;
+        margin-left: 12px;
+        margin-right: 4px;
+        //margin-top: 3px;
+        box-sizing: border-box;
+
+        /* to vertically center */
+        svg {
+          width: 15px;
+          height: 15px;
+        }
+      }
+
+      .pulse-legend-label {
+        //display: inline-block;
+        max-width: 90%;
+        box-sizing: border-box;
+        margin-left: 4px;
+        margin-right: 4px;
+
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-basis: 9;
+
+        span {
+          //display: inline-block; // NO ! Can be hidden
+          // '...'
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: 100%;
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+/* ********** ********** *********** *********** */
+/* END LEGENDS ********* *********** *********** */
+/* ********** ********** *********** *********** */
+
+/* ********** *********** *********** */
+/* outside DETAILS ****** *********** */
+/* ********** *********** *********** */
+.click-on-bar-details-dialog {
+  // For data height
+  min-height: 500px;
+
+  .click-on-bar-details-title {
+    font-size: 150%;
+    text-align: center;
+  }
+
+  x-datetimegraduation {
+    .datetimegraduation-axis text {
+      fill: @color_text;
+    }
+
+    .datetimegraduation-axis line,
+    .datetimegraduation-axis path {
+      stroke: @color_text;
+    }
+
+    .datetimegraduation-axis {
+      .domain {
+        stroke: @color_text;
+      }
+    }
+  }
+
+  .pulse-bar-div {
+    // .bar-rounded-shadow; // Rounded border + shadow-> global
+    border-radius: 2px;
+
+    // align with graduation
+    margin-right: @margin_graduation;
+    margin-left: @margin_graduation;
+  }
+
+  .click-on-bar-details-content {
+    background-color: @color_window_alternate;
+    color: @color_text_alternate;
+
+    overflow-y: auto;
+    position: absolute;
+    top: 180px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+
+    max-height: 600px;
+    padding: 5px;
+  }
+}
+
+/* ********** *********** *********** */
+/* inside DETAILS ******* *********** */
+/* ********** *********** *********** */
+
+/* DETAILS + POPUP */
+.detailed-main {
+  display: flex;
+  //padding: 5px; // Not for popup
+  height: auto;
+
+  margin: 4px;
+}
+
+/*
+.detailed-main:after {
+  content: ""; // Important, sinon l'élément n'est pas généré. 
+  display: table;
+  clear: both; // Pour empecher les suivants de s'afficher par dessus
+}*/
+.detailed-title {
+  display: inline-block;
+  width: 24ex;
+  max-width: 20%; // = Dialog
+  //padding: 3px 5px;
+  font-weight: bold;
+
+  vertical-align: top;
+}
+
+.detailed-content {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap; // For multi-modules
+  flex-grow: 5; // To use all width (popup)
+  flex-shrink: 5; // To avoid overflow
+  align-items: center; // To center range
+
+  //left: 160px; // == detailed-title width
+  //max-width: 80%; // REMOVED = flex = Dialog. To allow display '...' (example: long operation)
+
+  .pulse-message-div {
+    position: relative;
+  }
+}
+
+.detailed-range {
+  display: inline-block;
+  //  font-weight: bold;
+  width: 38ex;
+  padding: 3px 5px;
+  vertical-align: top;
+}
+
+.detailed-at-subtitle {
+  display: block;
+  font-style: italic;
+  text-align: center;
+  position: relative;
+  margin: auto;
+  //padding-bottom: 10px;
+}
+
+/* .detailed-machinemodule-span::after {
+  content: " : ";
+} */
+
+.detailed-module-content {
+  display: inline-block;
+  .bar-rounded-shadow; // Rounded border + shadow
+  //padding: 3px; Not here -> to see rounded border
+  margin: 2px; // To make a small gap between machine modules' data
+
+  align-self: baseline;
+  flex-grow: 0;
+  // flex-shrink ?
+}
+
+.detailed-machinemodule {
+  display: block;
+
+  //width: 250px;
+  //padding: 2px 5px; -- avoid to display like others
+  span {
+    padding: 3px;
+  }
+}
+
+.detailed-mainmachinemodule {
+  font-weight: bold;
+}
+
+.detailed-module-data {
+  // looks like .detailed-machinemodule
+  display: block;
+
+  span {
+    padding: 3px;
+  }
+}
+
+.detailed-data {
+  display: inline-block;
+  max-width: 100%; // To allow display '...'
+
+  .bar-rounded-shadow; // Rounded border + shadow
+  //padding: 3px; Not here -> to see rounded border
+  margin: 0;
+
+  span {
+    padding: 3px;
+  }
+}
+
+.detailed-single-data {
+  display: block;
+  padding: 3px;
+  line-height: 1;
+
+  max-width: 100%; // To allow display '...'
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  /* for Opera*/
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.detailed-more-auto-reason {
+  display: inline-block;
+  padding: 2px 2px 0 0;
+
+  span {
+    display: inline-block; // for vertical align
+    cursor: pointer;
+    font-size: 0.7em;
+    padding: 1px 2px;
+    margin: 2px 2px 0 2px;
+    filter: url(#innerShadow);
+    .bar-rounded-shadow;
+  }
+}
+
+.detailed-button {
+  // See pulse-cellbar-cell-missing
+  cursor: pointer;
+  padding: 3px;
+  background-color: @color_missing_value_highlight; // pink color  
+  color: @color_missing_text;
+
+  &:hover {
+    background-color: @color_missing_value_fade  !important; // pink color with tranparency
+  }
+}
+
+/* POPUP */
+#popup-fade {
+  /*-- Masque opaque noir de fond --*/
+  /*-- default hidden --*/
+  display: none;
+  background: #000;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: .70;
+  z-index: 9999;
+}
+
+/* POPUP */
+.popup-block {
+  .detailed-range {
+    display: none; // Hide range
+  }
+
+  .detailed-button {
+    display: none; // always hide change button in popup
+  }
+
+  .detailed-title {
+    width: 30%;
+    max-width: 30%;
+  }
+
+  .detailed-content {
+    max-width: 70%;
+  }
+
+  /*-- was default hidden --*/
+  display: block;
+  background-color: @color_window;
+  color: @color_text;
+  border: 4px solid @color_text_alternate;
+
+  padding: 4px;
+  //float: left;
+  font-size: 0.7em;
+  position: fixed;
+  //top: 50%; left: 50%;
+  z-index: 11000; // More than dialog
+
+  box-shadow: 0px 0px 20px #000;
+  /*--Coins arrondis en CSS3--*/
+  border-radius: @cellbar-corner-radius;
+}
+
+/* ********** ********** *********** *********** */
+/* END DETAILS ********* *********** *********** */
+/* ********** ********** *********** *********** */
+
+
+/* ********** ********** *********** *********** */
+/* BARS : style LastXXX  or text *** *********** */
+/* ********** ********** *********** *********** */
+
+.pulse-text {
+  .pulse-cellbar-main {
+    width: 100%;
+
+    .pulse-cellbar-current-data {
+      text-overflow: ellipsis;
+      -o-text-overflow: ellipsis;
+      /* for Opera*/
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .pulse-cellbar-between {
+      display: none;
+    }
+
+    .pulse-cellbar-cell-missing {
+      display: none;
+    }
+
+    .pulse-cellbar-past-data {
+      display: none;
+    }
+  }
+}
+
+.pulse-lastbar {
+  width: 100%;
+
+  .pulse-cellbar-main {
+    position: relative;
+    height: 2em;
+    // POSITION and "..."
+    display: flex;
+    flex-flow: row nowrap; // == default
+    justify-content: space-between; // To add a big space between left and right
+    align-items: center; // vertical center
+
+    .pulse-cellbar-first {
+      flex-shrink: 99999; // easy '...'
+      align-self: flex-start;
+      padding: 0 6px;
+      position: relative; // to allow progress
+      //overflow: hidden;
+
+      &.pulse-cellbar-current-data {
+        text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+        /* for Opera*/
+        white-space: nowrap;
+        overflow: hidden;
+        height: 2em;
+        min-width: 4%;
+
+        flex-basis: content; // Default size -> To display '...'
+        flex-shrink: 9999; // To shrink more than "past" right display
+        // flex-grow: 2; NEVER else bar can be too wide for small text
+
+        //padding: 0 6px;
+        border-right: 1px solid @widget_separator;
+
+        &.clickable {
+          cursor: pointer;
+
+          &:hover {
+            background-color: @color_highlight;
+          }
+        }
+      }
+    }
+
+    .pulse-cellbar-between {
+      // fill empty space
+      //display: none; // Never ! Useful for toollife for example
+      display: flex;
+      height: 0;
+      flex-shrink: 0; // To never hide
+      flex-grow: 2; // Strech
+      min-width: 5px;
+    }
+
+    .pulse-cellbar-last {
+      flex-shrink: 1;
+      align-self: flex-end;
+      padding: 0 6px;
+
+      &.pulse-cellbar-left-border {
+        border-left: 1px solid @widget_separator;
+      }
+
+      &.pulse-cellbar-past-data {
+        height: 2em;
+        overflow: hidden;
+        //padding: 0 6px;
+        border-left: 1px solid @widget_separator;
+
+        // Always clickable :
+        cursor: pointer;
+
+        &:hover {
+          background-color: @color_highlight;
+        }
+      }
+    }
+
+    .pulse-cellbar-cell-missing {
+      flex-shrink: 1; // Do not hide the end !
+      cursor: pointer;
+      //background-color: @color_missing_value_highlight; // pink color  
+      //color: @color_missing_text;
+
+      &:hover {
+        //background-color: @color_missing_value_fade  !important; // pink color with tranparency
+        background-color: @color_highlight;
+      }
+
+      .pulse-missing-data {
+        display: inline-block;
+      }
+    }
+  }
+}
+
+.pulse-missing-data {
+  display: none; //inline-block when activ, see pulse-cellbar-cell-missing
+  position: absolute;
+  top: 1px;
+  right: 1px;
+
+  .pulse-missing-data-circle {
+    display: inline-block;
+    fill: red;
+    //stroke: black; = bad idea for light display
+    //stroke-width: 1px;
+  }
+}
+
+
+/* ********** ********** *********** *********** *********** */
+/* ********** ********** Mainteance  *********** *********** */
+/* ********** ********** *********** *********** *********** */
+.pulse-maintenance {
+  //cf customDialog
+  z-index: 10001; // In front of all, including dialog
+
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  //display: none;
+  overflow: hidden;
+
+  .pulse-maintenance-shadow {
+    background-color: rgba(0, 0, 0, 0.4);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .pulse-maintenance-display-box {
+    position: relative;
+    background-image: @background_image; // == body    
+    color: @color_text_alternate;
+    //background-color: @color_window;
+    //color: @color_text;
+    //margin: auto;
+    width: 100%;
+    height: 100%;
+
+    .pulse-maintenance-centered-div {
+      position: relative;
+      margin: auto;
+
+      top: 25%;
+      max-width: 50%;
+      height: 50%;
+
+      .pulse-maintenance-svg {
+        .create_svg('pulse-maintenance', @color_text, @color_text);
+        box-sizing: border-box;
+        height: 100%;
+        margin: auto;
+      }
+
+      .pulse-maintenance-text {
+        font-weight: bold;
+        margin-top: 10px;
+        text-align: center;
+      }
+    }
+  }
+}
+
+/* ********** ********** *********** *********** *********** */
+/* ********** ********** End Mainteance  ******* *********** */
+/* ********** ********** *********** *********** *********** */
+
+
+
+/* ********** ********** *********** *********** *********** */
+/* ERROR / WARNING / LOADING -> to overload in main app **** */
+/* Linked classes can be :                                   */
+/* pulse-icon, pulse-smalltext, pulse-text, pulse-details    */
+/* pulse-lastbar, pulse-slotbar,                             */
+/* pulse-piegauge, pulse-bigdisplay                          */
+/* ********** ********** *********** *********** *********** */
+/* Defined in themes :
+@error_main_color:#DF4343;
+@error_contrasted_color: #ffffff;
+@warn_main_color:#DF7722;
+@warn_contrasted_color: #000000;*/
+
+/* Global messages */
+.pulse-message-div {
+  //visibility: hidden;
+
+  //position: absolute; NEVER here !!! -> not for details
+  //display: inline-block;
+  display: none;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+
+  pointer-events: none; // to allow click through 
+
+  &.force-visibility {
+    display: inline-block;
+  }
+
+  .pulse-message {
+    // allow '...'
+    //width: 100%; for text only
+    max-width: 100%;
+    display: inline-block;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    /* for Opera*/
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}
+
+.pulse-details {
+  .pulse-loader-div {
+    //position: absolute; // To go over
+    height: 100%;
+    position: absolute;
+    display: inline-block;
+  }
+
+  /*.pulse-message-div {
+  }*/
+}
+
+.pulse-icon {
+  .pulse-loader-div {
+    position: absolute; // To go over
+  }
+
+  .pulse-message-div {
+    position: absolute; // To go over
+  }
+}
+
+.pulse-details {
+  .pulse-loader-div {
+    //position: absolute; // To go over
+    //width: 100%;
+  }
+
+  .pulse-message-div {
+    ///position: absolute; // To go over
+    //width: 100%;
+
+    .pulse-message {
+      // allow '...' when parent width is defined
+      //width: 100%;
+
+      text-overflow: ellipsis;
+      -o-text-overflow: ellipsis; // for Opera
+      overflow: hidden;
+    }
+  }
+}
+
+.pulse-text {
+  .pulse-loader-div {
+    position: absolute; // To go over
+    top: 0;
+    width: 100%;
+  }
+
+  .pulse-message-div {
+    position: absolute; // To go over
+    top: 0;
+    width: 100%;
+
+    .pulse-message {
+      // allow '...' when parent width is defined
+      width: 100%;
+
+      text-overflow: ellipsis;
+      -o-text-overflow: ellipsis; // for Opera
+      overflow: hidden;
+    }
+  }
+}
+
+.pulse-slotbar {
+  .pulse-loader-div {
+    position: absolute; // To go over
+    top: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+  .pulse-message-div {
+    position: absolute; // To go over
+
+    .pulse-message {
+      // Vertical and horizontal center on 1 line
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      white-space: nowrap;
+      /* interdiction de passer à la ligne */
+    }
+  }
+}
+
+.pulse-lastbar {
+  .pulse-loader-div {
+    position: absolute; // To go over
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .pulse-message-div {
+    position: absolute; // To go over
+    top: 0;
+
+    .pulse-message {
+      // Vertical and horizontal center on 1 line
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      white-space: nowrap;
+      /* interdiction de passer à la ligne */
+    }
+  }
+}
+
+.pulse-piegauge {
+  min-height: 50px; // was 150px; // To display loader and message
+
+  .pulse-loader-div {
+    position: absolute; // To go over
+  }
+
+  >div {
+    // To avoid propagation, for example inside x-grouparray
+    min-height: 50px; // was 150px; // To display loader and message
+
+    >.pulse-message-div {
+      position: absolute;
+      min-height: 50px; // was 150px; // To display loader and message
+      height: 100%;
+
+      .pulse-message {
+        // Vertical and horizontal center
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    >div {
+
+      // To avoid propagation, for example inside x-grouparray
+      >.pulse-message-div {
+        position: absolute;
+        min-height: 50px;
+        height: 100%;
+
+        .pulse-message {
+          // Vertical and horizontal center
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
+    }
+  }
+
+  >ol {
+    // To avoid propagation, for example inside x-grouparray
+    min-height: 100px; // To display loader and message
+
+    >.pulse-message-div {
+      position: absolute;
+      min-height: 100px; // To display loader and message
+
+      .pulse-message {
+        // Vertical and horizontal center
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+}
+
+.pulse-bigdisplay {
+
+  //min-height: 150px; // To display loader and message
+  >div {
+    // To avoid propagation, for example inside x-grouparray
+    min-height: 50px; // To display loader and message
+    position: relative; // To avoid message to be outside the xtag
+
+    >.pulse-message-div {
+      position: absolute; // Mostly overloaded with relative.. To check !
+      min-height: 50px; // To display loader and message
+
+      .pulse-message {
+        // Vertical and horizontal center
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+
+  >ol {
+
+    // To avoid propagation, for example inside x-grouparray
+    //min-height: 150px; // To display loader and message
+    >.pulse-message-div {
+      position: absolute;
+      min-height: 100px; // To display loader and message
+
+      .pulse-message {
+        // Vertical and horizontal center
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+}
+
+// Not Applicable - default hidden 
+// -> to remove, overload manageNotApplicable without calling super.*
+.pulse-component-not-applicable {
+  display: none;
+}
+
+// Error / Warning
+.pulse-component-error {
+  .pulse-message-div {
+    visibility: visible;
+    display: inline-block;
+    //background: @error_main_color; -> gray ?
+    color: @warn_main_color; // @error_contrasted_color;
+    // KEEP VISIBLE : .pulse-cellbar-current-data .pulse-cellbar-past-data 
+  }
+}
+
+.pulse-component-warning {
+  .pulse-message-div {
+    visibility: visible;
+    display: inline-block;
+    //background: @warn_main_color; -> gray ?
+    color: @warn_main_color; // @warn_contrasted_color;
+    // KEEP VISIBLE : .pulse-cellbar-current-data .pulse-cellbar-past-data 
+  }
+}
+
+.pulsecomponent-context-Stop {
+  .pulse-message-div {
+    visibility: visible;
+    display: inline-block;
+    //background: @warn_main_color; -> gray ?
+    color: @warn_main_color; // @warn_contrasted_color;
+    // KEEP VISIBLE : .pulse-cellbar-current-data .pulse-cellbar-past-data 
+  }
+}
+
+/* END - Global messages */
+
+// Error / Warning : Small components -> no display
+.pulse-component-error.pulse-icon {
+  .pulse-icon-content {
+    // NOT pulse-icon else invisible == no refresh
+    display: none;
+  }
+}
+
+.pulse-component-warning.pulse-icon {
+  .pulse-icon-content {
+    // NOT pulse-icon else invisible == no refresh
+    display: none;
+  }
+}
+
+.pulsecomponent-context-Stop.pulse-icon {
+  .pulse-icon-content {
+    // NOT pulse-icon else invisible == no refresh
+    display: none;
+  }
+}
+
+.pulse-component-error.pulse-smalltext {
+  display: none;
+}
+
+.pulse-component-warning.pulse-smalltext {
+  display: none;
+}
+
+.pulsecomponent-context-Stop.pulse-smalltext {
+  display: none;
+}
+
+// Error / Warning : Detail -> colored display
+.pulse-component-error.pulse-details {
+  .pulse-message {
+    color: @warn_main_color;
+    // @error_main_color;
+  }
+}
+
+.pulse-component-warning.pulse-details {
+  .pulse-message {
+    color: @warn_main_color;
+  }
+}
+
+.pulsecomponent-context-Stop.pulse-details {
+  .pulse-message {
+    color: @warn_main_color;
+  }
+}
+
+// Error / Warning : Text -> colored display
+.pulse-component-error.pulse-text {
+  .pulse-message {
+    color: @warn_main_color;
+    // @error_main_color;
+  }
+
+  .pulse-cellbar-main {
+    >div {
+      display: none;
+    }
+  }
+}
+
+.pulse-component-warning.pulse-text {
+  .pulse-message {
+    color: @warn_main_color;
+  }
+
+  .pulse-cellbar-main {
+    >div {
+      display: none;
+    }
+  }
+}
+
+.pulsecomponent-context-Stop.pulse-text {
+  .pulse-message {
+    color: @warn_main_color;
+  }
+
+  .pulse-cellbar-main {
+    >div {
+      display: none;
+    }
+  }
+}
+
+// machinedisplay (maybe we should create a message...)
+x-machinedisplay.pulse-component-error {
+  color: @warn_main_color; // @error_main_color;
+}
+
+x-machinedisplay.pulse-component-warning {
+  color: @warn_main_color;
+}
+
+// LastXXX bars
+.pulse-component-error.pulse-lastbar {
+  .pulse-cellbar-main {
+    // div displayed even when not in error
+    filter: opacity(30%);
+
+    .pulse-cellbar-current-data {
+      max-width: 20%;
+    }
+  }
+}
+
+.pulse-component-warning.pulse-lastbar {
+  .pulse-cellbar-main {
+    // div displayed even when not in error
+    filter: opacity(30%);
+
+    .pulse-cellbar-current-data {
+      max-width: 20%;
+    }
+  }
+}
+
+.pulsecomponent-context-Stop.pulse-lastbar {
+  .pulse-cellbar-main {
+    // div displayed even when not in error
+    filter: opacity(30%);
+
+    .pulse-cellbar-current-data {
+      max-width: 20%;
+    }
+  }
+}
+
+// Error / Warning : Bar -> colored background
+//  see in global.less OR webapp
+.pulse-component-error.pulse-slotbar {
+
+  //background-color: @error_main_color;
+  //color: @warn_main_color; //error_contrasted_color;
+  //text-align: center;
+  svg {
+    filter: opacity(30%);
+  }
+}
+
+.pulse-component-warning.pulse-slotbar {
+
+  //background-color: @warn_main_color;
+  //color: @warn_main_color; //warn_contrasted_color;
+  //text-align: center;
+  svg {
+    filter: opacity(30%);
+  }
+}
+
+.pulsecomponent-context-Stop.pulse-slotbar {
+  svg {
+    filter: opacity(30%);
+  }
+}
+
+// Error / Warning : Big components -> colored background or text
+.pulse-component-error.pulse-piegauge {
+
+  //background-color: @error_main_color;
+  //color: @warn_main_color; // error_contrasted_color;
+  svg {
+    filter: opacity(30%);
+  }
+}
+
+.pulse-component-warning.pulse-piegauge {
+
+  //background-color: @warn_main_color;
+  //color: @warn_main_color; // warn_contrasted_color;
+  svg {
+    filter: opacity(30%);
+  }
+}
+
+.pulsecomponent-context-Stop.pulse-piegauge {
+  svg {
+    filter: opacity(30%);
+  }
+}
+
+.pulse-component-error.pulse-bigdisplay {
+  //color: @warn_main_color; // error_main_color;
+}
+
+.pulse-component-warning.pulse-bigdisplay {
+  //color: @warn_main_color;
+}
+
+.pulsecomponent-context-Stop.pulse-bigdisplay {
+  //color: @warn_main_color;
+}
+
+////////////////////////////////////////////
+// LOADING - inspired from 
+// https://projects.lukehaas.me/css-loaders/
+
+// Global loader position
+.pulse-loader-div {
+  pointer-events: none; // to allow click through
+
+  .pulse-loader {
+    text-indent: -9999em; // To hide text
+  }
+}
+
+:not(.pulse-component-loading) {
+  .pulse-loader-div {
+    display: none;
+  }
+}
+
+.pulse-component-loading:not(.pulse-details) {
+  .pulse-loader-div {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.pulse-component-loading.pulse-details {
+  .pulse-loader-div {
+    position: revert;
+    top: 0;
+    height: 100%;
+  }
+}
+
+.pulse-component-loading:not(.pulse-component-error):not(.pulse-component-warning) {
+  .pulse-loader-div {
+    display: inline-block;
+
+    .pulse-loader {
+      display: inline-block !important; // instead = none
+    }
+  }
+}
+
+// LOADING - smalltext / pulse-icon => Hide
+.pulse-component-loading.pulse-smalltext {
+  //display: none; -> NEVER ! else stay in loading state
+}
+
+.pulse-component-loading.pulse-icon {
+  .pulse-icon-content {
+    // NOT pulse-icon else invisible == no refresh
+    display: none;
+  }
+}
+
+// LOADING pulse-details => small moving '...'
+//.pulse-details.pulse-component-loading{ // for tests
+.pulse-details.pulse-component-loading:not(.pulse-component-error):not(.pulse-component-warning) {
+  .pulse-loader-div {
+    .pulse-loader {
+      // Animate
+      -webkit-transform: translateZ(0);
+      -ms-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-animation-delay: -0.16s;
+      animation-delay: -0.16s;
+      // Position = centered
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .pulse-loader,
+  .pulse-loader:before,
+  .pulse-loader:after {
+    border-radius: 50%;
+    width: 0.5em;
+    height: 0.5em;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation: load3smallpoints 1.8s infinite ease-in-out;
+    animation: load3smallpoints 1.8s infinite ease-in-out;
+  }
+
+  .pulse-loader:before,
+  .pulse-loader:after {
+    content: '';
+    position: absolute;
+    top: 0;
+  }
+
+  .pulse-loader:before {
+    left: -2em;
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
+  }
+
+  .pulse-loader:after {
+    left: 2em;
+  }
+}
+
+// LOADING pulse-text => small moving '...'
+//.pulse-text.pulse-component-loading{ // for tests
+.pulse-text.pulse-component-loading:not(.pulse-component-error):not(.pulse-component-warning) {
+  .pulse-loader-div {
+    .pulse-loader {
+      // Animate
+      -webkit-transform: translateZ(0);
+      -ms-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-animation-delay: -0.16s;
+      animation-delay: -0.16s;
+      // Position = centered
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .pulse-loader,
+  .pulse-loader:before,
+  .pulse-loader:after {
+    border-radius: 50%;
+    width: 0.5em;
+    height: 0.5em;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation: load3smallpoints 1.8s infinite ease-in-out;
+    animation: load3smallpoints 1.8s infinite ease-in-out;
+  }
+
+  .pulse-loader:before,
+  .pulse-loader:after {
+    content: '';
+    position: absolute;
+    top: 0;
+  }
+
+  .pulse-loader:before {
+    left: -2em;
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
+  }
+
+  .pulse-loader:after {
+    left: 2em;
+  }
+}
+
+@-webkit-keyframes load3smallpoints {
+
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0.5em 0 -1.3em;
+  }
+
+  40% {
+    box-shadow: 0 0.5em 0 0;
+  }
+}
+
+@keyframes load3smallpoints {
+
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0.5em 0 -1.3em;
+  }
+
+  40% {
+    box-shadow: 0 0.5em 0 0;
+  }
+}
+
+// LOADING pulse-lastbar / pulse-slotbar => wide moving ...
+.pulse-lastbar.pulse-component-loading:not(.pulse-component-error):not(.pulse-component-warning) {
+
+  // min-height: 1.3em; -> Not here because generate problems if no loader is defined
+  .pulse-loader-div {
+    .pulse-loader {
+      // Animate
+      -webkit-transform: translateZ(0);
+      -ms-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-animation-delay: -0.16s;
+      animation-delay: -0.16s;
+      // Position = centered
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .pulse-loader,
+  .pulse-loader:before,
+  .pulse-loader:after {
+    border-radius: 50%;
+    width: 0.5em;
+    height: 0.5em;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation: load3points 1.8s infinite ease-in-out;
+    animation: load3points 1.8s infinite ease-in-out;
+  }
+
+  .pulse-loader:before,
+  .pulse-loader:after {
+    content: '';
+    position: absolute;
+    top: 0;
+  }
+
+  .pulse-loader:before {
+    left: -3.5em;
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
+  }
+
+  .pulse-loader:after {
+    left: 3.5em;
+  }
+}
+
+.pulse-slotbar.pulse-component-loading:not(.pulse-component-error):not(.pulse-component-warning) {
+
+  // min-height: 1.3em; -> Not here because generate problems if no loader is defined
+  .pulse-loader-div {
+    .pulse-loader {
+      // Animate
+      -webkit-transform: translateZ(0);
+      -ms-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-animation-delay: -0.16s;
+      animation-delay: -0.16s;
+      // Position = centered
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .pulse-loader,
+  .pulse-loader:before,
+  .pulse-loader:after {
+    border-radius: 50%;
+    width: 0.5em;
+    height: 0.5em;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation: load3points 1.8s infinite ease-in-out;
+    animation: load3points 1.8s infinite ease-in-out;
+  }
+
+  .pulse-loader:before,
+  .pulse-loader:after {
+    content: '';
+    position: absolute;
+    top: 0;
+  }
+
+  .pulse-loader:before {
+    left: -3.5em;
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
+  }
+
+  .pulse-loader:after {
+    left: 3.5em;
+  }
+}
+
+@-webkit-keyframes load3points {
+
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0.5em 0 -1.3em;
+  }
+
+  40% {
+    box-shadow: 0 0.5em 0 0;
+  }
+}
+
+@keyframes load3points {
+
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0.5em 0 -1.3em;
+  }
+
+  40% {
+    box-shadow: 0 0.5em 0 0;
+  }
+}
+
+// TODO LOADING pulse-piegauge /pulse-bigdisplay  => moving in circle
+.pulse-piegauge.pulse-component-loading:not(.pulse-component-error):not(.pulse-component-warning) {
+  .pulse-loader-div {
+    .pulse-loader {
+      //color: #ffffff; -> used to color circle
+      //font-size: 20px; -> used to re-size circles
+      margin: auto; //margin: 100px auto;
+      width: 1em;
+      height: 1em;
+      border-radius: 50%;
+      text-indent: -9999em; // empty content
+      -webkit-animation: loadcircle 1.3s infinite linear;
+      animation: loadcircle 1.3s infinite linear;
+      /*-webkit-transform: translateZ(0);
+      -ms-transform: translateZ(0);
+      transform: translateZ(0);*/
+
+      // center;
+      position: absolute;
+      top: 50%;
+      /* poussé de la moitié de hauteur du référent */
+      left: 50%;
+      -webkit-transform: translateX(-50%) translateY(-50%) translateZ(0);
+      -ms-transform: translateX(-50%) translateY(-50%) translateZ(0);
+      transform: translateX(-50%) translateY(-50%) translateZ(0);
+    }
+  }
+}
+
+.pulse-bigdisplay.pulse-component-loading:not(.pulse-component-error):not(.pulse-component-warning) {
+  .pulse-loader-div {
+    .pulse-loader {
+      //color: #ffffff; -> used to color circle
+      //font-size: 20px; -> used to re-size circles
+      margin: auto; //margin: 100px auto;
+      width: 1em;
+      height: 1em;
+      border-radius: 50%;
+      text-indent: -9999em; // empty content
+      -webkit-animation: loadcircle 1.3s infinite linear;
+      animation: loadcircle 1.3s infinite linear;
+      /*-webkit-transform: translateZ(0);
+      -ms-transform: translateZ(0);
+      transform: translateZ(0);*/
+
+      // center;
+      position: absolute;
+      top: 50%;
+      /* poussé de la moitié de hauteur du référent */
+      left: 50%;
+      -webkit-transform: translateX(-50%) translateY(-50%) translateZ(0);
+      -ms-transform: translateX(-50%) translateY(-50%) translateZ(0);
+      transform: translateX(-50%) translateY(-50%) translateZ(0);
+    }
+  }
+}
+
+@-webkit-keyframes loadcircle {
+
+  0%,
+  100% {
+    box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+  }
+
+  12.5% {
+    box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+  }
+
+  25% {
+    box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+  }
+
+  37.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+
+  50% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+
+  62.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+  }
+
+  75% {
+    box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+  }
+
+  87.5% {
+    box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+  }
+}
+
+@keyframes loadcircle {
+
+  0%,
+  100% {
+    box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+  }
+
+  12.5% {
+    box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+  }
+
+  25% {
+    box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+  }
+
+  37.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+
+  50% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+
+  62.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+  }
+
+  75% {
+    box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+  }
+
+  87.5% {
+    box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+  }
+}
+
+/* END ERROR / WARNING / LOADING *** *********** *********** */
+/* ********** ********** *********** *********** *********** */
+
+/* ********** ********** *********** *********** *********** */
+/* CHART : bar chart                                         */
+/* ********** ********** *********** *********** *********** */
+
+.pulse-chart-content {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+
+  margin: auto;
+
+  // colors = like .tile-title
+  background-color: @container_header_color;
+  color: @container_header_text_color;
+
+  svg {
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+  }
+
+  .bar {
+    fill: currentColor; // Can be changed
+  }
+
+  /*.bar.negative {
+    fill: @color-red; // Can be added when needed
+  }*/
+
+  text {
+    font-size: 12px;
+    fill: currentColor;
+  }
+
+  path {
+    stroke: currentColor;
+  }
+
+  .x-bottom-axis {
+    path {
+      display: none;
+    }
+  }
+
+  line {
+    stroke: currentColor;
+  }
+
+  /*
+  line#limit {
+    stroke: #FED966;
+    stroke-width: 3;
+    stroke-dasharray: 3 6;
+  }*/
+
+  .grid path {
+    stroke-width: 0;
+  }
+
+  .grid .tick line {
+    stroke: currentColor;
+    stroke-opacity: 0.3;
+  }
+
+  /*
+  text.divergence {
+    font-size: 14px;
+    fill: #2F4A6D;
+  }*/
+
+  text.value {
+    font-size: 14px;
+  }
+
+  text.title {
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  text.label {
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  text.source {
+    font-size: 10px;
+  }
+
+}
+
+/* ********** ********** *********** *********** *********** */
+/* ********** ********** End CHART  ************ *********** */
+/* ********** ********** *********** *********** *********** */

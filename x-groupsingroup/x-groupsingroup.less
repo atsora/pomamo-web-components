@@ -1,0 +1,61 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-groupsingroup {
+  /* To make is(':visible') works */
+  display: block;
+  //width: 100vw;
+  //height: 100vh;
+  //width: 100%;  
+
+  // == .group{
+  box-sizing: border-box;
+  list-style-type: none;
+
+  .subgroup-single-machine{
+    x-zoominpagebutton{
+      display: none; // To hide button for machines
+    }
+  }  
+
+  .groupsingroup-main {
+    display: block;
+    // Minimum style here -> to define in main page
+    box-sizing: border-box;
+
+    width: 100%;
+    height: 100%;
+
+    // To remove list style :
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    // Position
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: flex-start;
+
+    .groupsingroup-subgroup {
+      // Minimum style here -> to define in main page
+      box-sizing: border-box;
+      list-style-type: none;
+
+      list-style: none;
+      //display: inline-block;
+      //vertical-align: top;
+      //position: relative;
+
+      padding: 4px;
+      //width / height ->  in js;
+    }
+  }
+}

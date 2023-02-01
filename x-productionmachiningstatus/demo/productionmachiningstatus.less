@@ -1,0 +1,71 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "x-productionmachiningstatus/x-productionmachiningstatus.less";
+@import "demo/demo.less";
+
+// BARS // Copy from style.less AND productionmachining.less
+.pulse-bar-div {
+  // outside x-tag. Only for style.
+  .bar-rounded-shadow; // Rounded border + shadow
+  // local == same AS productionmachining.less
+  font-size: 1em;
+  line-height: 2em;
+
+  // productionmachining.less
+  x-productionmachiningstatus {
+
+    // productionmachiningstatus-linkreport
+    a {
+      color: @color_text_alternate; // NOT @color_window_alternate;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:visited {
+      color: @color_text_alternate; // NOT @color_window_alternate;
+    }
+  }
+
+  .productionmachining-machinelink {
+    width: 20%;
+    // ???min-width: 20%; // To show machine display with Chrome
+    color: @color_text_alternate;
+  }
+
+  .productionmachining-singlerow {
+    width: 98%;
+    margin: 4px 1%;
+    display: flex;
+
+    align-items: flex-start; // Alignés sur la ligne du haut
+
+    vertical-align: middle;
+  }
+}
+
+// BOX // Copy from running view
+.box-div {
+  // Same as .div-current{
+  border-radius: @cellbar-corner-radius; // == LIKE .bar-rounded-shadow;
+  background-color: @current_background_color;
+  color: @current_text_color;
+  border: solid 1px @current_border_color;
+
+  padding: 4px;
+  min-height: 32px;
+  max-width: 250px;
+
+  .div-current-right {
+    display: inline-block;
+    max-width: 180px;
+    padding-left: 4px;
+    font-size: 0.8em;
+  }
+}

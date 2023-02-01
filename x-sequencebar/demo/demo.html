@@ -1,0 +1,37 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Machine1</label>
+  <div class="pulse-bar-div">
+    <x-sequencebar id="machine1" machine-id=1 path='http://localhost:8082/'></x-sequencebar>
+  </div>
+
+  <label>Machine3</label>
+  <div class="pulse-bar-div">
+    <x-sequencebar id="machine3" machine-id=3 path='http://localhost:8082/'></x-sequencebar>
+  </div>
+
+  <label>Machine4</label>
+  <div class="pulse-bar-div">
+    <x-sequencebar id="machine4" machine-id=4 path='http://localhost:8082/'></x-sequencebar>
+  </div>
+
+  <label>Machine5</label>
+  <div class="pulse-bar-div">
+    <x-sequencebar id="machine5" machine-id=5 path='http://localhost:8082/'></x-sequencebar>
+  </div>
+
+  <label>Error: No cycle progress information (not displayed)</label>
+  <div class="pulse-bar-div">
+    <x-sequencebar id="error_no_cycle" machine-id=8 path='http://localhost:8082/'></x-sequencebar>
+  </div>
+
+  <label>Error: Gateway Timeout (not displayed)</label>
+  <div class="pulse-bar-div">
+    <x-sequencebar id="error_gateway_timeout" machine-id=9 path='http://localhost:8082/'></x-sequencebar>
+  </div>
+</div>

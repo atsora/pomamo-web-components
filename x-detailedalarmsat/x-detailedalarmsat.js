@@ -1,0 +1,342 @@
+// Copyright (C) 2009-2023 Lemoine Automation Technologies
+//
+// SPDX-License-Identifier: Apache-2.0
+
+/**
+ * @module x-detailedalarmsat
+ * @requires module:pulseComponent
+ * @requires module:pulseUtility
+ * @requires module:pulseSvg
+ */
+
+var pulseComponent = require('pulsecomponent');
+var pulseRange = require('pulseRange');
+var pulseUtility = require('pulseUtility');
+var pulseSvg = require('pulseSvg');
+var eventBus = require('eventBus');
+
+(function () {
+
+  class DetailedAlarmsAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
+    /**
+     * Constructor
+     * 
+     * @param  {...any} args 
+     */
+    constructor(...args) {
+      const self = super(...args);
+
+      // DOM - not here
+      self._content = undefined;
+      self._detailedContent = undefined;
+
+      return self;
+    }
+
+    get content () { return this._content; } // Optional
+
+    _cleanDisplay () {
+      $(this._detailedContent).empty();
+    }
+
+    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+      super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
+      switch (attr) {
+        case 'machine-id':
+        case 'when':
+          if (this.isInitialized()) {
+            this._cleanDisplay();
+            this.start(); // requires to restart the component
+          } break;
+        case 'datetime-context':
+          if (this.isInitialized()) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'dateTimeChangeEvent');
+            eventBus.EventBus.addEventListener(this,
+              'dateTimeChangeEvent',
+              newVal,
+              this.onDateTimeChange.bind(this));
+          }
+          break;
+        case 'machine-context':
+          if (this.isInitialized()) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
+            eventBus.EventBus.addEventListener(this,
+              'machineIdChangeSignal',
+              newVal,
+              this.onMachineIdChange.bind(this));
+          }
+          break;
+        default:
+          break;
+      }
+    }
+
+    initialize () {
+      this.addClass('pulse-details'); // Mandatory for loader
+
+      // Attribute is not modified by an event. It can be managed during the initialization phase
+      // Update here some internal parameters
+
+      // Listener and dispatchers
+      if (this.element.hasAttribute('datetime-context')) {
+        eventBus.EventBus.addEventListener(this,
+          'dateTimeChangeEvent',
+          this.element.getAttribute('datetime-context'),
+          this.onDateTimeChange.bind(this));
+      }
+      if (this.element.hasAttribute('machine-context')) {
+        eventBus.EventBus.addEventListener(this,
+          'machineIdChangeSignal',
+          this.element.getAttribute('machine-context'),
+          this.onMachineIdChange.bind(this));
+      }
+
+      // In case of clone, need to be empty :
+      $(this.element).empty();
+
+      // Create DOM - Content
+      this._content = $('<div></div>')
+        .addClass('detailed-main');
+      $(this.element).append(this._content);
+
+      // Title
+      let title = this.getTranslation('detailsViewSubTitles.cncalarms', 'CNC alarms');
+      let spanTitle = $('<span></span>').addClass('detailedalarmsat-title-span')
+        .html(title);
+      let divTitle = $('<div></div>').addClass('detailed-title').append(spanTitle);
+      $(this._content).append(divTitle);
+
+      // Detailed content
+      this._detailedContent = $('<div></div>').addClass('detailed-content');
+      $(this._content).append(this._detailedContent);
+
+      // Create DOM - Loader
+      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
+      $(this._content).append(loaderDiv);
+
+      // Create DOM - message for error - no need to store, can be removed
+      let messageSpan = $('<span></span>')
+        .addClass('pulse-message').html('');
+      let messageDiv = $('<div></div>')
+        .addClass('pulse-message-div')
+        .append(messageSpan);
+      $(this._detailedContent).append(messageDiv);
+
+      // Initialization OK => switch to the next context
+      this.switchToNextContext();
+      return;
+    }
+
+    clearInitialization () {
+      // Parameters
+      // DOM
+      this._cleanDisplay();
+      $(this.element).empty();
+
+      this._detailedContent = undefined;
+      this._content = undefined;
+
+      super.clearInitialization();
+    }
+
+    reset () { // Optional implementation
+      // Code here to clean the component when the component has been initialized for example after a parameter change
+      this.removeError();
+      // Empty this._content
+
+      this.switchToNextContext();
+    }
+
+    validateParameters () {
+      if ((!this.element.hasAttribute('machine-id'))
+        || (!pulseUtility.isInteger(Number(this.element.getAttribute('machine-id'))))) {
+        console.error('missing attribute machine-id in detailedalarmsat.element');
+        // Delayed display :
+        this.setError('missing machine-id');
+        // or
+        // Immediat display :
+        //this.switchToKey('Error', () => this.displayError('invalid param'), () => this.removeError());
+        return;
+      }
+
+      if (!this.element.hasAttribute('when')) {
+        console.error('missing attribute when in detailedalarmsat.element');
+        // Delayed display :
+        this.setError('missing when');
+        // or
+        // Immediat display :
+        //this.switchToKey('Error', () => this.displayError('invalid param'), () => this.removeError());
+        return;
+      }
+
+      this.switchToNextContext();
+    }
+
+    displayError (message) {
+      this._cleanDisplay();
+
+      let messageSpan = $(this.element).find('.pulse-message');
+      if (messageSpan.length == 0) {
+        // Create DOM - message for error
+        messageSpan = $('<span></span>')
+          .addClass('pulse-message');
+        let messageDiv = $('<div></div>')
+          .addClass('pulse-message-div')
+          .append(messageSpan);
+        $(this._detailedContent).append(messageDiv);
+        $(this._content).show();
+      }
+      $(messageSpan).html(message);
+    }
+
+    removeError () {
+      $(this.element).find('.pulse-message').html('');
+    }
+
+    getShortUrl () {
+      let url = 'CncAlarm/At?MachineId='
+        + this.element.getAttribute('machine-id')
+        + '&At=' + this.element.getAttribute('when');
+
+      if ('true' == this.getConfigOrAttribute('showIgnoredAlarm', 'false')) {
+        url += '&IncludeIgnored=true';
+      }
+      else {
+        if ('false' == this.getConfigOrAttribute('showUnknownAlarm', 'true')) {
+          url += '&KeepFocusOnly=true';
+        }
+      }
+      return url;
+    }
+
+    refresh (data) {
+      $(this._detailedContent).empty();
+
+      if (data.ByMachineModule.length > 0) {
+
+        // Empty range - to allow "table-like" display
+        let spanRange = $('<span></span>').addClass('detailedalarmsat-range-span').html('');
+        let divRange = $('<div></div>').addClass('detailed-range');
+        $(divRange).append(spanRange);
+
+        $(this._detailedContent).append(divRange);
+
+        let alarmIsEmpty = true;
+        for (let iModule = 0; iModule < data.ByMachineModule.length; iModule++) {
+          // machinemodule content
+          let divWholeModule = $('<div></div>').addClass('detailed-module-content');
+          // If more than 1 module : display
+          if (data.ByMachineModule.length > 1) {
+            // Machine module
+            let moduleDisplay = data.ByMachineModule[iModule].MachineModule.Display;
+            let spanModule = $('<span></span>').addClass('detailedalarmsat-module-span')
+              .html(moduleDisplay);
+            let divModule = $('<div></div>').addClass('detailed-machinemodule')
+              .append(spanModule);
+            if (data.ByMachineModule[iModule].MachineModule.Main) { // highlight
+              spanModule.addClass('detailed-mainmachinemodule');
+            }
+            $(divWholeModule).append(divModule);
+          }
+
+          // DATA
+          let spanFocused = $('<span></span>').addClass('detailed-module-span-focused').addClass('detailed-module-span');
+          let divDataFocused = $('<div></div>').addClass('detailed-module-data-focused').append(spanFocused);
+
+          let spanUnknown = $('<span></span>').addClass('detailed-module-span-unknown').addClass('detailed-module-span');
+          let divDataUnknown = $('<div></div>').addClass('detailed-module-data-unknown').append(spanUnknown);
+
+          let spanIgnored = $('<span></span>').addClass('detailed-module-span-ignored').addClass('detailed-module-span');
+          let divDataIgnored = $('<div></div>').addClass('detailed-module-data-ignored').append(spanIgnored);
+
+          let hasFocused = false;
+          let hasUnknown = false;
+          let hasIgnored = false;
+          let moduleIsEmpty = false;
+          for (let iAlarms = 0; iAlarms < data.ByMachineModule[iModule].CncAlarms.length; iAlarms++) {
+            let range = data.ByMachineModule[iModule].CncAlarms[iAlarms].Range;
+            let color = data.ByMachineModule[iModule].CncAlarms[iAlarms].Color;
+            //let type = data.ByMachineModule[iModule].CncAlarms[iAlarms].Type; // ex: CRITICAL
+            //let severity = data.ByMachineModule[iModule].CncAlarms[iAlarms].Severity; // ex: 'Critical'
+            //let severityDescription = data.ByMachineModule[iModule].CncAlarms[iAlarms].SeverityDescription; // == horrible string
+            //let stop = data.ByMachineModule[iModule].CncAlarms[iAlarms].Stop;
+            let focus = data.ByMachineModule[iModule].CncAlarms[iAlarms].Focus;
+            let display = data.ByMachineModule[iModule].CncAlarms[iAlarms].Display;
+
+            // range display
+            let rangeDisplayDiv = $('<div></div>').addClass('detailedalarmsat-range');
+            let tmpDateRange = pulseRange.createDateRangeFromString(range);
+            let rangeDisplay = pulseUtility.displayDateRange(tmpDateRange, true);
+            let spanRange = $('<span></span>').addClass('detailedalarmsat-range-span')
+              .html(rangeDisplay);
+            $(rangeDisplayDiv).append(spanRange);
+
+            // Color + text display
+            // color
+            let colorDisplay = $('<div></div>').addClass('detailedalarmsat-color');
+            let svg = pulseSvg.createRect(0, 0, 10, 10, color, 'detailedalarmsat-color-svg');
+            if (svg != null) {
+              colorDisplay.append(svg);
+            }
+            // span
+            let spanDisplay = $('<span></span>').addClass('detailedalarmsat-value')
+              .html(display);
+            let divDetails = $('<div></div>').addClass('detailed-single-data');
+            $(divDetails).append(colorDisplay).append(spanDisplay);
+            if (true == focus) {
+              $(divDataFocused).append(rangeDisplayDiv).append(divDetails);
+              hasFocused = true;
+            }
+            else if (false == focus) {
+              $(divDataIgnored).append(rangeDisplayDiv).append(divDetails);
+              hasIgnored = true;
+            }
+            else {
+              $(divDataUnknown).append(rangeDisplayDiv).append(divDetails);
+              hasUnknown = true;
+            }
+          } // end for
+          let divData = $('<div></div>').addClass('detailed-module-data');
+          if (hasFocused) {
+            divData.append(divDataFocused);
+            moduleIsEmpty = false;
+          }
+          if (hasUnknown
+            && ('true' == this.getConfigOrAttribute('showUnknownAlarm'), 'true')) {
+            divData.append(divDataUnknown);
+            moduleIsEmpty = false;
+          }
+          if (hasIgnored
+            && ('true' == this.getConfigOrAttribute('showIgnoredAlarm', 'false'))) {
+            divData.append(divDataIgnored);
+            moduleIsEmpty = false;
+          }
+          if (false == moduleIsEmpty) {
+            $(divWholeModule).append(divData);
+            $(this._detailedContent).append(divWholeModule);
+            alarmIsEmpty = false;
+          }
+        }
+
+        if (false == alarmIsEmpty) {
+          $(this._content).show();
+        }
+        else {
+          $(this._content).hide();
+        }
+      }
+    }
+
+    // Callback events
+    onMachineIdChange (event) {
+      this.element.setAttribute('machine-id', event.target.newMachineId);
+    }
+    // Callback events
+    onDateTimeChange (event) {
+      this.element.setAttribute('when', event.target.when);
+    }
+  }
+
+  pulseComponent.registerElement('x-detailedalarmsat', DetailedAlarmsAtComponent, ['machine-id', 'when', 'datetime-context', 'machine-context']);
+})();

@@ -1,0 +1,49 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Current hour</label>
+  <div>
+    <x-datetimegraduation path='http://localhost:8082/' period-context='CrtHOUR'></x-datetimegraduation>
+    <x-periodmanager id="current_hours" path='http://localhost:8082/' displaydaysrange=0 displayhoursrange=1 exclude-now='false'
+      period-context='CrtHOUR'> </x-periodmanager>
+  </div>
+
+  <label>Last Hour</label>
+  <div>
+    <x-datetimegraduation path='http://localhost:8082/' period-context='LastHOUR'></x-datetimegraduation>
+    <x-periodmanager id="last_hours" path='http://localhost:8082/'  displaydaysrange=0 displayhoursrange=1 exclude-now='true' period-context='LastHOUR'>
+    </x-periodmanager>
+  </div>
+
+  <label>Current 2 hours</label>
+  <div>
+    <x-datetimegraduation path='http://localhost:8082/' period-context='Crt2HOURS'></x-datetimegraduation>
+    <x-periodmanager id="current_2_hours" path='http://localhost:8082/'  displaydaysrange=0 displayhoursrange=2 exclude-now='false'
+      period-context='Crt2HOURS'> </x-periodmanager>
+  </div>
+
+  <label>Last 2 Hours</label>
+  <div>
+    <x-datetimegraduation path='http://localhost:8082/' period-context='Last2HOURS'></x-datetimegraduation>
+    <x-periodmanager id="last_2_hours" path='http://localhost:8082/'  displaydaysrange=0 displayhoursrange=2 exclude-now='true'
+      period-context='Last2HOURS'> </x-periodmanager>
+  </div>
+
+  <label>1 day</label>
+  <div>
+    <x-datetimegraduation path='http://localhost:8082/' period-context='TODAY'></x-datetimegraduation>
+    <x-periodmanager id="1_day" path='http://localhost:8082/' displaydaysrange=1 exclude-now='false' period-context='TODAY'>
+    </x-periodmanager>
+  </div>
+
+  <label>6 days</label>
+  <div>
+    <x-datetimegraduation path='http://localhost:8082/' period-context='LAST6DAYStoDATE'></x-datetimegraduation>
+    <x-periodmanager id="6_days" path='http://localhost:8082/' displaydaysrange=6 exclude-now='false' period-context='LAST6DAYStoDATE'>
+    </x-periodmanager>
+  </div>
+</div>

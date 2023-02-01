@@ -1,0 +1,42 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="attributes">
+  <div class="demo-sub-title attribute-title">Attributes</div>
+
+  <div class="demo-sub-content attribute-content">
+
+    <div class="attribute-name mandatory integer"><code>machine-id</code></div>
+    <div class="attribute-description">Id of the machine to display in this widget.
+    </div>
+
+    <div class="attribute-name config optional string"><code>path</code></div>
+    <div class="attribute-description">This parameter can be used for tests. It is read in configuration filled by
+      x-checkpath.
+    </div>
+
+    <div class="attribute-name config optional boolean"><code>thresholdunitispart</code></div>
+    <div class="attribute-description">Threshold unit. Default true. (false = percent)
+    </div>
+
+    <div class="attribute-name config optional integer"><code>thresholdorangeproduction</code></div>
+    <div class="attribute-description">Threshold to display orange color. Default 0. Lower than next, else ignored.
+    </div>
+
+    <div class="attribute-name config optional integer"><code>thresholdredproduction</code></div>
+    <div class="attribute-description">Threshold to display red color. Default 0. Greater than previous
+    </div>
+
+    <div class="attribute-name optional string"><code>display-context</code></div>
+    <div class="attribute-description"> Context to delegate "2/3" display to x-remotedisplay / x-production
+    </div>
+
+    <div class="attribute-name optional boolean"><code>bar-style</code></div>
+    <div class="attribute-description">'true' to display like others BARS - 'false' to display text in a box.
+    </div>
+
+  </div>
+</div>

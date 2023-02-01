@@ -1,0 +1,88 @@
+{
+    "default": [
+        "clean:docs",
+        "clean:live",
+        "clean:jsdoc",
+        "clean:ml",
+        "clean:demo",
+
+        "clean:exports",
+        "browserify:exportsjs",
+        "lessThemes:exports",
+
+        "copy:demoimage",
+        "copy:demojscfg",
+        "copy:demojslib",
+        "browserify:demojs",
+        "copy:democss",
+        "copy:demoindexhtml",
+        "lessThemes:demo",
+        "bakedemo",
+
+        "copy:livehtml",
+        "copy:livecss",
+        "copy:liveimage",
+        "copy:livejs",
+        "copy:livejslib",
+        "concat:live",
+        "browserify:live",
+        "less:live",
+
+        "grapheasy:jsdoc",
+        "jsdoc:dist"
+    ],    
+    "exports": [
+        "clean:exports",
+        "browserify:exportsjs",
+        "lessThemes:exports",
+        "obfuscator:exports"
+    ],    
+    "demo": [
+        "clean:demo",
+
+        "clean:exports",
+        "browserify:exportsjs",
+        "lessThemes:exports",
+
+        "copy:demoimage",
+        "copy:demojscfg",
+        "copy:demojslib",
+        "browserify:demojs",
+        "copy:democss",
+        "copy:demoindexhtml",
+        "lessThemes:demo",
+        "bakedemo"
+    ],    
+    "dev": [
+        "clean:ml"
+    ],
+    "release": [
+        "clean:ml"
+    ],
+    "livees2015": [
+        "clean:live",
+        "clean:ml",
+        "copy:livehtml",
+        "copy:livecss",
+        "copy:liveimage",
+        "copy:livejs",
+        "copy:livejslib",
+        "concat:live",
+        "browserify:live",
+        "less:live"
+    ],
+    "apijsdoc": [
+        "clean:jsdoc",
+        "grapheasy:jsdoc",
+        "jsdoc:dist"
+    ],
+    "apidoc": [
+        "clean:jsdoc",
+        "grapheasy:jsdoc",
+        "jsdoc:dist"
+    ],
+    "graphupdate": [
+        "grapheasy:ascii",
+        "shell:graphupdate"
+    ]
+}

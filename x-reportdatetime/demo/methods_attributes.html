@@ -1,0 +1,53 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="attributes">
+  <div class="demo-sub-title attribute-title">Attributes</div>
+
+  <div class="demo-sub-content attribute-content">
+
+    <div class="attribute-name string"><code>groupDisplayForm</code></div>
+    <div class="attribute-description">DISPLAYFORM used in reporting</div>
+
+    <div class="attribute-name string"><code>groupName</code></div>
+    <div class="attribute-description">groupName used in reporting</div>
+
+    <div class="attribute-name string"><code>dataType</code></div>
+    <div class="attribute-description">dataType used in reporting</div>
+
+    <div class="attribute-name optional string"><code>webapp</code></div>
+    <div class="attribute-description">Input webapp parameter, for example, 'last_1_day' </div>
+
+    <div class="attribute-name optional string"><code>mindate</code></div>
+    <div class="attribute-description">Maximum value attribute, maybe given by webapp parameter. Attribute value has following format:
+      <em>yyyy-MM-dd</em>
+    </div>
+    <div class="attribute-name optional string"><code>maxdate</code></div>
+    <div class="attribute-description">Maximum value attribute, maybe given by webapp parameter.. Attribute value has following format:
+      <em>yyyy-MM-dd</em>
+    </div>
+
+  </div>
+</div>
+
+<!--Getters / Setters / Methods-->
+<div class="methods">
+  <div class="demo-sub-title method-title">Methods</div>
+  <div class="demo-sub-content method-content">
+
+    <div class="method-name"><code>isValid</code> () </div>
+    <div class="method-description">Are valid dates / range</div>
+
+    <div class="method-name"><code>getMinValueAsIs</code> () </div>
+    <div class="method-description">Get date(time) min value as REPORT format</div>
+
+    <div class="method-name"><code>getMaxValueAsIs</code> () </div>
+    <div class="method-description">Get date(time) max value as REPORT format </div>
+
+    <div class="method-name"><code>getWebAppRange</code> (value) </div>
+    <div class="method-description">Get webap parameter to input in reports</div>
+  </div>
+</div>

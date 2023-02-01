@@ -1,0 +1,35 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-datetimepicker {
+  display: block; // isVisible
+
+  .datetimepicker-datetimediv {
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .datetimepicker-input-time{
+    min-width: 140px; // For zoom display
+  }
+  .datetimepicker-input-date{
+    min-width: 140px; // For consistency
+  }
+
+  .datetimepicker-input-nullable {
+    margin-left: 6px;
+    vertical-align: bottom;
+  }
+  .datetimepicker-input-nullable-label {
+    margin-left: 6px;
+    vertical-align: bottom;
+
+    font-style: italic;
+  }
+}

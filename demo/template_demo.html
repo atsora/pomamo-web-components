@@ -1,0 +1,148 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>x-{{pagename}} documentation</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta charset="UTF-8">
+
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <script type="text/javascript" src="lib/jquery/jquery.js"></script>
+
+  <script type="text/javascript" src="lib/jquery-mockjax/jquery.mockjax.js"></script>
+
+  <script type="text/javascript" src="lib/moment/moment.js"></script>
+  <!-- Add d3 for graduation and chart -->
+  <script type="text/javascript" src="lib/d3/d3.min.js"></script>
+  <!-- Pulse -->
+  <!-- Config / translation / basics includes -->
+  <script type="text/javascript" src="scripts/translation_pulsecomponent_default.js"></script>
+  <script type="text/javascript" src="scripts/config_pulsecomponent_default.js"></script>
+  <script type="text/javascript" src="scripts/config_demo.js"></script>
+  <!-- for reporting : script type="text/javascript" src="./scripts/pulse.exports.light.js?v="></script-->
+
+  <script type="text/javascript" src="scripts/{{pagename}}.js"></script>
+  <!--babel:<script type="text/javascript">//# sourceMappingURL={{pagename}}.js.map</script>babel:-->
+  <!-- source map for babel -->
+
+  <script>
+    // Initialize theme (before the page is loaded => cannot use PulseConfig here)
+    var currentTheme = 'dark';
+    if (typeof localStorage != 'undefined')
+      currentTheme = JSON.parse(localStorage.getItem('PULSE.PulseWebApp.theme'));
+    if (currentTheme == '' || currentTheme == null)
+      currentTheme = 'dark';
+
+    var head = document.getElementsByTagName('head')[0];
+    /*{ // For PWC exports - do nothing more */
+    {
+      var s = document.createElement('link');
+      s.setAttribute('type', 'text/css');
+      s.setAttribute('rel', 'stylesheet');
+      s.setAttribute('href', './styles/style_' + currentTheme + '/{{pagename}}.css');
+      head.appendChild(s);
+    }
+  </script>
+
+  <script type="text/javascript" src="scripts/common_demo.js"></script>
+
+</head>
+<!-- ??? hidden_content.html ??? if exists -->
+
+<body>
+  <svg style="width: 0;height: 0;float: left;">
+    <defs>
+      <filter color-interpolation-filters="sRGB" id="innerShadow">
+        <feFlood flood-opacity="0.5" flood-color="rgb(0,0,0)" result="flood"></feFlood>
+        <feComposite in="flood" in2="SourceGraphic" operator="out" result="composite1"></feComposite>
+        <feGaussianBlur in="composite1" stdDeviation="2" result="blur"></feGaussianBlur>
+        <feOffset dx="0" dy="1" result="offset"></feOffset>
+        <feComposite in="offset" in2="SourceGraphic" operator="atop"></feComposite>
+      </filter>
+      <filter color-interpolation-filters="sRGB" id="outerShadow">
+        <feFlood flood-opacity="0.5" flood-color="rgb(0,0,0)" result="flood"></feFlood>
+        <feComposite in="flood" in2="SourceGraphic" operator="in" result="composite1"></feComposite>
+        <feGaussianBlur in="composite1" stdDeviation="2" result="blur"></feGaussianBlur>
+        <feOffset dx="0" dy="1" result="offset"></feOffset>
+        <feComposite in="SourceGraphic" in2="offset" operator="over"></feComposite>
+      </filter>
+    </defs>
+  </svg>
+
+  <div id="container">
+    <div class="pulse-header">
+      <div class="pulse-header-center">
+        <div class="pulse-header-title" class="title">
+          <span>x-{{pagename}}</span>
+        </div>
+      </div>
+      <div class="pulse-header-right">
+        <button id="configpanelbtn" class="activated" title="Settings" role="button"></button>
+      </div>
+      <div class="pulse-header-left">
+        <button id="navigationpanelbtn" class="activated" title="Menu" role="button"></button>
+      </div>
+    </div>
+
+    <div id="pulse-inner">
+      <div id="pulse-panel-navigation">
+        <div id="navbar">
+          <ul>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pulse-mainarea">
+        
+        <div class="description">
+          <div class="demo-sub-title">Description</div>
+          <div class="demo-sub-content">
+            <!--(bake /x-{{pagename}}/demo/description.html)-->
+          </div>
+        </div>
+
+        <div class="usage">
+          <div class="demo-sub-title">Usage</div>
+          <div class="demo-sub-content">
+            <!--(bake /x-{{pagename}}/demo/example.html)-->
+          </div>
+        </div>
+
+        <div class="methods-attributes">
+          <!--(bake /x-{{pagename}}/demo/methods_attributes.html)-->
+        </div>
+
+        <div class="demo">
+          <div class="demo-sub-title">Demo</div>
+          <div class="demo-sub-content">
+            <!--(bake /x-{{pagename}}/demo/demo.html)-->
+          </div>
+        </div>
+      </div>
+
+      <div id="pulse-panel-parameter">
+        <div class="configuration-bottom-area">
+          <div class="configuration-bottom-area-switch">
+            <label class="switch">
+              <input id="darkthemebtn" type="checkbox">
+              <div class="slider round"></div>
+            </label>
+            <span>Dark theme</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+
+</html>

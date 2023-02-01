@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Livello_1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="24px" height="24px" viewBox="0 0 24 24" xml:space="preserve">
+<g>
+	<rect opacity="0" fill="currentColor" width="24" height="24"/>
+	<rect fill="currentColor" width="24" height="5"/>
+	<rect x="1" y="7" opacity="0.5" fill="currentColor" width="4" height="4"/>
+	<rect x="7" y="7" opacity="0.5" fill="currentColor" width="4" height="4"/>
+	<rect x="13" y="7" opacity="0.5" fill="currentColor" width="4" height="4"/>
+	<rect x="19" y="7" opacity="0.5" fill="currentColor" width="4" height="4"/>
+	<polygon fill="currentColor" points="23,17.977 18.014,12.99 15.195,12.99 19.206,17 4.809,17 8.818,12.99 6,12.99 1,17.99 
+		1.008,17.998 1,18.006 5.986,22.992 8.805,22.992 4.812,19 19.173,19 15.182,22.992 18,22.992 23,17.992 22.992,17.984 	"/>
+</g>
+</svg>

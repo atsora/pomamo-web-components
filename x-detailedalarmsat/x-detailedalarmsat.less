@@ -1,0 +1,63 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-detailedalarmsat{ 
+  display: block; /* To make is(':visible') works */ 
+  
+  .detailed-main {
+    /*.detailed-title {
+      .detailedalarmsat-title-span{
+      }
+    }*/
+    .detailed-content {
+      .detailed-range {
+        display: none;
+      }
+      .detailed-module-content {
+        /*.detailed-module-data {
+          .detailed-module-data-focused {
+          }
+          .detailed-module-data-unknown {
+          }
+          .detailed-module-data-ignored {
+          }
+        } */
+        .detailed-module-span-focused::before {
+          content: "Focused";
+        }
+        .detailed-module-span-unknown::before {
+          content: "Unknown";
+        }
+        .detailed-module-span-ignored::before {
+          content: "Ignored";
+        }
+        .detailed-module-span { // SUB TITLE
+          //.detailed-machinemodule-span;
+          //font-weight: bold;
+          text-decoration: underline;
+        }
+        /*.detailedalarmsat-module-span::after {
+          content: " : ";
+        }*/
+        .detailedalarmsat-range{
+          .detailed-range;
+        }
+        .detailed-single-data{
+          .detailedalarmsat-color{
+            display: inline;
+            svg {
+              filter: url(#innerShadow);
+            }
+          }
+          /*.detailedalarmsat-value{
+          }*/
+        }
+      }
+    }
+  }
+}

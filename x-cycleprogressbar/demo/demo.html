@@ -1,0 +1,42 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Color = default - Machine1</label>
+  <div class="pulse-bar-div">
+    <x-cycleprogressbar id="color_default_1" machine-id=1 path='http://localhost:8082/'></x-cycleprogressbar>
+  </div>
+
+  <label>Color = default - Machine2</label>
+  <div class="pulse-bar-div">
+    <x-cycleprogressbar id="color_default_2" machine-id=2 path='http://localhost:8082/'></x-cycleprogressbar>
+  </div>
+
+  <label>Color = yellow (warning 1) - Machine3</label>
+  <div class="pulse-bar-div">
+    <x-cycleprogressbar id="color_yellow" machine-id=3 path='http://localhost:8082/'></x-cycleprogressbar>
+  </div>
+
+  <label>Color = orange (warning 2) - Machine4</label>
+  <div class="pulse-bar-div">
+    <x-cycleprogressbar id="color_orange" machine-id=4 path='http://localhost:8082/'></x-cycleprogressbar>
+  </div>
+
+  <label>Color = red (stop) - Machine5</label>
+  <div class="pulse-bar-div">
+    <x-cycleprogressbar id="color_red" machine-id=5 path='http://localhost:8082/'></x-cycleprogressbar>
+  </div>
+
+  <label>Error: undefined error data status</label>
+  <div class="pulse-bar-div">
+    <x-cycleprogressbar id="error_undefined_data_status" machine-id=8 path='http://localhost:8082/'></x-cycleprogressbar>
+  </div>
+
+  <label>Error: error504 - Machine9</label>
+  <div class="pulse-bar-div">
+    <x-cycleprogressbar id="error_gateway_timeout" machine-id=9 path='http://localhost:8082/'></x-cycleprogressbar>
+  </div>
+</div>

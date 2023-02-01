@@ -1,0 +1,50 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-revisionprogress {
+  display: block;
+  /* To make is(':visible') works */
+
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 99999; // To be in front of all
+  top: 0; // useful in cellbar (ex: lastmachinestatus)
+
+  pointer-events: none; // to allow click through
+
+  .pulse-revisionprogress-content {
+    display: block;
+    height: 100%;
+    width: 100%;
+    z-index: 99999; // To be in front of all
+
+    pointer-events: none; // to allow click through -> to add in bars when needed
+
+    .revision-svg {
+      position: absolute;
+      left: 0; // mandatory for change reason in details display
+      height: 100%;
+      width: 100%;
+      //z-index: 99999; // To be in front of all
+
+      .revision-position {
+        fill: fade(gray, 50%);
+        pointer-events: initial; // to AVOID click
+      }
+
+      .progress-line {
+        stroke: @color_highlight;
+      }
+
+      //.revision-progress {
+      //fill: url(#progress-pattern); + '-' +revisionProgressMaxId
+      //}
+    }
+  }
+}

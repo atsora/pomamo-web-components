@@ -1,0 +1,33 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="dynamic-tests">
+  <label>Clock with seconds (12h)</label>
+  <div class="div-with-border">
+    <x-clock id="clock_with_seconds_12h" display-seconds=true></x-clock>
+  </div>
+
+  <label>Clock without seconds (12h)</label>
+  <div class="div-with-border">
+    <x-clock id="clock_without_seconds_12h" display-seconds=false></x-clock>
+  </div>
+
+  <label>Clock with seconds (24h)</label>
+  <div class="div-with-border">
+    <x-clock id="clock_with_seconds_24h" display-seconds=true display-24h=true></x-clock>
+  </div>
+
+  <label>Clock without seconds (24h)</label>
+  <div class="div-with-border">
+    <x-clock id="clock_without_seconds_24h" display-seconds=false display-24h=true></x-clock>
+  </div>
+
+  <label>Clock without parameters </label>
+  <div class="div-with-border">
+    <x-clock id="error_clock_without_parameters"></x-clock>
+  </div>
+</div>
+<div class="static-tests"></div>

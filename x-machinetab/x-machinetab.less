@@ -1,0 +1,64 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+@import "x-machinedisplay/x-machinedisplay.less";
+@import "x-currenticonunansweredreason/x-currenticonunansweredreason.less";
+@import "x-currenticonnextstop/x-currenticonnextstop.less";
+@import "x-currenticonworkinformation/x-currenticonworkinformation.less";
+@import "x-currenticoncncalarm/x-currenticoncncalarm.less";
+
+
+// New 2018 display
+x-machinetab{
+  display: inline-block;
+  cursor: pointer;
+  margin:8px 0;
+  width: 194px; // 170 + 22 + 2
+  height: 72px; // ?? + 2*22(modecolor) -2*1(machine white border)
+  .machinetab-modecolor{
+    width: 0px;
+    margin:0;
+    float: left;
+    //height: 100%;
+    height:58%;
+    border-left: 22px solid transparent;
+    border-left-width: 0px;
+    border-top: 22px solid transparent;
+    border-bottom: 22px solid transparent;
+    border-right-width: 22px;
+    border-right-style: solid;
+  }
+  .machinetab-machine-cell{
+    display: block;
+    float: right;
+    width: 170px;
+    //min-height:50px;
+    height:90%;
+    padding-top: 5%;
+    padding-bottom: 5%;
+  }
+  .machinetab-machine{
+    text-align: center;
+    margin: 0 4px;
+  }
+  .machinetab-icons{
+    //display: inline-block;
+    height: 40px; // 32 + 4 + 4
+    width: 100%;
+    //margin: 4px;
+    display: flex;
+    flex-direction: row; // align children
+
+    .pulse-icon {//.machinetab-icon{
+      //display: block;
+      //float: left;
+      height: 32px;
+      width:  32px;
+      margin: 4px;
+    }
+  }
+}

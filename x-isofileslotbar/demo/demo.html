@@ -1,0 +1,42 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Height = default - Machine18</label>
+  <div class="pulse-bar-div">
+    <x-isofileslotbar id="height_default_machine18" machine-id=18 path='http://localhost:8082/' range='[2013-09-03T08:28:37.000Z;2013-09-03T08:54:36.000Z)'></x-isofileslotbar>
+  </div>
+
+  <label>Height = 10 - Machine18</label>
+  <div class="pulse-bar-div">
+    <x-isofileslotbar id="height_10_machine18" machine-id=18 path='http://localhost:8082/' range='[2013-09-03T08:28:37.000Z;2013-09-03T08:54:36.000Z)'
+      height=10></x-isofileslotbar>
+  </div>
+
+  <label>Height = 40 - Machine18</label>
+  <div class="pulse-bar-div">
+    <x-isofileslotbar id="height_40_machine18" machine-id=18 path='http://localhost:8082/' range='[2013-09-03T08:28:37.000Z;2013-09-03T08:54:36.000Z)'
+      height=40></x-isofileslotbar>
+  </div>
+
+  <label>Error: missing range (height = 10 -> too small to display error message)</label>
+  <div class="pulse-bar-div">
+    <x-isofileslotbar id="error_missing_range_height_10" machine-id=19 path='http://localhost:8082/' range='[2014-02-07T08:00:00.000Z;2013-11-07T08:00:00.000Z)'
+      height=10></x-isofileslotbar>
+  </div>
+
+  <label>Error: missing range (height = 40)</label>
+  <div class="pulse-bar-div">
+    <x-isofileslotbar id="error_missing_range_height_40" machine-id=19 path='http://localhost:8082/' range='[2014-02-07T08:00:00.000Z;2013-11-07T08:00:00.000Z)'
+      height=40></x-isofileslotbar>
+  </div>
+
+  <label>Error: invalid machine-id (height = 40)</label>
+  <div class="pulse-bar-div">
+    <x-isofileslotbar id="error_machineid_height_40" machine-id='fun id' path='http://localhost:8082/' range='[2014-02-07T08:00:00.000Z;2013-11-07T08:00:00.000Z)'
+      height=40></x-isofileslotbar>
+  </div>
+</div>

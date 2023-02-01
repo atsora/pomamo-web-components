@@ -1,0 +1,216 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+@import "pulse.customdialog.less";
+
+@import "x-savereason/x-savereason.less";
+@import "x-machinedisplay/x-machinedisplay.less";
+@import "x-datetimerange/x-datetimerange.less";
+@import "x-highlightperiodsbar/x-highlightperiodsbar.less";
+/* TO IMPORT BEFORE this file (else loop while grunt)
+// @import "x-reasonslotbar/x-reasonslotbar.less";*/
+@import "x-revisionprogress/x-revisionprogress.less";
+
+x-reasonslotlist {
+  display: block;
+  /* To make isVisible work. Chrome: always inline */
+  position: relative;
+
+  .reasonslotlist {
+    height: 100%;
+  }
+
+  .reasonslotlist-top-div,
+  .reasonslotlist-bottom-div {
+    display: inline-block;
+    width: 100%;
+  }
+
+  .reasonslotlist-reason-svg{
+    height: 28px;
+    width: 28px;
+  }
+  S
+  .reasonslotlist-filter {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 0.8em;
+  }
+
+  .reasonslotlist-filter input {
+    margin-right: 5px;
+  }
+
+  .row-selected {
+    font-weight: bold;
+    color: @color_highlight;
+
+    .overwrite-required {
+      color: @color_highlight;
+    }
+  }
+
+  .reasonslotlist-bar {
+    x-reasonslotbar {
+      //border: none; // SAME as below for right/left
+      pointer-events: none; // To disable click
+    }
+
+    x-highlightperiodsbar {
+      //border: none; // SAME as above for right/left
+      border-top: 1px solid transparent;
+    }
+  }
+
+  .fixed-header {
+    padding: 10px;
+
+    x-datetimerange {
+      margin-bottom: 5px;
+      display: block;
+    }
+  }
+
+  .scrollable-content {
+    overflow-y: auto; // Scrollbar
+    position: absolute;
+    top: 140px; // fixed-header + top  height
+    bottom: 25px;
+    left: 10px;
+    right: 10px;
+    background-color: @color_window_alternate;
+    color: @color_text_alternate;
+    border: 1px solid @color_window_border;
+  }
+
+  .reasonslotlist-tr {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 5px;
+
+    &[is-selectable='true'] {
+      cursor: pointer;
+    }
+
+    .overwrite-required {
+      color: @color_missing_value_highlight;
+      font-weight: bold;
+    }
+  }
+
+  .reasonslotlist-td-check {
+    order: 9;
+    flex-grow: 1;
+
+    width: 20px;
+  }
+
+  .reasonslotlist-td-icon {
+    order: 1;
+    flex-grow: 1;
+
+    margin-top: 1px;
+  }
+
+  .reasonslotlist-td-desc {
+    order: 1;
+    flex-grow: 99;
+    flex-shrink: 99;
+
+    margin-left: 6px;
+    margin-right: 6px;
+
+    position: relative; // to position progress
+
+    x-revisionprogress {
+      top: 0;
+      .pulse-revisionprogress-content {
+        background:gray;
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .reasonslotlist-td-range {
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    /* for Opera*/
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .reasonslotlist-td-reason {
+    /*...*/
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    /* for Opera*/
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 500px;
+  }
+
+  /*
+  .reasonslotbar-content {
+    height: 20px !important; -> done in code !!!
+  }*/
+
+  .reasonslotlist-warning {
+    position: absolute;
+    left: 11px;
+    right: 11px;
+    bottom: 26px;
+    padding: 5px;
+    text-align: center;
+    background-color: fade(@color_red, 70%);
+  }
+}
+
+// end reasonslotlist
+
+.dialog-savereason x-reasonslotlist {
+  height: 100%;
+}
+
+.dialog-savereason-page2 {
+  padding: 10px;
+}
+
+.dialog-savereason-page2 x-savereason {
+  position: absolute;
+  top: 30px;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+}
+
+.reasonslotlist-header-label {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.reasonslotlist-top-div {
+  height: 20px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 5px;
+}
+
+.reasonslotlist-filter {
+  font-size: 1em;
+}
+
+@media (max-width: 920px) {
+  .reasonslotlist .datetimerange-rangedisplay {
+    display: block;
+  }
+
+  x-reasonslotlist .scrollable-content {
+    top: 170px !important;
+  }
+}

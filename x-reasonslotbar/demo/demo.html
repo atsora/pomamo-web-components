@@ -1,0 +1,48 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Height=30 + click=change + bar time</label>
+  <div class='pulse-bar-div'>
+    <x-reasonslotbar machine-id=18 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)' path='http://localhost:8082/'
+      height=30 click=change></x-reasonslotbar>
+    <x-bartimeselection when='2014-05-05T07:00:00.000Z' range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)'
+      height=30></x-bartimeselection>
+  </div>
+
+  <label>Height=50 + click=details</label>
+  <div class="pulse-bar-div">
+    <x-reasonslotbar id="details" machine-id=18 range='[2014-05-05T06:00:00.000Z,2014-05-05T18:00:00.000Z)' path='http://localhost:8082/'
+      height=50 click=details showdetails='x-detailedreasonat,x-detailedcncvaluesat'></x-reasonslotbar>
+  </div>
+
+  <label>Height=80 + click=popup</label>
+  <div class="pulse-bar-div">
+    <x-reasonslotbar id="popup" machine-id=20 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)' path='http://localhost:8082/'
+      height=80 showoverwriterequired='true' click=popup showpopup='x-detailedreasonat,x-detailedcncvaluesat'></x-reasonslotbar>
+  </div>
+
+  <label>Error: Not connected, check the network</label>
+  <div class="pulse-bar-div">
+    <x-reasonslotbar id="error_check_the_network" machine-id=19 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)'
+      path='http://localhost:8082/' height=40 clic=popup showpopup='x-detailedreasonat,x-detailedcncvaluesat'></x-reasonslotbar>
+  </div>
+
+  <label>Error: invalid machine-id</label>
+  <div class="pulse-bar-div">
+    <x-reasonslotbar id="error_machineid" machine-id='invalid id' range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)'
+      path='http://localhost:8082/' height=40></x-reasonslotbar>
+  </div>
+
+  <label>With period tool bar (8am-8pm)</label>
+  <x-periodtoolbar path='http://localhost:8082/' range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)'
+    period-context='periodtoolbar'></x-periodtoolbar>
+  <x-datetimegraduation path='http://localhost:8082/' period-context='periodtoolbar'></x-datetimegraduation>
+  <div class='align-graduation-and-bar pulse-bar-div'>
+    <x-reasonslotbar id="toolbar" machine-id='18' period-context='periodtoolbar' path='http://localhost:8082/' height=20></x-reasonslotbar>
+  </div>
+
+</div>

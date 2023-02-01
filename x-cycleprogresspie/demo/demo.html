@@ -1,0 +1,48 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <h3>Size = default</h3>
+  <div class='divsize'>
+    <x-cycleprogresspie id="size_default_machine1" machine-id=1 path='http://localhost:8082/'></x-cycleprogresspie>
+  </div>
+
+  <h3>Size = big</h3>
+  <div class='divsize_big'>
+    <x-cycleprogresspie id="size_big_machine2" machine-id=2 path='http://localhost:8082/'></x-cycleprogresspie>
+  </div>
+
+  <h3>Size = small</h3>
+  <div class='divsize_small'>
+    <x-cycleprogresspie id="size_small_machine2" machine-id=2 path='http://localhost:8082/'></x-cycleprogresspie>
+  </div>
+
+  <h3>Size = small - Machine3</h3>
+  <div class='divsize_small'>
+    <x-cycleprogresspie id="size_small_machine3" machine-id=3 path='http://localhost:8082/'></x-cycleprogresspie>
+  </div>
+
+  <h3>Size = small - Machine4</h3>
+  <div class='divsize_small'>
+    <x-cycleprogresspie id="size_small_machine4" machine-id=4 path='http://localhost:8082/'></x-cycleprogresspie>
+  </div>
+
+  <h3>Size = default, stopped - Machine5</h3>
+  <div class='divsize'>
+    <x-cycleprogresspie id="size_default_machine5" machine-id=5 path='http://localhost:8082/'></x-cycleprogresspie>
+  </div>
+
+  <h3>Error: no cycle progress information for machine</h3>
+  <div class='divsize'>
+    <x-cycleprogresspie id="error_no_cycle_size_default_machine8" machine-id=8 path='http://localhost:8082/'></x-cycleprogresspie>
+  </div>
+
+  <h3>Error: Gateway Timeout</h3>
+  <div class='divsize_big'>
+    <x-cycleprogresspie id="error_gateway_timeout_size_big_machine9" machine-id=9 path='http://localhost:8082/'></x-cycleprogresspie>
+  </div>
+
+</div>

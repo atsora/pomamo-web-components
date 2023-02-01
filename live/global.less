@@ -1,0 +1,117 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "themes/light.less";
+// @imagedir: "../images"; // moved in themes :(
+
+html, body{
+  font-family: Helvetica, Arial, Times New Roman; /*Times New Roman, Helvetica, Arial;*/
+  font-size: 1em;
+  margin:0;
+  padding:0;
+  height:100%;
+}
+/* TO REMOVE - tests encours - 
+.ui-dialog {
+  font-family: Helvetica, Arial, Times New Roman;
+  font-size: 1em;
+  background: none repeat scroll 0 0 rgba(100,100,100, 0.65);
+  color: rgba(150,150,150, 0.65);
+  margin:0;
+  padding:0;
+  height:100%;
+}
+
+.ui-widget {
+ font-family: Times New Roman, Helvetica, Arial;  
+}*/
+
+#container {
+  min-height:100%;
+  position:relative;
+}
+
+header {
+  color: #fff;
+  background: rgba(0,0,0, 0.65);
+  border-bottom: 1px solid rgba(0,0,0, 0.8);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  text-shadow: 0 2px 1px rgba(0,0,0, 0.8);
+  padding: 10px;
+}
+
+footer {
+  height: 30px;
+  line-height: 30px;
+  text-align:center;
+  display: block;
+  width: 100%;
+  color: #fff;
+  background: rgba(0,0,0, 0.65);
+  border-top: 1px solid rgba(0,0,0, 0.8);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+  position:fixed;
+  bottom: 0px;
+}
+
+section {
+  min-width: 300px;
+  margin: 0 20px;
+  padding:10px;
+  padding-bottom:30px;   /* Height of the footer */
+}
+
+h1, h2, h3, h4 , dt, .font {
+  position: relative;
+  font-family:  sans-serif;
+  font-weight: bold;
+  margin: 0;
+}
+
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td {
+margin: 0;
+padding: 0;
+}
+
+p {
+  margin: 0 0 10px;
+}
+
+a {
+  color: #226AB3;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #634AB3;
+}
+
+li {
+  list-style-position: inside;
+  margin-left: 2em;
+}
+
+code {
+  padding: 0 2px 1px;
+  border: 1px solid;
+  border-color: @color_text_alternate #dadada #d0d0d0;
+  border-radius: 3px;
+}
+
+pre code {
+  padding: 1em;
+  background: #fff;
+  border: solid 1px #ddd;
+  display: block;
+  margin: 0px;
+}

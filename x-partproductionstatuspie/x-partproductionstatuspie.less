@@ -1,0 +1,109 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+
+x-partproductionstatuspie {
+  display: block;
+  height: 100% !important;
+  width: 100% !important;
+
+  .partproductionstatuspie-content {
+    display: inline-block;
+    position: relative; // For loader position
+    height: 100% !important;
+    width: 100% !important;
+  }
+  .partproductionstatuspie-progresspie, .partproductionstatuspie-svg {
+    height: 100% !important;
+    width: 100% !important;
+  }
+  
+  .partproductionstatuspie-invisible-bk{
+    stroke: @widget_background;
+    filter: url(#innerShadow);
+  }
+
+  /* COLORS -> maybe linked to theme - same as bar */
+  .donut-ring-background{
+    stroke: @color_alternate; //== @color_window;
+    filter: url(#innerShadow);
+  }
+  
+  .stroke-color-as-background{ // For dash display
+    stroke: @container_color;
+  }
+
+  // completion in pie (same colors as bar)
+  .completion-stroke-noinfo {
+    stroke: @widget_background; // @color_text; Nearly hidden if no info
+  }
+  .completion-stroke-activeevent{ // was stop 
+    filter: url(#innerShadow);
+    stroke: @color_gray; // @color_blue;
+
+    // +Severity level :
+    &.Error{
+      stroke: @color_red;
+    }
+  }
+  .completion-stroke-comingevent{
+    filter: url(#innerShadow);
+    stroke: @color_gray; // @color_blue;
+  }
+
+  // TEXT (same colors as bar)
+  .text-top{
+    fill: @color_text_alternate;
+    // Style is defined in .js because most of it can not be defined here
+  }
+  .second-production-in-pie{
+    fill: @color_text_alternate;
+    height: 5%;
+    font-weight: normal;
+  }
+  //.text-bottom == partproductionstatuspie-time == time-in-pie
+  .time-in-pie{
+    fill: @color_text_alternate;
+
+    // Style is defined in .js because most of it can not be defined here
+  }
+
+  .production-in-pie{
+    fill: @color_text_alternate;
+    &.bad-efficiency{
+      fill: @bad_efficiency_base;
+    }
+    &.mid-efficiency{
+      fill: @mid_efficiency_base;
+    }
+  }
+
+  // was stop :
+  .time-in-pie.activeevent.Error{
+    fill: @color_red;
+  }
+  // Severity / Threshold
+  .time-in-pie.comingevent.Warning.threshold1{
+    fill: @color_yellow;
+  }
+  .time-in-pie.comingevent.Warning.threshold2{
+    fill: @color_orange;
+  }
+
+  /* INTERN error / warning => roue dentee */
+  .partproductionstatuspie-error-warn-div {
+    position: absolute;
+  }
+  .partproductionstatuspie-warn-image{
+    fill: @color_text_alternate;
+  }
+  .partproductionstatuspie-error-image{
+    fill: @color_text_alternate;
+  }
+
+}

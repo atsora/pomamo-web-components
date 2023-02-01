@@ -1,0 +1,36 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Height = default </label>
+  <div class="pulse-bar-div">
+    <x-runningslotbar id="height_default" machine-id=18 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)' path='http://localhost:8082/'></x-runningslotbar>
+  </div>
+
+  <label>Height = 10</label>
+  <div class="pulse-bar-div">
+    <x-runningslotbar id="height_10" machine-id=18 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)' path='http://localhost:8082/'
+      height=10></x-runningslotbar>
+  </div>
+
+  <label>Height = 60</label>
+  <div class="pulse-bar-div">
+    <x-runningslotbar id="height_60" machine-id=18 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)' path='http://localhost:8082/'
+      height=60></x-runningslotbar>
+  </div>
+
+  <label>Error: Not connected, check the network</label>
+  <div class="pulse-bar-div">
+    <x-runningslotbar id="error_check_the_network" machine-id=19 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)'
+      path='http://localhost:8082/'></x-runningslotbar>
+  </div>
+
+  <label>Error: invalid machine-id</label>
+  <div class="pulse-bar-div">
+    <x-runningslotbar id="error_machineid" machine-id='pas id' range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)'
+      path='http://localhost:8082/'></x-runningslotbar>
+  </div>
+</div>

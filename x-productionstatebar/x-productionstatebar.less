@@ -1,0 +1,30 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-productionstatebar {
+  display: block;
+
+  /* To make isVisible work. Chrome: always inline */
+  .productionstatebar {
+    position: relative;
+    width: auto; // 100%;
+  }
+
+  .productionstatebar-content {
+    position: relative;
+    width: 100%;
+
+    .productionstatebar-svg {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+
+      width: 100%; // For resize auto
+    }
+  }
+}

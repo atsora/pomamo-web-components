@@ -1,0 +1,26 @@
+{
+  "files.associations": {
+    "*.ml": "ocaml",
+    "*.mli": "ocaml"
+  },
+  "editor.autoIndent": "full",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/_build": true,
+    "**/*~": true,
+    "**/*.bak": true,
+    "**/about": true,
+    "**/bower_components": true,
+    "**/node_modules": true,
+    "ocamljs": true,
+    "**/temp": true
+  },
+  "editor.tabSize": 2,
+  "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+  "beautify.tabSize": 2,
+  "less.beautify": true
+}

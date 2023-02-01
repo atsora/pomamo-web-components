@@ -1,0 +1,9 @@
+graph {
+  label: Single request component: context flow;
+}
+
+[] ==> [ Initialization ] ==> [ Load ] ==> [ Loaded ]
+[ Load ] --> [ NotApplicable ]
+[] ..> [ Reset ] ==> [ Load ]
+[] ..> [ Reload ] ==> [ Loaded ]
+[] ..> [ Stop ] --> [ Reload ]

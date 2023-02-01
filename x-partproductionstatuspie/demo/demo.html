@@ -1,0 +1,50 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Warning ! Simulations need to be changed !</label>
+
+  <h3>Size = default</h3>
+  <div class='divsize'>
+    <x-partproductionstatuspie id="size_default_machine18" machine-id=18 path='http://localhost:8082/'></x-partproductionstatuspie>
+  </div>
+
+  <h3>Size = big</h3>
+  <div class='divsize_big'>
+    <x-partproductionstatuspie id="size_big_machine18" machine-id=18 path='http://localhost:8082/'></x-partproductionstatuspie>
+  </div>
+
+  <h3>Size = small</h3>
+  <div class='divsize_small'>
+    <x-partproductionstatuspie id="size_small_machine18" machine-id=18 path='http://localhost:8082/'></x-partproductionstatuspie>
+  </div>
+
+  <h3>Size = small - Machine19</h3>
+  <div class='divsize_small'>
+    <x-partproductionstatuspie id="size_small_machine19" machine-id=19 path='http://localhost:8082/'></x-partproductionstatuspie>
+  </div>
+
+  <h3>Size = big - Machine19</h3>
+  <div class='divsize_big'>
+    <x-partproductionstatuspie id="size_big_machine19" machine-id=19 path='http://localhost:8082/'></x-partproductionstatuspie>
+  </div>
+
+  <h3>Size = big - Machine20</h3>
+  <div class='divsize_big'>
+    <x-partproductionstatuspie id="size_big_machine20" machine-id=20 path='http://localhost:8082/'></x-partproductionstatuspie>
+  </div>
+
+  <h3>Error: no cycle progress information for machine</h3>
+  <div class='divsize'>
+    <x-partproductionstatuspie id="error_no_cycle_size_default_machine8" machine-id=128 path='http://localhost:8082/'></x-partproductionstatuspie>
+  </div>
+
+  <h3>Error: Gateway Timeout</h3>
+  <div class='divsize_big'>
+    <x-partproductionstatuspie id="error_gateway_timeout_size_big_machine9" machine-id=9 path='http://localhost:8082/'></x-partproductionstatuspie>
+  </div>
+
+</div>

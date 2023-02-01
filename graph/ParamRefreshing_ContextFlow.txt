@@ -1,0 +1,12 @@
+graph {
+  label: Refreshing and param autoPath refreshing component: context flow;
+}
+
+[] ==> [ Initialization ] ==> [ ParamValidation ] ==> [ Load ] ==> [ Normal ] ==> [ Normal ]
+[ Load ] --> [ NotAvailable ] ==> [ Normal ]
+[ Load ] --> [ NotApplicable ]
+[ Normal ] --> [ NotAvailable ] --> [ NotAvailable ]
+[ NotAvailable ] --> [ NotApplicable ]
+[] ..> [ Reset ] ==> [ ParamValidation ]
+[] ..> [ Reload ] ==> [ Normal ]
+[] ..> [ Stop ] --> [ Reload ]

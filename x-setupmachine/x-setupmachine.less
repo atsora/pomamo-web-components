@@ -1,0 +1,98 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+@import "pulse.customdialog.less";
+@import "x-datetimepicker/x-datetimepicker.less";
+@import "x-revisionprogress/x-revisionprogress.less";
+
+
+x-setupmachine {
+  display: block; /* To make is(':visible') works */
+  .pulse-component-main {
+    position: relative;
+    /* WARNING ! Colors are the opposite of all other bars */
+    background: @widget_contrasted_background !important; // can be overloaded in APP
+    color: @widget_contrasted_separator_or_text !important; // can be overloaded in APP
+    min-height: 2em; // To see light grey color
+
+    width: 100%;
+    overflow: hidden; // For fixed width even when long operation name
+
+    .pulse-cellbar-current-data { // Operation '...'
+      border-right: none; // OVERLOAD common 1px solid
+    }
+    .pulse-cellbar-past-data {
+      border-left: 1px solid @widget_contrasted_separator_or_text !important;  // overload
+    }
+    .good-efficiency {
+      font-weight: bold;
+    }
+    .bad-efficiency {
+      background: @bad_efficiency_base;
+      color: @bad_efficiency_base_contrasted_color !important;
+      font-weight: bold;
+    }
+  }
+}
+
+.customDialogContent > div.setupmachine-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.setupmachine-dialog { // == savemachinestatetemplate-dialog
+  padding: 10px; // NOT in global dialog
+
+  .setupmachine-dialog-label {
+    display: inline-block;
+    //line-height: 4ex; /* to remove ? */
+    vertical-align: middle;
+    margin-right: 3px;
+    margin-left: 3px;
+  }
+
+  .setupmachine-dialog-div-select {
+    width: 200px; // to force in code ? = //Hide right arrow for Chrome and Firefox :
+    //overflow: hidden;
+    position: relative; // For loader + error
+
+    select{
+      // Remove border for IE 
+      border: none;
+      //Hide right arrow for Chrome and Firefox :
+      overflow: hidden;
+
+      position: absolute;
+      top: 50%; /* poussé de la moitié de hauteur du référent */
+      transform: translateY(-50%);
+      
+      width: 200px; // Hide right arrow for Chrome and Firefox > previous value
+      //appearance: none;
+    }
+  }
+
+  .setupmachine-dialog-dtp-div {
+    display: inline-block;
+    //line-height: 4ex;
+    vertical-align: middle;
+  }
+}
+
+.pulse-bar-div {
+  x-setupmachine{
+    // Overload pulse-bar-div to show opposite colors -> should be in setup
+    background-color: @widget_contrasted_background;
+    color: @widget_contrasted_separator_or_text;
+    .pulse-cellbar-current-data { // Operation '...'
+      border-right: none !important; // OVERLOAD common 1px solid
+    }
+    .pulse-cellbar-past-data {
+      border-left: 1px solid  @widget_contrasted_separator_or_text   !important;  // overload
+    }
+  }
+}

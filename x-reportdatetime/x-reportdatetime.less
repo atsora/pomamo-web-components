@@ -1,0 +1,86 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+@import "x-datepicker/x-datepicker.less";
+@import "x-datetimepicker/x-datetimepicker.less";
+
+
+// WARNING ! no-left-border is added in parent
+
+.pulse-report-hidden{
+  display: none;
+}
+
+x-reportdatetime { /* To make is(':visible') works */ 
+  display: block;
+
+  &.pulse-component-loading{
+    .pulse-report-datetime-min-div{
+      display: none !important;
+    }
+    .pulse-report-datetime-max-div{
+      display: none !important;
+    }
+  }
+
+  .pulse-report-isdate{
+    .hide-for-full-day{
+      display: none;     
+    }
+  }
+
+  .pulse-report-content{
+    display: inline-block;
+    width: 100%;
+    min-height: 2em;
+
+    // SEL = row 1
+    .pulse-report-datetime-main-sel-div{
+      display: flex;
+      margin-bottom: 5px;
+      width: 100%;
+
+      .pulse-report-datetime-type-CB{
+        flex-basis: 33%;
+      }
+
+      .pulse-report-datetime-past-number{
+        //display: inline-block;
+        width: 33%;
+        flex-basis: 33%;
+      }
+      .pulse-report-datetime-past-unit-CB{
+        flex-basis: 34%;
+      }
+      .pulse-report-datetime-current-CB{
+        flex-basis: 67%;
+      }
+    }
+
+    // loader + error 
+
+    // MIN / MAX = row 2
+    .pulse-report-datetime-min-max-div{
+      display: inline-block;
+      position: relative; // == position loader and error
+      width: 100%;
+      min-height: 1em;
+
+      .pulse-report-datetime-min-div{
+        display: inline-block;
+        width: 50%;
+        //x-date(time)picker
+      }
+      .pulse-report-datetime-max-div{
+        display: inline-block;
+        width: 50%;
+        //x-date(time)picker
+      }
+    }
+  }
+}

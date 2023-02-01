@@ -1,0 +1,26 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Machine18</label>
+  <div class="pulse-bar-div">
+    <div class="green-bar"></div>
+    <x-cncalarmbar id="default_machine18" machine-id=18 range='[2014-05-05T06:00:00.000Z,2014-05-05T18:00:00.000Z)' path='http://localhost:8082/'></x-cncalarmbar>
+  </div>
+
+  <label>Error: no data - Machine19 (nothing is displayed)</label>
+  <div class="pulse-bar-div">
+    <div class="green-bar"></div>
+    <x-cncalarmbar id="error_no_data_height_40" machine-id=19 range='[2013-11-07T08:00:00Z;2013-11-08T08:00:00Z)' path='http://localhost:8082/'></x-cncalarmbar>
+  </div>
+
+  <label>Error: invalid machine-id (nothing is displayed)</label></label>
+  <div class="pulse-bar-div">
+    <div class="green-bar"></div>
+    <x-cncalarmbar id="error_machineid" machine-id='id bizarre' range='[2014-05-05T06:00:00Z;2014-05-05T18:00:00Z)' path='http://localhost:8082/'></x-cncalarmbar>
+  </div>
+
+</div>

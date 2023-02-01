@@ -1,0 +1,7 @@
+graph {
+  label: Initialization context: state flow;
+}
+
+[] ==> [ Initializing ] ==> []
+[ Initializing ] --> [ Error ]
+

@@ -1,0 +1,238 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+@import "pulse.customdialog.less";
+
+@import "x-datetimerange/x-datetimerange.less"; // For similar display
+@import "x-datetimepicker/x-datetimepicker.less";
+
+.pulse-component-error {
+  .periodtoolbar-display {
+    // LIKE .pulse-message-div {
+    visibility: visible;
+    opacity: 0.8; // == OVERLAY
+    //background: @error_main_color; -> gray ?
+    color: @warn_main_color; // @error_contrasted_color;
+  }
+}
+
+.pulse-component-warning {
+  .periodtoolbar-display {
+    // LIKE .pulse-message-div {
+    visibility: visible;
+    opacity: 0.8; // == OVERLAY
+    //background: @warn_main_color; -> gray ?
+    color: @warn_main_color; // @warn_contrasted_color;
+  }
+}
+
+x-periodtoolbar {
+  display: block;
+
+  .periodtoolbar {
+    text-align: center;
+    width: 100%;
+  }
+
+  ol.periodtoolbar-toolbar {
+    //.bar-rounded-shadow; // Rounded border + shadow
+
+    display: inline-block;
+    background-color: @container_color;
+    //color: @container_text_color;
+    border: 1px solid darken(@container_color, 10%);
+    padding: 0px;
+    margin: 0 0 0 10px;
+    border-radius: @cellbar-corner-radius;
+    list-style-type: none;
+    //margin: 0;
+  }
+
+  .periodtoolbar-toolbar li:first-child {
+    margin: 4px;
+  }
+
+  /*@button-icon-size: 24px; is in pulseutil */
+
+  .periodtoolbar-li-btn {
+    display: inline-block;
+    margin: 4px 4px 4px 0;
+    vertical-align: top;
+    height: @button-icon-size;
+    width: @button-icon-size;
+  }
+
+  .periodtoolbar-li-text {
+    display: inline-block;
+    margin: 4px 4px 4px 0;
+    vertical-align: top;
+    height: @button-icon-size;
+    min-width: 300px;
+
+    position: relative; // To position loader / message
+
+    .pulse-loader-div {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    .pulse-message-div {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  .periodtoolbar-display {
+    min-width: 200px;
+    text-align: center;
+    padding: 0 10px;
+    line-height: @button-icon-size;
+    vertical-align: middle;
+  }
+
+  .periodtoolbar-editable {
+    cursor: pointer;
+
+    &:hover {
+      color: @color_highlight;
+    }
+  }
+
+  // for all buttons
+  .selected svg {
+    rect {
+      fill: @color_highlight  !important;
+    }
+
+    polygon {
+      fill: @color_highlight  !important;
+    }
+
+    path {
+      fill: @color_highlight  !important;
+    }
+    color: @color_highlight  !important;
+  }
+
+  .periodtoolbar-btn {
+    height: @button-icon-size;
+    width: @button-icon-size;
+    cursor: pointer;
+
+    /*
+    svg {
+      height: 100%;
+      width: 100%;
+
+      rect {
+        fill: @container_text_color;
+      }
+
+      polygon {
+        fill: @container_text_color;
+      }
+
+      path {
+        fill: @container_text_color;
+      }
+
+      transition: stroke 0.3s ease-in-out,
+      fill 0.3s ease-in-out;
+    }
+
+    &:hover svg {
+      rect {
+        fill: @color_highlight;
+      }
+
+      polygon {
+        fill: @color_highlight;
+      }
+
+      path {
+        fill: @color_highlight;
+      }
+    }*/
+  }
+
+  // SVG transition and colors -> IN common.less //.create_svg(@svgName, @baseColor: @color_text, @hoverColor: @color_highlight)
+
+  .periodtoolbar-prev {
+    .create_svg_nostroke('previous', @container_text_color, @color_highlight);
+  }
+
+  .periodtoolbar-next {
+    .create_svg_nostroke('next', @container_text_color, @color_highlight);
+  }
+
+  .periodtoolbar-zoomin {
+    .create_svg_nostroke('periodtoolbar-zoomin', @container_text_color, @color_highlight);
+    //background-image: url('@{imagedir}/periodtoolbar-zoomin.svg');
+  }
+
+  .periodtoolbar-zoomout {
+    .create_svg_nostroke('periodtoolbar-zoomout', @container_text_color, @color_highlight);
+    //background-image: url('@{imagedir}/periodtoolbar-zoomout.svg');
+  }
+
+  .periodtoolbar-periodselection {
+    .create_svg_nostroke('periodtoolbar-periodselection', @container_text_color, @color_highlight);
+  }
+
+  .periodtoolbar-home {
+    .create_svg_nostroke('periodtoolbar-nowzoom', @container_text_color, @color_highlight);
+  }
+
+  .periodtoolbar-day {
+    .create_svg_nostroke('periodtoolbar-1dayzoom', @container_text_color, @color_highlight);
+  }
+
+  .periodtoolbar-shift {
+    .create_svg_nostroke('periodtoolbar-shiftzoom', @container_text_color, @color_highlight);
+  }
+
+  .periodtoolbar-week {
+    .create_svg_nostroke('periodtoolbar-1weekzoom', @container_text_color, @color_highlight);
+  }
+
+  .periodtoolbar-month {
+    .create_svg_nostroke('periodtoolbar-1monthzoom', @container_text_color, @color_highlight);
+  }
+
+  .periodtoolbar-quarter {
+    .create_svg_nostroke('periodtoolbar-1quarterzoom', @container_text_color, @color_highlight);
+  }
+
+  .periodtoolbar-semester {
+    .create_svg_nostroke('periodtoolbar-1semesterzoom', @container_text_color, @color_highlight);
+  }
+
+  .periodtoolbar-year {
+    .create_svg_nostroke('periodtoolbar-1yearzoom', @container_text_color, @color_highlight);
+  }
+
+  .periodtoolbar-dialog-divinput {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .periodtoolbar-dialog-divinputbegin {
+    display: inline-block;
+    margin-right: 20px;
+    vertical-align: top;
+  }
+
+  .periodtoolbar-dialog-divinputend {
+    display: inline-block;
+    margin-left: 20px;
+    vertical-align: top;
+  }
+}

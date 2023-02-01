@@ -1,0 +1,18 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Motion bar used for the time below</label>
+  <div>
+    <x-reasonslotbar id="reasonslotbar" machine-id=18 motion-context='motiontimeTEST' range='[2013-09-03T08:28:37.000Z;2013-09-03T08:54:36.000Z)'
+      path='http://localhost:8082/' height=20 update=30></x-reasonslotbar>
+  </div>
+
+  <label>Motion time (should be 0.17Hr = 10min)</label>
+  <div>
+    <x-motiontime id="motiontime" machine-id=18 motion-context='motiontimeTEST'></x-motiontime>
+  </div>
+</div>

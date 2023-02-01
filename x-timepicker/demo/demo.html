@@ -1,0 +1,79 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<script>
+  function getValuesButtonFunction() {
+    let TPs = $('.static-tests').find('x-timepicker');
+    for (let i = 0; i < TPs.length; i++) {
+      let value = TPs[i].getValueAsIs();
+      $(TPs[i]).parent().find('.TP-getValue').html(value);
+    };
+  }
+  /* Test pour une mise à jour automatique... qui ne fonctionne pas.
+  let TPs = $('.static-tests').find('x-timepicker');
+  for (let i = 0; i < TPs.length; i++) {
+    TPs[0].addEventListener('change', getValuesButtonFunction, false);
+  }*/
+</script>
+
+<div class="static-tests">
+  <button class="getValuesButton" onclick="getValuesButtonFunction()">GET VALUES</button>
+
+  <div class="testTP">
+    <label>Default time</label>
+    <div class='tp_position'>
+      <x-timepicker id="current"></x-timepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="TP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testTP">
+    <label>Default time with seconds</label>
+    <div class='tp_position'>
+      <x-timepicker id="current_seconds" showseconds></x-timepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="TP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testTP">
+    <label>Fix time 08:06:07 + min 08:00:00 + max 15:00:00 </label>
+    <div class='tp_position'>
+      <x-timepicker id="fixed_time_all_options" showseconds 
+        mintime="08:00:00" maxtime="15:00:00" defaulttime="08:06:07">
+      </x-timepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="TP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testTP">
+    <label>Fix time 05:06:07 + min 08:00:00 + max 15:00:00 + display out of range MIN</label>
+    <div class='tp_position'>
+      <x-timepicker id="" showseconds mintime="08:00:00" maxtime="15:00:00"
+        defaulttime="05:06:07"></x-timepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="TP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testTP">
+    <label>Fix time 15:06:07 (UTC) + min 08:00:00Z + max 15:00:00Z + display out of range MAX</label>
+    <div class='tp_position'>
+      <x-timepicker id="" showseconds mintime="08:00:00" maxtime="15:00:00"
+        defaulttime="15:06:07"></x-timepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="TP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+</div>

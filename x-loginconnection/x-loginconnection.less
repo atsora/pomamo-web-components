@@ -1,0 +1,175 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+@import 'x-loginpassword/x-loginpassword.less';
+
+x-loginconnection {
+  /* To make is(':visible') works */
+  display: block;
+
+  // LOGIN Content
+  .loginconnection-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+
+    .loginconnection-login-content {
+      display: flex;
+      flex-direction: column;
+
+      // idem tile-tile bottom-border
+      border-left: 1px solid darken(@container_color, 10%);
+
+      &.login-found {
+        display: none;
+      }
+
+      .loginconnection-login-label,
+      .loginconnection-password-label {
+        display: block;
+        width: 250px;
+        height: 1em;
+        //clear: both;
+
+        padding: 10px 10px;
+
+        font-weight: normal;
+      }
+
+      .loginconnection-login-input,
+      .loginconnection-password-input {
+        display: block;
+        width: 150px;
+        height: 1em;
+        float: right;
+
+        background-color: @input_background_color;
+        color: @input_color;
+        border: 1px solid @input_border_color;
+      }
+
+      //.loginconnection-login-button-div
+      .loginconnection-login-button {
+        .button-rounded-shadow;
+        margin: 15px 10px;
+        float: right;
+        padding: 5px 15px;
+      }
+
+      // Message
+      .pulse-message-div {
+        position: relative;
+        margin-left: 10px;
+
+        .pulse-message {
+          color: red;
+          font-style: italic;
+        }
+      }
+    }
+
+    .loginconnection-login-oauth-content{
+      display: flex;
+      flex-direction: column;
+      // idem tile-tile bottom-border
+      border-left: 1px solid darken(@container_color, 10%);
+    }
+
+    .loginconnection-oauth {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      align-content: flex-start;
+
+      box-sizing: border-box;
+      //height: 150px;   
+      //width: 80px;
+      margin: 10px 30px;
+
+      .loginconnection-oauth-name {
+        &:hover {
+          color: @color_highlight;
+          cursor:pointer;
+        }
+      }
+
+      .loginconnection-oauth-login-label {
+        display: block;
+        //width: 250px;
+        height: 1em;
+        padding: 10px 10px;
+
+        font-weight: normal;
+      }
+
+      .loginconnection-oauth-login-input {
+        display: block;
+        //width: 150px;
+        height: 1em;
+        //float: right;
+
+        background-color: @input_background_color;
+        color: @input_color;
+        border: 1px solid @input_border_color;
+      }
+
+      .loginconnection-oauth-image {
+        box-sizing: border-box;
+        height: 2em;   
+        width: 2em;
+        margin: 4px;
+        cursor:pointer;
+
+        // see .create_svg
+        //background-image: done in js using inlineBackgroundSvg
+        background-repeat: no-repeat;
+
+        svg {
+          height: 100%;
+          width: 100%;
+          // instead of stroke: @color_text; fill: @color_text; cf currentcolor
+          color: @color_text;
+          transition: stroke 0.3s ease-in-out, fill 0.3s ease-in-out;
+        }
+
+        &:hover svg {
+          // instead of stroke: @color_highlight; fill: @color_highlight; cf currentcolor
+          color: @color_highlight;
+        }
+
+        &:disabled svg {
+          color: @color_text;
+          //stroke: @color_text;
+          //fill: @color_text;
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+
+  // LOGOUT Content
+  .loginconnection-logout-content {
+    display: none; // = default , else flex;
+    flex-direction: column;
+
+    &.login-found {
+      display: flex;
+    }
+
+    .loginconnection-logout-login-span {
+      margin: 10px;
+    }
+
+    .loginconnection-logout-button-div {
+      .loginconnection-logout-button {
+        margin: 10px;
+      }
+    }
+  }
+
+}

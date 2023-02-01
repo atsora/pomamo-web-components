@@ -1,0 +1,48 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="attributes">
+  <div class="demo-sub-title attribute-title">Attributes</div>
+
+  <div class="demo-sub-content attribute-content">
+
+    <div class="attribute-name optional string"><code>period-context</code></div>
+    <div class="attribute-description">This parameter identify the context for SENDING period refresh. If not defined,
+      send to all.
+    </div>
+
+    <div class="attribute-name optional config integer"><code>displaydaysrange</code></div>
+    <div class="attribute-description">This parameter defined the number of days to display. (default = 1).
+    </div>
+
+    <div class="attribute-name optional config integer"><code>displayhoursrange</code></div>
+    <div class="attribute-description">This parameter defined the number of hours to display. (un-used if
+      <code>displaydaysrange</code> or <code>displayweekrange</code>
+      is used).
+    </div>
+
+    <div class="attribute-name config optional boolean"><code>displayshiftrange</code></div>
+    <div class="attribute-description">This parameter defines when shift should be displayed. WARNING ! Database should
+      be configured accordingly, else current day will be used.
+    </div>
+
+    <div class="attribute-name config optional boolean"><code>displayweekrange</code></div>
+    <div class="attribute-description">This parameter defines when WEEK should be displayed. WARNING ! Database should
+      be configured accordingly, else current day will be used. (un-used if <code>displaydaysrange</code> is used).
+    </div>
+
+    <div class="attribute-name optional boolean"><code>exclude-now</code></div>
+    <div class="attribute-description">This parameter tells if the current period should be displayed or not. (default =
+      display today)
+    </div>
+
+    <div class="attribute-name optional string"><code>textchange-context</code></div>
+    <div class="attribute-description">Context to send a text to display (== shift name) EVEN if it contains the
+      substring "machine-id", it WON'T be used to complete it.
+    </div>
+
+  </div>
+</div>

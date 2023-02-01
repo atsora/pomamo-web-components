@@ -1,0 +1,7 @@
+graph {
+  label: ParamValidation context: state flow;
+}
+
+[] ==> [ Validating ] ==> []
+[ Validating ] --> [ Error ]
+

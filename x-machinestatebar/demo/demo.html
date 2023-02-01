@@ -1,0 +1,37 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Height = default - Machine18</label>
+  <div class="pulse-bar-div">
+    <x-machinestatebar id="height_default_machine18" machine-id=18 range='[2015-05-05T06:00:00.000Z;2015-05-07T18:00:00.000Z)'
+      path='http://localhost:8082/'></x-machinestatebar>
+  </div>
+
+  <label>Height = 10 - Machine20</label>
+  <div class="pulse-bar-div">
+    <x-machinestatebar id="height_10_machine20" machine-id=20 range='[2016-06-06T06:00:00.000Z;2016-06-08T18:00:00.000Z)'
+      path='http://localhost:8082/' height=10></x-machinestatebar>
+  </div>
+
+  <label>Height = 60 - Machine18</label>
+  <div class="pulse-bar-div">
+    <x-machinestatebar id="height_60_machine18" machine-id=18 range='[2015-05-05T06:00:00.000Z;2015-05-07T18:00:00.000Z)'
+      path='http://localhost:8082/' height=60></x-machinestatebar>
+  </div>
+
+  <label>Error: not connected, check the network</label>
+  <div class="pulse-bar-div">
+    <x-machinestatebar id="error_check_the_network" machine-id=19 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)'
+      path='http://localhost:8082/'></x-machinestatebar>
+  </div>
+
+  <label>Error: invalid machine-id</label>
+  <div class="pulse-bar-div">
+    <x-machinestatebar id="error_machineid" machine-id='not an id' range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)'
+      path='http://localhost:8082/'></x-machinestatebar>
+  </div>
+</div>

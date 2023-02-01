@@ -1,0 +1,40 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Warning ! Simulations need to be changed !</label>
+
+  <h3>Size = default</h3>
+  <div class='divsize'>
+    <x-productiontrackertable id="size_default_machine18" group=18 range='[2020-05-05T08:00:00.000Z,2020-05-05T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackertable>
+  </div>
+
+  <h3>Size = big</h3>
+  <div class='divsize_big'>
+    <x-productiontrackertable id="size_big_machine18" group=18 range='[2020-05-05T08:00:00.000Z,2020-05-05T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackertable>
+  </div>
+
+  <h3>Size = small</h3>
+  <div class='divsize_small'>
+    <x-productiontrackertable id="size_small_machine18" group=18 range='[2020-05-05T08:00:00.000Z,2020-05-05T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackertable>
+  </div>
+
+  <h3>Size = small with reserve capacity</h3>
+  <div class='divsize_small'>
+    <x-productiontrackertable id="size_small_machine47" group=47 range='[2020-05-05T08:00:00.000Z,2020-05-05T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackertable>
+  </div>
+
+  <h3>Error</h3>
+  <div class='divsize'>
+    <x-productiontrackertable id="error_no_cycle_size_default_machine8" group=128 range='[2020-05-05T08:00:00.000Z,2020-05-05T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackertable>
+  </div>
+
+  <h3>Error: Gateway Timeout</h3>
+  <div class='divsize_big'>
+    <x-productiontrackertable id="error_gateway_timeout_size_big_machine9" group=9 range='[2020-05-05T08:00:00.000Z,2020-05-05T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackertable>
+  </div>
+
+</div>

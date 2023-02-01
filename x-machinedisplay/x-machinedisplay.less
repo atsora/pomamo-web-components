@@ -1,0 +1,22 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-machinedisplay {
+  display: block; /* To make isVisible work. Chrome: always inline */
+  font-weight: bold; // Here ???
+  position: relative; // To center content when needed
+ .machinedisplay-data {
+    display: inline-block;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis; /* for Opera*/
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+    vertical-align: middle;
+  }
+}

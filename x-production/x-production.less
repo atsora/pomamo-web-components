@@ -1,0 +1,44 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-production {
+  display: block; /* To make is(':visible') works */ 
+  
+  .production-actual-value:before {
+	  content: "Actual ";
+  }
+  .production-separator {
+	  content: " "; // '/' can be added OR min-width
+  }
+  .production-target-value:before {
+	  content: "Target ";
+  }
+
+  .bad-efficiency {
+    .production-actual-value {
+      color: @bad_efficiency_base !important;
+    }
+    .production-percent-span {
+      color: @bad_efficiency_base !important;
+    }
+  }
+
+  .mid-efficiency {
+    .production-actual-value {
+      color: @mid_efficiency_base !important;
+    }
+    .production-percent-span {
+      color: @mid_efficiency_base !important;
+    }
+  }
+  /*
+  .good-efficiency {
+    .production-actual-value {
+    }
+  }*/
+}

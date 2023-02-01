@@ -1,0 +1,178 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-workselection {
+  /* To make is(':visible') works */
+  display: block;
+  height: 100%;
+
+  .workselection-content {
+    height: 100%;
+    position: relative; // To position scrollable content
+
+    // SEARCH
+    .workselection-search-div {
+      flex-grow: 0;
+      flex-shrink: 0;
+      width: 100%;
+
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center; // or baseline ?
+
+      margin: 3px;
+
+      .workselection-search-input {
+        width: 30%;
+      }
+
+      .workselection-search-button {
+        margin-left: 5px;
+
+        .create_svg('search', @color_text, @color_text);
+
+        height: 24px;
+        width: 24px;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .workselection-clear-search {
+        margin-left: 5px;
+
+        .create_svg('cancel', @color_text, @color_text);
+
+        height: 24px;
+        width: 24px;
+        cursor: pointer;
+        position: relative;
+      }
+    }
+
+    .workselection-list-scrollable {
+      overflow-y: auto;
+      position: absolute;
+      top: 26px;
+      bottom: 0px;
+      left: 0px;
+      right: 0px;
+
+      .workselection-list {
+        // LIST
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+
+        background-color: @color_window_alternate;
+        color: @color_text_alternate;
+        font-size: 10pt;
+        padding: 0;
+        margin: 0;
+
+        .workselection-group-div {
+          flex-shrink: 0;
+          width: 100%;
+
+          .workselection-group-title {
+            // Main 'title' = black
+            display: flex;
+            flex-direction: row;
+
+            background-color: @color_window;
+            color: @color_text;
+            border-top: 1px solid @color_window_border_light;
+            border-bottom: 1px solid @color_window_border;
+            font-weight: bold;
+            padding: 10px 2px 10px 2px;
+
+            .workselection-items-visibility {
+              box-sizing: border-box;
+              //float: left;
+              width: 19px;
+              height: 16px; // Not 0 to add a blank area
+
+              .show-sub {
+                .create_svg('sort-down-solid');
+                cursor: pointer;
+                height: 19px;
+                width: 19px;
+                transform: translate(4px, -25%);
+              }
+
+              .hide-sub {
+                .create_svg('sort-up-solid');
+                cursor: pointer;
+                height: 19px;
+                width: 19px;
+                transform: translate(4px, 10%);
+              }
+
+              &:not(.opened) {
+                .hide-sub {
+                  display: none;
+                }
+              }
+
+              &:not(.closed) {
+                .show-sub {
+                  display: none;
+                }
+              }
+
+              &.opened {
+                .hide-sub {
+                  display: block;
+                }
+              }
+
+              &.closed {
+                .show-sub {
+                  display: block;
+                }
+              }
+
+            }
+
+            .workselection-group-span {
+              cursor: pointer;
+
+              flex-shrink: 99; // Allow smaller
+              //display: inline-block;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              overflow: hidden;
+              //max-width: 220px;
+              padding-left: 4px;
+
+              vertical-align: text-bottom;
+            }
+          }
+
+          .workselection-group-content {
+            display: flex;
+            flex-direction: column;
+
+            border-left: 1px dashed @color_text_alternate;
+            margin-left: 11px;
+            padding-left: 9px;
+
+            .workselection-item-div {
+              margin: 4px 2px 4px 2px;
+
+              .workselection-item-span {
+                cursor: pointer;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

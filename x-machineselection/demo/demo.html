@@ -1,0 +1,34 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="dynamic-tests">
+  <div class="div-separate-tests">
+    <label>default (select D1 to see preview)</label>
+    <x-machineselection path='http://localhost:8082/'></x-machineselection>
+  </div>
+
+  <div class="div-separate-tests">
+    <label>unique selection</label>
+    <x-machineselection path='http://localhost:8082/' unique-machine=true></x-machineselection>
+  </div>
+
+  <div class="div-separate-tests">
+    <label>machines already selected</label>
+    <x-machineselection path='http://localhost:8082/' machine=18,51></x-machineselection>
+  </div>
+
+  <div class="div-separate-tests">
+    <label>group already selected, dynamic groups allowed</label>
+    <x-machineselection path='http://localhost:8082/' group='D1' enableGroups=true></x-machineselection>
+  </div>
+
+  <!--div class="div-separate-tests">
+    <label>reordering enabled</label>
+    <x-machineselection path='http://localhost:8082/' ordering=true machine=4,1></x-machineselection>
+  </div-->
+</div>
+<div class="static-tests">
+</div>

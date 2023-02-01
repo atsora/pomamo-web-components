@@ -1,0 +1,18 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Motion bar used for the percentage below </label>
+  <div>
+    <x-reasonslotbar id="reasonslotbar" machine-id=18 motion-context='motionpercTEST' range='[2013-09-03T08:28:37.000Z;2013-09-03T08:54:36.000Z)'
+      path='http://localhost:8082/' height=20 update=30></x-reasonslotbar>
+  </div>
+
+  <label>Motion percentage (should be 42%)</label>
+  <div>
+    <x-motionpercentage id="motionpercentage" machine-id=18 motion-context='motionpercTEST'></x-motionpercentage>
+  </div>
+</div>

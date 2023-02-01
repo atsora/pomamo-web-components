@@ -1,0 +1,33 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Default size</label>
+  <div class='divsize'>
+    <x-reasonslotpie machine-id=18 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)' path='http://localhost:8082/' ></x-reasonslotpie>
+  </div>
+
+  <label>Small</label>
+  <div class="divsize_small">
+    <x-reasonslotpie id="details" machine-id=18 range='[2014-05-05T06:00:00.000Z,2014-05-05T18:00:00.000Z)' path='http://localhost:8082/' ></x-reasonslotpie>
+  </div>
+
+  <label>Big</label>
+  <div class="divsize_big">
+    <x-reasonslotpie id="popup" machine-id=20 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)' path='http://localhost:8082/' ></x-reasonslotpie>
+  </div>
+
+  <label>Error: Not connected, check the network</label>
+  <div class="divsize">
+    <x-reasonslotpie id="error_check_the_network" machine-id=19 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)' path='http://localhost:8082/' ></x-reasonslotpie>
+  </div>
+
+  <label>Error: invalid machine-id</label>
+  <div class="divsize">
+    <x-reasonslotpie id="error_machineid" machine-id='invalid id' range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)' path='http://localhost:8082/' ></x-reasonslotpie>
+  </div>
+
+</div>

@@ -1,0 +1,36 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+/* NO need to import tho following files anywhere else */
+@import "x-datetimerange/x-datetimerange.less";
+@import "x-reasonslotlist/x-reasonslotlist.less";
+@import "x-savereason/x-savereason.less"; //included in previous import. Could be removed
+@import "x-revisionprogress/x-revisionprogress.less";
+@import "pulsecomponent-detailspopup.less";
+
+x-reasonslotbar {
+  display: block;
+
+  /* To make isVisible work. Chrome: always inline */
+  .reasonslotbar {
+    position: relative;
+    width: auto; // 100%;
+  }
+
+  .reasonslotbar-content {
+    position: relative;
+    width: 100%;
+
+    .reasonslotbar-svg {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+
+      width: 100%; // For resize auto
+    }
+  }
+}

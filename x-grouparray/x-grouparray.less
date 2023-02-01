@@ -1,0 +1,34 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-grouparray { /* To make is(':visible') works */ 
+  display: block;
+  height: 100%;
+
+  // == .group{
+  box-sizing: border-box;
+  width: 100%;
+
+  .group-main {
+    display: block;
+    // Minimum style here -> to define in main page
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    // To define to remove list style :
+    list-style-type: none;
+    padding: 0;
+    .group-single {
+      // Minimum style here -> to define in main page
+      box-sizing: border-box;
+      //width ->  in js;
+      // To define to remove list style :
+      //list-style: none;
+    }
+  }
+}

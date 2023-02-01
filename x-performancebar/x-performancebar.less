@@ -1,0 +1,40 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-performancebar {
+  display: block;
+
+  .performancebar {
+    position: relative;
+    width: auto; // 100%;
+  }
+
+  .performancebar-content {
+    position: relative;
+  }
+
+  .performancebar-svg {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%; // For auto resize
+
+    text {
+      pointer-events: none;
+    }
+  }
+
+
+  .cursor {
+    fill: currentColor; // @color_text_alternate;
+  }
+
+  .tick {
+    stroke: @color_gray;
+  }
+}

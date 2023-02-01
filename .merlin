@@ -1,0 +1,6 @@
+S ocaml
+S x-*
+
+B _build/**
+
+PKG lwt lwt.ppx js_of_ocaml js_of_ocaml.ppx js_of_ocaml.tyxml js_of_ocaml.weak tyxml.ppx atdgen ppx_custom_printf batteries sexplib ppx_sexp_conv

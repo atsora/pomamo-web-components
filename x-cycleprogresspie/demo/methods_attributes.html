@@ -1,0 +1,36 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="attributes">
+  <div class="demo-sub-title attribute-title">Attributes</div>
+
+  <div class="demo-sub-content attribute-content">
+
+    <div class="attribute-name  integer"><code>machine-id</code></div>
+    <div class="attribute-description">Id of the machine to display in this widget.
+    </div>
+
+    <div class="attribute-name config optional string"><code>path</code></div>
+    <div class="attribute-description">This parameter can be used for tests. It is read in configuration filled by
+      x-checkpath.
+    </div>
+
+    <div class="attribute-name config optional integer"><code>threshold1</code></div>
+    <div class="attribute-description">This parameter sets a delay such as if next stop will happens after this delay,
+      status circle has a normal state,
+      under which status circle go to state warning.
+    </div>
+
+    <div class="attribute-name config optional integer"><code>threshold2</code></div>
+    <div class="attribute-description">This parameter sets a delay such as if next stop will happens before this delay,
+      status circle has a emergency state
+      and status circle will blink.</br>If next stop delay is between threshold1 and threshold2, status circle take
+      warning
+      state.
+    </div>
+
+  </div>
+</div>

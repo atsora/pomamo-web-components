@@ -1,0 +1,106 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "x-groupsingroup/x-groupsingroup.less";
+@import "x-machinedisplay/x-machinedisplay.less";
+@import "x-reasonbutton/x-reasonbutton.less";
+@import "demo/demo.less";
+
+
+.hidden-content {
+  display: none;
+}
+
+.group-div {
+  width: 100%;
+}
+
+.machines_cell {
+  // == boxtoclone
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 7px;
+
+  .tile-title {
+    display: flex;
+    flex-direction: row; // align children
+    //align-items: stretch;
+
+    position: relative; // For vertical center
+
+    padding: 4px 10px 4px 10px;
+    border-bottom: 1px solid darken(@container_color, 10%);
+    background-color: @container_header_color;
+    color: @container_header_text_color;
+
+    // Managed by flex - test and remove :
+    //height: 40px;
+    //line-height: 40px; /* pour centrage */
+    white-space: nowrap;
+
+    x-reasonbutton {
+      //display: inline-block; // NON ! Attention, "hidden" casse l'arret de rafraichissement --RR
+      width: 32px;
+      height: 32px;
+      margin: auto;
+      margin-right: 4px;
+    }
+
+    x-runningbutton {
+      //display: inline-block; // NON ! --RR
+      width: 32px;
+      height: 32px;
+      margin: auto;
+      margin-right: 4px;
+    }
+
+    x-machinedisplay {
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 1.8em;
+      line-height: 1.8em; // == Vertical align
+    }
+
+    >x-machinedisplay {
+      // With no machinedisplay-position
+      // auto-width
+      flex-grow: 1;
+      flex-shrink: 1;
+      flex-basis: auto;
+    }
+
+    .machinedisplay-position {
+      // auto-width :
+      flex-grow: 1;
+      flex-shrink: 1;
+      overflow-x: hidden;
+      overflow-y: hidden; // Hide vertical scrollbar in title
+
+      x-machinedisplay {
+        width: 100%; // for "..."
+      }
+    }
+  }
+}
+
+x-groupsingroup {
+  box-sizing: border-box;
+  width: 100%;
+  height: 80vh;
+  border: 1px solid purple;
+  //list-style-type: none;
+
+  .groupsingroup-main {
+    //ol
+    //display: block;
+    border: 1px solid violet;
+
+    .groupsingroup-subgroup {
+      border: 1px solid blue;
+    }
+  }
+}

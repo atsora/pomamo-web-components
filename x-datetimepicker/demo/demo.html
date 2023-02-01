@@ -1,0 +1,122 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<script>
+  function getValuesButtonFunction() {
+    let DTPs = $('.static-tests').find('x-datetimepicker');
+    for (let i = 0; i < DTPs.length; i++) {
+      let value = DTPs[i].getISOValue();
+      $(DTPs[i]).parent().find('.DTP-getValue').html(value);
+    };
+  }
+  /* Test pour une mise à jour automatique... qui ne fonctionne pas.
+  let DTPs = $('.static-tests').find('x-datetimepicker');
+  for (let i = 0; i < DTPs.length; i++) {
+    DTPs[0].addEventListener('change', getValuesButtonFunction, false);
+  }*/
+</script>
+
+<div class="static-tests">
+  <button class="getValuesButton" onclick="getValuesButtonFunction()">GET VALUES</button>
+
+  <div class="testDTP">
+    <label>Current datetime</label>
+    <div class='dtp_position'>
+      <x-datetimepicker id="current"></x-datetimepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="DTP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testDTP">
+    <label>Current datetime with seconds</label>
+    <div class='dtp_position'>
+      <x-datetimepicker id="current_seconds" showseconds></x-datetimepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="DTP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testDTP">
+    <label>Current datetime + nullable checkbox</label>
+    <div class='dtp_position'>
+      <x-datetimepicker id="current_nullable" defaultdatetime="" nullable novaluetext="No end"></x-datetimepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="DTP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testDTP">
+    <label>nullable AND null DTP </label>
+    <div class='dtp_position'>
+      <x-datetimepicker id="" showseconds nullable></x-datetimepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="DTP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testDTP">
+    <label>Fix datetime 2010-05-17 05:06:07 (UTC) + min 2010-05-09T08:00:00Z + max 2010-05-29T15:00:00Z + nullable
+      checkbox</label>
+    <div class='dtp_position'>
+      <x-datetimepicker id="fixed_datetime_all_options" nullable showseconds novaluetext="No end date/time"
+        mindatetime="2010-05-09T08:00:00Z" maxdatetime="2010-05-29T15:00:00Z" defaultdatetime="2010-05-17T05:06:07Z">
+      </x-datetimepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="DTP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testDTP">
+    <label>Fix datetime 2010-05-07 05:06:07 (UTC) + min 2010-05-09T08:00:00Z + max 2010-05-29T15:00:00Z + display out of
+      range MIN</label>
+    <div class='dtp_position'>
+      <x-datetimepicker id="" nullable showseconds mindatetime="2010-05-09T08:00:00Z" maxdatetime="2010-05-29T15:00:00Z"
+        defaultdatetime="2010-05-07T05:06:07Z"></x-datetimepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="DTP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testDTP">
+    <label>Fix datetime 2010-05-29 15:06:07 (UTC) + min 2010-05-09T08:00:00Z + max 2010-05-29T15:00:00Z + display out of
+      range MAX</label>
+    <div class='dtp_position'>
+      <x-datetimepicker id="" nullable showseconds mindatetime="2010-05-09T08:00:00Z" maxdatetime="2010-05-29T15:00:00Z"
+        defaultdatetime="2010-05-30T15:06:07Z"></x-datetimepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="DTP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testDTP">
+    <label>Fix datetime 2010-05-17 00:06:07 (UTC)</label>
+    <div class='dtp_position'>
+      <x-datetimepicker id="" showseconds defaultdatetime="2010-05-17T00:06:07Z"></x-datetimepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="DTP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testDTP">
+    <label>Fix datetime 2010-05-17 23:06:07 (UTC) </label>
+    <div class='dtp_position'>
+      <x-datetimepicker id="" showseconds defaultdatetime="2010-05-17T23:06:07Z"></x-datetimepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="DTP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+</div>

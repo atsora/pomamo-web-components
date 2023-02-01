@@ -1,0 +1,46 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+@import "x-stacklight/x-stacklight.less";
+
+x-detailedcncvaluesat{
+  display: block; /* To make is(':visible') works */ 
+  
+  .detailed-range{
+    display: none;
+  }
+
+  .detailedcncvaluesat-module-span {
+    //.detailed-machinemodule-span;
+    text-decoration: underline;
+  }
+  .detailedcncvaluesat-module-span::after {
+    content: " : ";
+  }
+  .detailedcncvaluesat-data {
+  }
+  /*.detailedcncvaluesat-singledata{
+    .detailed-single-data;
+  }*/
+  .detailedcncvaluesat-field {
+    font-weight: bold;
+  }
+  /*.detailedcncvaluesat-value {
+  }*/
+
+  .stacklight-svg{
+    path{
+      fill: transparent;
+      stroke: @bar_rounded_border;
+      //filter: url(#innerShadow);
+      //stroke-width: 0.5;
+    }
+  }
+
+  // Colors / Status are defined in stacklight
+  
+}

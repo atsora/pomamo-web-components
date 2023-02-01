@@ -1,0 +1,28 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-reasonsubdetails { /* To make is(':visible') works */ 
+  display: block;
+}
+// Not inside because of the popup :
+.reasonsubdetails-display{
+  display: inline;
+}
+.reasonsubdetails-details{ // Here : add () or italic... --RR
+  display: inline;
+  &::before {
+    content: ' (';
+  }
+  &::after {
+    content: ')';
+  }
+}
+
+.reasonsubdetails-dev {
+  font-style: italic;
+}

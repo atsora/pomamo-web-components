@@ -1,0 +1,129 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+x-message {
+  display: block;
+  position : fixed;
+  top: 0;
+  left: 10%;
+  width: 80%;
+  z-index: 999;
+
+  .hidden-span{
+    display: none;
+  }
+  
+  .xmessage{
+    text-align: center;
+  }
+
+  @keyframes messageappear {
+    from {height: 0; line-height: 0; }
+    to {height: 1.3em; line-height: 1.3em; }
+  }
+  
+  @keyframes spanappear {
+    0% { opacity: 0 }
+    50% { opacity: 0 }
+    100% { opacity: 0.9 }
+  }
+
+  .message-alert{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items:stretch;
+
+    background: none;
+    opacity: 0.9;
+    color: @color_text; // "white"
+    padding: 4px;
+
+    box-shadow: inset 0 0 10px @bar_rounded_border;
+    border-radius: 3px;
+    margin: 1px 20% 2px 20%;
+
+    // Animation :
+    //height: 1.3em; // Removed to allow multi-line messages
+    line-height: 1.3em;
+    animation-name: messageappear;
+    animation-duration: 1s;
+    span{
+      animation-name: spanappear;
+      animation-duration: 1s;
+
+      flex-basis: 90%;
+      flex-grow: 2;
+    }
+
+    .message-reload-button{
+      display: inline;
+      border: 1px solid @color_text;
+      box-shadow: inset 0 0 10px @bar_rounded_border;
+      border-radius: 3px;
+      font-size: 0.9em;
+      padding: 2px 4px;
+      margin-left: 10px;
+
+      animation-name: spanappear;
+      animation-duration: 1s;
+    }
+    a.message-reload-button {
+      color: @color_text;
+      text-decoration: none;
+    }
+    a.message-reload-button:hover {
+      color: @color_highlight;
+      border: 1px solid @color_highlight;
+      text-decoration: none;
+    }
+    a.message-reload-button:visited {
+      color: @color_text;
+      text-decoration: none;
+    }
+
+    /*message-close{
+      display: none;
+    }*/
+
+  }
+
+  .xmessage-default {
+    background-color:@color_green; // #DFF0D8;
+  }
+  .xmessage-info {
+    background-color: @color_blue; // @color_yellow; // #D9EDF7;
+  }
+  .xmessage-warning {
+    background-color: @color_orange; // #FCF8E3;
+  }
+  .xmessage-error {
+    background-color: @color_red; // #F2DEDE;
+  }
+
+  .closable {
+    cursor: pointer;
+
+    .message-close {
+      .create_svg_simple("close-error-on-top");
+      
+      display: inline-block;      
+      //height: 1em; // No defined to center
+      width: 1em;
+      pointer-events: none; // to allow click through 
+      color: @color_text;
+    }
+  }
+}
+
+// Mobile display
+@media (max-width: 685px) {
+  x-message {
+    .message-alert{
+      margin: 1px 1px 2px 1px;
+    }
+  }
+}

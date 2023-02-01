@@ -1,0 +1,43 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="attributes">
+  <div class="demo-sub-title attribute-title">Attributes</div>
+
+  <div class="demo-sub-content attribute-content">
+
+    <div class="attribute-name mandatory integer"><code>machine-id</code></div>
+    <div class="attribute-description">Id of the machine to display in this widget.
+    </div>
+
+    <div class="attribute-name config optional string"><code>path</code></div>
+    <div class="attribute-description">This parameter can be used for tests. It is read in configuration filled by
+      x-checkpath.
+    </div>
+
+    <div class="attribute-name context optional string"><code>ranges</code></div>
+    <div class="attribute-description">List of ranges to use at start (range&range2) replaces several calls to
+      addPeriod.
+    </div>
+
+  </div>
+</div>
+<!--Getters / Setters / Methods-->
+<div class="methods">
+  <div class="demo-sub-title method-title">Methods</div>
+  <div class="demo-sub-content method-content">
+    <div class="method-name"><code>addRange</code> (range) </div>
+    <div class="method-description">Add a period to display.</div>
+  </div>
+  <div class="demo-sub-content method-content">
+    <div class="method-name"><code>removeRange</code> (range) </div>
+    <div class="method-description">Remove a period to display.</div>
+  </div>
+  <div class="demo-sub-content method-content">
+    <div class="method-name"><code>cleanRanges</code> () </div>
+    <div class="method-description">Remove all displayed periods.</div>
+  </div>
+</div>

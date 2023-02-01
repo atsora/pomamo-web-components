@@ -1,0 +1,66 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <h3>BARS</h3>
+  <div>
+
+    <label>Machine18</label>
+    <div class="pulse-bar-div">
+      <x-productionmachiningstatus id="machine18" machine-id=918 path='http://localhost:8082/' bar-style='true'></x-productionmachiningstatus>
+    </div>
+
+    <label>Machine19 - long names</label>
+    <div class="pulse-bar-div">
+      <x-productionmachiningstatus id="machine19_long_name" machine-id=919 path=http://localhost:8082/ bar-style='true'></x-productionmachiningstatus>
+    </div>
+
+    <label>Machine20 - bad efficiency display in red</label>
+    <div class="pulse-bar-div">
+      <x-productionmachiningstatus id="machine20_bad_efficiency" machine-id=920 path=http://localhost:8082/ bar-style='true'></x-productionmachiningstatus>
+    </div>
+
+    <label>Machine22 - empty names</label>
+    <div class="pulse-bar-div">
+      <x-productionmachiningstatus id="machine22_empty_name" machine-id=922 path=http://localhost:8082/ bar-style='true'></x-productionmachiningstatus>
+    </div>
+
+    <label>Error: undefined machine</label>
+    <div class="pulse-bar-div">
+      <x-productionmachiningstatus id="error_machineid" machine-id=128 path=http://localhost:8082/ bar-style='true'></x-productionmachiningstatus>
+    </div>
+
+    <label>Error: Not Applicable (hidden is normal)</label>
+    <div class="pulse-bar-div">
+      <x-productionmachiningstatus id="error_notapplicable" machine-id=129 path=http://localhost:8082/ bar-style='true'></x-productionmachiningstatus>
+    </div>
+
+  </div>
+  <h3>BOXES</h3>
+  <div>
+
+    <label>Machine18</label>
+    <div class="box-div">
+      <x-productionmachiningstatus id="box_machine18" machine-id=918 path='http://localhost:8082/' bar-style='false'></x-productionmachiningstatus>
+    </div>
+
+    <label>Machine19 - long names</label>
+    <div class="box-div">
+      <x-productionmachiningstatus id="box_machine19_long_name" machine-id=919 path='http://localhost:8082/' bar-style='false'></x-productionmachiningstatus>
+    </div>
+
+    <label>Error: undefined machine </label>
+    <div class="box-div">
+      <x-productionmachiningstatus id="box_error_machineid" machine-id=128 path=http://localhost:8082/ bar-style='false'></x-productionmachiningstatus>
+    </div>
+
+    <label>Error: Not Applicable </label>
+    <div class="box-div">
+      <x-productionmachiningstatus id="box_error_notapplicable" machine-id=129 path=http://localhost:8082/ bar-style='false'></x-productionmachiningstatus>
+    </div>
+
+  </div>
+</div>

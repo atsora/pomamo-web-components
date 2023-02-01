@@ -1,0 +1,23 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="dynamic-tests">
+  <label>Login (Bruce/AnyPass or Jeff/AnyPass = OK. Maman=unknown)</label>
+  <div class='border-class'>
+    <x-loginconnection id="login" path="http://localhost:8082/"> </x-loginconnection>
+  </div>
+</div>
+<div class="static-tests">
+  <label>Logout - removed ! </label>
+  <div class='border-class'>
+    <x-loginconnection id="logout" PulseLogin='Lionel' path="http://localhost:8082/" PulseWebAppLogin='Yigal'>
+    </x-loginconnection>
+  </div>
+  <!--label>Error</label>
+  <div class='border-class'>
+    <x-loginconnection id="error" path="http://localhost:8082/" PulseWebAppLogin='504'> </x-loginconnection>
+  </div-->
+</div>

@@ -1,0 +1,28 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Machine18 (future = displayed)</label>
+  <div>
+    <x-currentcncvalue id="machine18" machine-id=18 path='http://localhost:8082/'></x-currentcncvalue>
+  </div>
+
+  <label>Machine19 (past)</label>
+  <div>
+    <x-currentcncvalue id="machine19" machine-id=19 path='http://localhost:8082/'></x-currentcncvalue>
+  </div>
+
+  <label>Error: Machine20 (no field defined) -> hidden</label>
+  <div>
+    <x-currentcncvalue id="error_machine20" machine-id=20 path='http://localhost:8082/'></x-currentcncvalue>
+  </div>
+
+  <label>Error: Machine39 (unknown id) -> hidden</label>
+  <div>
+    <x-currentcncvalue id="error_machine39" machine-id=39 path='http://localhost:8082/'></x-currentcncvalue>
+  </div>
+
+</div>

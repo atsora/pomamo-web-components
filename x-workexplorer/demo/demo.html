@@ -1,0 +1,53 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Default - no kind - no id - choose</label>
+  <div class='freeHeight'>
+    <x-workexplorer></x-workexplorer>
+  </div>
+
+  <label>Error: bad kind</label>
+  <div class='forceHeight'>
+    <x-workexplorer id="504" kind='pipo'></x-workexplorer>
+  </div>
+
+  <label>kind=Operation - id=1 - all fields</label>
+  <div class='freeHeight'>
+    <x-workexplorer id='1' kind='Operation'></x-workexplorer>
+  </div>
+
+  <label>kind=Operation - id=2 - op not set </label>
+  <div class='forceHeight'>
+    <x-workexplorer id='2' kind='Operation'></x-workexplorer>
+  </div>
+
+  <label>kind=Component - id=2 </label>
+  <div class='freeHeight'>
+    <x-workexplorer id='2' kind='Component'></x-workexplorer>
+  </div>
+
+  <label>kind=Project </label>
+  <div class='forceHeight'>
+    <x-workexplorer id='2' kind='Project'></x-workexplorer>
+  </div>
+
+  <label>kind=Part </label>
+  <div class='freeHeight'>
+    <x-workexplorer id='2' kind='Part'></x-workexplorer>
+  </div>
+
+  <label>kind=WorkOrder </label>
+  <div class='forceHeight'>
+    <x-workexplorer id='2' kind='WorkOrder'></x-workexplorer>
+  </div>
+  
+  <label>kind=Operation - id=None - NEW</label>
+  <div class='freeHeight'>
+    <x-workexplorer kind='Operation'></x-workexplorer>
+  </div>
+
+</div>

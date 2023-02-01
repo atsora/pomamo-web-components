@@ -1,0 +1,42 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Machine18</label>
+  <div class="pulse-bar-div">
+    <x-lastserialnumber id="machine18" machine-id=18 path='http://localhost:8082/' update=300></x-lastserialnumber>
+  </div>
+
+  <label>Machine19</label>
+  <div class="pulse-bar-div">
+    <x-lastserialnumber id="machine19" machine-id=19 path='http://localhost:8082/' update=180></x-lastserialnumber>
+  </div>
+
+  <label>Machine21</label>
+  <div class="pulse-bar-div">
+    <x-lastserialnumber id="machine21" machine-id=21 path='http://localhost:8082/'></x-lastserialnumber>
+  </div>
+
+  <label>Machine22</label>
+  <div class="pulse-bar-div">
+    <x-lastserialnumber id="machine22" machine-id=22 path='http://localhost:8082/'></x-lastserialnumber>
+  </div>
+
+  <label>Error: undefined error data status</label>
+  <div class="pulse-bar-div">
+    <x-lastserialnumber id="error_undefined_data_status" machine-id=20 path='http://localhost:8082/'></x-lastserialnumber>
+  </div>
+
+  <label>Error: unknown status </label>
+  <div class="pulse-bar-div">
+    <x-lastserialnumber id="error_unknown_status" machine-id=23 path='http://localhost:8082/' update=120></x-lastserialnumber>
+  </div>
+
+  <label>Error: machine Id has incorrect value</label>
+  <div class="pulse-bar-div">
+    <x-lastserialnumber id="error_machineid" machine-id='not id' path='http://localhost:8082/' update=120></x-lastserialnumber>
+  </div>
+</div>

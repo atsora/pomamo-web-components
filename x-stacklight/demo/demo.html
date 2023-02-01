@@ -1,0 +1,49 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Red stack light</label>
+  <div class="stacklight-div1">
+    <div class="stacklight-div2">
+      <x-stacklight id="red_stacklight" machine-id=54 path='http://localhost:8082/'></x-stacklight>
+    </div>
+  </div>
+
+  <label>Green stack light</label>
+  <div class="stacklight-div1">
+    <div class="stacklight-div2">
+      <x-stacklight id="green_stacklight" machine-id=27 path='http://localhost:8082/'></x-stacklight>
+    </div>
+  </div>
+
+  <label>Green + Blue stack light</label>
+  <div class="stacklight-div1">
+    <div class="stacklight-div2">
+      <x-stacklight id="green_blue_stacklight" machine-id=5 path='http://localhost:8082/'></x-stacklight>
+    </div>
+  </div>
+
+  <label>Small width</label>
+  <div class="stacklight-div1">
+    <div class="stacklight-div2 smallwidth">
+      <x-stacklight id="small_width" machine-id=5 path='http://localhost:8082/'></x-stacklight>
+    </div>
+  </div>
+
+  <label>Small height</label>
+  <div class="stacklight-div1">
+    <div class="stacklight-div2 smallheight">
+      <x-stacklight id="small_height" machine-id=5 path='http://localhost:8082/'></x-stacklight>
+    </div>
+  </div>
+
+  <label>Error: invalid machine-id (hidden?)</label>
+  <div class="stacklight-div1">
+    <div class="stacklight-div2">
+      <x-stacklight id="error_machineid" machine-id=77 path='http://localhost:8082/'></x-stacklight>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-machinemodelegends {
+  display: block;
+  /* To make isVisible work. Chrome: always inline */
+
+  .machinemodelegends {
+    position: relative;
+  }
+
+  .machinemodelegends-svg {
+    //color: @color_text_alternate; == text color no need to be defined
+    height: 15px;
+    width: 15px;
+
+    svg {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}

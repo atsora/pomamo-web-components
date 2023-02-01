@@ -1,0 +1,23 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-runninglegends {
+  display: block; /* To make isVisible work. Chrome: always inline */
+  
+  .runninglegends {
+    position:relative;
+  }
+  
+  // colors
+  .fill-running{
+    fill: @running_color;
+  }
+  .fill-idle{
+    fill: @idle_color;
+  }
+}

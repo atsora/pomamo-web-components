@@ -1,0 +1,72 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta HTTP-EQUIV="EXPIRES" CONTENT="0">
+  <meta HTTP-EQUIV="Pragma" CONTENT="no-cache">
+  <title>Live test of web components</title>
+  <link rel="stylesheet" type="text/css" href="styles/live.css">
+
+  <!-- External libraries -->
+  <script type="text/javascript" src="lib/jquery/jquery.js"></script>
+  <script type="text/javascript" src="lib/jquery-mockjax/jquery.mockjax.js"></script>
+  <script type="text/javascript" src="lib/moment/moment.js"></script>
+  <!-- Add d3 for graduation-->
+  <script type="text/javascript" src="lib/d3/d3.min.js"></script>
+
+  <!-- Config / translation / basics includes -->
+  <script type="text/javascript" src="scripts/translation_pulsecomponent_default.js"></script>
+  <script type="text/javascript" src="scripts/config_pulsecomponent_default.js"></script>
+  <!-- for reporting : script type="text/javascript" src="./scripts/pulse.exports.light.js?v="></script-->
+
+  <!-- Javascript libraries -->
+  <script type="text/javascript" src="es2015/live.js"></script>
+  <!--babel:<script type="text/javascript">//# sourceMappingURL=live.js.map</script>babel:--><!-- source map for babel -->
+  <script type="text/javascript">
+    //# sourceMappingURL=../../ocamljs/x_ml.map
+  </script>  
+</head>
+
+<body>
+  <header></header>
+  <section id="x-currentcncvalue">
+    <label>x-currentcncvalue</label>
+    <x-currentcncvalue machine-id=3></x-currentcncvalue>
+    <x-currentcncvalue machine-id=22></x-currentcncvalue>
+  </section>
+  <section id="x-machinedisplay">
+    <label>x-machinedisplay</label>
+    <x-machinedisplay machine-id=3></x-machinedisplay>
+  </section>
+  <section id="x-reasonslotbar">
+    <label>x-reasonslotbar</label>
+    <x-periodtoolbar period-context=periodtoolbar></x-periodtoolbar>
+    <x-datetimegraduation period-context=periodtoolbar></x-datetimegraduation>
+    <x-reasonslotbar machine-id=3 period-context=periodtoolbar></x-reasonslotbar>
+    <x-datetimegraduation range=[2017-11-02T07:00:00Z,2017-11-02T15:00:00Z)></x-datetimegraduation>
+    <x-reasonslotbar machine-id=3 range=[2017-11-02T07:00:00Z,2017-11-02T15:00:00Z) showoverwriterequired=true></x-reasonslotbar>
+    <x-datetimegraduation period-context=norange></x-datetimegraduation>
+    <x-reasonslotbar machine-id=3 period-context=norange></x-reasonslotbar>
+  </section>
+  <section id="x-runninglegends">
+    <label>x-runninglegends</label>
+    <x-runninglegends id=runninglegends-default></x-runninglegends>
+  </section>
+  <section id="x-machinemodelegends">
+    <label>x-machinemodelegends</label>
+    <x-machinemodelegends></x-machinemodelegends>
+  </section>
+  <x-checkpath></x-checkpath>
+  <footer>&copy;2017 Lemoine Automation Technologies</footer>
+
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Machine18</label>
+  <div>
+    <x-machinedisplay id="machine18" machine-id=18 path="http://localhost:8082/"> </x-machinedisplay>
+  </div>
+
+  <label>Machine19</label>
+  <div>
+    <x-machinedisplay id="
+            machine19" machine-id=19 path="http://localhost:8082/"></x-machinedisplay>
+  </div>
+
+  <label>Machine19 - width=100px</label>
+  <div style="width:100px; border:1px solid blue;">
+    <x-machinedisplay id="machine19_100px" machine-id=19 path="http://localhost:8082/"> </x-machinedisplay>
+  </div>
+
+  <label>Machine19 - width=10%</label>
+  <div style="width:10%; border:1px solid blue;">
+    <x-machinedisplay id="machine19_10pct" machine-id=19 path="http://localhost:8082/"> </x-machinedisplay>
+  </div>
+
+  <label>Error: undefined error data status</label>
+  <div>
+    <x-machinedisplay id="error_machineid" machine-id=128 path="http://localhost:8082/"> </x-machinedisplay>
+  </div>
+
+  <label>Error: gateway timeout</label>
+  <div>
+    <x-machinedisplay id="error_gateway_timeout" machine-id=129 path="http://localhost:8082/"></x-machinedisplay>
+  </div>
+
+  <label>With javascript: Machine18 + Error: undefined error data status</label>
+  <div id="demo-js" style="border:1px solid blue;" ></div>
+
+  <label>With javascript: width=30px</label>
+  <div id="demo-js-auto-width" style="width:30px; border:1px solid blue;" ></div>
+
+</div>

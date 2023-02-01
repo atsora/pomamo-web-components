@@ -1,0 +1,31 @@
+// Exemple of possible config
+
+// WebApp - BY role + page
+PULSE_DEFAULT_CONFIG.rolespages.operator.machines.reasonslotbar.showOverwriteRequired = true;
+PULSE_DEFAULT_CONFIG.rolespages.manager.machines.componentsToDisplay = ['x-lastmachinestatetemplate'];
+// can be 'coloredbar', 'coloredbarwithpercent', 'x-lastserialnumber', 'x-lastmachinestatus', 'x-lastworkinformation', 'x-toollifemachine', 'x-cycleprogressbar','x-lastmachinestatetemplate' 
+PULSE_DEFAULT_CONFIG.pages.machinesummary.row = 10;
+
+// WebApp - BY page
+PULSE_DEFAULT_CONFIG.pages.combinedview.showtarget: true, // Beurk !
+PULSE_DEFAULT_CONFIG.pages.combinedview.showalarm: false,
+PULSE_DEFAULT_CONFIG.pages.combinedview.showstacklight: false,
+
+// WebApp - BY roles
+PULSE_DEFAULT_CONFIG.roles.manager.??? = false;
+
+// xTag
+tagConfig.mainpath = 'http://lctr:8081/'; //Warning '/' needed at the end
+PULSE_DEFAULT_CONFIG.general.mainpath = 'http://lctr:8081/'; //Warning '/' needed at the end
+PULSE_DEFAULT_CONFIG.general.skipWebServiceAddress = true;
+
+// Probably never used, but available (see full doc for details)
+tagConfig.refreshingRate.currentRefreshSeconds = 10;
+tagConfig.refreshingRate.barDailyRefreshSeconds = 60:
+tagConfig.refreshingRate.barMinimumRefreshSeconds = 20;
+tagConfig.refreshingRate.barPastFixedDataRefreshMinutes = 60;
+tagConfig.refreshingRate.barPastChangingDataRefreshMinutes = 5;
+tagConfig.refreshingRate.barSlowUpdateMinutes = 5;
+//tagConfig.cncvaluebar.refreshingRate.currentRefreshSeconds = 10;
+
+

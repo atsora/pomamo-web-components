@@ -1,0 +1,70 @@
+The default software license is the Apache 2.0 license
+unless the folder contains a specific LICENSE.txt file
+or if it was explicitely written in the file.
+
+The full texts of the licenses are in the LICENSES folder.
+
+Some images have a specific license:
+- validate.png : https://www.iconfinder.com/icons/326572/check_icon#size=24
+  Licence: MIT, Free for commercial use
+  Author: Google(http://www.google.com/design/ https://m3.material.io)
+
+- warning.png : https://www.iconfinder.com/icons/173946/warning_icon#size=32
+  Licence:  Free for commercial use
+  Author: Creative Freedom Ltd(https://www.creativefreedom.co.uk/)
+  
+- jquery.datetimepicker
+  License: MIT License
+  Link: http://xdsoft.net/jqplugins/datetimepicker/
+  Author: Valeriy(xdan) http://xdsoft.net
+
+- Tango icon set
+  Public Domain
+  (http://tango.freedesktop.org/)
+  Link: http://tango.freedesktop.org/Tango_Icon_Library
+
+- small-n-flat icon set
+  Author: Paomedia
+  Creative Commons (Attribution 3.0 Unported) CC-BY-3.0
+  (http://creativecommons.org/licenses/by/3.0/)
+  https://www.iconfinder.com/iconsets/small-n-flat
+
+- Octicons icon set
+  Author: github
+  MIT license
+  (http://opensource.org/licenses/MIT)
+  Link: https://www.iconfinder.com/iconsets/octicons
+
+- GlyphPack icon set
+  Author: Design revision
+  Free for commercial use
+  Link: https://www.iconfinder.com/iconsets/glyphpack
+
+- "This is art 2" icon set
+  Creative Commons Attribution-No Derivative Works 3.0 Unported - CC-BY-ND-3.0
+  (http://creativecommons.org/licenses/by-nd/3.0/)
+  Link: https://www.iconfinder.com/iconsets/This_is_ART_2
+  Author: Svengraph http://svengraph.deviantart.com/
+
+- "Farm-fresh" icon set
+  Creative commons Attribution 3.0 United States - CC-BY-3.0-US
+  (http://creativecommons.org/licenses/by/3.0/us/)
+  Link: https://www.iconfinder.com/iconsets/fatcow
+  Author: FatCow web hosting
+
+- Icocentre icon set
+  Author: IcoCentre
+  Free for commercial use
+  Link: https://www.iconfinder.com/iconsets/icocentre-free-icons
+
+- Bootstrap Glyphicon Components (in some web pages)
+  License: free of cost for Boostrap (http://www.w3schools.com/bootstrap/bootstrap_ref_comp_glyphs.asp)
+  Link: http://glyphicons.com/
+  Author: Jan Kovarik (http://jankovarik.net/)
+
+- Many icons in WebApp
+  License: CC BY 4.0 License (https://creativecommons.org/licenses/by/4.0/)
+  Link: https://fontawesome.com/
+
+- other images were designed by the Lemoine Automation Technologies team
+  License: CC BY-SA 4.0 License (https://creativecommons.org/licenses/by-sa/4.0/)

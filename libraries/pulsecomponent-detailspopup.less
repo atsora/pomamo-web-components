@@ -1,0 +1,54 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import 'x-machinedisplay/x-machinedisplay';
+@import 'x-detailedreasonat/x-detailedreasonat';
+@import 'x-detailedmachinestateat/x-detailedmachinestateat';
+@import 'x-detailedobservationstateat/x-detailedobservationstateat';
+@import 'x-detailedproductionstateat/x-detailedproductionstateat';
+@import 'x-detailedshiftat/x-detailedshiftat';
+@import 'x-detailedalarmsat/x-detailedalarmsat';
+@import 'x-detailedcncvaluesat/x-detailedcncvaluesat';
+@import 'x-detailedworkinfoat/x-detailedworkinfoat';
+@import 'x-detailedsequenceat/x-detailedsequenceat';
+@import 'x-detailedisofileat/x-detailedisofileat';
+@import 'x-detailedpartsat/x-detailedpartsat';
+@import 'x-detailedoperationcycleat/x-detailedoperationcycleat';
+
+@import 'x-datetimerange/x-datetimerange';
+@import 'x-datetimegraduation/x-datetimegraduation';
+@import 'x-reasonslotbar/x-reasonslotbar'; // to import ouside ???
+@import 'x-bartimeselection/x-bartimeselection';
+@import 'x-operationcyclebar/x-operationcyclebar';
+@import 'x-operationslotbar/x-operationslotbar';
+@import 'x-workinfoslotlist/x-workinfoslotlist';
+
+@import "pulse.customdialog.less";
+
+// ALL other styles COULD be included elsewhere to avoid double 
+
+.dialog-running {
+  .pulse-mainarea {
+    overflow-y: auto; // Add scrollbar
+    //background-image: @background_image; // == body... maybe... but not enough good to be kept
+
+    .pulse-mainarea-full {
+      bottom: auto;
+    }
+
+    .pulse-mainarea-inner {
+      height: auto;
+    }
+
+    .tile {
+      height: auto;
+    }
+
+    x-grouparray {
+      height: auto;
+    }
+  }
+}

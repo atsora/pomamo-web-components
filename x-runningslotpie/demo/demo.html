@@ -1,0 +1,36 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Default</label>
+  <div class='divsize'>
+    <x-runningslotpie id="default" machine-id=18 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)' path='http://localhost:8082/'></x-runningslotpie>
+  </div>
+
+  <label>Small</label>
+  <div class='divsize_small'>
+    <x-runningslotpie id="small" machine-id=18 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)' path='http://localhost:8082/'
+      bicolore=true></x-runningslotpie>
+  </div>
+
+  <label>Big + 'CH eck' text position for elapsed time</label>
+  <div class='divsize_big'>
+    <x-runningslotpie id="big" machine-id=18 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)' path='http://localhost:8082/'
+      textchange-context='DEMO'></x-runningslotpie>
+  </div>
+
+  <label>Error: Not connected, check the network</label>
+  <div class='divsize'>
+    <x-runningslotpie id="error_check_the_network" machine-id=19 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)'
+      path='http://localhost:8082/'></x-runningslotpie>
+  </div>
+
+  <label>Error: Machine Id has incorrect value</label>
+  <div class='divsize'>
+    <x-runningslotpie id="error_machineid" machine-id='invalid id' range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)'
+      path='http://localhost:8082/'></x-runningslotpie>
+  </div>
+</div>

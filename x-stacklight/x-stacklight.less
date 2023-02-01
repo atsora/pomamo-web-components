@@ -1,0 +1,121 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-stacklight {
+  display: block; /* To make is(':visible') works */
+  
+  height: 100%;
+  position: relative;
+
+  /*
+<defs>
+    <radialGradient id="grad1" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:0" />
+      <stop offset="100%" style="stop-color:rgb(0,0,255);stop-opacity:1" />
+    </radialGradient>
+  </defs>
+
+var def = pulseUtility.createPatternDef(svgNS,
+            self._machinestateslots[i].patternName,
+            self._machinestateslots[i].patternColor,
+            coloredPatternName);
+          svg.appendChild(def);
+*/
+  .stacklight {
+    //display: block;
+    height: 100%;
+    vertical-align: middle; // For Edge vertical align
+
+    .stacklight-svg {
+      width: 100%;
+      height: 100%;
+      vertical-align: middle; // vertical align on Edge
+
+      path,
+      ellipse {
+        filter: url(#innerShadow);
+      }
+    }
+  }
+
+  .stacklight-top {
+    fill: @widget_background;
+  }
+}
+
+////////////////////////////////////////////////////////////
+// Stacklight colors + flashing... are outside to be used //
+// in x-detailedcncvaluesat and x-currentcncvalue too     //
+////////////////////////////////////////////////////////////
+
+// Status 
+.stacklight-Off {
+  fill: @widget_background;
+}
+
+@keyframes stacklight-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  50%,
+  70% {
+    opacity: 1;
+  }
+
+  70%,
+  100% {
+    opacity: 0.4;
+  }
+}
+
+.stacklight-Flashing {
+  animation: stacklight-blink 1s ease infinite;
+}
+
+// Colors - same as detailedcncvalue and currentcncvalue !
+.stacklight-color-Red.stacklight-Flashing {
+  fill: @color_red;
+}
+
+.stacklight-color-Yellow.stacklight-Flashing {
+  fill: @color_yellow;
+}
+
+.stacklight-color-Green.stacklight-Flashing {
+  fill: @color_green;
+}
+
+.stacklight-color-Blue.stacklight-Flashing {
+  fill: @color_blue;
+}
+
+.stacklight-color-White.stacklight-Flashing {
+  fill: @color_white;
+}
+
+.stacklight-color-Red.stacklight-On {
+  fill: @color_red;
+}
+
+.stacklight-color-Yellow.stacklight-On {
+  fill: @color_yellow;
+}
+
+.stacklight-color-Green.stacklight-On {
+  fill: @color_green;
+}
+
+.stacklight-color-Blue.stacklight-On {
+  fill: @color_blue;
+}
+
+.stacklight-color-White.stacklight-On {
+  fill: @color_white;
+}

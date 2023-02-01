@@ -1,0 +1,31 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <div class='hidden-content'>
+    <div class='machines_cell' id='boxtoclone'>
+      <div class='tile-title'>
+        <x-reasonbutton></x-reasonbutton>
+        <div class='machinedisplay-position'>
+          <x-machinedisplay></x-machinedisplay>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <label>Click <a href='groupsingroup.html?ancestor1=anc1'>here</a> to see details in groups</label>
+
+  <label>Fixed list of 4 groups </label>
+  <div id="" class='group-div'>
+    <x-groupsingroup templateid='boxtoclone' group='G4' path=http://localhost:8082/></x-groupsingroup>
+  </div>
+
+  <label>Fixed list of 17 groups </label>
+  <div id="" class='group-div'>
+    <x-groupsingroup templateid='boxtoclone' group='G17' path=http://localhost:8082/></x-groupsingroup>
+  </div>
+</div>

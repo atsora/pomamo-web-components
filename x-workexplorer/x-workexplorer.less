@@ -1,0 +1,267 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-workexplorer {
+  /* To make is(':visible') works */
+  display: block;
+  height: 100%;
+
+  // Loader / Message = global
+
+  .workexplorer-content {
+    height: 100%;
+    overflow-y: auto; // Scrollbar
+    position: relative; // To position scrollable content
+
+    .workexplorer-header {
+      display: flex;
+      flex-direction: row;
+
+      .workexplorer-title {
+        flex-basis: 58%;
+        border: 1px solid @color_window_border;
+        margin: 4px;
+        min-height: 3em;
+
+        .workexplorer-title-kind {
+          .workexplorer-kind-button {
+            .button-rounded-shadow;
+            cursor: pointer;
+            display: inline-block;
+            margin: 4px;
+            padding: 4px;
+          }
+        }
+
+        .workexplorer-title-display {
+          font-weight: bold;
+          font-size: 1.5em;
+          text-align: center;
+        }
+
+        .workexplorer-button-reload {
+          .button-rounded-shadow;
+          cursor: pointer;
+          margin: 4px;
+          padding: 4px;
+          float: right;
+          display: block;
+        }
+      }
+
+      .workexplorer-parents {
+        flex-basis: 19%;
+        border: 1px solid @color_window_border;
+        margin: 4px;
+        min-height: 3em;
+
+        // scrollable
+        overflow: auto;
+        border: 1px solid @color_window_border;
+        //background-color: @color_window_alternate;
+        //color: @color_text_alternate;
+
+        .workexplorer-parents-list {
+          display: flex;
+          flex-direction: column;
+          overflow: auto;
+
+          //font-size: 10pt;
+
+          .workexplorer-single-parent {
+            /*max-height: 30px;
+              position: relative;
+  
+              div,
+              label {
+                position: relative;
+              }*/
+
+            .workexplorer-parent-row {
+              .workexplorer-parent-display {
+                display: inline-block;
+                vertical-align: super;
+
+                // ...
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+                // Clickable
+                cursor: pointer;
+
+                &:hover {
+                  color: @color_highlight;
+                }
+              }
+
+              //.remove-button 
+
+              /*&[draggable] {
+                  user-select: none;
+                }
+      
+                &.dragOverTop {
+                  border-top: 2px solid @color_highlight;
+                }
+      
+                &.dragOverBottom {
+                  border-bottom: 2px solid @color_highlight;
+                }*/
+            }
+          }
+        }
+      }
+
+      .workexplorer-children {
+        flex-basis: 19%;
+        border: 1px solid @color_window_border;
+        margin: 4px;
+        min-height: 3em;
+
+        // scrollable
+        overflow: auto;
+        border: 1px solid @color_window_border;
+        //background-color: @color_window_alternate;
+        //color: @color_text_alternate;
+
+        .workexplorer-children-list {
+          display: flex;
+          flex-direction: column;
+          overflow: auto;
+
+          //font-size: 10pt;
+
+          .workexplorer-child {
+            /*max-height: 30px;
+            position: relative;
+
+            div,
+            label {
+              position: relative;
+            }*/
+
+            .workexplorer-child-row {
+              .workexplorer-child-display {
+                display: inline-block;
+                vertical-align: super;
+
+                // ...
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+                // Clickable
+                cursor: pointer;
+
+                &:hover {
+                  color: @color_highlight;
+                }
+              }
+
+              //.remove-button 
+
+              /*&[draggable] {
+                user-select: none;
+              }
+    
+              &.dragOverTop {
+                border-top: 2px solid @color_highlight;
+              }
+    
+              &.dragOverBottom {
+                border-bottom: 2px solid @color_highlight;
+              }*/
+            }
+          }
+
+        }
+      }
+    }
+
+    .workexplorer-main {
+      display: flex;
+      flex-direction: row;
+
+      .workexplorer-left-hidden {
+        flex-basis: 19%;
+        border: 1px solid transparent;
+        margin: 4px;
+        min-height: 3em;
+      }
+
+      .workexplorer-properties {
+        flex-basis: 58%;
+        border: 1px solid @color_window_border;
+        margin: 4px;
+
+        .workexplorer-prop {
+          display: flex;
+          flex-direction: row;
+          padding: 4px;
+
+          label,
+          span {
+            padding: 4px;
+          }
+
+          .workexplorer-label {
+            flex-basis: 39%;
+            text-align: right;
+            font-weight: bold;
+            padding: 4px 8px 4px 4px;
+          }
+
+          .workexplorer-value {
+            flex-basis: 49%;
+            min-width: 200px;
+
+            //workexplorer-integer
+            //workexplorer-float
+            //workexplorer-days workexplorer-duration
+            //.workexplorer-enum { // == select
+
+            .workexplorer-string,
+            .workexplorer-URL {
+              box-sizing: border-box;
+              width: 100%;
+            }
+
+            // == input[type=checkbox] {
+            .workexplorer-bool {
+              min-width: auto !important;
+            }
+
+            .workexplorer-unit {
+              padding: 4px 4px 4px 8px;
+            }
+
+          }
+
+          .workexplorer-prop-button {
+            .create_svg('workexplorer-edit', @color_text, @color_text); // @hoverColor: @color_highlight) 
+            flex-basis: 5%;
+            margin: 0px 4px 4px 4px;
+          }
+        }
+      }
+
+      .workexplorer-buttons {
+        flex-basis: 19%;
+        border: 1px solid @color_window_border;
+        margin: 4px;
+
+        button {
+          .button-rounded-shadow;
+          cursor: pointer;
+          margin: 4px;
+          padding: 4px;
+        }
+      }
+    }
+
+  }
+}

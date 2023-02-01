@@ -1,0 +1,27 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Machine18</label>
+  <div class="pulse-bar-div">
+    <x-lastmachinestatetemplate id="machine18" machine-id=18 path='http://localhost:8082/'></x-lastmachinestatetemplate>
+  </div>
+
+  <label>Machine20</label>
+  <div class="pulse-bar-div">
+    <x-lastmachinestatetemplate id="machine20" machine-id=20 path='http://localhost:8082/'></x-lastmachinestatetemplate>
+  </div>
+
+  <label>Error: not connected, check the network</label>
+  <div class="pulse-bar-div">
+    <x-lastmachinestatetemplate id="error_check_network" machine-id=19 path='http://localhost:8082/'></x-lastmachinestatetemplate>
+  </div>
+
+  <label>Error: machine Id has incorrect value</label>
+  <div class="pulse-bar-div">
+    <x-lastmachinestatetemplate id="error_machineid" machine-id='not id' path='http://localhost:8082/'></x-lastmachinestatetemplate>
+  </div>
+</div>

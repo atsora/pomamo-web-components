@@ -1,0 +1,23 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-detailedsequenceat{
+  display: block; /* To make is(':visible') works */ 
+
+  .detailedsequenceat-module-span {
+    text-decoration: underline;
+  }
+  .detailedsequenceat-module-span::after {
+    content: " : ";
+  }
+  .detailedsequenceat-data-sequence {
+    //.detailed-single-data;
+    display:inline;
+    //padding: 0px 5px; use to same as module
+  }
+}

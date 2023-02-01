@@ -1,0 +1,37 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <div class="testDTR">
+    <label>Default</label>
+    <x-datetimerange id="default" range="2014-06-18T18:00:00Z;2014-07-18T18:00:00Z"></x-datetimerange>
+  </div>
+
+  <div class="testDTR">
+    <label>Only begin date + NoEnd = true</label>
+    <x-datetimerange id="begin_noend_true" range="2014-06-18T18:00:00Z;" possible-no-end=true novaluetext="No end">
+    </x-datetimerange>
+  </div>
+
+  <div class="testDTR">
+    <label>Min/Max datetime defined</label>
+    <x-datetimerange id="minmax_datetime" range="2014-06-15T18:00:00Z;2014-06-21T18:00:00Z"
+      min-begin="2014-06-08T00:00:00Z" max-end="2014-06-28T00:00:00Z"></x-datetimerange>
+  </div>
+
+  <div class="testDTR">
+    <label>Min/Max datetime defined + NoEnd = true</label>
+    <x-datetimerange id="minmax_datetime_noend_true" range="2014-06-15T18:00:00Z;2014-06-21T18:00:00Z"
+      possible-no-end=true novaluetext="No end" min-begin="2014-06-08T00:00:00Z" max-end="2014-06-28T00:00:00Z">
+    </x-datetimerange>
+  </div>
+
+  <div class="testDTR">
+    <label>Not editable (same day)</label>
+    <x-datetimerange id="not_editable" range="2014-05-30T08:30:00Z;2014-05-30T18:00:00Z" not-editable="true">
+    </x-datetimerange>
+  </div>
+</div>

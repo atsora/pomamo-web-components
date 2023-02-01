@@ -1,0 +1,71 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "x-revisionprogress/x-revisionprogress.less";
+@import "x-periodtoolbar/x-periodtoolbar.less";
+@import "x-datetimegraduation/x-datetimegraduation.less";
+@import "demo/demo.less";
+
+
+.pulse-bar-div {
+  margin: 20px;
+  height: 40px;
+  width: 80%;
+}
+
+.smallest-big-div {
+  .bar-rounded-shadow;
+  margin: 20px;
+  height: 40px;
+  width: 32px; // == 30 + 2*1=border
+}
+
+.small-div {
+  .bar-rounded-shadow;
+  margin: 20px;
+  height: 40px;
+  width: 16px;
+}
+
+.very-small-div {
+  .bar-rounded-shadow;
+  margin: 20px;
+  height: 40px;
+  width: 8px;
+}
+
+.position-div {
+  margin: 20px;
+  //height: 80px;
+  width: 80%;
+
+  x-datetimegraduation {
+    margin-left: -24px;
+    margin-right: -24px;
+  }
+}
+
+x-revisionprogress {
+  .revision-position {
+    border: 1px solid red;
+  }
+}
+
+.periodtoolbar-prev {
+  border: 1px solid green;
+}
+
+.periodtoolbar-next {
+  border: 1px solid green;
+}
+
+.periodtoolbar-zoomin {
+  border: 1px solid lightgreen;
+}
+
+.periodtoolbar-zoomout {
+  border: 1px solid lightgreen;
+}

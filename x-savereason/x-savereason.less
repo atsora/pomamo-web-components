@@ -1,0 +1,264 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+@import "x-machinedisplay/x-machinedisplay.less";
+@import "x-datetimerange/x-datetimerange.less";
+
+x-savereason {
+  display: block;
+  position: relative;
+
+  // Header 1
+  .savereason-machine{
+    display: none; // For big screen only -> TODO
+  }
+  // Header 2
+  .savereason-period{
+    .savereason-no-period{
+      font-size: 2em;
+    }
+    /*.savereason-one-period{
+    }
+    .savereason-multi-period{
+    }*/
+  }
+
+  .savereason-mos-buttons {
+    vertical-align: middle;
+    text-align: center;
+    font-size: @button-font-size;
+    border-radius: @cellbar-corner-radius;
+  }
+  
+  .savereason-mst-info{
+    display: block;
+    overflow: auto;
+
+    //.savereason-mst // MST Button + split -> REMOVED
+    
+    .savereason-infos{
+      display: block;
+      float: right;
+      margin-right: 5px;
+    }
+    
+    .savereason-info-reason{
+      display: inline;
+      font-weight: bold;
+    }
+    
+    .savereason-info-reason-details{
+      display: inline;
+      font-style: italic;
+      //color: red; // #555555;
+    }
+  } // end mst-info
+  
+  .savereason-info-modes{
+    display: block;
+    //color: // use main color
+    /* ... */
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis; /* for Opera*/
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 400px;
+  }
+
+  // Scrollable Content
+  .savereason-scrollable {
+    overflow-y: auto; // Scrollbar
+    position: absolute;
+    // Position
+    top: 110px; // "header" height
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    border-top: 1px solid @color_window_border;
+    
+    .savereason-table {
+      padding: 0;
+      margin: 0;
+      list-style-type: none;
+      border-left: 1px solid @color_window_border;
+      border-right: 1px solid @color_window_border;
+      border-bottom: 1px solid @color_window_border_light;
+
+      &> li {
+        list-style-type: none;
+
+        &> span {
+          // Reason group name
+          background-color: @color_window;
+          color: @color_text;
+          font-weight: bold;
+          padding: 7px;
+          display: block;
+          cursor: pointer;
+          border-top: 1px solid @color_window_border_light;
+          border-bottom: 1px solid @color_window_border;
+
+          &:hover {
+            background-color: @color_window_hover;
+          }
+        }
+        ul {
+          margin: 0;
+          padding: 5px 0 0 0;
+
+          li {
+            list-style-type: none;
+            padding: 0 5px 5px 5px;
+            height: 27px;
+
+            span {
+              line-height: 27px;
+              display: block;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+
+            .applyreason, .applyreasonwithcomment {
+              float: right;
+              height: 24px;
+              line-height: 24px;
+              margin-left: 5px;
+            }
+            .applyreason {
+              width: 60px;
+            }
+            .applyreasonwithcomment {
+              width: 110px;
+            }
+          }
+          li[details-required='true'] {
+            .applyreasonwithcomment {
+              width: 195px;
+            }
+          } 
+        }
+      }
+    }
+  }
+
+  .pushButton {
+    text-shadow: 0 1px 0 @input_text_shadow_color;
+    padding: 2px 10px;
+    background-color: @input_background_color;
+    color: @input_color_bold;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+    border-radius: 5px;
+    text-align: center;
+    &:hover {
+      background-color: @color_highlight;
+      color: @color_highlight_contrasted;
+      text-shadow: none;
+    }
+  }
+
+  .savereason-periodlabel, x-datetimerange {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .savereason-periodlabel { margin-right: 4px; }
+
+  // Datetime style
+  .datetimerange-rangedisplay::after { display: none !important; }
+  .datetimerange-rangedisplay {
+    background-color: transparent !important;
+    color: @color_text !important;
+    overflow: initial !important;
+    margin: 0 !important;
+  }
+  .datetimerange-toolbar { display: none !important; }
+  .datetimerange-display { padding: 0; }
+
+  // Split button
+  .savereason-splitbutton, .savereason-defaultbutton {
+    float: right;
+    line-height: 24px;
+  }
+
+  .savereason-reasonslabel {
+    display: inline-block;
+    font-weight: bold;
+    vertical-align: middle;
+    line-height: 30px;
+  }
+  .savereason-infoperiod, .savereason-info-reason, .savereason-info-modes {
+    height: 24px;
+    line-height: 24px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .savereason-infoperiod { height: 28px; }
+} // end x-savereason
+
+// Dialog details == outside
+.savereason-dialog-details {
+  padding: 5px;
+
+  .savereason-machine, .savereason-datetimerange-details, .savereason-details-reason {
+    margin-bottom: 10px;
+  }
+
+  .savereason-datetimerange-label, .savereason-machine-label, .savereason-details-label{
+    vertical-align: bottom;
+    display: inline-block; 
+    margin-right: 5px;
+    font-weight: bold;
+  }
+
+  .savereason-machine {
+    x-machinedisplay {
+      display: inline-block; // To remove -> must be block
+      font-weight: normal;
+    }
+  }
+
+  .savereason-datetimerange-details {
+    x-datetimerange {
+      display: inline-block; // To remove -> must be block
+      vertical-align: bottom;
+
+      .datetimerange-rangedisplay {
+        margin: 0;
+        background-color: @color_window;
+        color: @color_text;
+        &:after {
+          display: none;
+        }
+      }
+      .datetimerange-toolbar {
+        display: none;
+      }
+      .datetimerange-display {
+        padding: 0;
+        line-height: inherit;
+      }
+    }
+  }
+
+  .savereason-details-reason {
+    .savereason-details-input {
+      display: inline-block;
+    }
+  }
+
+  .savereason-details {
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      resize: none;
+    }
+  }
+} // end .savereason-dialog-details = dialog for details

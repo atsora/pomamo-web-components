@@ -1,0 +1,57 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-sequencebar { /* To make is(':visible') works */ 
+  display: block;
+  min-height: 1em; // For loading and error
+
+  .sequencebar {
+    position: relative;
+    display: flex;
+
+    flex-direction: column !important; // align children
+    height: auto !important; // To remove pulse-cellbar-main height
+    align-items: stretch !important;
+    
+    .sequencebar-machinemodule-noinfo{
+      padding-left: 6px;
+    }
+
+    .sequencebar-machinemodule-info{
+      display: flex;
+      flex-direction: row; // align children
+
+      .sequencebar-machinemodule{ 
+        font-weight: bold;
+        padding: 4px;
+      }
+
+      .sequencebar-progressandtext{
+        flex-grow: 1; // Stretch
+        padding: 6px;
+
+        display: flex;
+        flex-direction: column; // align children
+
+        .sequencebar-bar{
+          .bar-rounded-shadow;
+          //border-radius: @cellbar-corner-radius;
+          width: 100%;
+          //height: 5px;
+          
+          .sequencebar-progressbar{
+            height: 5px;
+            border-radius: @cellbar-corner-radius;
+            background-color: @color_blue;
+          }
+        }
+        //.sequencebar-text{ }
+      }
+    }
+  }
+}

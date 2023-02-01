@@ -1,0 +1,42 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Machine18</label>
+  <div class="pulse-bar-div">
+    <x-toollifemachine id="machine18" machine-id=18 path='http://localhost:8082/'></x-toollifemachine>
+  </div>
+
+  <label>Machine19 - error </label>
+  <div class="pulse-bar-div">
+    <x-toollifemachine id="machine19" machine-id=19 path='http://localhost:8082/'></x-toollifemachine>
+  </div>
+
+  <label>Machine20 - with remaining cycles</label>
+  <div class="pulse-bar-div">
+    <x-toollifemachine id="machine20" displayremainingcyclesbelowtool="true" machine-id=20 path='http://localhost:8082/'></x-toollifemachine>
+  </div>
+
+  <label>Machine21</label>
+  <div class="pulse-bar-div">
+    <x-toollifemachine id="machine21" machine-id=21 path='http://localhost:8082/'></x-toollifemachine>
+  </div>
+
+  <label>Machine22</label>
+  <div class="pulse-bar-div">
+    <x-toollifemachine id="machine22" machine-id=22 displayremainingcyclesbelowtool="true"  path='http://localhost:8082/'></x-toollifemachine>
+  </div>
+
+  <label>Machine23</label>
+  <div class="pulse-bar-div">
+    <x-toollifemachine id="machine23" machine-id=23 displayremainingcyclesbelowtool="true"  path='http://localhost:8082/'></x-toollifemachine>
+  </div>
+
+  <label>Error: machine Id has incorrect value</label>
+  <div class="pulse-bar-div">
+    <x-toollifemachine id="error_machineid" machine-id='not id' path='http://localhost:8082/'></x-toollifemachine>
+  </div>
+</div>

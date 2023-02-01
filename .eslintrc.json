@@ -1,0 +1,80 @@
+{
+    "env": {
+        "commonjs": true,
+        "es6": true,
+        "jquery": true,
+        "node": true
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+        "customElements": true,
+        "d3": true,
+        "exports": true,
+        "HTMLElement": true,
+        "jqXHR": true,
+        "managerConfig": true,
+        "moment": true,
+        "operatorConfig": true,
+        "tagConfig": true,
+        "translation": true,
+        "PULSE_COMPONENT_TRANSLATION": true,
+        "PULSE_TRANSLATION": true,
+        "PULSE_DEFAULT_CONFIG": true,
+        "LEM_CONFIG_DEFAULT":true,
+        "sessionStorage": true,
+        "localStorage": true,
+        "window": true,
+        "document": true
+    },
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "rules": {
+        "indent": [
+            "warn",
+            2,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "quotes": [
+            "warn",
+            "single",
+            {
+                "avoidEscape": true
+            }
+        ],
+        "keyword-spacing": "warn",
+        "brace-style": [
+            "warn",
+            "stroustrup",
+            {
+                "allowSingleLine": true
+            }
+        ],
+        "no-console": [
+            "error",
+            {
+                "allow": [
+                    "assert"
+                ]
+            }
+        ],
+        "no-const-assign": "warn",
+        "no-this-before-super": "warn",
+        "no-undef": "warn",
+        "no-unreachable": "warn",
+        "no-unused-vars": [
+            "error",
+            {
+                "vars": "all",
+                "args": "none"
+            }
+        ],
+        "constructor-super": "warn",
+        "valid-typeof": "warn"
+    }
+}

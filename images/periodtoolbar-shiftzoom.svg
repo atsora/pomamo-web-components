@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Livello_1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="24px" height="24px" viewBox="0 0 24 24" xml:space="preserve">
+<g>
+	<rect opacity="0" fill="currentColor" width="24" height="24"/>
+	<rect fill="currentColor" width="24" height="5"/>
+	<rect x="1" y="19" opacity="0.5" fill="currentColor" width="4" height="4"/>
+	<rect x="7" y="19" opacity="0.5" fill="currentColor" width="4" height="4"/>
+	<rect x="1" y="13" opacity="0.5" fill="currentColor" width="4" height="4"/>
+	<rect x="7" y="13" opacity="0.5" fill="currentColor" width="4" height="4"/>
+	<rect x="1" y="7" opacity="0.5" fill="currentColor" width="4" height="4"/>
+	<rect x="7" y="7" opacity="0.5" fill="currentColor" width="4" height="4"/>
+	<rect x="13" y="7" opacity="0.5" fill="currentColor" width="4" height="4"/>
+	<rect x="19" y="7" opacity="0.5" fill="currentColor" width="4" height="4"/>
+	<path fill="currentColor" d="M18,13c-2.762,0-5,2.238-5,5s2.238,5,5,5s5-2.238,5-5S20.762,13,18,13z M18,22c-2.21,0-4-1.791-4-4
+		s1.79-4,4-4s4,1.791,4,4S20.21,22,18,22z"/>
+	<path fill="currentColor" d="M20.158,20.095l-0.001-0.708L18.5,17.729v-2.728L18,14.5l-0.5,0.502V18l0,0l0,0
+		c0,0.212,0.133,0.391,0.32,0.464l1.63,1.63L20.158,20.095z"/>
+</g>
+</svg>

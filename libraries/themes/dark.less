@@ -1,0 +1,150 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "themes/common.less";
+
+/**************
+* MAIN COLORS *
+**************/
+
+@color_window: #393939;
+@color_text: #dfdfdf;
+@color_window_alternate: #303030;
+@color_text_alternate: #dfdfdf;
+@color_alternate: #dfdfdf; // Not text
+@color_highlight: #6faef5;
+@color_highlight_contrasted: #121212;
+@color_highlight_alternate: #dfdfdf; // Background for highlight
+
+@color_red: #df4343;
+@color_orange: #DF7722;
+@color_yellow: #eeee22;
+@color_blue: #0078D7;
+@color_green: #1dab00;
+@color_gray: #888;
+@color_white: #dfdfdf;
+@color_purple: rgb(189, 77, 129);
+
+
+/******************
+* RELATIVE COLORS *
+******************/
+
+// Windows
+@color_window_border: darken(@color_window, 10%);
+@color_window_border_light: lighten(@color_window, 15%);
+@color_window_alternate_border: darken(@color_window_alternate, 10%);
+@color_window_hover: lighten(@color_window, 5%);
+@container_color: @color_window;
+@container_text_color: @color_text;
+@container_text_color_transparent: rgba(223, 223, 223, 0.3); // @color_text + opacity
+@container_header_color: @color_window_alternate;
+@container_header_text_color: @color_text_alternate;
+
+// Input
+@input_background_color: @color_text;
+@input_color: @color_window_border;
+@input_color_bold: @color_window; // input text color for bold buttons
+@input_border_color: @color_window_border_light;
+@input_background_color_hover: darken(@input_background_color, 10%);
+@input_background_color_highlight: lighten(@input_background_color, 10%); // Button bk when text is highlighted
+@input_text_shadow_color: @color_text;
+
+
+/***********************************************************
+* LIGHT FUNCTIONAL COLORS - to use in Pulse Web components *
+***********************************************************/
+
+// Widgets
+@widget_background: @container_header_color;
+@widget_text: @color_text_alternate;
+@widget_separator: @color_text_alternate;
+// Widgets - opposite color (setup)
+@widget_contrasted_background: darken(#ffffff, 2.5%);
+;
+@widget_contrasted_separator_or_text: #222;
+;
+
+//Current data
+@current_background_color: @color_window_alternate;
+@current_text_color: @color_text_alternate;
+@current_border_color: @color_window_alternate_border;
+
+
+/*********
+* IMAGES *
+*********/
+
+@imagedir: "../../images";
+@background_image: url('@{imagedir}/background_dark.png'); // color: @color_text_alternate
+
+
+/*******
+* MISC *
+*******/
+
+@box_shadow: 0px 5px 7px -6px rgba(0, 0, 0, 0.7);
+
+/*******************************
+* PREPARE NEW theme management *
+********************************/
+
+:root {
+  // MAIN APP Colors
+  --app_bk_color: #393939; //rgb(3, 78, 162); // Blue
+  --app_text_color: #dfdfdf;
+
+  // Shadows - TODO : dispatch or make uniform ?
+
+  --shadow_color: rgba(0, 0, 0, 0.7); // used for buttons -> IS DEFINED in components
+  /*--header_shadow_color: rgba(0, 0, 0, 0.7);
+  --header_button_shadow_color: rgba(0, 0, 0, 0.3);
+  --legend_shadow_color: rgba(0, 0, 0, 0.7);
+  --box_shadow_color: rgba(0, 0, 0, 0.7);
+*/
+
+  // Main header, on top
+  //--header_bk_gradient_start: #434343;
+  //--header_bk_gradient_end: #2f2f2f;
+  --header_bk_color: var(--app_bk_color);
+  --header_text_color: var(--app_text_color);
+  --header_border_color: #202020;
+
+  // Right / Left panels
+  --panel_bk_color: #393939;
+  --panel_text_color: #dfdfdf;
+  --panel_border_color: #202020;
+  --box_in_panel_bk_color: #202020; // Ex: Button
+  --box_in_panel_text_color: #dfdfdf;
+
+  // Bottom / Legend
+  --legend_bk_color: #393939;
+  --legend_text_color: #dfdfdf;
+  --legend_border_color: #272727;
+
+  // MAIN display
+  //--background_image: url('@{imagedir}/background_dark.png');
+  --main_bk_color: #272727; // Used when image can not be loaded
+  --main_text_color: #dfdfdf;
+
+  // Any box in main display, with ou without header
+  --box_border_color: #202020;
+  --box_bk_color: #393939;
+  --box_text_color: #dfdfdf;
+  --box_header_bk_color: #303030;
+  --box_header_text_color: #dfdfdf;
+
+  // In bar ou rectangle in box
+  --bar_in_box_bk_color: #303030;
+  --bar_in_box_text_color: #dfdfdf;
+  --bar_in_box_border_color: rgba(0, 0, 0, 0.3); // No overload
+
+  /*
+  // BUTTONS DISCREET
+
+  // BUTTONS SHOWY
+*/
+}

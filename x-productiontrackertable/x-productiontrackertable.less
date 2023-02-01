@@ -1,0 +1,129 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+
+x-productiontrackertable {
+  display: block;
+  height: 100% !important;
+  width: 100% !important;
+
+  .productiontrackertable-content {
+    display: inline-block;
+    position: relative; // For loader position
+    height: 100% !important;
+    width: 100% !important;
+
+    .productiontrackertable-table {
+      display: grid;
+      grid-template-columns: 1fr repeat(4, minmax(min-content, 15%));
+      column-gap: 2px;
+      row-gap: 2px;
+      justify-items: stretch;
+      align-items: stretch;
+
+      //font-size: 1.5ex; -> NEVER !!!
+      //font-size: clamp(1rem, 0.2500rem + 3.3333vw, 2rem); -> in js code
+
+      &.with-reserve-capacity {
+        grid-template-columns: 1fr repeat(7, minmax(min-content, 10%));
+      }
+
+      /*
+      .header-hourly,
+      .header-summary,
+      .header-hourly-actual,
+      .header-hourly-target,
+      .header-summary-actual,
+      .header-range*/
+      .header {
+        font-weight: bold;
+
+        background-color: @container_header_color;
+        color: @container_header_text_color;
+        //border: 1px solid darken(@container_color, 10%);
+      }
+
+      >div {
+        border: 1px solid darken(@container_color, 10%);
+        position: relative;
+        min-height: 1.6em;
+
+        .text-position {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        .text-range {
+          // No vertical center - too long
+          text-align: center;
+        }
+      }
+
+      .header-hourly {
+        grid-column-start: 2;
+        grid-column-end: span 2;
+      }
+
+      .header-summary {
+        grid-column-start: 4;
+        grid-column-end: span 2;
+      }
+
+      .header-capacity {
+        min-height: 2.2em;
+        //grid-column-start: 6; 7; 8;
+        grid-column-end: span 1;
+      }
+
+      .header-hourly-actual {
+        grid-column: 2;
+      }
+
+      /*.header-hourly-target {
+        //grid-column: 3;
+      }
+      .header-summary-actual {
+        //grid-column: 4;
+      }
+      .header-summary-target {
+        //grid-column: 5;
+      }*/
+      //.header-capacity-value {}
+
+      .header-range {
+        grid-column: 1;
+        line-height: 1.5em;
+      }
+
+      .bad-efficiency{
+        color: @bad_efficiency_base !important;
+      }
+      .mid-efficiency{
+        color: @mid_efficiency_base !important;
+      }
+      
+      .hourly-actual {
+        grid-column: 2;
+      }
+
+      .hourly-target {
+        grid-column: 3;
+      }
+
+      .summary-actual {
+        grid-column: 4;
+      }
+
+      .summary-target {
+        grid-column: 5;
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>default - Machine38</label>
+  <div class="content-div">
+    <x-currentworkinfo id="machine38" machine-id=38 path='http://localhost:8082/'></x-currentworkinfo>
+  </div>
+
+  <label>Machine39 - nblines = 2</label>
+  <div class="content-div">
+    <x-currentworkinfo id="machine39_2lines" machine-id=39 path='http://localhost:8082/' nblines="2" ></x-currentworkinfo>
+  </div>
+
+  <label>Slot missing</label>
+  <div class="content-div">
+    <x-currentworkinfo id="error_slotmissing" machine-id=31 path='http://localhost:8082/'></x-currentworkinfo>
+  </div>
+
+  <label>No operation</label>
+  <div class="content-div">
+    <x-currentworkinfo id="error_nooperation" machine-id=32 path='http://localhost:8082/'></x-currentworkinfo>
+  </div>
+
+  <label>Error 404</label>
+  <div class="content-div">
+    <x-currentworkinfo id="error_1" machine-id=30 path='http://localhost:8082/'></x-currentworkinfo>
+  </div>
+
+</div>

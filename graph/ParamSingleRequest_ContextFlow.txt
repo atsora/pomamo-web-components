@@ -1,0 +1,9 @@
+graph {
+  label: Single request and param autoPath single request component: context flow;
+}
+
+[] ==> [ Initialization ] ==> [ ParamValidation ] ==> [ Load ] ==> [ Loaded ]
+[ Load ] --> [ NotApplicable ]
+[] ..> [ Reset ] ==> [ ParamValidation ]
+[] ..> [ Reload ] ==> [ Loaded ]
+[] ..> [ Stop ] --> [ Reload ]

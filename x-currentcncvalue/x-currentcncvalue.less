@@ -1,0 +1,43 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+@import "x-stacklight/x-stacklight.less"; // For colors
+
+x-currentcncvalue {
+  display: block;
+  /* To make isVisible work. Chrome: always inline */
+
+  /*&.pulse-component-not-applicable {
+    //&pulsecomponent-context-NotApplicable
+    display: none;
+  } -> moved to global */
+
+  .currentcncvalue-data {
+    display: inline-block;
+    // font-size: 0.8em; done in parent
+  }
+
+  .currentcncvalue-data-label {
+    display: none; // default
+  }
+
+  .currentcncvalue-data-span {
+    font-style: italic;
+  }
+
+  .stacklight-svg {
+    path {
+      fill: transparent;
+      stroke: @bar_rounded_border;
+      //filter: url(#innerShadow);
+      //stroke-width: 0.5;
+    }
+  }
+
+  // Colors / Status are defined in stacklight
+
+}

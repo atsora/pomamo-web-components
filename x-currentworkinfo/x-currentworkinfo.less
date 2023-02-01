@@ -1,0 +1,23 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-currentworkinfo { // See x-workinfo
+  display: block; /* To make is(':visible') works */
+  .workinfo-singledata {
+    display : block;  
+    // Not inline-block, to use 2 lines for Remmele
+    // NOT inline to use ... and width
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis; // for Opera
+    overflow: hidden;
+    padding: 0 2px;
+    //white-space: nowrap; // == 1 line cf js
+    // OR
+    //word-wrap: break-word; // break words and go to next line == 2 lines cf js
+  }
+}

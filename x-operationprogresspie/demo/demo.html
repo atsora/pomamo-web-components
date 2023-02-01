@@ -1,0 +1,34 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+
+  <h3>Size = small red - Machine 23</h3>
+  <div class='divsize_small'>
+    <x-operationprogresspie id="size_small_machine23" machine-id=23 path='http://localhost:8082/'></x-operationprogresspie>
+  </div>
+
+  <h3>Size = big blue - Machine3</h3>
+  <div class='divsize_big'>
+    <x-operationprogresspie id="size_big_machine3" machine-id=3 path='http://localhost:8082/'></x-operationprogresspie>
+  </div>
+
+  <h3>Size = default splitted blue - Machine25</h3>
+  <div class='divsize'>
+    <x-operationprogresspie id="size_default_machine25" machine-id=25 path='http://localhost:8082/'></x-operationprogresspie>
+  </div>
+
+  <h3>Error: invalid machine</h3>
+  <div class='divsize'>
+    <x-operationprogresspie id="error_no_operation_size_default_machine8" machine-id=8 path='http://localhost:8082/'></x-operationprogresspie>
+  </div>
+
+  <h3>Error: Gateway Timeout / 504 </h3>
+  <div class='divsize_big'>
+    <x-operationprogresspie id="error_gateway_timeout_size_big_machine9" machine-id=9 path='http://localhost:8082/'></x-operationprogresspie>
+  </div>
+
+</div>

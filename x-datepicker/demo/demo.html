@@ -1,0 +1,64 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<script>
+  function getValuesButtonFunction() {
+    let DPs = $('.static-tests').find('x-datepicker');
+    for (let i = 0; i < DPs.length; i++) {
+      let value = DPs[i].getISOValue();
+      $(DPs[i]).parent().find('.DP-getValue').html(value);
+    };
+  }
+</script>
+
+<div class="static-tests">
+  <button class="getValuesButton" onclick="getValuesButtonFunction()">GET VALUES</button>
+
+  <div class="testDP">
+    <label>Current date (default)</label>
+    <div class='dp_position'>
+      <x-datepicker id="current"></x-datepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="DP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testDP">
+    <label>Fix date 2010-05-17 + min 2010-05-09 + max 2010-05-29</label>
+    <div class='dp_position'>
+      <x-datepicker id="fixed_date_all_options"
+        mindate="2010-05-09" maxdate="2010-05-29" defaultdate="2010-05-17">
+      </x-datepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="DP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testDP">
+    <label>Fix date 2010-05-07 + min 2010-05-09 + max 2010-05-29 + display out of range MIN</label>
+    <div class='dp_position'>
+      <x-datepicker id="" mindate="2010-05-09" maxdate="2010-05-29"
+        defaultdate="2010-05-07"></x-datepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="DP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="testDP">
+    <label>Fix date 2010-05-29 + min 2010-05-09 + max 2010-05-29 + display out of range MAX</label>
+    <div class='dp_position'>
+      <x-datepicker id="" mindate="2010-05-09" maxdate="2010-05-29"
+        defaultdate="2010-05-30"></x-datepicker>
+      <div class='valuediv'>
+        <label class="labelGetValue">GET VALUE :</label> <span class="DP-getValue"></span>
+      </div>
+    </div>
+  </div>
+
+</div>

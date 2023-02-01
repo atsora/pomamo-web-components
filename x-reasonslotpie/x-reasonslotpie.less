@@ -1,0 +1,44 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-reasonslotpie {
+  display: block;
+  //position: relative; // For loading position
+  // To adapt size :
+  height: 100% !important;
+  width: 100% !important;
+  
+  .reasonslotpie-content {
+    height: 100% !important;
+    width: 100% !important;
+    min-height: 50px;
+    position: relative; // To position error message + loading
+
+    .reasonslotpie-pie {
+      height: 100% !important;
+      width: 100% !important;
+
+      .reasonslotpie-svg {
+        height: 100% !important;
+        width: 100% !important;
+      }
+    }
+  }
+
+  .reasonslotpie-svg > g {
+    filter: url(#innerShadow);
+  }
+
+  .donut-ring-background{
+    stroke: @widget_background;
+  }
+  
+  .time-in-pie {
+    fill: @color_text_alternate;
+  }
+}

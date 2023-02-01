@@ -1,0 +1,32 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-showrunningdialogbutton {
+  /* To make is(':visible') works */
+  display: block;
+
+  .show-running-btn {
+    background-image: url("@{imagedir}/running-icon.svg");
+
+    height: 22px;
+    width: 22px;
+    margin: 4px;
+    cursor: pointer;
+
+    svg {
+      height: 100%;
+      width: 100%;
+      fill: @color_text_alternate;
+      transition: stroke 0.3s ease-in-out, fill 0.3s ease-in-out;
+    }
+
+    &:hover svg {
+      fill: @color_highlight;
+    }
+  }
+}

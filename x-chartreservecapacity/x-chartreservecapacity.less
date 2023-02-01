@@ -1,0 +1,55 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-chartreservecapacity {
+  /* To make is(':visible') works */
+  display: block;
+
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+
+  .chartreservecapacity-content {
+    display: flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+
+    .chartreservecapacity-header {
+
+      box-sizing: border-box;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+
+      div {
+        padding: 4px;
+      }
+
+      .chartreservecapacity-shift-div {
+        font-size: 0.9em;
+      }
+
+      .chartreservecapacity-now-div {
+        font-style: italic;
+        font-size: 0.8em;
+      }
+    }
+
+    .chartreservecapacity-chart-position {
+      flex: 10 10 auto;
+      overflow: hidden;
+
+      //.pulse-chart-content {}
+    }
+  }
+}

@@ -1,0 +1,40 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="attributes">
+  <div class="demo-sub-title attribute-title">Attributes</div>
+
+  <div class="demo-sub-content attribute-content">
+
+    <div class="attribute-name config optional string"><code>path</code></div>
+    <div class="attribute-description">This parameter can be used for tests. It is read in configuration filled by x-checkpath.
+    </div>
+
+    <div class="attribute-name optional boolean"><code>unique-machine</code></div>
+    <div class="attribute-description">Set this parameter to "true" so that only one machine can be selected in the dialog.<br />
+      <b>Note:</b> when this option is set, dynamic groups cannot be displayed even with "enableGroups".
+    </div>
+
+    <div class="attribute-name optional boolean"><code>ordering</code></div>
+    <div class="attribute-description">Set this parameter to "true" so that you can reorder the selected machines.<br />
+      In that case, selecting a category will result in selecting all individual machines within this category with the right order.
+    </div>
+
+    <div class="attribute-name optional config boolean"><code>enableGroups</code></div>
+    <div class="attribute-description">Set this parameter to "true" if you want to display dynamic groups. By default this is <b>false</b>. Can be defined globally in config<br />
+      <b>Note:</b> this option is deactivated if used together with "unique-machine".
+    </div>
+
+    <div class="attribute-name string config"><code>machine</code></div>
+    <div class="attribute-description">List of selected machine ids, each id being separated by a comma. -1 means "all machines".
+    </div>
+
+    <div class="attribute-name context string config"><code>group</code></div>
+    <div class="attribute-description">List of selected group ids, for example "C4" or "Ca2,ET0".
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="dynamic-tests">
+  <p>Datetimegraduation is managed by periodmanager.</p>
+
+  <label>Today (default)</label>
+  <div>
+    <x-datetimegraduation id="today" period-context='TODAY'></x-datetimegraduation>
+    <x-periodmanager path='http://localhost:8082/' displaydaysrange=1 exclude-now='false' period-context='TODAY'></x-periodmanager>
+  </div>
+
+  <label>Yesterday</label>
+  <div>
+    <x-datetimegraduation id="yesterday" period-context='YESTERDAY'></x-datetimegraduation>
+    <x-periodmanager path='http://localhost:8082/' displaydaysrange=1 exclude-now='true' period-context='YESTERDAY'></x-periodmanager>
+  </div>
+
+  <label>1 month</label>
+  <div>
+    <x-datetimegraduation id="month" period-context='MONTH'></x-datetimegraduation>
+    <x-periodmanager path='http://localhost:8082/' displaydaysrange=30 exclude-now='false' period-context='MONTH'></x-periodmanager>
+  </div>
+
+  <label>1 quarter</label>
+  <div>
+    <x-datetimegraduation id="quarter" period-context='QUARTER'></x-datetimegraduation>
+    <x-periodmanager path='http://localhost:8082/' displaydaysrange=90 exclude-now='false' period-context='QUARTER'></x-periodmanager>
+  </div>
+
+  <label>1 hour</label>
+  <div>
+    <x-datetimegraduation id="hour_1" period-context='1hour'></x-datetimegraduation>
+    <x-periodmanager path='http://localhost:8082/' displayhoursrange=1 exclude-now='false' period-context='1hour'></x-periodmanager>
+  </div>
+
+  <label>12 hours</label>
+  <div>
+    <x-datetimegraduation id="hour_12" period-context='12hours'></x-datetimegraduation>
+    <x-periodmanager path='http://localhost:8082/' displayhoursrange=12 exclude-now='false' period-context='12hours'></x-periodmanager>
+  </div>
+
+  <label>1 year + bottom </label>
+  <div>
+    <x-datetimegraduation id="year" bottom=true period-context='YEAR'></x-datetimegraduation>
+    <x-periodmanager path='http://localhost:8082/' displaydaysrange=365 exclude-now='false' period-context='YEAR'>
+    </x-periodmanager>
+  </div>
+
+</div>

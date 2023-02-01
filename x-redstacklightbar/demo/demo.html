@@ -1,0 +1,25 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label> Default - Machine18</label>
+  <div class="pulse-bar-div">
+    <div class="simul-reason-bar"></div>
+    <x-redstacklightbar id="height_default_machine18" machine-id=18 path='http://localhost:8082/' range='[2018-12-06T07:00:00.000Z,2018-12-06T11:00:00.000Z)'></x-redstacklightbar>
+  </div>
+
+  <label>Error: missing range (hidden)</label>
+  <div class="pulse-bar-div">
+    <div class="simul-reason-bar"></div>
+    <x-redstacklightbar id="error_missing_range" machine-id=19 path='http://localhost:8082/'></x-redstacklightbar>
+  </div>
+
+  <label>Error: invalid machine-id (hidden)</label>
+  <div class="pulse-bar-div">
+    <div class="simul-reason-bar"></div>
+    <x-redstacklightbar id="error_machineid" machine-id='string id' path='http://localhost:8082/' range='[2018-12-06T07:00:00.000Z,2018-12-06T11:00:00.000Z)'></x-redstacklightbar>
+  </div>
+</div>

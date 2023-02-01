@@ -1,0 +1,93 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+
+x-cycleprogresspie {
+  display: block;
+  height: 100% !important;
+  width: 100% !important;
+
+  .cycleprogresspie-content {
+    display: inline-block;
+    position: relative; // For loader position
+    height: 100% !important;
+    width: 100% !important;
+  }
+  .cycleprogresspie-progresspie, .cycleprogresspie-svg {
+    height: 100% !important;
+    width: 100% !important;
+  }
+  
+  .cycleprogresspie-invisible-bk{
+    stroke: @widget_background;
+    filter: url(#innerShadow);
+  }
+
+  /* COLORS -> maybe linked to theme - same as bar */
+  .donut-ring-background{
+    stroke: @color_alternate; //== @color_window;
+    filter: url(#innerShadow);
+  }
+  .stroke-color-as-background{ // For 'stop' lines...
+    stroke: @container_color;
+  }
+
+  // completion in pie (same colors as bar)
+  .completion-stroke-noinfo {
+    stroke: @widget_background; // @color_text; Nearly hidden if no info
+  }
+  .completion-stroke-activeevent{ // was stop 
+    stroke: @color_blue;
+    filter: url(#innerShadow);
+  }
+  // +Severity level :
+  .completion-stroke-activeevent.Error{
+    stroke: @color_red;
+    filter: url(#innerShadow);
+  }
+  .completion-stroke-comingevent{
+    stroke: @color_blue;
+    filter: url(#innerShadow);
+  }
+
+  // TEXT (same colors as bar)
+  .text-top{
+    fill: @color_text_alternate;
+    // Style is defined in .js because most of it can not be defined here
+  }
+  //.text-bottom == cycleprogresspie-time == time-in-pie
+  .time-in-pie{
+    fill: @color_text_alternate;
+
+    // Style is defined in .js because most of it can not be defined here
+  }
+  // was stop :
+  .time-in-pie.activeevent.Error{
+    fill: @color_red;
+  }
+  // Severity / Threshold
+  .time-in-pie.comingevent.Warning.threshold1{
+    fill: @color_yellow;
+  }
+  .time-in-pie.comingevent.Warning.threshold2{
+    fill: @color_orange;
+  }
+
+
+  /* INTERN error / warning => roue dentee */
+  .cycleprogresspie-error-warn-div {
+    position: absolute;
+  }
+  .cycleprogresspie-warn-image{
+    fill: @color_text_alternate;
+  }
+  .cycleprogresspie-error-image{
+    fill: @color_text_alternate;
+  }
+
+}

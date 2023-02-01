@@ -1,0 +1,31 @@
+type error_status = [
+    OldPermanent <json name="PERMANENT">
+  | OldPermanentNoConfig <json name="PERMANENT_NO_CONFIG">
+  | OldTransientDelay <json name="TRANSIENT_DELAY">
+  | OldTransient <json name="TRANSIENT">
+  | OldNoData <json name="NO_DATA">
+  | OldNotApplicable <json name="NOT_APPLICABLE">
+  | WrongRequestParameter
+  | MissingConfiguration
+  | UnexpectedError
+  | NotApplicable
+  | ProcessingDelay
+  | TransientProcessError
+  | Stale
+  ]
+
+type error = {
+    message: string;
+    status: error_status;
+} <ocaml field_prefix="error_">
+
+
+type machine_mode_category = {
+    id <json name="Id">: int;
+    display <json name="Display">: string;
+} <ocaml field_prefix="machine_mode_category_">
+
+type machine_mode_category_legend = {
+  items <json name="Items">: machine_mode_category list
+} <ocaml field_prefix="machine_mode_category_legend_">
+

@@ -1,0 +1,3 @@
+<x-*>: include
+"ocaml": include
+true: bin_annot,package(js_of_ocaml),package(js_of_ocaml.ppx),package(js_of_ocaml.tyxml),package(js_of_ocaml.weak),package(lwt),package(lwt.ppx),package(tyxml.ppx),package(atdgen),package(ppx_custom_printf),package(batteries),package(sexplib),package(ppx_sexp_conv),linkpkg

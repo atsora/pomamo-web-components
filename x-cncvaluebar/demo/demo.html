@@ -1,0 +1,44 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Height = default - Machine18</label>
+  <div class="pulse-bar-div">
+    <x-cncvaluebar id="height_default_machine18" machine-id=18 range='[2013-11-21T08:00:00.000Z;2013-11-22T08:00:00.000Z)'
+      path='http://localhost:8082/'></x-cncvaluebar>
+  </div>
+
+  <label>Height = 30 - Machine18</label>
+  <div class="pulse-bar-div">
+    <x-cncvaluebar id="height_30_machine18" machine-id=18 range='[2013-11-21T08:00:00.000Z;2013-11-22T08:00:00.000Z)'
+      path='http://localhost:8082/' height=30></x-cncvaluebar>
+  </div>
+
+  <label>Height = 20 - Machine19</label>
+  <div class="pulse-bar-div">
+    <x-cncvaluebar id="height_20_machine19" machine-id=18 range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)'
+      path='http://localhost:8082/' height=20></x-cncvaluebar>
+  </div>
+
+  <label>Error: no data (height = 30) - Machine19</label>
+  <div class="pulse-bar-div">
+    <x-cncvaluebar id="error_no_data_height_40" machine-id=19 range='[2013-11-07T08:00:00.000Z;2013-11-08T08:00:00.000Z)'
+      path='http://localhost:8082/' height=30></x-cncvaluebar>
+  </div>
+
+  <label>Error: invalid machine-id (height = 40)</label></label>
+  <div class="pulse-bar-div">
+    <x-cncvaluebar id="error_machineid_height_40" machine-id='id bizarre' range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)'
+      path='http://localhost:8082/' height=40></x-cncvaluebar>
+  </div>
+
+  <label>Error: invalid machine-id (height = default -> too small to display error message)</label></label>
+  <div class="pulse-bar-div">
+    <x-cncvaluebar id="error_machineid_height_default" machine-id='id bizarre' range='[2014-05-05T06:00:00.000Z;2014-05-05T18:00:00.000Z)'
+      path='http://localhost:8082/'></x-cncvaluebar>
+  </div>
+
+</div>

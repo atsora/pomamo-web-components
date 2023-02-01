@@ -1,0 +1,32 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "x-chartreservecapacity/x-chartreservecapacity.less";
+@import "demo/demo.less";
+
+.fixed-size1 {
+  box-sizing: border-box;
+  padding: 6px;
+  width: 100%;
+  height: 200px;
+
+  border: 1px solid lightcoral;
+}
+
+.fixed-size2 {
+  box-sizing: border-box;
+  padding: 6px;
+  width: 50%;
+  height: 500px;
+
+  border: 1px solid lightsalmon;
+}
+
+x-chartreservecapacity {
+  .bar.negative {
+    fill: lightcoral;
+  }
+}

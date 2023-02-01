@@ -1,0 +1,38 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+@import "pulsecomponent-detailspopup.less";
+
+x-cncalarmbar { /* To make is(':visible') works */ 
+  display: block;
+  
+  position: relative; // to go in front of other bars, not below
+  
+  height: 0;  // to ignore height for next component position
+  top: -17px; // done : get reasonslot height and set this value in js
+
+  .cncalarmbar {
+    position: relative;
+    width: auto; // 100%;
+  }
+
+  .cncalarmbar-content{
+    position: relative;
+    pointer-events: none; // Disable click on this bar - forward to reasonbar
+  }
+
+  .cncalarmbar-svg {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    pointer-events: none; // Disable click on this bar - forward to reasonbar
+
+    text{
+      pointer-events: none; // In message too
+    }
+  }
+}

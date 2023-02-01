@@ -1,0 +1,65 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="dynamic-tests">
+  <label>The real message is on top of the page</label>
+  <x-message id="message1"></x-message>
+
+  <div class="demo_content">
+    <div class="component">
+
+      <table>
+        <tr>
+          <td> <label for="messageId">Id : </label> </td>
+          <td>
+            <input type="text" name="messageId" id="messageId" />
+          </td>
+        </tr>
+        <tr>
+          <td> <span>Message : </span> </td>
+          <td>
+            <textarea rows="4" cols="100" id="messageText">This is a example message to test the component x-message.</textarea>
+          </td>
+        </tr>
+        <tr>
+          <td> <span>Time(in seconds) : </span> </td>
+          <td>
+            <select id="timeDuration">
+              <option value="permanent">permanent</option>
+              <option value="3">3 seconds</option>
+              <option value="5">5 seconds</option>
+              <option value="10">10 seconds</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td> <span>Level : </span> </td>
+          <td>
+            <select id="messageLevel">
+              <option value="default">default</option>
+              <option value="error">error</option>
+              <option value="warning">warning</option>
+              <option value="info">info</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td> <span>With reload button : </span> </td>
+          <td>
+            <select id="reload">
+              <option value="noreload">default (no)</option>
+              <option value="withreload">reload</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2"> <button id="displayBtn">Display</button> </td>
+        </tr>
+      </table>
+
+    </div>
+  </div>
+</div>

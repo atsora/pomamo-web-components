@@ -1,0 +1,86 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-productionmachiningstatus {
+  display: block;
+  /* To make is(':visible') works */
+
+  a {
+    text-decoration: none;
+    color: @widget_text;
+  }
+
+  a:hover {
+    text-decoration: none; //underline;
+  }
+
+  a:visited {
+    color: @widget_text;
+  }
+
+  .productionmachiningstatus-shiftspan {
+    display: inline-block;
+    font-weight: bold;
+  }
+
+  .productionmachiningstatus-linkreport {
+
+    // was -shiftlabel{
+    &::after {
+      content: ': ';
+    }
+  }
+
+  // bar-style display :
+  &.pulse-lastbar {
+
+    //good-efficiency ??? 
+    .bad-efficiency {
+      background: @bad_efficiency_base;
+      color: @bad_efficiency_base_contrasted_color;
+
+      a {
+        color: @bad_efficiency_base_contrasted_color;
+      }
+
+      a:visited {
+        color: @bad_efficiency_base_contrasted_color;
+      }
+    }
+    .mid-efficiency {
+      background: @bad_efficiency_base;
+      color: @bad_efficiency_base_contrasted_color;
+
+      a {
+        color: @bad_efficiency_base_contrasted_color;
+      }
+
+      a:visited {
+        color: @bad_efficiency_base_contrasted_color;
+      }
+    }
+  }
+
+  // BOX format :
+  &.pulse-text {
+    position: relative; // To position message
+
+    .pulse-cellbar-main {
+      /*.productionmachiningstatus-shiftspan{
+      // Remove special color -> from pulse-bar-div
+      a {
+        color: @widget_text;
+      }
+      a:visited {
+        color: @widget_text;
+      }
+    }*/
+    }
+  }
+
+}

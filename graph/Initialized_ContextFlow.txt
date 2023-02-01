@@ -1,0 +1,6 @@
+graph {
+  label: Initialized component: context flow;
+}
+
+[] ==> [ Initialization ] ==> [ Initialized ]
+[] ..> [ Reset ] ==> [ Initialized ]

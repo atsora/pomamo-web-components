@@ -1,0 +1,42 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Height = default - Machine18</label>
+  <div class="pulse-bar-div">
+    <x-operationslotbar id="height_default_machine18" machine-id=18 path='http://localhost:8082/' range='[2013-09-03T08:28:37.000Z,2013-09-03T08:54:36.000Z)'></x-operationslotbar>
+  </div>
+
+  <label>Height = 50 - Machine18 -> should display "..." </label>
+  <div class="pulse-bar-div">
+    <x-operationslotbar id="height_50_machine18" machine-id=18 path='http://localhost:8082/' range='[2013-09-03T08:28:37.000Z,2013-09-03T08:54:36.000Z)'
+      height=50></x-operationslotbar>
+  </div>
+
+  <label>Height = 10 - Machine21</label>
+  <div class="pulse-bar-div">
+    <x-operationslotbar id="height_10_machine21" machine-id=21 path='http://localhost:8082/' range='[2014-05-05T06:00:00.000Z,2014-05-05T18:00:00.000Z)'
+      height=10></x-operationslotbar>
+  </div>
+
+  <label>Error: missing range (height = 40)</label>
+  <div class="pulse-bar-div">
+    <x-operationslotbar id="error_missing_range_height_40" machine-id=19 path='http://localhost:8082/' range='[2014-02-07T08:00:00.000Z;2013-11-07T08:00:00.000Z)'
+      height=40></x-operationslotbar>
+  </div>
+
+  <label>Error: invalid machine-id (height = 40)</label>
+  <div class="pulse-bar-div">
+    <x-operationslotbar id="error_machineid_height_40" machine-id='string id' path='http://localhost:8082/' range='[2014-02-07T08:00:00.000Z;2013-11-07T08:00:00.000Z)'
+      height=40></x-operationslotbar>
+  </div>
+
+  <label>Error: invalid machine-id (height = 10 -> too small to display error message) </label>
+  <div class="pulse-bar-div">
+    <x-operationslotbar id="error_not_displayed_height_10" machine-id='string id' path='http://localhost:8082/' range='[2014-02-07T08:00:00.000Z;2013-11-07T08:00:00.000Z)'
+      height=10></x-operationslotbar>
+  </div>
+</div>

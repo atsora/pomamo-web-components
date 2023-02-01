@@ -1,0 +1,20 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>No machine = disabled</label>
+  <div class='middleSized'>
+    <x-milestonesadd id='MA_NoMach_disabled' path="http://localhost:8082/"></x-milestonesadd>
+  </div>
+  <label>Machine 18 : Try 2020-03-11 & "One special day" for success (= clean)</label>
+  <div class='middleSized'>
+    <x-milestonesadd id='MA_1' machine-id="18" path="http://localhost:8082/"></x-milestonesadd>
+  </div>
+  <label>Machine 22 : Try any data for failure</label>
+  <div class='fullSized'>
+    <x-milestonesadd id='MA_2' machine-id="22" path="http://localhost:8082/"></x-milestonesadd>
+  </div>
+</div>
