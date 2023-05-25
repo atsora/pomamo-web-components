@@ -2,7 +2,7 @@
 	"tags": {
 		"allowUnknownTags" : true
 	},
-	"plugins": ["plugins/markdown", "../@lemoineat/jsdoc-plugin-graph/plugins/graphtag", "../@lemoineat/jsdoc-plugin-graph/plugins/gtag"],
+	"plugins": ["plugins/markdown", "../@atsora/jsdoc-plugin-graph/plugins/graphtag", "../@atsora/jsdoc-plugin-graph/plugins/gtag"],
 	"templates": {
 		"cleverLinks": true,
 		"default": {

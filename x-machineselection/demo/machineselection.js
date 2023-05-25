@@ -7,6 +7,6 @@ require('x-machineselection/x-machineselection');
 var pulseConfig = require('pulseConfig');
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 // To Replace with Machine/Groups -> rename ?
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/MachineGroups');
-//require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/MachinesFromGroups');
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/GetMachine');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/MachineGroups');
+//require('node_modules/@atsora/pomamo-web-service-simulation/scripts/MachinesFromGroups');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetMachine');

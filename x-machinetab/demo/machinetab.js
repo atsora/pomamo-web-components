@@ -7,12 +7,12 @@ require('x-machinetab/x-machinetab');
 var pulseConfig = require('pulseConfig');
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 // Machine name
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/GetMachine');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetMachine');
 // Color on the left
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/CurrentReason');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CurrentReason');
 // Icons
 // TO ADD : 
-//require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/MissingWorkInformation');
-//require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/CncAlarm');
-//require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/CycleProgress');
-//require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/ReasonUnanswered')
+//require('node_modules/@atsora/pomamo-web-service-simulation/scripts/MissingWorkInformation');
+//require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CncAlarm');
+//require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CycleProgress');
+//require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonUnanswered')

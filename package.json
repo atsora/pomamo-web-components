@@ -1,15 +1,26 @@
 {
-  "name": "@lemoineat/pomamo-web-components",
+  "name": "@atsora/pomamo-web-components",
   "description": "Pomamo web components",
   "version": "13.0.0",
-  "author": "Lemoine Automation Technologies <nrelange@lemoinetechnologies.com>",
+  "contributors": [
+    "Lemoine Automation Technologies <nrelange@lemoinetechnologies.com>",
+    "Nicolas Relange <nicolas@atsora.eu>"
+  ],
   "license": "Apache-2.0",
   "repository": {
     "type": "",
     "url": ""
   },
-  "files": [ "**", "!.git/**", "!.gitignore", "!.gitattributes", "!.eslintrc.json", "!.vscode/**" ],
+  "files": [
+    "**",
+    "!.git/**",
+    "!.gitignore",
+    "!.gitattributes",
+    "!.eslintrc.json",
+    "!.vscode/**"
+  ],
   "dependencies": {
+    "@atsora/pomamo-web-service-simulation": "~3.0.0",
     "@bower_components/classlist": "components/classList.js#*",
     "@bower_components/jquery": "jquery/jquery-dist#~2.1.4",
     "@bower_components/jquery-mockjax": "jakerella/jquery-mockjax#~1.6.0",
@@ -18,40 +29,39 @@
     "@bower_components/momentjs": "moment/moment#~2.10.6",
     "@bower_components/webcomponentsjs": "Polymer/webcomponentsjs#~0.7.14",
     "@webcomponents/webcomponentsjs": "^2.4.3",
-    "core-js": "~3.6.5",
+    "core-js": "~3.30.2",
     "d3": "^6.2.0",
     "markdown-it": "^12.0.4",
-    "@lemoineat/pomamo-web-service-simulation": "~3.0.0",
     "regenerator-runtime": "~0.13.5"
   },
   "devDependencies": {
+    "@atsora/docdash": "~2.0.1",
+    "@atsora/grunt-graph-easy": "~1.0.1",
+    "@atsora/jsdoc-plugin-graph": "~1.0.0",
     "@babel/core": "~7.9.6",
     "@babel/plugin-transform-classes": "~7.9.5",
     "@babel/plugin-transform-new-target": "~7.8.3",
     "@babel/preset-env": "~7.9.6",
-    "@lemoineat/docdash": "~2.0.1",
     "grunt": "^1.6.0",
     "grunt-babel": "~8.0.0",
     "grunt-bake": "^1.9.0",
-    "grunt-browserify": "~5.3.0",
+    "grunt-browserify": "~6.0.0",
     "grunt-contrib-clean": "~1.0.0",
     "grunt-contrib-concat": "~1.0.0",
     "grunt-contrib-copy": "~1.0.0",
     "grunt-contrib-less": "^2.0.0",
     "grunt-contrib-obfuscator": "^8.0.0",
-    "@lemoineat/grunt-graph-easy": "~1.0.1",
     "grunt-jsdoc": "^2.4.1",
     "grunt-less-themes": "~0.0.5",
     "grunt-ocamlbuild": "~1.0.1",
     "grunt-of-ocamlbuild": "~1.0.2",
-    "grunt-replace": "~1.0.1",
+    "grunt-replace": "~2.0.2",
     "grunt-shell": "~2.1.0",
-    "@lemoineat/jsdoc-plugin-graph": "~1.0.0",
-    "load-grunt-config": "^3.0.1",
+    "load-grunt-config": "^4.0.1",
     "time-grunt": "^1.4.0"
   },
   "optionalDependencies": {
-    "fsevents": "^1.2.13"
+    "chokidar": "^3.5.3"
   },
   "engines": {
     "node": ">=12.0.0",

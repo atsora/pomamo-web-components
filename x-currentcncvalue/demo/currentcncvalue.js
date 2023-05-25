@@ -7,7 +7,7 @@ require('x-currentcncvalue/x-currentcncvalue');
 
 var pulseConfig = require('pulseConfig');
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/CncValueCurrent');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CncValueCurrent');
 
 //# sourceMappingURL=currentcncvalue.js.map
 

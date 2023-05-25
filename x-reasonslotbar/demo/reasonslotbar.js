@@ -10,6 +10,6 @@ require('x-reasonslotlist/demo/reasonslotlist');
 
 var pulseConfig = require('pulseConfig');
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/ReasonColorSlots');
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/GetRangeAround');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonColorSlots');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetRangeAround');
 

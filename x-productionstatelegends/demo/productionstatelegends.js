@@ -6,4 +6,4 @@ require('x-productionstatelegends/x-productionstatelegends');
 
 var pulseConfig = require('pulseConfig');
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/ProductionStateLegend');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ProductionStateLegend');

@@ -13,4 +13,4 @@ let serverDate = new Date('2050-10-08T09:45:00Z');
 let diffServerTimeMinusNowMSec = serverDate.getTime() - now.getTime();
 pulseConfig.setGlobal('diffServerTimeMinusNowMSec', diffServerTimeMinusNowMSec);
 
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/ToolLivesByMachine');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ToolLivesByMachine');

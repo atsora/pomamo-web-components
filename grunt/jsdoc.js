@@ -9,7 +9,7 @@ module.exports = {
       paths: [''],
       destination: './about/jsdoc',
       configure: './grunt/jsdoc.conf.json',
-      template: './node_modules/@lemoineat/docdash',
+      template: './node_modules/@atsora/docdash',
       timeout: 120,
       verbose: true,
       debug: true

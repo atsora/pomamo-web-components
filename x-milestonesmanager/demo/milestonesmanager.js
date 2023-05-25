@@ -7,6 +7,6 @@ require('x-milestonesmanager/x-milestonesmanager');
 var pulseConfig = require('pulseConfig');
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/MachineGroups');
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/MilestonesSave');
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/MilestonesGet');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/MachineGroups');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/MilestonesSave');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/MilestonesGet');

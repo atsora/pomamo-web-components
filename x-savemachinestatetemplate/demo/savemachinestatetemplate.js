@@ -6,7 +6,7 @@ require('x-savemachinestatetemplate/x-savemachinestatetemplate');
 
 var pulseConfig = require('pulseConfig');
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/MachineStateTemplates');
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/NextMachineStateTemplate');
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/SaveMachineStateTemplate');
-require('node_modules/@lemoineat/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/MachineStateTemplates');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/NextMachineStateTemplate');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/SaveMachineStateTemplate');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision');
