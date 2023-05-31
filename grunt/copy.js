@@ -148,21 +148,5 @@ module.exports = {
       { 'about/live/lib/moment/moment.js': 'node_modules/@bower_components/momentjs/min/moment-with-locales.min.js' },
       { 'about/live/lib/json2/json2.js': 'node_modules/@bower_components/json2/json2.js' },
     ]
-  },
-  babel: {
-    files: [
-      {
-        expand: true,
-        cwd: 'about/docs/',
-        src: ['images/**', 'lib/**', 'scripts/**', 'styles/**'],
-        dest: 'about/docs-babel/'
-      },
-      {
-        expand: true,
-        cwd: 'about/live/',
-        src: ['images/**', 'lib/**', 'scripts/**', 'styles/**'],
-        dest: 'about/live-babel/'
-      }
-    ]
   }
 };

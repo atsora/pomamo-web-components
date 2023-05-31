@@ -14,8 +14,7 @@ module.exports = function (grunt) {
     config: {
       ml_script_dir: 'ocamljs',
       demo_script_dir: 'about/demo/scripts',
-      live_script_dir: 'about/live/es2015',
-      live_babel_dir: 'about/live/scripts',
+      live_script_dir: 'about/live/scripts',
       test_script_dir: 'about/tests/scripts'
     }
   });

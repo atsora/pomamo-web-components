@@ -59,7 +59,7 @@
     "release": [
         "clean:ml"
     ],
-    "livees2015": [
+    "live": [
         "clean:live",
         "clean:ml",
         "copy:livehtml",
