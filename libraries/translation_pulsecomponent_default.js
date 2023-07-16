@@ -8,7 +8,7 @@ var PULSE_TRANSLATION = PULSE_TRANSLATION || {};
 // App translations - should be completed in app code
 
 PULSE_TRANSLATION.general = {
-  title: 'Pulse',
+  title: 'Atsora Tracking',
 };
 
 /* 
