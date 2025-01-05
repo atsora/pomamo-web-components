@@ -1318,6 +1318,7 @@ class PulseRequestComponent extends PulseInitializedComponent {
         }
         return true;
       }
+      case 'Maintenance':
       case 'PulseMaintenance': { // = maintenance is started (server may be off soon)
         // Stop all refresh :
         let target = {

@@ -414,6 +414,7 @@ require('x-datetimerange/x-datetimerange');
         .attr('reason-id', reason.Id)
         .attr('reason-text', reason.Display)
         .attr('details-required', reason.DetailsRequired);
+      elt[0].reasondata = reason.Data;
       if (reason.DetailsRequired) {
         let applyWithComment = $('<div></div>')
           .addClass('applyreasonwithcomment').addClass('pushButton')
@@ -456,7 +457,7 @@ require('x-datetimerange/x-datetimerange');
     }
 
     /* CLICK - Save reason */
-    _saveReason (reasonId, details) {
+    _saveReason (reasonId, details, reasonData) {
       let machineId = Number($(this.element).attr('machine-id'));
 
       let rangesList = [];
@@ -481,8 +482,12 @@ require('x-datetimerange/x-datetimerange');
 
       let timeout = this.timeout;
       let machid = this.element.getAttribute('machine-id'); // Should be copied. This.element disappear before request answer
+      let postData = { 'Ranges': rangesList };
+      if (reasonData) {
+        postData.ReasonData = reasonData;
+      }
       pulseService.postAjax(0, url,
-        { 'Ranges': rangesList },
+        postData,
         timeout,
         function (ajaxToken, data) {
           this._saveSuccess(ajaxToken, data, machid);
@@ -561,7 +566,7 @@ require('x-datetimerange/x-datetimerange');
     }
 
     /* CLICK - Get details */
-    _getDetailsAndSave (reasonId, reasonName, detailsRequired) {
+    _getDetailsAndSave (reasonId, reasonName, detailsRequired, reasonData) {
       // Machine
       let machineDisplay = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
         'machine-id': this.element.getAttribute('machine-id')
@@ -612,7 +617,7 @@ require('x-datetimerange/x-datetimerange');
 
       this._detailsDialogId = pulseCustomDialog.initialize(dialogbox, {
         title: reasonDetailsTitle,
-        onOk: function (x_save, reasId, inputParam) { // to avoid closure
+        onOk: function (x_save, reasId, reasData, inputParam) { // to avoid closure
           return function () {
             let details = inputParam.val();
             if ((details == '') && (detailsRequired)) {
@@ -621,12 +626,12 @@ require('x-datetimerange/x-datetimerange');
               pulseCustomDialog.openError(pleaseAddComment);
             }
             else {
-              x_save._saveReason(reasId, details);
+              x_save._saveReason(reasId, details, reasData);
               pulseCustomDialog.close('#' + x_save._detailsDialogId);
               x_save._detailsDialogId = null;
             }
           }
-        }(this, reasonId, input), /* end of validate*/
+        }(this, reasonId, reasonData, input), /* end of validate*/
         onCancel: function () {
           pulseCustomDialog.close('#' + this._detailsDialogId);
           this._detailsDialogId = null;
@@ -670,10 +675,11 @@ require('x-datetimerange/x-datetimerange');
       let reasonId = Number(row[0].getAttribute('reason-id'));
       let reasonName = row[0].getAttribute('reason-text');
       let detailsRequired = ('true' == row[0].getAttribute('details-required'));
+      let reasonData = row[0].reasondata;
       if (detailsRequired)
-        this._getDetailsAndSave(reasonId, reasonName, detailsRequired);
+        this._getDetailsAndSave(reasonId, reasonName, detailsRequired, reasonData);
       else
-        this._saveReason(reasonId);
+        this._saveReason(reasonId, undefined, reasonData);
     }
 
     /**
@@ -686,9 +692,10 @@ require('x-datetimerange/x-datetimerange');
       let row = $(td).parent();
 
       let reasonId = Number(row[0].getAttribute('reason-id'));
-      let detailsRequired = ('true' == row[0].getAttribute('details-required'));
       let reasonName = row[0].getAttribute('reason-text');
-      this._getDetailsAndSave(reasonId, reasonName, detailsRequired);
+      let detailsRequired = ('true' == row[0].getAttribute('details-required'));
+      let reasonData = row[0].reasondata;
+      this._getDetailsAndSave(reasonId, reasonName, detailsRequired, reasonData);
     }
 
     /**
