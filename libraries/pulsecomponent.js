@@ -41,6 +41,15 @@ class WebComponent { // extends HTMLElement if customElements.define is used dir
   }
 
   /**
+   * Associated DOM document
+   * 
+   * @return {Document} document
+   */
+  get document () {
+    return this._element.ownerDocument;
+  }
+
+  /**
    * Callback that is called  when the custom element is connected to the DOM document
    */
   connectedCallback () {
@@ -171,7 +180,7 @@ class PulseComponent extends WebComponent {
    * @param {string} cssClass - Name of the CSS class
    */
   addClass (cssClass) {
-    $(this.element).addClass(cssClass);
+    this.element.classList.add(cssClass);
   }
 
   /**
@@ -180,7 +189,7 @@ class PulseComponent extends WebComponent {
    * @param {string} cssClass - Name of the CSS class
    */
   removeClass (cssClass) {
-    $(this.element).removeClass(cssClass);
+    this.element.classList.remove(cssClass);
   }
 
   /**
@@ -356,12 +365,12 @@ class PulseStateComponent extends PulseComponent {
         let tmp_class = class_names[i];
         if (0 == tmp_class.indexOf('pulse-component-')) {
           // -loading -not-applicable -warning -error 
-          $(this.element).removeClass(tmp_class);
+          this.element.classList.remove(tmp_classs);
         }
         if (0 == tmp_class.indexOf('pulsecomponent-')) {
           // pulsecomponent-context-Initialized -ParamValidation -Loaded ... 
           // pulsecomponent-key-Loading -Validating -Error ...
-          $(this.element).removeClass(tmp_class);
+          this.element.classList.remove(tmp_class);
         }
       }
     }
@@ -373,19 +382,20 @@ class PulseStateComponent extends PulseComponent {
    * @returns {boolean} is the component visible ?
    */
   get isVisible () {
-    if ($(this.element).hasClass('pulse-nodisplay')) { // 'x-check...'
+    if (this.element.classList.contains('pulse-nodisplay')) { // 'x-check...'
       return true;
     }
     if (!this._connected) {
       return false;
     }
 
-    if ($(this.element).is(':visible')) {
+    // $(this.element).is(':visible') definition
+    if (!!( this.element.offsetWidth || this.element.offsetHeight || this.element.getClientRects().length )) {
       return true;
     }
 
     // If x-tag is in foreignObject in svg => define as visible !
-    if ($(this.element).hasClass('pulse-added-in-svg')) {
+    if (this.element.classList.contains('pulse-added-in-svg')) {
       return true;
     }
 

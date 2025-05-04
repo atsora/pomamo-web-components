@@ -66,7 +66,7 @@ module.exports = {
   demojslib: {
     files: [
       { 'about/demo/lib/jquery/jquery.js': 'node_modules/@bower_components/jquery/dist/jquery.min.js' },
-      { 'about/demo/lib/jquery-mockjax/jquery.mockjax.js': 'node_modules/@bower_components/jquery-mockjax/jquery.mockjax.js' },
+      { 'about/demo/lib/jquery-mockjax/jquery.mockjax.js': 'node_modules/@bower_components/jquery-mockjax/dist/jquery.mockjax.js' },
       { 'about/demo/lib/moment/moment.js': 'node_modules/@bower_components/momentjs/min/moment-with-locales.min.js' },
       { 'about/demo/lib/json2/json2.js': 'node_modules/@bower_components/json2/json2.js' },
       { 'about/demo/lib/d3/d3.min.js': 'node_modules/d3/dist/d3.min.js' }

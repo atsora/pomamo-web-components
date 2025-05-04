@@ -1,0 +1,26 @@
+<!--
+Copyright (C) 2025 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Test 1</label>
+  <div>
+    <x-tr key="Test1" default="Default1" path="http://localhost:8082/"></x-tr>
+  </div>
+
+  <label>Test 2</label>
+  <div>
+    <x-tr key="Test2" path="http://localhost:8082/"></x-tr>
+  </div>
+
+  <label>Unknown key</label>
+  <div>
+    <x-tr key="Unknown" default="Default Value" path="http://localhost:8082/"></x-tr>
+  </div>
+
+  <label>With javascript:</label>
+  <div id="demo-js" style="border:1px solid blue;" ></div>
+
+</div>

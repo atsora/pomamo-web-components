@@ -73,22 +73,11 @@ var pulseComponent = require('pulsecomponent');
       // In case of clone, need to be empty :
       $(this.element).empty();
 
-      // Create DOM - Loader -> Not needed here
-      //var loader = $("<div></div>").addClass("pulse-loader").html('Loading...').css('display', 'none');
-      //$(this._content).append(loader);
       // Create DOM - Content
       this._content = $('<div></div>').addClass('pulse-XXX-content');
       $(this.element)
         .addClass('XXX')
         .append(this._content);
-
-      // Create DOM - message for error
-      /*this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);*/
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
