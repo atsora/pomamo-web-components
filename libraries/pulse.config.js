@@ -29,8 +29,8 @@ exports.pulseTranslate = function (key, defaultTranslation) {
   let result = defaultTranslation;
 
   // Translations accessible?
-  if (!pulseUtility.isNotDefined(PULSE_TRANSLATION)) {
-    let translation = PULSE_TRANSLATION;
+  if (!pulseUtility.isNotDefined(ATSORA_CATALOG)) {
+    let translation = ATSORA_CATALOG;
     let listOfKeys = key.split('.');
     for (let i = 0; i < listOfKeys.length; i++) {
       translation = translation[listOfKeys[i]];

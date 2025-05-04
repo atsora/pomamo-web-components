@@ -513,6 +513,25 @@ class ParamAndPathValidationTimeoutState extends ParamValidationTimeoutState {
 }
 
 /**
+ * Read some data
+ * 
+ * When this state is entered {@link module:pulseComponent~PulseInitializedComponent#read} is called.
+ * 
+ * @extends module:state~State
+ */
+class ReadState extends State {
+  /**
+   * Switch to the next context or to the Error state
+   * 
+   * @override
+   */
+  enter (previousStateContext, previousStateKey) {
+    super.enter(previousStateContext, previousStateKey);
+    this.component.read();
+  }
+}
+
+/**
  * Request state
  * 
  * After a specified delay, an Ajax method is called to refresh the component.
@@ -963,6 +982,7 @@ exports.StaticState = StaticState;
 exports.NoActionState = NoActionState;
 exports.WaitState = WaitState;
 exports.ParamValidationTimeoutState = ParamValidationTimeoutState;
+exports.ReadState = ReadState;
 exports.RequestState = RequestState;
 exports.LoadState = LoadState;
 exports.NormalRequestState = NormalRequestState;

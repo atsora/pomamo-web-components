@@ -1,20 +1,21 @@
 // Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2025 Atsora Solutions
 //
 // SPDX-License-Identifier: Apache-2.0
 
-var PULSE_COMPONENT_TRANSLATION = PULSE_COMPONENT_TRANSLATION || {};
-var PULSE_TRANSLATION = PULSE_TRANSLATION || {};
+var ATSORA_COMPONENT_CATALOG = ATSORA_COMPONENT_CATALOG || {};
+var ATSORA_CATALOG = ATSORA_CATALOG || {};
 
 // App translations - should be completed in app code
 
-PULSE_TRANSLATION.general = {
+ATSORA_CATALOG.general = {
   title: 'Atsora Tracking',
 };
 
 /* 
  * Components translations
  */
-var PULSE_COMPONENT_TRANSLATION = {
+var ATSORA_COMPONENT_CATALOG = {
   changebutton: 'Change',
   contactsupport: 'Please contact the support team',
   missingconfiguration: 'Missing configuration',

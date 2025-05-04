@@ -201,7 +201,7 @@ class PulseComponent extends WebComponent {
    */
   getTranslation (key, defaultValue) {
     // TODO : Catch exception + log + return default
-    let translation = PULSE_COMPONENT_TRANSLATION;
+    let translation = ATSORA_COMPONENT_CATALOG;
     if (!pulseUtility.isNotDefined(translation)) {
       let nameTag = '';
       if (!pulseUtility.isNotDefined(this.element)) {
@@ -228,7 +228,7 @@ class PulseComponent extends WebComponent {
         }
         if (pulseUtility.isNotDefined(translation)) {
           // toFind = translation[keyS];
-          translation = PULSE_COMPONENT_TRANSLATION;
+          translation = ATSORA_COMPONENT_CATALOG;
           for (let i = 0; i < listOfKeys.length; i++) {
             translation = translation[listOfKeys[i]];
             if ((pulseUtility.isNotDefined(translation))

@@ -8,10 +8,6 @@ var pulseConfig = require('pulseConfig');
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/Catalog');
 
-var catalog = {
-  Test4: 'Test 4'
-}
-
 //# sourceMappingURL=tr.js.map
 
 function load () {

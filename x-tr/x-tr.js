@@ -9,10 +9,14 @@
  */
 var pulseUtility = require('pulseUtility');
 var pulseComponent = require('pulsecomponent');
-var eventBus = require('eventBus');
+var pulseConfig = require('pulseConfig');
+var state = require('state');
 
 (function () {
 
+  /**
+   * Add a ReadStatic context between ParamValidation and Load
+   */
   class TrComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
@@ -23,11 +27,77 @@ var eventBus = require('eventBus');
       const self = super(...args);
 
       self._dataElement = undefined;
-      
+
       return self;
     }
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    /**
+     * @override
+     * 
+     * @param {!string} context - Context
+     * @return {!string} key
+     */
+    getStartKey(context) {
+      switch (context) {
+        case 'Read':
+          return 'Reading';
+        default:
+          return super.getStartKey(context);
+      }
+    }
+
+    /**
+     * @override
+     */
+    getNextContext(context) {
+      switch (context) {
+        case 'ParamValidation':
+          return 'Read';
+        case 'Read':
+          return 'Load';
+        default:
+          return super.getNextContext(context);
+      }
+    }
+
+    /**
+     * @override
+     * 
+     * @param {!string} context - Context
+     * @param {!string} key - Key
+     * @returns {!State} Created states
+     */
+    defineState(context, key) {
+      switch (context) {
+        case 'Read':
+          switch (key) {
+            case 'Reading':
+              return new state.ReadState(context, key, this);
+            default:
+              console.error(`State not defined for context=${context} and key=${key}`);
+              debugger; // eslint-disable-line no-debugger
+              throw 'State not defined';
+          }
+        default:
+          return super.defineState(context, key);
+      }
+    }
+
+    enterContext(context) {
+      if (context == 'Read') {
+        this.startLoading();
+      }
+      return super.enterContext(context);
+    }
+
+    exitContext(context) {
+      if (context == 'Read') {
+        this.endLoading();
+      }
+      return super.exitContext(context);
+    }
+
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'key':
@@ -39,7 +109,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    initialize () {
+    initialize() {
       // In case of clone, need to be empty :
       this.element.replaceChildren();
 
@@ -53,7 +123,7 @@ var eventBus = require('eventBus');
       this.switchToNextContext();
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // Parameters
       // DOM
       this.element.replaceChildren();
@@ -64,14 +134,14 @@ var eventBus = require('eventBus');
       super.clearInitialization();
     }
 
-    reset () {
+    reset() {
       this.removeError();
       this._dataElement.innerText = '';
 
       this.switchToNextContext();
     }
 
-    validateParameters () {
+    validateParameters() {
       if (!this.element.hasAttribute('key')) {
         if ('' === this.element.getAttribute('key')) {
           if (this.isVisible) { // To avoid displayed error in hidden duplicated part
@@ -85,7 +155,29 @@ var eventBus = require('eventBus');
       this.switchToNextContext();
     }
 
-    getShortUrl () {
+    /**
+     * Read the data in catalog
+     */
+    read() {
+      let key = this.element.getAttribute('key');
+      let v = this.getTranslation(key, undefined);
+      if ((v == undefined) || (v == null)) {
+        v = pulseConfig.pulseTranslate(key, undefined);
+        if ((v == undefined) || (v == null)) {
+          this.switchToNextContext();
+        }
+        else {
+          this._dataElement.innerText = v;
+          this.switchToContext('Loaded');
+        }
+      }
+      else {
+        this._dataElement.innerText = v;
+        this.switchToContext('Loaded');
+      }
+    }
+
+    getShortUrl() {
       let url = 'I18N/Catalog';
       let key = this.element.getAttribute('key');
       let d = this.element.getAttribute('default');
@@ -96,11 +188,11 @@ var eventBus = require('eventBus');
       return url;
     }
 
-    refresh (data) {
+    refresh(data) {
       this._dataElement.innerText = data.Value;
     }
 
-    displayError (message) {
+    displayError(message) {
       if ('' === message) {
         this._dataElement.removeAttribute('error-message');
       }
@@ -109,7 +201,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    removeError () {
+    removeError() {
       this.displayError('');
     }
   }
