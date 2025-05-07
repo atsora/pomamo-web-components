@@ -1,0 +1,145 @@
+// Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2025 Atsora Solutions
+//
+// SPDX-License-Identifier: Apache-2.0
+
+var ATSORA_COMPONENT_CATALOG = ATSORA_COMPONENT_CATALOG || {};
+var ATSORA_CATALOG = ATSORA_CATALOG || {};
+
+// App translations - should be completed in app code
+
+ATSORA_CATALOG.general = {
+  title: 'Atsora Tracking',
+};
+
+/* 
+ * Components translations
+ */
+var ATSORA_COMPONENT_CATALOG = {
+  changebutton: 'Changer',
+  contactsupport: "Prière de consulter l'équipe support",
+  missingconfiguration: 'Configuration manquante',
+  error2dots: 'Erreur : ', // TODO : use it!!!
+  check: {
+    PleaseSyncTime: "Prière de synchroniser la date et l'heure",
+    PleaseCheckServerOrPath : "Prière de vérifier l'accès au serveur (ou le chemin)",
+    PleaseCheckServer: "Prière de vérifier l'accès au serveur",
+    PleaseDatabaseAccess: "Prière de vérifier l'accès à la base de données"
+
+  },
+  currentcncvalue: {
+    noDataTooOld: 'N/D'
+  },
+  currenticoncncalarm: {
+    iconTooltip: '' // Never used because specific alarm tooltip
+  },
+  currenticonnextstop: {
+    iconTooltip: 'prochain arrêt'
+  },
+  currenticonunanserweredreason: {
+    iconTooltip: 'état machine non renseigné'
+  },
+  currenticonworkinformation: {
+    iconTooltip: 'ordre de fabrication non défini'
+  },
+  currenttool: {
+    noDataTooOld: 'N/D'
+  },
+  currentsequence: {
+    noDataTooOld: '-', // N/A'
+  },
+  detailsViewSubTitles: {
+    reason: "raison d'arrêt",
+    machinemode: "mode d'exécution",
+    machinestatetemplate: "calendrier de planification",
+    observationstate: 'état planifié',
+    operationcycle: 'cycle',
+    productionstate: 'état de production',
+    shift: 'équipe',
+    cncvalue: 'donnée cnc',
+    cncalarms: 'alarmes cnc',
+    workinfo: 'info de fabrication',
+    sequence: "séquence d'usinage",
+    isofile: "programme d'usinage",
+    partgoal: 'Objectif de production de pieces'
+  },
+  lastmachinestatetemplate: {
+    scheduledStatus: 'État planifié : '
+  },
+  lastmachinestatus: {
+    reason: "Raison d'arrêt courante : ",
+    pastReasonData: "Raisons passées",
+    currentTooltip: "Changer la raison d'arrêt courante",
+    pastTooltip: "Consulter ou changer une raison passée"
+  },
+  lastserialnumber: {
+    currentserialnumber: 'Numéro de série : ',
+    pastserialnumber: 'Données passées',
+    currentTooltip: "Changer le numéro de série courant",
+    pastTooltip: 'numéros de série passés'
+  },
+  lastworkinformation: {
+    noOperation: ' ',
+    pastdata: 'Données passées',
+    pastTooltip: ''
+  },
+  loginpassword: {
+    User: 'Utilisateur :',
+    Password: 'Mot de passe :',
+    OldPassword: 'Ancien mot de passe :',
+    NewPassword: 'Nouveau mot de passe :',
+    StayConnected: 'Rester connecté',
+    ConnectWith: 'Connecté avec '
+  },
+  productiontrackertable: {
+    hourly: 'par heure',
+    summary: 'résumé',
+    actual: 'courant',
+    target: 'objectif'
+  },
+  productionmachiningstatus: {
+    notavailable: 'Non disponible'
+  },
+  progressbar: {
+    processingTitle: 'En cours de traitement....'
+  },
+  reasongroups: {
+    textidleDefaultValue: 'Arrêtée'
+  },
+  runninglegends: {
+    textidle: 'Arrêtée',
+    textrunning: 'Active'
+  },
+  savemachinestatetemplate: {
+    changeMachineStateButton: "Changer les états planifiés",
+    changeMachineStateTitle: "Changer les états planifiés"
+  },
+  savereason: {
+    comment: 'commentaire',
+    comment2dots: 'Commentaire :',
+    errorNoDetails: "Prière d'ajouter un commentaire",
+    noPeriod: 'Pas de période',
+    periods: 'périodes',
+    reason2dots: 'Raison :',
+    reasonDetailsTitle: 'Détails des raisons',
+    saveReasonTitle: 'Renseigner une raison',
+    split: 'Couper'
+  },
+  sequencebar: {
+    sequence: 'Séquence '
+  },
+  setupmachine: {
+    noOperation: "Pas d'opération",
+    setupsince: "En réglage depuis :",
+    switchTo: 'Switch to ',
+    switchToProduction: 'Passer en production'
+  },
+  toollifemachine: {
+    noOperation: "Pas d'opération"
+    //,tool: 'tool', tools: 'tools'
+    //, nextexpiration: 'Tool Expiring in' --REMOVED
+  },
+  saveworkinfo: {
+    WorkInfoTitle: 'Ordre de fabrication / Opération'
+  }
+};

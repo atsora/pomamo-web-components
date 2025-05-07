@@ -21,7 +21,7 @@ var ATSORA_COMPONENT_CATALOG = {
   missingconfiguration: 'Missing configuration',
   error2dots: 'Error: ', // TODO : use it!!!
   check: {
-    PleaseSyncTime: 'Please synchonize date and time ',
+    PleaseSyncTime: 'Please synchronize date and time ',
     PleaseCheckServerOrPath :'Please check server access (or path)',
     PleaseCheckServer: 'Please check server access',
     PleaseDatabaseAccess: 'Please check database access'
