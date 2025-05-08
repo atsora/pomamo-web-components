@@ -1,4 +1,5 @@
 // Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2025 Atsora Solutions
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -7,6 +8,7 @@
  * @requires module:pulseComponent
  */
 var pulseComponent = require('pulsecomponent');
+var pulseConfig = require('pulseConfig');
 var pulseSvg = require('pulseSvg');
 var pulseUtility = require('pulseUtility');
 
@@ -110,9 +112,9 @@ var pulseUtility = require('pulseUtility');
         if (!this.element.hasAttribute('machine-id')) {
           console.warn('missing attribute group or machine in x-groupsingroup');
           // Delayed display :
-          this.setError('Please select a machine or group'); // delayed error message
-          // Immediat display :
-          //this.switchToKey('Error', () => this.displayError('Please select a machine'), () => this.removeError());
+          this.setError(this.getTranslation('error.selectMachineGroup', 'Please select a machine or a group of machines')); // delayed error message
+          // Immediate display :
+          //this.switchToKey('Error', () => this.displayError(this.getTranslation('error.selectMachineGroup', 'Please select a machine or a group of machines'), () => this.removeError());
 
           return;
         }

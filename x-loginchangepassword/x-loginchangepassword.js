@@ -161,25 +161,25 @@ var pulseCustomDialog = require('pulseCustomDialog');
       this._loginEdit = $('<input></input>').addClass('loginchangepassword-login-input')
         .attr('type', 'text');
       let loginLabel = $('<label></label>').addClass('loginchangepassword-login-label')
-        .html(pulseConfig.pulseTranslate('loginpassword.User', 'User:'))
+        .html(this.getTranslation('user', 'User:'))
         .append(this._loginEdit);
 
       this._oldPassEdit = $('<input></input>').addClass('loginchangepassword-password-input')
         .attr('type', 'password');
       let oldPassLabel = $('<label></label>').addClass('loginchangepassword-password-label')
-        .html(pulseConfig.pulseTranslate('loginpassword.OldPassword', 'Old password:'))
+        .html(this.getTranslation('oldPassword', 'Old password:'))
         .append(this._oldPassEdit);
 
       this._newPassEdit1 = $('<input></input>').addClass('loginchangepassword-password-input')
         .attr('type', 'password');
       let newPassLabel1 = $('<label></label>').addClass('loginchangepassword-password-label')
-        .html(pulseConfig.pulseTranslate('loginpassword.NewPassword', 'New password:'))
+        .html(this.getTranslation('newPassword', 'New password:'))
         .append(this._newPassEdit1);
 
       this._newPassEdit2 = $('<input></input>').addClass('loginchangepassword-password-input')
         .attr('type', 'password');
       let newPassLabel2 = $('<label></label>').addClass('loginchangepassword-password-label')
-        .html(pulseConfig.pulseTranslate('loginpassword.NewPassword', 'New password:'))
+        .html(this.getTranslation('newPassword', 'New password:'))
         .append(this._newPassEdit2);
 
       this._changeContent = $('<div></div>').addClass('loginchangepassword-content')

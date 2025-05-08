@@ -183,7 +183,7 @@ require('x-loginpassword/x-loginpassword');
 
         // Name
         let authNameDisplay = $('<span></span>').addClass('loginconnection-oauth-name')
-          .html(pulseConfig.pulseTranslate('loginpassword.ConnectWith', 'Connect with ')
+          .html(this.getTranslation('connectWith', 'Connect with ')
            + tmpAuth[iMeth].AuthenticationName);
         authDiv.append(authNameDisplay);
 
@@ -192,7 +192,7 @@ require('x-loginpassword/x-loginpassword');
           let loginEdit = $('<input></input>').addClass('loginconnection-oauth-login-input')
             .attr('type', 'text');
           let loginLabel = $('<label></label>').addClass('loginconnection-oauth-login-label')
-            .html(pulseConfig.pulseTranslate('loginpassword.User', 'User:'))
+            .html(this.getTranslation('user', 'User:'))
             .append(loginEdit);
           authDiv.append(loginLabel);
         }

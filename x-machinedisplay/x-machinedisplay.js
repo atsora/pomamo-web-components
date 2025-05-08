@@ -1,4 +1,5 @@
 // Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2025 Atsora Solutions
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -9,6 +10,7 @@
  */
 var pulseUtility = require('pulseUtility');
 var pulseComponent = require('pulsecomponent');
+var pulseConfig = require('pulseconfig');
 var eventBus = require('eventBus');
 
 (function () {
@@ -108,7 +110,7 @@ var eventBus = require('eventBus');
               console.error('missing attribute machine or group in MachineDisplayComponent.element');
             }
             //this.setError('missing machine-id'); // delayed error message
-            this.switchToKey('Error', () => this.displayError('invalid machine or group'), () => this.removeError());
+            this.switchToKey('Error', () => this.displayError(this.getTranslation('invalidMachineGroup','Invalid machine or group')), () => this.removeError());
             return;
           }
         }

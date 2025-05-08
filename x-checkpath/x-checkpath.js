@@ -140,7 +140,7 @@ var eventBus = require('eventBus');
       /* NO Message here, because it can happens if WebServiceAddress is badly configured
       var messageInfo = {
         'id': 'MAINPATH',
-        'message': pulseConfig.pulseTranslate('check.PleaseCheckServerOrPath', 'Please check server access (or path)'),
+        'message': this.getTranslation('errorServerAccessOrPath', 'Please check server access (or path)'),
         // Keep or mainpath here. Because it is probably linked to path when the message comes from here --RR
         'level': 'error',
         'time': 20 // seconds to display message
@@ -171,7 +171,7 @@ var eventBus = require('eventBus');
     manageFailure (isTimeout, xhrStatus) {
       var messageInfo = {
         'id': 'PATH',
-        'message': pulseConfig.pulseTranslate('check.PleaseCheckServerOrPath', 'Please check server access (or path)'),
+        'message': this.getTranslation('errorServerAccessOrPath', 'Please check server access (or path)'),
         // Keep 'or path' here. Because it is probably linked to path when the message comes from here --RR
         'level': 'error',
         'time': 20 // seconds to display message

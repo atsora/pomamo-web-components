@@ -98,15 +98,13 @@ var pulseConfig = require('pulseConfig');
 
       let messageInfo = {
         'id': 'NO_SERVER', // same as clear
-        'message': pulseConfig.pulseTranslate('check.PleaseCheckServer',
-          'Please check server access'), // server OR database
+        'message': this.getTranslation('errorServerAccess', 'Please check server access'), // server OR database
         'level': 'error', // or 'warning', ?
         'clickToClose': false
       };
 
       if (this._databaseIsDisconnected) {
-        messageInfo.message = pulseConfig.pulseTranslate('check.PleaseDatabaseAccess',
-          'Please check database access');
+        messageInfo.message = this.getTranslation('errorDatabaseAccess', 'Please check database access');
       }
 
       eventBus.EventBus.dispatchToAll('showMessageSignal', messageInfo);

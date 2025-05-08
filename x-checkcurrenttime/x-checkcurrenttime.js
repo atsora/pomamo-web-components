@@ -88,7 +88,7 @@ var eventBus = require('eventBus');
       if (Math.abs(diffServerTimeMinusNowMSec) > allowedDiff * 1000) {
         let messageInfo = {
           'id': 'Current Time',
-          'message': pulseConfig.pulseTranslate('check.PleaseSyncTime',
+          'message': this.getTranslation('syncTime',
             'Please synchonize date and time '),
           'level': 'warning',
           'clickToClose': true

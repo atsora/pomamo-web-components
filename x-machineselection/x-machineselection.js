@@ -299,7 +299,7 @@ require('x-freetext/x-freetext');
       // Button CLEAR
       this._clearFilters_button = $('<button></button>')
         .addClass('machineselection-button')
-        .addClass('machineselection-clearfilters').html(pulseConfig.pulseTranslate('machineselection.clearButton', 'Clear'));
+        .addClass('machineselection-clearfilters').html(this.getTranslation('clearButton', 'Clear'));
       this._clearFilters_button.click(function () {
         this._clearSelection();
       }.bind(this));
@@ -309,7 +309,7 @@ require('x-freetext/x-freetext');
       // G
       this._switchToGroups_button = $('<button></button>')
         .addClass('machineselection-button')
-        .addClass('machineselection-switch-to-groups').html(pulseConfig.pulseTranslate('machineselection.groupsButton', 'Groups'));
+        .addClass('machineselection-switch-to-groups').html(this.getTranslation('groupsButton', 'Groups'));
       this._switchToGroups_button.click(function () {
         this._groupSelectionArray = [];
         this._machineSelectionArray = [];
@@ -320,7 +320,7 @@ require('x-freetext/x-freetext');
       // M
       this._switchToMachines_button = $('<button></button>')
         .addClass('machineselection-button')
-        .addClass('machineselection-switch-to-machines').html(pulseConfig.pulseTranslate('machineselection.machinesButton', 'Machines'));
+        .addClass('machineselection-switch-to-machines').html(this.getTranslation('machinesButton', 'Machines'));
       this._switchToMachines_button.click(function () {
         this._groupSelectionArray = [];
         this._machineSelectionArray = [];
@@ -351,7 +351,7 @@ require('x-freetext/x-freetext');
       this._machinesSearchDiv.append(this._clearSearchButton);
 
       this._inputSearch = $('<input></input>').addClass('machineselection-machines-search-input')
-        .attr('type', 'text').attr('placeholder', pulseConfig.pulseTranslate('machineselection.searchDots', 'Search...'));
+        .attr('type', 'text').attr('placeholder', this.getTranslation('searchDots', 'Search...'));
       this._machinesSearchDiv.append(this._inputSearch);
 
       // FILL must be one AFTER dialog creation to display icons 
@@ -396,7 +396,7 @@ require('x-freetext/x-freetext');
         'textchange-context': 'machineselection'
       });
       this._useMachineButton = $('<div></div>').addClass('machineselection-usemachines-button')
-        .attr('title', pulseConfig.pulseTranslate('machineselection.switchToMachineSelection','Switch to machine selection'));
+        .attr('title', this.getTranslation('switchToMachineSelection','Switch to machine selection'));
       this._previewHeader = $('<div></div>').addClass('machineselection-preview-header')
         .append(previewTitle).append(this._freeTextLastUpdate).append(this._useMachineButton);
       this._previewList = $('<div></div>').addClass('machineselection-preview-list');
@@ -427,7 +427,7 @@ require('x-freetext/x-freetext');
 
       // Create a dialog
       this._dialogId = pulseCustomDialog.initialize(this._dialogPage1, {
-        title: this._uniquemachine ? pulseConfig.pulseTranslate('machineselection.selectMachine', 'Select a machine') : pulseConfig.pulseTranslate('machineselection.selectMachines', 'Select machines'),
+        title: this._uniquemachine ? this.getTranslation('selectMachine', 'Select a machine') : this.getTranslation('selectMachines', 'Select machines'),
         autoClose: false,
         onOpen: function () {
           // Reinitialize selection and view
@@ -441,8 +441,8 @@ require('x-freetext/x-freetext');
             if (this._machineSelectionArray.length == 0) {
               pulseCustomDialog.openError(
                 this._uniquemachine
-                  ? pulseConfig.pulseTranslate('machineselection.errorMissingUnique', 'Please select one machine')
-                  : pulseConfig.pulseTranslate('machineselection.errorMissing', 'Please select at least one machine'));
+                  ? this.getTranslation('errorMissingUnique', 'Please select one machine')
+                  : this.getTranslation('errorMissing', 'Please select at least one machine'));
               return;
             }
           }
@@ -467,7 +467,7 @@ require('x-freetext/x-freetext');
 
               if (staticOnly) {
                 pulseCustomDialog.openError(
-                  pulseConfig.pulseTranslate('machineselection.errorMissingMachineInGroup', 'Please select groups including at least one machine.'));
+                  this.getTranslation('errorMissingMachineInGroup', 'Please select groups including at least one machine.'));
                 return;
               }
             }
@@ -510,7 +510,7 @@ require('x-freetext/x-freetext');
       this._previewHeader.hide();
       this._previewListContainer.hide();
 
-      this._selectionTitle.html(pulseConfig.pulseTranslate('machineselection.selectedMachines','Selected machines'));
+      this._selectionTitle.html(this.getTranslation('selectedMachines','Selected machines'));
 
       this._machinesSearchDiv.show();
       this._machinesListContainer.show();
@@ -536,7 +536,7 @@ require('x-freetext/x-freetext');
       this._previewHeader.show();
       this._previewListContainer.show();
 
-      this._selectionTitle.html(pulseConfig.pulseTranslate('machineselection.selectedGroups','Selected groups'));
+      this._selectionTitle.html(this.getTranslation('selectedGroups','Selected groups'));
 
       this._machinesSearchDiv.hide();
       this._machinesListContainer.hide();
@@ -878,7 +878,7 @@ require('x-freetext/x-freetext');
 
       if (arrayToDisplay.length == 0) {
         let noSel = $('<span></span>').addClass('no-selection')
-          .html(pulseConfig.pulseTranslate('machineselection.noSelection','No selection'));
+          .html(this.getTranslation('noSelection','No selection'));
         this._selectionList.append(noSel);
 
         // Update preview = empty
@@ -912,17 +912,17 @@ require('x-freetext/x-freetext');
         row.append(spanDisplay).append(removeButton);
         if (displayClass.singlemachine) {
           let spanMachine = $('<span></span>').addClass('machineselection-machine-label')
-            .html(pulseConfig.pulseTranslate('machineselection.machineKey','M'));
+            .html(this.getTranslation('machineKey','M'));
           row.append(spanMachine);
         }
         else {
           let spanGroup = $('<span></span>').addClass('machineselection-group-label')
-            .html(pulseConfig.pulseTranslate('machineselection.groupKey','G'));
+            .html(this.getTranslation('groupKey','G'));
           row.append(spanGroup);
         }
         if (displayClass.dynamic) {
           let spanDynamic = $('<span></span>').addClass('machineselection-dynamic-label')
-            .html(pulseConfig.pulseTranslate('machineselection.dynamicKey','DYNAMIC'));
+            .html(this.getTranslation('dynamicKey','DYNAMIC'));
           row.append(spanDynamic);
         }
         selection.append(row);
@@ -1246,7 +1246,7 @@ require('x-freetext/x-freetext');
             divRow.append(showHide).append(checkbox);
             if (groups[i].Dynamic) {
               let spanDynamic = $('<span></span>').addClass('machineselection-dynamic-label')
-                .html(pulseConfig.pulseTranslate('machineselection.dynamicKey','DYNAMIC'));
+                .html(this.getTranslation('dynamicKey','DYNAMIC'));
               divRow.append(spanDynamic);
             }
             let category = $('<div></div>').addClass('machineselection-category').append(divRow);
@@ -1467,7 +1467,7 @@ require('x-freetext/x-freetext');
       let oneGroupIsAdded = false;
       for (let iGroup = 0; iGroup < arrayToDisplay.length; iGroup++) {
         let groupId = arrayToDisplay[iGroup].toString();
-        let display = pulseConfig.pulseTranslate('machineselection.noMachineSelection', 'No machine selection');
+        let display = this.getTranslation('noMachineSelection', 'No machine selection');
         if (this._groupDisplays.has(groupId)) {
           let displayClass = this._groupDisplays.get(groupId);
           display = displayClass.display;
@@ -1481,7 +1481,7 @@ require('x-freetext/x-freetext');
 
       // Missing config or not :
       if (!oneGroupIsAdded) {
-        this._summary.html(pulseConfig.pulseTranslate('machineselection.noSelectedMachine', 'No selected machine'));
+        this._summary.html(this.getTranslation('noSelectedMachine', 'No selected machine'));
         this._summary.addClass('missing-config');
         $(this.element).parent().addClass('missing-config');
         $(this.element).parent().parent().addClass('missing-config');
@@ -1514,7 +1514,7 @@ require('x-freetext/x-freetext');
       let oneGroupIsAdded = false;
       for (let iGroup = 0; iGroup < arrayToDisplay.length; iGroup++) {
         let groupId = arrayToDisplay[iGroup];
-        let display = pulseConfig.pulseTranslate('machineselection.noMachineSelection','No machine selection');
+        let display = this.getTranslation('noMachineSelection','No machine selection');
         if (this._groupDisplays.has(groupId)) {
           let displayClass = this._groupDisplays.get(groupId);
           display = displayClass.display;
@@ -1528,7 +1528,7 @@ require('x-freetext/x-freetext');
 
       // Missing config or not :
       if (!oneGroupIsAdded) {
-        summary.html(pulseConfig.pulseTranslate('machineselection.noSelectedMachine','No selected machine'));
+        summary.html(this.getTranslation('noSelectedMachine','No selected machine'));
         summary.addClass('missing-config');
       }
       else {

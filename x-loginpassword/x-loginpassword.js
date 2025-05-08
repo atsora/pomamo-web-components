@@ -170,20 +170,20 @@ var pulseUtility = require('pulseUtility');
       this._loginEdit = $('<input></input>').addClass('loginpassword-login-input')
         .attr('type', 'text');
       let loginLabel = $('<label></label>').addClass('loginpassword-login-label')
-        .html(pulseConfig.pulseTranslate('loginpassword.User', 'User:'))
+        .html(this.getTranslation('user', 'User:'))
         .append(this._loginEdit);
 
       this._passEdit = $('<input></input>').addClass('loginpassword-password-input')
         .attr('type', 'password');
       let passLabel = $('<label></label>').addClass('loginpassword-password-label')
-        .html(pulseConfig.pulseTranslate('loginpassword.Password', 'Password:'))
+        .html(this.getTranslation('password', 'Password:'))
         .append(this._passEdit);
 
       this._stayConnectedCheck = $('<input type="checkbox" name="stay-connected"></input>')
         .addClass('loginpassword-stay-connected');
       let stayConnectedLabel = $('<label for="stay-connected"></label>')
         .addClass('loginpassword-stay-connected-label')
-        .html(pulseConfig.pulseTranslate('loginpassword.StayConnected', 'Stay connected'));
+        .html(this.getTranslation('stayConnected', 'Stay connected'));
       let stayConnectedDiv = $('<div"></div>').addClass('loginpassword-stay-connected-div')
         .append(this._stayConnectedCheck).append(stayConnectedLabel);
 

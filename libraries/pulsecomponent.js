@@ -196,7 +196,7 @@ class PulseComponent extends WebComponent {
    * Get translation
    *
    * @param {string} key - config Key (ex: 'tag.threshold')
-   * @param {*} defaultValue - default value in case nothing in found in attribute or pulseConfig
+   * @param {*} defaultValue - default value if not found
    * @returns {*} Configuration or attribute value
    */
   getTranslation (key, defaultValue) {
@@ -221,7 +221,6 @@ class PulseComponent extends WebComponent {
           for (let i = 0; i < listOfKeys.length; i++) {
             translation = translation[listOfKeys[i]];
             if ((pulseUtility.isNotDefined(translation)) || (translation === '')) {
-              //debugger;
               break;
             }
           }
@@ -233,7 +232,6 @@ class PulseComponent extends WebComponent {
             translation = translation[listOfKeys[i]];
             if ((pulseUtility.isNotDefined(translation))
               || (translation === '')) {
-              //debugger;
               break;
             }
           }
@@ -242,7 +240,7 @@ class PulseComponent extends WebComponent {
     }
 
     if (pulseUtility.isNotDefined(translation)) {
-      // TODO alert if debug mode
+      console.warn('getTranslation: ' + key + ' not found => use ' + defaultValue);
       //debugger;
       return defaultValue;
     }

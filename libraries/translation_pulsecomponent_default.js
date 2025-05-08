@@ -19,13 +19,21 @@ var ATSORA_COMPONENT_CATALOG = {
   changebutton: 'Change',
   contactsupport: 'Please contact the support team',
   missingconfiguration: 'Missing configuration',
-  error2dots: 'Error: ', // TODO : use it!!!
-  check: {
-    PleaseSyncTime: 'Please synchronize date and time ',
-    PleaseCheckServerOrPath :'Please check server access (or path)',
-    PleaseCheckServer: 'Please check server access',
-    PleaseDatabaseAccess: 'Please check database access'
-
+  errorColon: 'Error: ',
+  error: {
+    selectMachine: 'Please select a machine',
+    selectMachineGroup: 'Please select a machine or a group of machines',
+    noMachineOrGroupToDisplay: 'No machine or group to display'
+  },
+  checkcurrenttime: {
+    syncTime: 'Please synchronize date and time'
+  },
+  checkserveraccess: {
+    errorDatabaseAccess: 'Please check database access',
+    errorServerAccess: 'Please check server access'
+  },
+  checkpath: {
+    errorServerAccessOrPath: 'Please check server access (or path)'
   },
   currentcncvalue: {
     noDataTooOld: 'N/A'
@@ -83,13 +91,22 @@ var ATSORA_COMPONENT_CATALOG = {
     pastdata: 'Past data',
     pastTooltip: ''
   },
+  loginchangepassword: {
+    user: 'User:',
+    oldPassword: 'Old password:',
+    newPassword: 'New password:',
+  },
+  loginconnection: {
+    user: 'User: :',
+    connectWith: 'Connect with '
+  },
   loginpassword: {
-    User: 'User:',
-    Password: 'Password:',
-    OldPassword: 'Old password:',
-    NewPassword: 'New password:',
-    StayConnected: 'Stay connected',
-    ConnectWith: 'Connect with '
+    user: 'User:',
+    password: 'Password:',
+    stayConnected: 'Stay connected',
+  },
+  machinedisplay: {
+    invalidMachineGroup: 'Invalid machine or group'
   },
   machineselection: {
     clearButton: 'Clear',

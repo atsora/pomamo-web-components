@@ -6,8 +6,6 @@
 var ATSORA_COMPONENT_CATALOG = ATSORA_COMPONENT_CATALOG || {};
 var ATSORA_CATALOG = ATSORA_CATALOG || {};
 
-// App translations - should be completed in app code
-
 ATSORA_CATALOG.general = {
   title: 'Atsora Tracking',
 };
@@ -19,13 +17,21 @@ var ATSORA_COMPONENT_CATALOG = {
   changebutton: 'Changer',
   contactsupport: "Prière de consulter l'équipe support",
   missingconfiguration: 'Configuration manquante',
-  error2dots: 'Erreur : ', // TODO : use it!!!
-  check: {
-    PleaseSyncTime: "Prière de synchroniser la date et l'heure",
-    PleaseCheckServerOrPath : "Prière de vérifier l'accès au serveur (ou le chemin)",
-    PleaseCheckServer: "Prière de vérifier l'accès au serveur",
-    PleaseDatabaseAccess: "Prière de vérifier l'accès à la base de données"
-
+  errorColon: 'Erreur : ',
+  error: {
+    selectMachine: 'Prière de sélectionner une machine',
+    selectMachineGroup: 'Prière de sélectionner une machine ou un groupe de machines',
+    noMachineOrGroupToDisplay: 'Pas de machine ou de groupe de machines à afficher'
+  },
+  checkcurrenttime: {
+    syncTime: "Prière de synchroniser la date et l'heure"
+  },
+  checkpath: {
+    errorServerAccessOrPath: "Prière de vérifier l'accès au serveur (ou le chemin)"
+  },
+  checkserveraccess: {
+    errorDatabaseAccess: "Prière de vérifier l'accès à la base de données",
+    errorServerAccess: "Prière de vérifier l'accès au serveur"
   },
   currentcncvalue: {
     noDataTooOld: 'N/D'
@@ -83,13 +89,22 @@ var ATSORA_COMPONENT_CATALOG = {
     pastdata: 'Données passées',
     pastTooltip: ''
   },
+  loginchangepassword: {
+    user: 'Utilisateur :',
+    oldPassword: 'Ancien mot de passe :',
+    newPassword: 'Nouveau mot de passe :',
+  },
+  loginconnection: {
+    user: 'Utilisateur :',
+    connectWith: 'Connecter avec '
+  },
   loginpassword: {
-    User: 'Utilisateur :',
-    Password: 'Mot de passe :',
-    OldPassword: 'Ancien mot de passe :',
-    NewPassword: 'Nouveau mot de passe :',
-    StayConnected: 'Rester connecté',
-    ConnectWith: 'Connecté avec '
+    user: 'Utilisateur :',
+    password: 'Mot de passe :',
+    stayConnected: 'Rester connecté',
+  },
+  machinedisplay: {
+    invalidMachineGroup: 'Machine ou groupe invalide'
   },
   machineselection: {
     clearButton: 'Effacer',
