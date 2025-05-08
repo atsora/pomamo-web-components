@@ -91,7 +91,7 @@ var eventBus = require('eventBus');
         let href = window.location.href;
         // Hack for local path (on dev computers)
         if ('file' == href.slice(0, 4)) {
-          mainpath = 'https://lctr:5001/';
+          mainpath = 'https://localhost:5000/';
         }
         else {
           // Search in Page URL : http://lctr/RtdWebApp/...

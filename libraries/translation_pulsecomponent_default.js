@@ -91,6 +91,26 @@ var ATSORA_COMPONENT_CATALOG = {
     StayConnected: 'Stay connected',
     ConnectWith: 'Connect with '
   },
+  machineselection: {
+    clearButton: 'Clear',
+    dynamicKey: 'DYNAMIC',
+    errorMissingUnique: 'Please select one machine',
+    errorMissing: 'Please select at least one machine',
+    errorMissingMachineInGroup: 'Please select groups including at least one machine',
+    groupKey: 'G',
+    groupsButton: 'Groups',
+    machineKey: 'M',
+    machinesButton: 'Machines',
+    noMachineSelection: 'No machine selection',
+    noSelectedMachine: 'No selected machine',
+    noSelection: 'No selection',
+    searchDots: 'Search...',
+    selectMachine: 'Select a machine',
+    selectMachines: 'Select machines',
+    selectedGroups: 'Selected groups',
+    selectedMachines: 'Selected machines',
+    switchToMachineSelection: 'Switch to machine selection'
+  },
   productiontrackertable: {
     hourly: 'hourly',
     summary: 'summary',
