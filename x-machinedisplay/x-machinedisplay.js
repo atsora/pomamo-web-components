@@ -10,7 +10,6 @@
  */
 var pulseUtility = require('pulseUtility');
 var pulseComponent = require('pulsecomponent');
-var pulseConfig = require('pulseconfig');
 var eventBus = require('eventBus');
 
 (function () {
