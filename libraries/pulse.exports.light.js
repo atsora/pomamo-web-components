@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // config - common for all apps
-//require('config_pulsecomponent_default.js'); - not possible HERE !
+//require('config_component_default.js'); - not possible HERE !
 
 // translation - common 
-//require('translation_pulsecomponent_default.js'); - not possible HERE !
+//require('translation_component_default.js'); - not possible HERE !
 
 // For fast tests
 require('x-clock/x-clock');
