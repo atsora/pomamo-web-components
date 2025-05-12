@@ -1,7 +1,7 @@
 {
   "name": "@atsora/pomamo-web-components",
   "description": "Pomamo web components",
-  "version": "17.0.0",
+  "version": "18.0.0",
   "contributors": [
     "Lemoine Automation Technologies <nrelange@lemoinetechnologies.com>",
     "Nicolas Relange <nicolas@atsora.eu>"
@@ -20,7 +20,7 @@
     "!.vscode/**"
   ],
   "dependencies": {
-    "@atsora/pomamo-web-service-simulation": "~3.0.0",
+    "@atsora/pomamo-web-service-simulation": "~3.1.0",
     "@bower_components/classlist": "components/classList.js#*",
     "@bower_components/jquery": "jquery/jquery-dist#~2.1.4",
     "@bower_components/jquery-mockjax": "jakerella/jquery-mockjax#~2.6.0",

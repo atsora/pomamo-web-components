@@ -393,7 +393,7 @@ class PulseStateComponent extends PulseComponent {
     }
 
     // If x-tag is in foreignObject in svg => define as visible !
-    if (this.element.classList.contains('pulse-added-in-svg')) {
+    if (this.element.classList.contains('svg-embedded')) {
       return true;
     }
 
