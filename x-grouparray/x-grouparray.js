@@ -79,7 +79,7 @@ var eventBus = require('eventBus');
       if ((false == this._dynamic)
         && (this._machineIdsArray.length == 0)) {
         let noMachines = $('<div></div>').addClass('no-machines')
-          .html('No machine in selection');// I18N ?
+          .html(this.getTranslation ('noMachine', 'No machine in selection'));
         $(this._content).append(noMachines);
       }
       else {

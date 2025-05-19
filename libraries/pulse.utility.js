@@ -434,7 +434,7 @@ exports.displayDateRange = function (range, seconds) {
       if (r.upper == null) {
         let retVal = displayDate(r.lower, seconds)
           + ' - '
-          + 'In progress'; // TODO: i18n
+          + pulseConfig.pulseTranslate ('content.inProgress', 'In progress');
         return retVal;
       }
       else { // lower and upper are defined
@@ -504,7 +504,7 @@ exports.appendDateRangeDisplay = function (parent, range, seconds) {
     }
     else { // range.lower not null
       if (r.upper == null) {
-        appendRange(parent, displayDate(r.lower, seconds), 'In progress'); // TODO: i18n
+        appendRange(parent, displayDate(r.lower, seconds), pulseConfig.pulseTranslate ('content.inProgress', 'in progress'));
         return true;
       }
       else { // lower and upper are defined

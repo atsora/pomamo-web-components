@@ -1,4 +1,5 @@
 // Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2025 Atsora Solutions
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -134,7 +135,7 @@ require('x-datetimepicker/x-datetimepicker');
       $(this._content).append(inputFields);
       // Day
       let dayLabel = $('<label></label>').addClass('milestonesadd-label')
-        .html('When:');
+        .html(this.getTranslation('whenColon', 'When: '));
       this._dateTimePicker = pulseUtility.createjQueryElementWithAttribute('x-datetimepicker', {});
       let dayInput = $('<div></div>').addClass('milestonesadd-input')
         .append(this._dateTimePicker);
@@ -144,7 +145,7 @@ require('x-datetimepicker/x-datetimepicker');
 
       // Text
       let milestonesLabel = $('<label></label>').addClass('milestonesadd-label')
-        .html('Short description:'); // I18N
+        .html(this.getTranslation ('shortDescriptionColon', 'Short description:' ));
       this._milestonesInput = $('<input></input>').addClass('milestonesadd-input');
       let milestonesRow = $('<div></div>').addClass('milestonesadd-row')
         .append(milestonesLabel).append(this._milestonesInput);

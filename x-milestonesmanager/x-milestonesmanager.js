@@ -230,17 +230,17 @@ require('x-milestonesadd/x-milestonesadd');
       let hMachine = $('<div></div>').addClass('pulse-td')
         .addClass('header')
         .addClass('milestonesmanager-td-machine')
-        .html('Machine'); // I18N ?
+        .html(this.getTranslation ('machine', 'Machine'));
       $(header).append(hMachine);
       let hDay = $('<div></div>').addClass('pulse-td')
         .addClass('header')
         .addClass('milestonesmanager-td-day')
-        .html('Day'); // I18N ?
+        .html(this.getTranslation('day', 'Day'));
       $(header).append(hDay);
       let hText = $('<div></div>').addClass('pulse-td')
         .addClass('header')
         .addClass('milestonesmanager-td-milestone')
-        .html('Description'); // I18N ?
+        .html(this.getTranslation ('description', 'Description'));
       $(header).append(hText);
 
       // ADD
@@ -317,7 +317,7 @@ require('x-milestonesadd/x-milestonesadd');
             .append(milestonesAdd);
 
           let dialogId = pulseCustomDialog.initialize(addPosition, {
-            title: 'Add Milestone',
+            title: this.getTranslation ('add', 'Add milestone'),
             cancelButton: 'hidden',
             okButton: 'hidden',
             autoClose: true,
@@ -348,7 +348,7 @@ require('x-milestonesadd/x-milestonesadd');
     _removeFail (url, isTimeout, xhrStatus) {
       let close = function () { // Do Nothing
       };
-      pulseCustomDialog.openError('Error while removing', 'Error', close);
+      pulseCustomDialog.openError(this.getTranslation('errorRemove', 'Error in removing'), 'Error', close);
     }
 
     // Callback events

@@ -89,7 +89,7 @@ var pulseSvg = require('pulseSvg');
     refresh (data) {
       $(this._content).empty();
 
-      let titleSpan = $('<span></span>').html('Machine mode'); // I18N
+      let titleSpan = $('<span></span>').html(this.getTranslation('title', 'Machine mode'));
       let divTitle = $('<div></div>').addClass('pulse-legend-title')
         .append(titleSpan);
       let divElements = $('<div></div>').addClass('pulse-legend-elements');

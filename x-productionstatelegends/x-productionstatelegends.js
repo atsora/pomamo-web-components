@@ -91,7 +91,7 @@ var pulseUtility = require('pulseUtility');
     refresh (data) {
       $(this._content).empty();
 
-      let titleSpan = $('<span></span>').html('Production state'); // I18N
+      let titleSpan = $('<span></span>').html(this.getTranslation('title', 'Production state'));
       let divTitle = $('<div></div>').addClass('pulse-legend-title')
         .append(titleSpan);
       let divElements = $('<div></div>').addClass('pulse-legend-elements');

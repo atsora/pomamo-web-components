@@ -56,6 +56,16 @@ var ATSORA_COMPONENT_CATALOG = {
   currentsequence: {
     noDataTooOld: '-', // N/A'
   },
+  cyclesinperiod: {
+    saveSerialNumber: 'Save serial number'
+  },
+  datetimerange: {
+    selectAnd: ' and ',
+    selectBetween: 'Select period between ',
+    selectFrom: 'Select period from ',
+    splitPeriod: 'Split a period',
+    selectPeriod: 'Select a period'
+  },
   detailsViewSubTitles: {
     reason: 'motion status',
     machinemode: 'machine mode',
@@ -71,6 +81,9 @@ var ATSORA_COMPONENT_CATALOG = {
     isofile: 'NC program',
     partgoal: 'Nb pieces'
   },
+  groupArray: {
+    noMachine: 'No machine in selection'
+  },
   lastmachinestatetemplate: {
     scheduledStatus: 'Scheduled status:'
   },
@@ -84,7 +97,9 @@ var ATSORA_COMPONENT_CATALOG = {
     currentserialnumber: 'Serial Number: ',
     pastserialnumber: 'Past data',
     currentTooltip: 'change current serial number',
-    pastTooltip: 'past serial number'
+    pastTooltip: 'past serial number',
+    save: 'Save serial number',
+    selectPeriod: 'Select a period'
   },
   lastworkinformation: {
     noOperation: ' ',
@@ -96,6 +111,9 @@ var ATSORA_COMPONENT_CATALOG = {
     oldPassword: 'Old password:',
     newPassword: 'New password:',
   },
+  loginchangepasswordbutton: {
+    changePassword: 'Change password'
+  },
   loginconnection: {
     user: 'User: :',
     connectWith: 'Connect with '
@@ -105,8 +123,17 @@ var ATSORA_COMPONENT_CATALOG = {
     password: 'Password:',
     stayConnected: 'Stay connected',
   },
+  loginpasswordbutton: {
+    login: 'Login'
+  },
   machinedisplay: {
     invalidMachineGroup: 'Invalid machine or group'
+  },
+  machinemodecolorlegend: {
+    title: 'Machine mode'
+  },
+  machinemodelegends: {
+    title: 'Machine mode'
   },
   machineselection: {
     clearButton: 'Clear',
@@ -128,6 +155,23 @@ var ATSORA_COMPONENT_CATALOG = {
     selectedMachines: 'Selected machines',
     switchToMachineSelection: 'Switch to machine selection'
   },
+  milestonesadd: {
+    shortDescriptionColon: 'Short description: ',
+    whenColon: 'When: '
+  },
+  milestonesmanager: {
+    add: 'Add milestone',
+    day: 'Day',
+    description: 'Description',
+    errorRemove: 'Error in removing an item',
+    machine: 'Machine'
+  },
+  periodtoolbar: {
+    dialogTitle: 'Setting date/time range'
+  },
+  productionstatelegend: {
+    title: 'Production state'
+  },
   productiontrackertable: {
     hourly: 'hourly',
     summary: 'summary',
@@ -141,15 +185,18 @@ var ATSORA_COMPONENT_CATALOG = {
     processingTitle: 'Processing...'
   },
   reasongroups: {
+    title: 'Reason',
     textidleDefaultValue: 'Idle . short stop . Stop'
   },
   runninglegends: {
+    title: 'Activity state',
     textidle: 'Idle . short stop . Stop',
     textrunning: 'Running'
   },
   savemachinestatetemplate: {
     changeMachineStateButton: 'Change machine state',
-    changeMachineStateTitle: 'Change machine state'
+    changeMachineStateTitle: 'Change machine state',
+    switch: 'Switch to '
   },
   savereason: {
     comment: 'comment',
@@ -173,8 +220,6 @@ var ATSORA_COMPONENT_CATALOG = {
   },
   toollifemachine: {
     noOperation: 'No operation'
-    //,tool: 'tool', tools: 'tools'
-    //, nextexpiration: 'Tool Expiring in' --REMOVED
   },
   saveworkinfo: {
     WorkInfoTitle: 'Work information'

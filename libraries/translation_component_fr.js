@@ -54,6 +54,16 @@ var ATSORA_COMPONENT_CATALOG = {
   currentsequence: {
     noDataTooOld: '-', // N/A'
   },
+  cyclesinperiod: {
+    saveSerialNumber: 'Sauver le numéro de série'
+  },
+  datetimerange: {
+    selectAnd: ' et ',
+    selectBetween: 'Sélectionner la période entre ',
+    selectFrom: 'Sélectionner la période après ',
+    splitPeriod: 'Couper une période',
+    selectPeriod: 'Sélectionner une période'
+  },
   detailsViewSubTitles: {
     reason: "raison d'arrêt",
     machinemode: "mode d'exécution",
@@ -69,6 +79,9 @@ var ATSORA_COMPONENT_CATALOG = {
     isofile: "programme d'usinage",
     partgoal: 'Objectif de production de pieces'
   },
+  groupArray: {
+    noMachine: 'Aucune machine dans la sélection'
+  },
   lastmachinestatetemplate: {
     scheduledStatus: 'État planifié : '
   },
@@ -82,7 +95,9 @@ var ATSORA_COMPONENT_CATALOG = {
     currentserialnumber: 'Numéro de série : ',
     pastserialnumber: 'Données passées',
     currentTooltip: "Changer le numéro de série courant",
-    pastTooltip: 'numéros de série passés'
+    pastTooltip: 'numéros de série passés',
+    save: 'Sauver le numéro de série',
+    selectPeriod: 'Sélectionner une période'
   },
   lastworkinformation: {
     noOperation: ' ',
@@ -94,6 +109,9 @@ var ATSORA_COMPONENT_CATALOG = {
     oldPassword: 'Ancien mot de passe :',
     newPassword: 'Nouveau mot de passe :',
   },
+  loginchangepasswordbutton: {
+    changePassword: 'Changer le mot de passe'
+  },
   loginconnection: {
     user: 'Utilisateur :',
     connectWith: 'Connecter avec '
@@ -103,8 +121,17 @@ var ATSORA_COMPONENT_CATALOG = {
     password: 'Mot de passe :',
     stayConnected: 'Rester connecté',
   },
+  loginpasswordbutton: {
+    login: 'Se connecter'
+  },
   machinedisplay: {
     invalidMachineGroup: 'Machine ou groupe invalide'
+  },
+  machinemodecolorlegend: {
+    title: 'Mode machine'
+  },
+  machinemodelegends: {
+    title: 'Mode machine'
   },
   machineselection: {
     clearButton: 'Effacer',
@@ -126,6 +153,23 @@ var ATSORA_COMPONENT_CATALOG = {
     selectedMachines: 'Machines sélectionnées',
     switchToMachineSelection: 'Passer à la sélection de machines'
   },
+  milestonesadd: {
+    shortDescriptionColon: 'Courte description : ',
+    whenColon: 'Quand : '
+  },
+  milestonesmanager: {
+    add: 'Ajouter un jalon',
+    day: 'Jour',
+    description: 'Description',
+    errorRemove: 'Erreur en enlevant un jalon',
+    machine: 'Machine'
+  },
+  periodtoolbar: {
+    dialogTitle: "Entrer l'intervalle de temps"
+  },
+  productionstatelegend: {
+    title: 'État de production'
+  },
   productiontrackertable: {
     hourly: 'par heure',
     summary: 'résumé',
@@ -139,15 +183,18 @@ var ATSORA_COMPONENT_CATALOG = {
     processingTitle: 'En cours de traitement....'
   },
   reasongroups: {
+    title: "Raison d'arrêt",
     textidleDefaultValue: 'Arrêtée'
   },
   runninglegends: {
+    title: "État d'activité",
     textidle: 'Arrêtée',
     textrunning: 'Active'
   },
   savemachinestatetemplate: {
     changeMachineStateButton: "Changer les états planifiés",
-    changeMachineStateTitle: "Changer les états planifiés"
+    changeMachineStateTitle: "Changer les états planifiés",
+    switch: "Passer à un autre état planifié"
   },
   savereason: {
     comment: 'commentaire',
@@ -171,8 +218,6 @@ var ATSORA_COMPONENT_CATALOG = {
   },
   toollifemachine: {
     noOperation: "Pas d'opération"
-    //,tool: 'tool', tools: 'tools'
-    //, nextexpiration: 'Tool Expiring in' --REMOVED
   },
   saveworkinfo: {
     WorkInfoTitle: 'Ordre de fabrication / Opération'

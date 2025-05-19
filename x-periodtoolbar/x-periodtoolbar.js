@@ -744,7 +744,7 @@ require('x-datetimepicker/x-datetimepicker');
 
       var self = this;
       let dialogId = pulseCustomDialog.initialize(divinput, {
-        title: 'Setting Datetime range', // I18N
+        title: this.getTranslation ('dialogTitle', 'Setting date/time range'),
         onOk: function () { // Validate
           if (self._callback_validate_settings()) {
             //pulseCustomDialogs.closeDialog(divinput);

@@ -39,7 +39,7 @@ var pulseComponent = require('pulsecomponent');
       this._content = $('<div></div>').addClass('runninglegends');
       $(this.element).append(this._content);
 
-      let titleSpan = $('<span></span>').html('Running'); // I18N
+      let titleSpan = $('<span></span>').html(this.getTranslation('title', 'Activity state'));
       let divTitle = $('<div></div>').addClass('pulse-legend-title')
         .append(titleSpan);
       let divElements = $('<div></div>').addClass('pulse-legend-elements');

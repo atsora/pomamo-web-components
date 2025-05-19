@@ -65,7 +65,7 @@ require('x-datetimerange/x-datetimerange');
       this._dialog = $('<div></div>').addClass('savemachinestatetemplate-dialog');
       //$(this.element).append(this._dialog);
       let switchLabel = $('<div></div>').addClass('savemachinestatetemplate-dialog-label')
-        .html('Switch to  '); // I18N
+        .html(this.getTranslation('switch', 'Switch to  '));
       let MST_CB = $('<div></div>')
         //.addClass('savemachinestatetemplate-dialog-label')
         .addClass('savemachinestatetemplate-dialog-div-select');
@@ -108,7 +108,6 @@ require('x-datetimerange/x-datetimerange');
         rangeForDisplay.lower = pulseUtility.convertMomentToDateTimeString(moment());
       }
       // FROM / TO = datetimerange
-      //let fromLabel = $('<div></div>').addClass('savemachinestatetemplate-dialog-label').html('from '); // I18N
       this._dtRange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
         'possible-no-end': (isoend == null),
         'range': pulseUtility.convertDateRangeForWebService(rangeForDisplay),

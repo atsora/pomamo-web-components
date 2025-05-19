@@ -307,7 +307,7 @@ require('x-saveserialnumber/x-saveserialnumber');
       //create x-saveserialnumber component and put it in dialog box
       let dialog = $('<div></div>').addClass('lastserialnumber-dialog');
       let saveDialogId = pulseCustomDialog.initialize(dialog, {
-        title: 'Save serial number', // TODO: i18n
+        title: this.getTranslation ('saveSerialNumber', 'Save serial number'),
         onOk: //function (xsaveinperiod, xsaveSNtag) { // to avoid closure
           //return 
           function () {

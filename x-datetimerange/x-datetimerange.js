@@ -604,10 +604,10 @@ require('x-datetimepicker/x-datetimepicker');
           let min = pulseUtility.displayDate(this.element.getAttribute('min-begin'), secondsMandatory);
           if (this.element.hasAttribute('max-end')) {
             let max = pulseUtility.displayDate(this.element.getAttribute('max-end'), secondsMandatory);
-            infoText = 'Select period between ' + min + ' and ' + max; // TODO I18N
+            infoText = this.getTranslation ('selectBetween', 'Select period between ') + min + this.getTranslation ('selectAnd', ' and ') + max;
           }
           else {
-            infoText = 'Select period from ' + min; // TODO I18N
+            infoText = this.getTranslation ('selectFrom', 'Select period from ') + min;
           }
         }
       }
@@ -693,7 +693,7 @@ require('x-datetimepicker/x-datetimepicker');
       this._setBeginEndBound();
 
       this._settingsDialogId = pulseCustomDialog.initialize(divinput, {
-        title: isSplit ? 'Split a period' : 'Select a period', // TODO i18N
+        title: isSplit ? this.getTranslation ('splitPeriod', 'Split a period') : this.getTranslation ('selectPeriod', 'Select a period'),
         onOk: function () {
           if (this._callback_validate_settings()) {
             pulseCustomDialog.close('.datetimerange-dialog-divinput');

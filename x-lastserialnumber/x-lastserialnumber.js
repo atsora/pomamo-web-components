@@ -365,7 +365,7 @@ require('x-revisionprogress/x-revisionprogress');
       });
 
       let saveDialogId = pulseCustomDialog.initialize(dialog, {
-        title: 'Save serial number', // TODO: i18n
+        title: this.getTranslation ('save', 'Save serial number'),
         onOk: function () {
           tag[0].saveSN(tag[0]);
         },
@@ -435,7 +435,7 @@ require('x-revisionprogress/x-revisionprogress');
       dialog.append(datetimerange_div).append(cyclesinperiod_div);
 
       let saveDialogId = pulseCustomDialog.initialize(dialog, {
-        title: 'Select a period', // TODO: i18n
+        title: this.getTranslation ('selectPeriod', 'Select a period'),
         /*onOk: function () {
           self.load();
       },*/

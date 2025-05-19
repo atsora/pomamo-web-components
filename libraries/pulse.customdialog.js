@@ -390,7 +390,7 @@ var pulseCustomDialog = function () {
   */
   var openInfo = function (message, title, onClose) {
     var id = _createDialog({
-      title: (title == null ? 'Information' : title),
+      title: (title == null ? pulseConfig.pulseTranslate ('dialog.information', 'Information') : title),
       cancelButton: 'hidden',
       previousButton: 'hidden',
       autoClose: true,
@@ -411,7 +411,7 @@ var pulseCustomDialog = function () {
   */
   var openWarning = function (message, title, onClose) {
     var id = _createDialog({
-      title: (title == null ? 'Warning' : title),
+      title: (title == null ? pulseConfig.pulseTranslate ('dialog.warning', 'Warning') : title),
       cancelButton: 'hidden',
       previousButton: 'hidden',
       autoClose: true,
@@ -430,7 +430,7 @@ var pulseCustomDialog = function () {
   */
   var openError = function (message, title, onClose) {
     var id = _createDialog({
-      title: (title == null ? 'Error' : title),
+      title: (title == null ? pulseConfig.pulseTranslate ('dialog.error', 'Error') : title),
       cancelButton: 'hidden',
       previousButton: 'hidden',
       autoClose: true,
@@ -450,7 +450,7 @@ var pulseCustomDialog = function () {
   */
   var openConfirm = function (message, title, onOk, onCancel) {
     var id = _createDialog({
-      title: (title == null ? 'Confirmation' : title),
+      title: (title == null ? pulseConfig.pulseTranslate ('dialog.confirmation', 'Confirmation') : title),
       autoClose: true,
       autoDelete: true,
       onOk: onOk,
@@ -486,7 +486,7 @@ var pulseCustomDialog = function () {
     // Create a new dialog with possibly a cancel button
     id = (abortFunction == null) ?
       _createDialog({
-        title: 'Please wait...',
+        title: pulseConfig.pulseTranslate ('dialog.wait', 'Please wait...'),
         cancelButton: 'hidden',
         previousButton: 'hidden',
         okButton: 'hidden',
@@ -495,7 +495,7 @@ var pulseCustomDialog = function () {
         autoClose: true,
         autoDelete: true
       }) : _createDialog({
-        title: 'Please wait...',
+        title: pulseConfig.pulseTranslate ('dialog.wait', 'Please wait...'),
         previousButton: 'hidden',
         okButton: 'hidden',
         nextButton: 'hidden',

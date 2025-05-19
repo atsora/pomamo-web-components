@@ -69,7 +69,7 @@ require('x-loginchangepassword/x-loginchangepassword');
       let chgePass = pulseUtility.createjQueryElementWithAttribute('x-loginchangepassword', {});
 
       let dialogId = pulseCustomDialog.initialize(chgePass, {
-        title: 'Change password',
+        title: this.getTranslation ('changePassword', 'Change password'),
         cancelButton: 'hidden',
         okButton: 'hidden',
         autoClose: true,
