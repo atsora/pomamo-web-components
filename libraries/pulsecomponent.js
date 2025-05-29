@@ -355,21 +355,16 @@ class PulseStateComponent extends PulseComponent {
    *
    */
   clearDynamicStateContent () {
-    let classes = this.element.className;
-
-    if (classes != undefined && classes != '') {
-      let class_names = classes.split(' ');
-      for (let i = 0; i < class_names.length; i++) {
-        let tmp_class = class_names[i];
-        if (0 == tmp_class.indexOf('pulse-component-')) {
-          // -loading -not-applicable -warning -error 
-          this.element.classList.remove(tmp_classs);
-        }
-        if (0 == tmp_class.indexOf('pulsecomponent-')) {
-          // pulsecomponent-context-Initialized -ParamValidation -Loaded ... 
-          // pulsecomponent-key-Loading -Validating -Error ...
-          this.element.classList.remove(tmp_class);
-        }
+    let classes = this.element.classList;
+    for (let c of classes) {
+      if (0 == c.indexOf('pulse-component-')) {
+        // -loading -not-applicable -warning -error 
+        this.element.classList.remove(c);
+      }
+      else if (0 == c.indexOf('pulsecomponent-')) {
+        // pulsecomponent-context-Initialized -ParamValidation -Loaded ... 
+        // pulsecomponent-key-Loading -Validating -Error ...
+        this.element.classList.remove(c);
       }
     }
   }
