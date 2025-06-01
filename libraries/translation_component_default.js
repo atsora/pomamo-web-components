@@ -3,19 +3,24 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+var ATSORA_LOCALE_COMPONENT_CATALOG = ATSORA_LOCALE_COMPONENT_CATALOG || { default: {}, fr: {} };
+var ATSORA_LOCALE_CATALOG = ATSORA_LOCALE_CATALOG || { default: {}, fr: {} };
+
 var ATSORA_COMPONENT_CATALOG = ATSORA_COMPONENT_CATALOG || {};
 var ATSORA_CATALOG = ATSORA_CATALOG || {};
 
+// TODO: i18n, support multi-languages
+
 // App translations - should be completed in app code
 
-ATSORA_CATALOG.general = {
+ATSORA_LOCALE_CATALOG.default.general = {
   title: 'Atsora Tracking',
 };
 
 /* 
  * Components translations
  */
-var ATSORA_COMPONENT_CATALOG = {
+ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   changebutton: 'Change',
   contactsupport: 'Please contact the support team',
   missingconfiguration: 'Missing configuration',
@@ -225,3 +230,7 @@ var ATSORA_COMPONENT_CATALOG = {
     WorkInfoTitle: 'Work information'
   }
 };
+
+// Force the 'default' locale
+ATSORA_CATALOG = ATSORA_LOCALE_CATALOG.fr;
+ATSORA_COMPONENT_CATALOG = ATSORA_COMPONENT_CATALOG.fr;

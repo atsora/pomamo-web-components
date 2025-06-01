@@ -3,17 +3,22 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+moment.locale('fr');
+
+var ATSORA_LOCALE_COMPONENT_CATALOG = ATSORA_LOCALE_COMPONENT_CATALOG || { default: {}, fr: {} };
+var ATSORA_LOCALE_CATALOG = ATSORA_LOCALE_CATALOG || { default: {}, fr: {} };
+
 var ATSORA_COMPONENT_CATALOG = ATSORA_COMPONENT_CATALOG || {};
 var ATSORA_CATALOG = ATSORA_CATALOG || {};
 
-ATSORA_CATALOG.general = {
+ATSORA_LOCALE_CATALOG.fr.general = {
   title: 'Atsora Tracking',
 };
 
 /* 
  * Components translations
  */
-var ATSORA_COMPONENT_CATALOG = {
+ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   changebutton: 'Changer',
   contactsupport: "Prière de consulter l'équipe support",
   missingconfiguration: 'Configuration manquante',
@@ -223,3 +228,7 @@ var ATSORA_COMPONENT_CATALOG = {
     WorkInfoTitle: 'Ordre de fabrication / Opération'
   }
 };
+
+// Force the 'fr' locale
+ATSORA_CATALOG = ATSORA_LOCALE_CATALOG.fr;
+ATSORA_COMPONENT_CATALOG = ATSORA_COMPONENT_CATALOG.fr;

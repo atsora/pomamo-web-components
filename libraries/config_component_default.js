@@ -29,8 +29,8 @@ PULSE_DEFAULT_CONFIG.general = {
   thresholdredproduction: 0,
 
   /* The following def are BELOW in tagConfig :
-    reportpath: 'http://lctr:8080/pulsereporting/',
-    pulsewebapppath: '', // 'http://lctr:8080/pulsewebapp', // Value usefull for reporting links
+    reportpath: 'http://lctr:8080/atrackingreporting/',
+    pulsewebapppath: '', // 'http://lctr:8080/atrackingwebapp', // Value usefull for reporting links
     mainpath: '', //Warning '/' needed at the end - SHOULD BE EMPTY when INSTALL
   */
   /* Roles with the associated configuration
@@ -145,8 +145,8 @@ PULSE_DEFAULT_CONFIG.roles = {
 /* ********** ********** ********** ********** */
 var tagConfig = {
   // The 3 following def could be in PULSE_DEFAULT_CONFIG - Keep here or change install + doc
-  reportpath: 'http://lctr:8080/pulsereporting/', // Done - "/" is mandatory for Ford
-  pulsewebapppath: '', // 'http://lctr:8080/pulsewebapp', // Value usefull for reporting links
+  reportpath: 'http://lctr:8080/atrackingreporting/', // Done - "/" is mandatory for Ford
+  pulsewebapppath: '', // 'http://lctr:8080/atrackingwebapp', // Value usefull for reporting links
   mainpath: '', //Warning '/' needed at the end - SHOULD BE EMPTY when INSTALL
   skipWebServiceAddress: false,
 

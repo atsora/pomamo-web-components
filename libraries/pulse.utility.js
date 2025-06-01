@@ -1,4 +1,5 @@
 // Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2025 Atsora Solutions
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -369,6 +370,7 @@ exports.createDateRangeForWebService = function (begin, end) {
  * @return {string} String that represents the day
  */
 exports.getDisplayDay = function (day) {
+  // TODO: i18n
   if ((!day) || (day == 'null')) {
     return '';
   }
@@ -394,6 +396,7 @@ exports.getDisplayDay = function (day) {
  * @return {string} String that represents the date
  */
 var displayDate = exports.displayDate = function (date, seconds) {
+  // TODO: i18n
   let m = convertDateToMoment(date);
   if (seconds) {
     return (m.format('ll') // Month name, day of month, year, time
