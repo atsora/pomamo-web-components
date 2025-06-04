@@ -192,7 +192,7 @@ var openDetails = exports.openDetails = function (component, fullRange, cellRang
   title.append(xGraduation).append(middlebar);
 
   let dialogId = pulseCustomDialog.initialize(dialog, {
-    title: pulseConfig.pulseTranslate ('dialog.select', 'Select'),
+    title: pulseConfig.pulseTranslate ('dialog.details', 'Details'),
     onOk: function () { // Validate
     },
     onClose: function () {

@@ -1,4 +1,5 @@
 // Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2025 Atsora Solutions
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -106,6 +107,7 @@ var eventBus = require('eventBus');
         .domain([new Date(this._range.lower), new Date(this._range.upper)])
         .range([0, bar_width]); /* +0 - CHROME */
       //.range([0, bar_width+1]); /* +1 to draw last tick inside the border - FIREFOX*/
+      // TODO: i18n, format
 
       if ($(this.element).attr('bottom') == 'true') {
         let xAxis = d3.axisBottom(x);

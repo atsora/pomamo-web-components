@@ -60,7 +60,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     noDataTooOld: '-', // N/A'
   },
   cyclesinperiod: {
-    saveSerialNumber: 'Sauver le numéro de série'
+    saveSerialNumber: 'Enregistrer le numéro de série'
   },
   datetimerange: {
     selectAnd: ' et ',
@@ -231,4 +231,4 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
 
 // Force the 'fr' locale
 ATSORA_CATALOG = ATSORA_LOCALE_CATALOG.fr;
-ATSORA_COMPONENT_CATALOG = ATSORA_COMPONENT_CATALOG.fr;
+ATSORA_COMPONENT_CATALOG = ATSORA_LOCALE_COMPONENT_CATALOG.fr;
