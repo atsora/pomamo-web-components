@@ -65,11 +65,20 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     saveSerialNumber: 'Save serial number'
   },
   datetimerange: {
+    emptyPeriodError: 'Empty period',
+    emptyPeriodMessage: 'Warning! Empty period',
+    endAfterMaxError: 'End date/time is after maximum allowed date/time',
+    endBeforeMinError: 'End date/time is before minimum allowed date/time',
+    endBeforeStartError: 'End date/time is before start date/time',
+    endNotValidError: 'End date/time is not valid',
     selectAnd: ' and ',
     selectBetween: 'Select period between ',
     selectFrom: 'Select period from ',
     splitPeriod: 'Split a period',
-    selectPeriod: 'Select a period'
+    selectPeriod: 'Select a period',
+    startAfterMaxError: 'Start date/time is after maximum allowed date/time',
+    startBeforeMinError: 'Start date/time is before minimum allowed date/time',
+    startNotValidError: 'Start date/time is not valid'
   },
   detailsViewSubTitles: {
     reason: 'motion status',
@@ -172,7 +181,15 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     machine: 'Machine'
   },
   periodtoolbar: {
-    dialogTitle: 'Setting date/time range'
+    dialogTitle: 'Setting date/time range',
+    emptyPeriodError: 'Empty period',
+    endAfterMaxError: 'End date/time is after maximum allowed date/time',
+    endBeforeMinError: 'End date/time is before minimum allowed date/time',
+    endBeforeStartError: 'End date/time is before start date/time',
+    endNotValidError: 'End date/time is not valid',
+    startAfterMaxError: 'Start date/time is after maximum allowed date/time',
+    startBeforeMinError: 'Start date/time is before minimum allowed date/time',
+    startNotValidError: 'Start date/time is not valid'
   },
   productionstatelegend: {
     title: 'Production state'

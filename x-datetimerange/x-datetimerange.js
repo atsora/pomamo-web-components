@@ -1,4 +1,5 @@
 // Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2025 Atsora Solutions
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -736,7 +737,7 @@ require('x-datetimepicker/x-datetimepicker');
         return;
       }
       else {
-        this._warningtext.html('WARNING ! Empty period');
+        this._warningtext.html(this.getTranslation ('emptyPeriodMessage', 'Warning! Empty period'));
         $('#' + this._settingsDialogId + ' .customDialogOk')[0].setAttribute('disabled', 'disabled');
         return;
       }
@@ -747,11 +748,11 @@ require('x-datetimepicker/x-datetimepicker');
      */
     _callback_validate_settings () {
       if (!this._beginDTP[0].isValid()) {
-        pulseCustomDialog.openError('Start date/time is not valid.');
+        pulseCustomDialog.openError(this.getTranslation('startNotValidError', 'Start date/time is not valid.'));
         return false;
       }
       if (!this._endDTP[0].isValid()) {
-        pulseCustomDialog.openError('End date/time is not valid.');
+        pulseCustomDialog.openError(this.getTranslation('endNotValidError', 'End date/time is not valid.'));
         return false;
       }
 
@@ -764,7 +765,7 @@ require('x-datetimepicker/x-datetimepicker');
         this.element.getAttribute('min-begin') !== null) {
         let minBeginDate = new Date(this.element.getAttribute('min-begin'));
         if (beginDateTime < minBeginDate) {
-          pulseCustomDialog.openError('Start date/time is before the minimum date/time.');
+          pulseCustomDialog.openError(this.getTranslation('startBeforeMinError', 'Start date/time is before minimum allowed date/time'));
           return false;
         }
       }
@@ -772,7 +773,7 @@ require('x-datetimepicker/x-datetimepicker');
         this.element.getAttribute('max-begin') != null) {
         let maxBeginDate = new Date(this.element.getAttribute('max-begin'));
         if (beginDateTime > maxBeginDate) {
-          pulseCustomDialog.openError('Start date/time is after the maximum date/time.');
+          pulseCustomDialog.openError(this.getTranslation('startAfterMaxError', 'Start date/time is after maximum allowed date/time'));
           return false;
         }
       }
@@ -781,7 +782,7 @@ require('x-datetimepicker/x-datetimepicker');
         this.element.getAttribute('min-end') != null) {
         let minEndDate = new Date(this.element.getAttribute('min-end'));
         if ((endDateTime) && (endDateTime < minEndDate)) {
-          pulseCustomDialog.openError('End date/time is before the minimum date/time.');
+          pulseCustomDialog.openError(this.getTranslation('endBeforeMinError', 'End date/time is before minimum allowed date/time'));
           return false;
         }
       }
@@ -789,7 +790,7 @@ require('x-datetimepicker/x-datetimepicker');
         this.element.getAttribute('max-end') != null) {
         let maxEndDate = new Date(this.element.getAttribute('max-end'));
         if ((endDateTime) && (endDateTime > maxEndDate)) {
-          pulseCustomDialog.openError('End date/time is after the maximum date/time.');
+          pulseCustomDialog.openError(this.getTranslation('endAfterMaxError', 'End date/time is after maximum allowed date/time'));
           return false;
         }
       }
@@ -797,7 +798,7 @@ require('x-datetimepicker/x-datetimepicker');
       // Check the range
       if (endDateTime) {
         if (endDateTime < beginDateTime) {
-          pulseCustomDialog.openError('End date/time is before start date/time.');
+          pulseCustomDialog.openError(this.getTranslation('endBeforeStartError', 'End date/time is before start date/time'));
           return false;
         }
         else {
@@ -805,7 +806,7 @@ require('x-datetimepicker/x-datetimepicker');
             // Do nothing = it is OK
           }
           else {
-            pulseCustomDialog.openError('Empty period.');
+            pulseCustomDialog.openError(this.getTranslation ('emptyPeriodError', 'Empty period'));
             return false;
           }
         }

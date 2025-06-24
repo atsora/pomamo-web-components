@@ -63,11 +63,20 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     saveSerialNumber: 'Enregistrer le numéro de série'
   },
   datetimerange: {
+    emptyPeriodError: 'Période vide',
+    emptyPeriodMessage: "Attention! La période sélectionnée est vide",
+    endAfterMaxError: 'La date de fin est postérieure à la date maximum autorisée',
+    endBeforeMinError: 'La date de fin est antérieure à la date minimum autorisée',
+    endBeforeStartError: 'La date de fin est antérieure à la date de début',
+    endNotValidError: 'La date de fin n’est pas valide',
     selectAnd: ' et ',
     selectBetween: 'Sélectionner la période entre ',
     selectFrom: 'Sélectionner la période après ',
     splitPeriod: 'Couper une période',
-    selectPeriod: 'Sélectionner une période'
+    selectPeriod: 'Sélectionner une période',
+    startAfterMaxError: 'La date de début est postérieure à la date maximum autorisée',
+    startBeforeMinError: 'La date de début est antérieure à la date minimum autorisée',
+    startNotValidError: 'La date de début n’est pas valide'
   },
   detailsViewSubTitles: {
     reason: "raison d'arrêt",
@@ -170,7 +179,15 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     machine: 'Machine'
   },
   periodtoolbar: {
-    dialogTitle: "Entrer l'intervalle de temps"
+    dialogTitle: "Entrer l'intervalle de temps",
+    emptyPeriodError: 'Période vide',
+    endAfterMaxError: 'La date de fin est postérieure à la date maximum autorisée',
+    endBeforeMinError: 'La date de fin est antérieure à la date minimum autorisée',
+    endBeforeStartError: 'La date de fin est antérieure à la date de début',
+    endNotValidError: 'La date de fin n’est pas valide',
+    startAfterMaxError: 'La date de début est postérieure à la date maximum autorisée',
+    startBeforeMinError: 'La date de début est antérieure à la date minimum autorisée',
+    startNotValidError: 'La date de début n’est pas valide'
   },
   productionstatelegend: {
     title: 'État de production'
