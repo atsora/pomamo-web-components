@@ -131,6 +131,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     connectWith: 'Connecter avec '
   },
   loginpassword: {
+    deniedError: 'Utilisateur ou mot de passe invalide',
+    noRoleError: 'Aucune rôle de défini pour ce login. Prière de changer la configuration',
     user: 'Utilisateur :',
     password: 'Mot de passe :',
     stayConnected: 'Rester connecté',

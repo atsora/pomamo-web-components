@@ -1,4 +1,5 @@
 // Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2025 Atsora Solutions
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -114,13 +115,13 @@ var pulseUtility = require('pulseUtility');
       let role = data.Role;
       if (pulseUtility.isNotDefined(role)
         || ('' == role)) {
-        this.displayError('No role defined for this login. Please, change configuration.');
+        this.displayError(this.getTranslation('noRoleError', 'No role defined for this login. Please, change configuration'));
         // Error :
         pulseLogin.cleanLoginRole();
 
         this._infoDialog = pulseCustomDialog.openInfo(
           //'Bad login or password ! Retry',
-          'No role defined for this login. Please, change configuration.',
+          this.getTranslation('noRoleError', 'No role defined for this login. Please, change configuration'),
           function () { // close
             // Go to login page
             pulseConfig.goToPageLogin();
@@ -155,7 +156,7 @@ var pulseUtility = require('pulseUtility');
     _ckeckLoginFail (token, url, isTimeout, xhrStatus) {
       pulseLogin.cleanLoginRole();
 
-      this.displayError('Invalid user name or password');
+      this.displayError(this.getTranslation('deniedError', 'Invalid user name or password'));
     }
 
     initialize () {

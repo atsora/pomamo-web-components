@@ -133,6 +133,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     connectWith: 'Connect with '
   },
   loginpassword: {
+    deniedError: 'Invalid user name or password',
+    noRoleError: 'No role defined for this login. Please, change configuration',
     user: 'User:',
     password: 'Password:',
     stayConnected: 'Stay connected',
