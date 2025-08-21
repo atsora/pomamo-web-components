@@ -198,6 +198,8 @@ var tagConfig = {
   loginchangepasswordbutton:{
     changepasswordallowed: true
   },
+  productiontrackergraph: {
+  },
   productiontrackertable: {
     showreservecapacity: false
   },

@@ -330,6 +330,11 @@ tagConfig.displayedPages = [
     subTitle: ''
   },
   {
+    pageName: 'productiontrackergraph',
+    title: 'Charts',
+    subTitle: ''
+  },
+  {
     pageName: 'productiontrackertable',
     title: 'report table',
     subTitle: ''

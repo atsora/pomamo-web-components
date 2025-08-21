@@ -37,20 +37,21 @@ __metadata:
     "@atsora/docdash": "npm:~2.0.1"
     "@atsora/grunt-graph-easy": "npm:~1.0.1"
     "@atsora/jsdoc-plugin-graph": "npm:~1.0.0"
-    "@atsora/pomamo-web-service-simulation": "github:atsora/pomamo-web-service-simulation#3.1.0"
+    "@atsora/pomamo-web-service-simulation": "portal:../pomamo-web-service-simulation"
     "@bower_components/jquery": "jquery/jquery-dist#2.1.4"
     "@bower_components/jquery-mockjax": "jakerella/jquery-mockjax#v2.6.1"
     "@bower_components/json2-js": cangosta/JSON-js
     "@bower_components/moment": "moment/moment#2.30.1"
     "@bower_components/momentjs": "moment/moment#2.30.1"
     "@webcomponents/webcomponentsjs": "npm:^2.4.3"
+    chart.js: "npm:^4.5.0"
     chokidar: "npm:^3.5.3"
     core-js: "npm:~3.30.2"
     d3: "npm:^6.2.0"
     grunt: "npm:^1.6.1"
     grunt-bake: "npm:^1.9.0"
     grunt-browserify: "npm:~6.0.0"
-    grunt-cli: "npm:^1.4.3"
+    grunt-cli: "npm:^1.5.0"
     grunt-contrib-clean: "npm:~1.0.0"
     grunt-contrib-concat: "npm:~1.0.0"
     grunt-contrib-copy: "npm:~1.0.0"
@@ -72,14 +73,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@atsora/pomamo-web-service-simulation@github:atsora/pomamo-web-service-simulation#3.1.0":
-  version: 3.1.2
-  resolution: "@atsora/pomamo-web-service-simulation@https://github.com/atsora/pomamo-web-service-simulation.git#commit=411b3e202bed01c164b0e1af24818554fe996b0a"
+"@atsora/pomamo-web-service-simulation@portal:../pomamo-web-service-simulation::locator=%40atsora%2Fpomamo-web-components%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@atsora/pomamo-web-service-simulation@portal:../pomamo-web-service-simulation::locator=%40atsora%2Fpomamo-web-components%40workspace%3A."
   dependencies:
     "@bower_components/jquery-mockjax": "jakerella/jquery-mockjax#v2.6.1"
-  checksum: 10c0/f2fc05032c3e9e30becd352a829dc2be00bf22c237b959e94ec6a340badbf112afe7b6fb45d4b68f82ebcb27015124f9ac3fbf7ccb65ddb2dab0587e29dc2761
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@babel/helper-string-parser@npm:^7.27.1":
   version: 7.27.1
@@ -210,6 +210,13 @@ __metadata:
   dependencies:
     lodash: "npm:^4.17.21"
   checksum: 10c0/a9c1fb50b5c2009f9fb6db603497e20eb0aba650a2a2f8a5d6af478a95c6237aaf92ae7ae87cc2c896d71b24f220f4678172a456121c380861cf711d0588451d
+  languageName: node
+  linkType: hard
+
+"@kurkle/color@npm:^0.3.0":
+  version: 0.3.4
+  resolution: "@kurkle/color@npm:0.3.4"
+  checksum: 10c0/0e9fd55c614b005c5f0c4c755bca19ec0293bc7513b4ea3ec1725234f9c2fa81afbc78156baf555c8b9cb0d305619253c3f5bca016067daeebb3d00ebb4ea683
   languageName: node
   linkType: hard
 
@@ -1042,6 +1049,15 @@ __metadata:
   version: 0.0.2
   resolution: "charenc@npm:0.0.2"
   checksum: 10c0/a45ec39363a16799d0f9365c8dd0c78e711415113c6f14787a22462ef451f5013efae8a28f1c058f81fc01f2a6a16955f7a5fd0cd56247ce94a45349c89877d8
+  languageName: node
+  linkType: hard
+
+"chart.js@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "chart.js@npm:4.5.0"
+  dependencies:
+    "@kurkle/color": "npm:^0.3.0"
+  checksum: 10c0/f12c7f9a238ee7ce6d3f7111628e9daba86bb8ff8e54cfe63525fde6ded9003c72c4c8d2c7d5702539dc0aff7e682dfec058660ade8d03a970da002656d4ac91
   languageName: node
   linkType: hard
 
@@ -2506,7 +2522,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grunt-cli@npm:^1.4.3":
+"grunt-cli@npm:^1.5.0":
   version: 1.5.0
   resolution: "grunt-cli@npm:1.5.0"
   dependencies:

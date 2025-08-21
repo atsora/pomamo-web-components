@@ -196,6 +196,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   productionstatelegend: {
     title: 'Production state'
   },
+  productiontrackergraph: {
+  },
   productiontrackertable: {
     hourly: 'hourly',
     summary: 'summary',
@@ -415,6 +417,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   productionstatelegend: {
     title: 'État de production'
+  },
+  productiontrackergraph: {
   },
   productiontrackertable: {
     hourly: 'par heure',

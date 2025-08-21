@@ -20,16 +20,17 @@
     "!.vscode/**"
   ],
   "dependencies": {
-    "@atsora/pomamo-web-service-simulation": "github:atsora/pomamo-web-service-simulation#3.1.0",
+    "@atsora/pomamo-web-service-simulation": "portal:../pomamo-web-service-simulation",
     "@bower_components/jquery": "jquery/jquery-dist#2.1.4",
     "@bower_components/jquery-mockjax": "jakerella/jquery-mockjax#v2.6.1",
     "@bower_components/json2-js": "cangosta/JSON-js",
     "@bower_components/moment": "moment/moment#2.30.1",
     "@bower_components/momentjs": "moment/moment#2.30.1",
     "@webcomponents/webcomponentsjs": "^2.4.3",
+    "chart.js": "^4.5.0",
     "core-js": "~3.30.2",
     "d3": "^6.2.0",
-    "grunt-cli": "^1.4.3",
+    "grunt-cli": "^1.5.0",
     "markdown-it": "^12.0.4",
     "regenerator-runtime": "~0.13.5"
   },

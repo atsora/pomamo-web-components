@@ -467,6 +467,34 @@ exports.displayDateRange = function (range, seconds) {
   }
 }
 
+/** Display the lower time of the range
+ * 
+ * @memberof module:pulseUtility
+ *
+ * @function displayRangeLowerTime
+ *
+ * @param {Range} range - date range, with bounds of type native javascript Date or ISO 8601 format
+ * @param {boolean} seconds - true == show seconds
+ * @return {string} lower time of the range: HH:mm or HH:mm:ss
+ */
+//var displayRangeLowerTime = 
+exports.displayRangeLowerTime = function (range, seconds) {
+  let r = pulseRange.convertToDateRange(range);
+  if (r.isEmpty()) {
+    return '';
+  }
+  else { // not empty
+    if (r.lower == null) {
+      console.warn('displayDateRange: lower is not defined');
+      return '-oo';
+    }
+    else { // range.lower not null
+      let begin_local = convertDateToMoment(r.lower);
+      return (seconds ? begin_local.format('LTS') : begin_local.format('LT'));
+    }
+  }
+}
+
 /** Append a date range display with separated begin and end
  * 
  * @memberof module:pulseUtility
