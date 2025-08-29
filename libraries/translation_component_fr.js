@@ -213,6 +213,13 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     title: "Raison d'arrêt",
     textidleDefaultValue: 'Arrêtée'
   },
+  reasonslotlist: {
+    sectionTimeRangeTitle: 'Selectionner une période de temps',
+    sectionPeriodTitle: 'Selectionner une ou plusieurs périodes',
+    sectionReasonTitle: 'Classifier la/les période(s) sélectionnée(s)',
+    optionIdentified: 'Montrer les périodes classifiées',
+    optionRunning: 'Montrer les périodes actives',
+  },
   runninglegends: {
     title: "État d'activité",
     textidle: 'Arrêtée',
@@ -224,15 +231,29 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     switch: "Passer à un autre état planifié"
   },
   savereason: {
+    applicableReasons: 'Raisons possibles',
+    apply: 'Sélectionner',
+    applyWithComment: 'Sélectionner avec commentaire',
     comment: 'commentaire',
-    comment2dots: 'Commentaire :',
+    comment2dots: 'Commentaire : ',
+    currentReasonColon: 'Raison courante : ',
     errorNoDetails: "Prière d'ajouter un commentaire",
+    loading: 'en chargement...',
+    machineColon: 'Machine : ',
+    modesColon: 'Modes : ',
+    multiple: 'multiple',
     noPeriod: 'Pas de période',
+    nSelectedPeriods: 'périodes sélectionnées',
+    noSelectedPeriod: 'Pas de périodes sélectionnées',
+    periodColon: 'Période : ',
     periods: 'périodes',
-    reason2dots: 'Raison :',
+    reason2dots: 'Raison : ',
     reasonDetailsTitle: 'Détails des raisons',
+    resetReasonButton: 'Réinitialiser',
     saveReasonTitle: 'Renseigner une raison',
-    split: 'Couper'
+    selectedPeriodsColon: 'Période(s) sélectionnée(s) : ',
+    split: 'Couper',
+    withComent: 'avec commentaire'
   },
   sequencebar: {
     sequence: 'Séquence '

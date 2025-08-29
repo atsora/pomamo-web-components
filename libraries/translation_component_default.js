@@ -214,6 +214,13 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     title: 'Reason',
     textidleDefaultValue: 'Idle . short stop . Stop'
   },
+  reasonslotlist: {
+    sectionTimeRangeTitle: 'Select a time range',
+    sectionPeriodTitle: 'Select one or more idle periods',
+    sectionReasonTitle: 'Apply a reason on the selected period(s)',
+    optionIdentified: 'Show identified idle periods',
+    optionRunning: 'Show running periods',
+  },
   runninglegends: {
     title: 'Activity state',
     textidle: 'Idle . short stop . Stop',
@@ -225,15 +232,29 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     switch: 'Switch to '
   },
   savereason: {
+    applicableReasons: 'Applicable reasons',
+    apply: 'Apply',
+    applyWithComment: 'Apply with comment',
     comment: 'comment',
-    comment2dots: 'Comment:',
+    comment2dots: 'Comment: ',
+    currentReasonColon: 'Current reason:  ',
     errorNoDetails: 'Please add a comment',
+    loading: 'Loading...',
+    machineColon: 'Machine: ',
+    modesColon: 'Modes: ',
+    multiple: 'multiple',
     noPeriod: 'No period',
+    noSelectedPeriod: 'No period is selected',
+    nSelectedPeriods: 'selected periods',
+    periodColon: 'Period: ',
     periods: 'periods',
-    reason2dots: 'Reason:',
+    reasonColon: 'Reason: ',
     reasonDetailsTitle: 'Reason details',
+    resetReasonButton: 'Back to default',
     saveReasonTitle: 'Set reason',
-    split: 'Split'
+    selectedPeriodsColon: 'Selected period(s): ',
+    split: 'Split',
+    withComment: 'with comment'
   },
   sequencebar: {
     'sequence': 'Sequence '

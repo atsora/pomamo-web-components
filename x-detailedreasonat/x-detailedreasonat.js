@@ -397,7 +397,7 @@ require('x-reasonsubdetails/x-reasonsubdetails');
           let changeText = this.getTranslation('changebutton', 'Change');
           let changeButton = $('<a></a>').addClass('detailed-button')
             .html(changeText);
-          //let saveTitle = this.getTranslation(this, 'savereason.saveReasonTitle', 'Set reason');
+          //let saveTitle = this.getTranslation('savereason.saveReasonTitle', 'Set reason');
           let self = this;
           $(changeButton).click(function (e) {
             // Hide Popup

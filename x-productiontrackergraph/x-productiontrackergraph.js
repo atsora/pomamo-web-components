@@ -318,8 +318,8 @@ const Chart = require('chart.js/auto');
                 type: 'line',
                 label: '', // No legend
                 data: targetData,
-                borderColor: 'rgba(16, 25, 102, 1)',
-                backgroundColor: 'rgba(59, 177, 255, 1)',
+                borderColor: 'rgba(117, 188, 255, 1)',
+                backgroundColor: 'rgba(117, 188, 255, 1)',
                 pointStyle: false,
                 fill: false
               }

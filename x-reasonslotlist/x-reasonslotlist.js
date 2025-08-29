@@ -1,4 +1,5 @@
 // Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2025 Atsora Solutions
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -21,7 +22,6 @@ var pulseCustomDialog = require('pulseCustomDialog');
 var pulseComponent = require('pulsecomponent');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
-//var pulseConfig = require('pulseConfig');
 
 require('x-reasonslotbar/x-reasonslotbar');
 
@@ -297,7 +297,7 @@ require('x-revisionprogress/x-revisionprogress');
 
       // create PAGE 2 -> done before for good display
       let dialogbox2 = $('<div></div>').addClass('dialog-savereason-page2')
-        .append('<div class="reasonslotlist-header-label">3. Apply a reason on the selected period(s)</div>');
+        .append(`<div class="reasonslotlist-header-label">3. ${this.getTranslation('sectionReasonTitle', 'Apply a reason on the selected period(s)')}</div>`);
       let xsaveReason = pulseUtility.createjQueryElementWithAttribute('x-savereason', {
         'machine-id': $(this.element).attr('machine-id')
       });
@@ -400,9 +400,9 @@ require('x-revisionprogress/x-revisionprogress');
       datetimerangeDiv.append(xdatetimerange);
 
       let fixedHeaderDiv = $('<div></div>').addClass('fixed-header')
-        .append('<div class="reasonslotlist-header-label">1. Select a time range</div>')
+        .append(`<div class="reasonslotlist-header-label">1. ${this.getTranslation('sectionTimeRangeTitle', 'Select a time range')}</div>`)
         .append(datetimerangeDiv)
-        .append('<div class="reasonslotlist-header-label">2. Select one or more idle periods</div>');
+        .append(`<div class="reasonslotlist-header-label">2. ${this.getTranslation('sectionPeriodTitle', 'Select one or more periods')}</div>`);
 
       // - x-reasonslotbar + x-highlightperiodsbar
       let reasonBar = pulseUtility.createjQueryElementWithAttribute('x-reasonslotbar', {
@@ -426,10 +426,10 @@ require('x-revisionprogress/x-revisionprogress');
       // - filter
       this._allIdleCheckbox = $("<input type='checkbox' id='reasonslotlist-allidle-checkbox' name='idle' value='AllIdle'>").html('Idle');
       let allIdlelabel = $("<label for='reasonslotlist-allidle-checkbox'></label>")
-        .append('Show identified idle periods');
+        .append(this.getTranslation('optionIdentified', 'Show identified idle periods'));
       this._motionCheckbox = $("<input type='checkbox' id='reasonslotlist-motion-checkbox' name='motion' value='AllMotion'>").html('Motion');
       let motionlabel = $("<label for='reasonslotlist-motion-checkbox'></label>")
-        .append('Show running periods');
+        .append(this.getTranslation('optionRunning', 'Show running periods'));
       // Change check -> Call Fill Table
       this._allIdleCheckbox.change(function () {
         //let checked = $(this.element).is(':checked');

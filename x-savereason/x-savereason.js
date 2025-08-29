@@ -83,7 +83,7 @@ require('x-datetimerange/x-datetimerange');
       periodInfo.append(splitButton);
 
       // Label
-      let periodLabel = $('<div>Selected period(s): </div>').addClass('savereason-periodlabel');
+      let periodLabel = $(`<div>${this.getTranslation('selectedPeriodsColon', 'Selected period(s): ')}</div>`).addClass('savereason-periodlabel');
       periodInfo.append(periodLabel);
 
       // x-datetimerange
@@ -106,8 +106,8 @@ require('x-datetimerange/x-datetimerange');
 
       // "Applicable reasons" label and default button
       let headerReasons = $('<div></div>').addClass('savereason-reasonsheader')
-        .append('<div class="savereason-reasonslabel">Applicable reasons</div>');
-      let defaultButton = $('<div class="savereason-defaultbutton pushButton">Back to default</div>');
+        .append(`<div class="savereason-reasonslabel">${this.getTranslation('applicableReasons', 'Applicable reasons')}</div>`);
+      let defaultButton = $(`<div class="savereason-defaultbutton pushButton">${this.getTranslation('resetReasonButton', 'Back to default')}</div>`);
       defaultButton.click(function () {
         this._saveReason(null); //save -> restore default
       }.bind(this));
@@ -126,7 +126,7 @@ require('x-datetimerange/x-datetimerange');
         .append(divtable);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loading', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(list).append(loaderDiv); // -> //TODO : move IN _content
 
@@ -187,13 +187,13 @@ require('x-datetimerange/x-datetimerange');
 
     displayNoPeriod () { //  if _rangesList = empty
       // Hide the period
-      $('.savereason-infoperiod .savereason-periodlabel').html('No period selected');
+      $('.savereason-infoperiod .savereason-periodlabel').html(this.getTranslation('noSelectedPeriod','No period is selected'));
       this._tagdatetimerange.hide();
       $('.savereason-infoperiod .savereason-splitbutton').hide();
 
       // Infos
-      $(this.element).find('.savereason-info-reason').html('Current reason: -');
-      $(this.element).find('.savereason-info-modes').html('Modes: -');
+      $(this.element).find('.savereason-info-reason').html(`${this.getTranslation('currentReasonColon','Current reason: ')}-`);
+      $(this.element).find('.savereason-info-modes').html(`${this.getTranslation('modesColon','Modes: ')}-`);
 
       // Reasons
       $('.savereason-defaultbutton').hide();
@@ -202,8 +202,8 @@ require('x-datetimerange/x-datetimerange');
 
     hideNoPeriod () { // if _rangesList = NOT empty
       // Prepare infos (will be updated later)
-      $(this.element).find('.savereason-info-reason').html('Current reason:');
-      $(this.element).find('.savereason-info-modes').html('Modes:');
+      $(this.element).find('.savereason-info-reason').html(`${this.getTranslation('currentReasonColon: ','Current reason')}`);
+      $(this.element).find('.savereason-info-modes').html(`${this.getTranslation('modesColon','Modes: ')}`);
       $('.savereason-defaultbutton').hide();
 
       // Period(s) and associated
@@ -228,7 +228,7 @@ require('x-datetimerange/x-datetimerange');
           this._tagdatetimerange.removeAttr('novaluetext');
           this._tagdatetimerange.attr('possible-no-end', false);
         }
-        $('.savereason-infoperiod .savereason-periodlabel').html('Period:');
+        $('.savereason-infoperiod .savereason-periodlabel').html(this.getTranslation ('periodColon', 'Period: '));
         this._tagdatetimerange.show();
 
         // Show the split button
@@ -238,7 +238,7 @@ require('x-datetimerange/x-datetimerange');
         // SEVERAL PERIODS SELECTED
 
         // Hide the datetime picker and show the number of selected periods
-        $('.savereason-infoperiod .savereason-periodlabel').html(this._rangesList.length + ' periods selected');
+        $('.savereason-infoperiod .savereason-periodlabel').html(this._rangesList.length + ' ' + this.getTranslation('nSelectedPeriods','selected periods'));
         this._tagdatetimerange.hide();
 
         // Hide the split button
@@ -304,7 +304,7 @@ require('x-datetimerange/x-datetimerange');
 
         if (data.ReasonOnlySlots.length == 1) {
           // Current reason
-          divReason.html('Current reason: ' + data.ReasonOnlySlots[0].Display);
+          divReason.html(`${this.getTranslation('currentReasonColon', 'Current reason: ')}` + data.ReasonOnlySlots[0].Display);
 
           if ((typeof (data.ReasonOnlySlots[0].Details) != 'undefined') && (data.ReasonOnlySlots[0].Details != '')) {
             let spanDetailsReason = $('<span></span>').addClass('savereason-info-reason-details')
@@ -317,18 +317,18 @@ require('x-datetimerange/x-datetimerange');
           for (let iMode = 0; iMode < data.ReasonOnlySlots[0].MachineModes.length; iMode++) {
             modes.push(data.ReasonOnlySlots[0].MachineModes[iMode].Display);
           }
-          divModes.html('Modes: ' + modes.join(', '));
+          divModes.html(`${this.getTranslation('modesColon', 'Modes: ')}` + modes.join(', '));
         }
         $('.savereason-defaultbutton').show();
       }
       else if (this._rangesList.length > 1) {
-        divReason.html('Current reason: multiple');
-        divModes.html('Modes: multiple');
+        divReason.html(`${this.getTranslation('currentReasonColon')}${this.getTranslation('multiple', 'multiple')}`);
+        divModes.html(`${this.getTranslation('modesColon')}${this.getTranslation('muliple', 'multiple')}`);
         $('.savereason-defaultbutton').show();
       }
       else {
-        divReason.html('Current reason: -');
-        divModes.html('Modes: -');
+        divReason.html(`${this.getTranslation('currentReasonColon', 'Current reason: ')}-`);
+        divModes.html(`${this.getTranslation('modesColon', 'Modes: ')}-`);
       }
     }
 
@@ -418,7 +418,7 @@ require('x-datetimerange/x-datetimerange');
       if (reason.DetailsRequired) {
         let applyWithComment = $('<div></div>')
           .addClass('applyreasonwithcomment').addClass('pushButton')
-          .html('Apply with comment');
+          .html(this.getTranslation('applyWithComment', 'Apply with comment'));
         elt.append(applyWithComment);
 
         applyWithComment.click(
@@ -430,10 +430,10 @@ require('x-datetimerange/x-datetimerange');
       else {
         let applyWithComment = $('<div></div>')
           .addClass('applyreasonwithcomment').addClass('pushButton')
-          .html('with comment');
+          .html(this.getTranslation('withComment', 'with comment'));
         let apply = $('<div></div>')
           .addClass('applyreason').addClass('pushButton')
-          .html('Apply');
+          .html(this.getTranslation('apply', 'Apply'));
         elt.append(applyWithComment)
           .append(apply);
 
@@ -572,7 +572,7 @@ require('x-datetimerange/x-datetimerange');
         'machine-id': this.element.getAttribute('machine-id')
       });
       let divMachine = $('<div></div>').addClass('savereason-machine')
-        .append($('<div></div>').addClass('savereason-machine-label').html('Machine:'))
+        .append($('<div></div>').addClass('savereason-machine-label').html(this.getTranslation('machineColon', 'Machine: ')))
         .append(machineDisplay);
 
       // Range
@@ -584,11 +584,11 @@ require('x-datetimerange/x-datetimerange');
         'period-context': 'savereasondetails' + this.element.getAttribute('machine-id')
       });
       let divdatetimerange = $('<div></div>').addClass('savereason-datetimerange-details')
-        .append($('<div></div>').addClass('savereason-datetimerange-label').html('Period:'))
+        .append($('<div></div>').addClass('savereason-datetimerange-label').html(this.getTranslation('periodColon','Period: ')))
         .append(details_tagdatetimerange);
 
       // Reason
-      let divlabelReason = $('<div></div>').addClass('savereason-details-label').html(this.getTranslation('reason2dots', 'Reason:'));
+      let divlabelReason = $('<div></div>').addClass('savereason-details-label').html(this.getTranslation('reasonColon', 'Reason: '));
       let divNewReasonSpan = $('<span></span>').addClass('savereason-details-span').html(reasonName);
       let divNewReason = $('<div></div>').addClass('savereason-details-input').append(divNewReasonSpan);
       let divReason = $('<div></div>').addClass('savereason-details-reason')
@@ -613,7 +613,7 @@ require('x-datetimerange/x-datetimerange');
         .append(divReason)
         .append(divDetails);
 
-      let reasonDetailsTitle = this.getTranslation('reasonDetailsTitle', 'Reason details...');
+      let reasonDetailsTitle = this.getTranslation('reasonDetailsTitle', 'Reason details');
 
       this._detailsDialogId = pulseCustomDialog.initialize(dialogbox, {
         title: reasonDetailsTitle,
