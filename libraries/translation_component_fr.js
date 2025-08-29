@@ -247,13 +247,13 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     noSelectedPeriod: 'Pas de périodes sélectionnées',
     periodColon: 'Période : ',
     periods: 'périodes',
-    reason2dots: 'Raison : ',
+    reasonColon: 'Raison : ',
     reasonDetailsTitle: 'Détails des raisons',
     resetReasonButton: 'Réinitialiser',
     saveReasonTitle: 'Renseigner une raison',
     selectedPeriodsColon: 'Période(s) sélectionnée(s) : ',
     split: 'Couper',
-    withComent: 'avec commentaire'
+    withComment: 'avec commentaire'
   },
   sequencebar: {
     sequence: 'Séquence '
