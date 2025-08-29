@@ -214,6 +214,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     textidleDefaultValue: 'Arrêtée'
   },
   reasonslotlist: {
+    idle: 'Arrêtée',
+    loading: 'En chargement...',
+    motion: 'En mouvement',
+    noPeriod: 'Pas de période possible sur la place spécifiée',
     sectionTimeRangeTitle: 'Selectionner une période de temps',
     sectionPeriodTitle: 'Selectionner une ou plusieurs périodes',
     sectionReasonTitle: 'Classifier la/les période(s) sélectionnée(s)',
@@ -235,7 +239,6 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     apply: 'Sélectionner',
     applyWithComment: 'Sélectionner avec commentaire',
     comment: 'commentaire',
-    comment2dots: 'Commentaire : ',
     currentReasonColon: 'Raison courante : ',
     errorNoDetails: "Prière d'ajouter un commentaire",
     loading: 'en chargement...',

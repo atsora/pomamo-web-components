@@ -424,10 +424,10 @@ require('x-revisionprogress/x-revisionprogress');
       fixedHeaderDiv.append(barDiv);
 
       // - filter
-      this._allIdleCheckbox = $("<input type='checkbox' id='reasonslotlist-allidle-checkbox' name='idle' value='AllIdle'>").html('Idle');
+      this._allIdleCheckbox = $("<input type='checkbox' id='reasonslotlist-allidle-checkbox' name='idle' value='AllIdle'>").html(this.getTranslation('idle', 'Idle'));
       let allIdlelabel = $("<label for='reasonslotlist-allidle-checkbox'></label>")
         .append(this.getTranslation('optionIdentified', 'Show identified idle periods'));
-      this._motionCheckbox = $("<input type='checkbox' id='reasonslotlist-motion-checkbox' name='motion' value='AllMotion'>").html('Motion');
+      this._motionCheckbox = $("<input type='checkbox' id='reasonslotlist-motion-checkbox' name='motion' value='AllMotion'>").html(this.getTranslation('motion', 'Motion'));
       let motionlabel = $("<label for='reasonslotlist-motion-checkbox'></label>")
         .append(this.getTranslation('optionRunning', 'Show running periods'));
       // Change check -> Call Fill Table
@@ -481,7 +481,7 @@ require('x-revisionprogress/x-revisionprogress');
         .append(warningDiv);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loading', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this.element).append(loaderDiv);
 

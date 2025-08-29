@@ -215,6 +215,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     textidleDefaultValue: 'Idle . short stop . Stop'
   },
   reasonslotlist: {
+    idle: 'Idle',
+    loading: 'Loading...',
+    motion: 'Motion',
+    noPeriod: 'No selectable period on the specified range',
     sectionTimeRangeTitle: 'Select a time range',
     sectionPeriodTitle: 'Select one or more idle periods',
     sectionReasonTitle: 'Apply a reason on the selected period(s)',
@@ -236,7 +240,6 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     apply: 'Apply',
     applyWithComment: 'Apply with comment',
     comment: 'comment',
-    comment2dots: 'Comment: ',
     currentReasonColon: 'Current reason:  ',
     errorNoDetails: 'Please add a comment',
     loading: 'Loading...',
@@ -457,6 +460,17 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     title: "Raison d'arrêt",
     textidleDefaultValue: 'Arrêtée'
   },
+  reasonslotlist: {
+    idle: 'Arrêtée',
+    loading: 'En chargement...',
+    motion: 'En mouvement',
+    noPeriod: 'Pas de période possible sur la place spécifiée',
+    sectionTimeRangeTitle: 'Selectionner une période de temps',
+    sectionPeriodTitle: 'Selectionner une ou plusieurs périodes',
+    sectionReasonTitle: 'Classifier la/les période(s) sélectionnée(s)',
+    optionIdentified: 'Montrer les périodes classifiées',
+    optionRunning: 'Montrer les périodes actives',
+  },
   runninglegends: {
     title: "État d'activité",
     textidle: 'Arrêtée',
@@ -468,15 +482,28 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     switch: "Passer à un autre état planifié"
   },
   savereason: {
+    applicableReasons: 'Raisons possibles',
+    apply: 'Sélectionner',
+    applyWithComment: 'Sélectionner avec commentaire',
     comment: 'commentaire',
-    comment2dots: 'Commentaire :',
+    currentReasonColon: 'Raison courante : ',
     errorNoDetails: "Prière d'ajouter un commentaire",
+    loading: 'en chargement...',
+    machineColon: 'Machine : ',
+    modesColon: 'Modes : ',
+    multiple: 'multiple',
     noPeriod: 'Pas de période',
+    nSelectedPeriods: 'périodes sélectionnées',
+    noSelectedPeriod: 'Pas de périodes sélectionnées',
+    periodColon: 'Période : ',
     periods: 'périodes',
-    reason2dots: 'Raison :',
+    reasonColon: 'Raison : ',
     reasonDetailsTitle: 'Détails des raisons',
+    resetReasonButton: 'Réinitialiser',
     saveReasonTitle: 'Renseigner une raison',
-    split: 'Couper'
+    selectedPeriodsColon: 'Période(s) sélectionnée(s) : ',
+    split: 'Couper',
+    withComment: 'avec commentaire'
   },
   sequencebar: {
     sequence: 'Séquence '
