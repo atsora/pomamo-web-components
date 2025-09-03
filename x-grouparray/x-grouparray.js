@@ -56,7 +56,7 @@ var eventBus = require('eventBus');
     }
 
     // Overload to always refresh value
-    get isVisible () {
+    get isVisible() {
       if (!this._connected) { // == is connected
         return false;
       }
@@ -65,21 +65,21 @@ var eventBus = require('eventBus');
 
     /** Get list of machines as string
      */
-    getMachinesList () {
+    getMachinesList() {
       return this._machineIdsArray.join();
     }
 
-    get content () {
+    get content() {
       return this._content;
     }
 
-    _displayOrUpdateMachineList () {
+    _displayOrUpdateMachineList() {
       //$(this._content).empty(); No !
 
       if ((false == this._dynamic)
         && (this._machineIdsArray.length == 0)) {
         let noMachines = $('<div></div>').addClass('no-machines')
-          .html(this.getTranslation ('noMachine', 'No machine in selection'));
+          .html(this.getTranslation('noMachine', 'No machine in selection'));
         $(this._content).append(noMachines);
       }
       else {
@@ -114,7 +114,7 @@ var eventBus = require('eventBus');
       }
 
       // Update the component with data returned by the web service
-      function machineIdIsInList (machineId, List) {
+      function machineIdIsInList(machineId, List) {
         for (let i = 0; i < List.length; i++) {
           if (Number(machineId) == Number(List[i]))
             return true;
@@ -144,6 +144,14 @@ var eventBus = require('eventBus');
       //$(this.element).find('*').addClass('disableDeleteWhenDisconnect');
 
       // Update list of machines - Add ROWS
+      const panel = document.getElementById("grouparray");
+
+      if (this._machineIdsArray.length == 1) {
+        panel.classList.toggle("hidden-content");
+      }
+      else if (this._machineIdsArray.length > 1 && panel.classList.contains("hidden-content")) {
+        panel.classList.remove("hidden-content");
+      }
       for (let i = 0; i < this._machineIdsArray.length; i++) {
         let singleid = this._machineIdsArray[i];
         let li;
@@ -196,6 +204,7 @@ var eventBus = require('eventBus');
           machineRow[0].find ('*').removeClass('disableDeleteWhenDisconnect');
         }*/
       }
+
       //$(this.element).find('.disableDeleteWhenDisconnect').removeClass('disableDeleteWhenDisconnect'); // too early
 
       // Warn fieldlegend : machine list has changed
@@ -215,12 +224,12 @@ var eventBus = require('eventBus');
 
     } // _displayOrUpdateMachineList
 
-    _removeDisable () {
+    _removeDisable() {
       $(this.element).find('.disableDeleteWhenDisconnect')
         .removeClass('disableDeleteWhenDisconnect');
     }
 
-    _dealWithRotation () {
+    _dealWithRotation() {
       let nbColumnToDisplay = Number(this.getConfigOrAttribute('column', '3'));
       let nbRowToDisplay = Number(this.getConfigOrAttribute('row', '2'));
 
@@ -243,7 +252,7 @@ var eventBus = require('eventBus');
       this._rotationAndProgressDisplay();
     }
 
-    _rotationAndProgressDisplay () {
+    _rotationAndProgressDisplay() {
       // Clear timer if exist ! To avoid many living timers
       if (this._showHideTimer) {
         clearTimeout(this._showHideTimer);
@@ -281,7 +290,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    _showHidePages () {
+    _showHidePages() {
       // Hide or show pages
       for (let index_page = 1; index_page <= this._nbPagesTotal; index_page++) {
         let page_class = '.li-page-' + index_page.toString();
@@ -304,7 +313,7 @@ var eventBus = require('eventBus');
      * @param {!string} context - Context
      * @return {!string} key
      */
-    getStartKey (context) {
+    getStartKey(context) {
       switch (context) {
         case 'Loaded':
           return 'Standard';
@@ -320,7 +329,7 @@ var eventBus = require('eventBus');
      * @param {!string} key - Key
      * @returns {!State} Created states
      */
-    defineState (context, key) {
+    defineState(context, key) {
       switch (context) {
         case 'Loaded': // == No Refresh until click on button 'Start'
           return new state.StaticState(context, key, this);
@@ -329,7 +338,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'templateid':
@@ -348,7 +357,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    initialize () {
+    initialize() {
       this.addClass('pulse-bigdisplay');
 
       // Update here some internal parameters
@@ -380,7 +389,7 @@ var eventBus = require('eventBus');
       return;
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // STOP timer
       if (this._showHideTimer) {
         clearTimeout(this._showHideTimer);
@@ -416,7 +425,7 @@ var eventBus = require('eventBus');
     /**
      * Validate the (event) parameters
      */
-    validateParameters () {
+    validateParameters() {
       let groups = this.getConfigOrAttribute('group');
       let machines = this.getConfigOrAttribute('machine');
       if ((groups == null || groups == '') &&
@@ -438,7 +447,7 @@ var eventBus = require('eventBus');
       this.switchToNextContext();
     }
 
-    displayError (message) {
+    displayError(message) {
       $(this._messageSpan).html(message);
 
       $('.grouparray-dependant').addClass('grouparray-in-error'); //).hide();
@@ -450,13 +459,13 @@ var eventBus = require('eventBus');
       }
     }
 
-    removeError () {
+    removeError() {
       $(this._messageSpan).html('');
 
       $('.grouparray-dependant').removeClass('grouparray-in-error'); //.show();
     }
 
-    get refreshRate () {
+    get refreshRate() {
       // Return here the refresh rate in ms.
       if (this._nbPagesTotal >= 1) {
         let rotationDelay = Number(this.getConfigOrAttribute('rotation', '90'));
@@ -474,7 +483,7 @@ var eventBus = require('eventBus');
       Replace _runAjaxWhenIsVisible when NO url should be called
       return true if something is done, false if _runAjaxWhenIsVisible should be called
     */
-    _runAlternateGetData () {
+    _runAlternateGetData() {
       let groups = this.getConfigOrAttribute('group'); //this.element.getAttribute('groups');
       if ((pulseUtility.isNotDefined(groups)) ||
         (groups == '')) {
@@ -504,7 +513,7 @@ var eventBus = require('eventBus');
       return false;
     }
 
-    getShortUrl () {
+    getShortUrl() {
       // Return the Web Service URL here without path
       let groups = this.getConfigOrAttribute('group');
       let url = 'MachinesFromGroups?GroupIds=' + groups;
@@ -512,11 +521,11 @@ var eventBus = require('eventBus');
       return url;
     }
 
-    refresh (data) {
+    refresh(data) {
       this._displayOrUpdateMachineList();
     }
 
-    manageSuccess (data) {
+    manageSuccess(data) {
       /* public List<int> MachineIds { get; set; }
       public int? SortKind { get; set; }
       public string SortKindTip { get; set; }*/
@@ -561,7 +570,7 @@ var eventBus = require('eventBus');
      *
      * @param {*} event
      */
-    onConfigChange (event) {
+    onConfigChange(event) {
       if ((event.target.config == 'machine')
         || (event.target.config == 'group')) {
         this.start();
