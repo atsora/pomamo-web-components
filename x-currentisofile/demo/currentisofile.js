@@ -7,7 +7,7 @@ require('x-currentisofile/x-currentisofile');
 
 var pulseConfig = require('pulseConfig');
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CurrentIsoFile');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CurrentIsofile');
 
 //# sourceMappingURL=currentcncvalue.js.map
 
