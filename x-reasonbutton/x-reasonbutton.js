@@ -42,9 +42,9 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
       return self;
     }
 
-    get content () { return this._content; } // Optional
+    get content() { return this._content; } // Optional
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id':
@@ -64,12 +64,21 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
           }
           this.start(); // To re-validate parameters
           break;
+        case 'machine-context':
+          if (this.isInitialized()) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
+            eventBus.EventBus.addEventListener(this,
+              'machineIdChangeSignal',
+              newVal,
+              this.onMachineIdChange.bind(this));
+          }
+          break;
         default:
           break;
       }
     }
 
-    initialize () {
+    initialize() {
       this.addClass('pulse-icon');
 
       // Update here some internal parameters
@@ -83,6 +92,13 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
 
         eventBus.EventBus.dispatchToContext('textChangeEvent', textchangecontext,
           { text: this._yellowSinceText });
+      }
+
+      if (this.element.hasAttribute('machine-context')) {
+        eventBus.EventBus.addEventListener(this,
+          'machineIdChangeSignal',
+          this.element.getAttribute('machine-context'),
+          this.onMachineIdChange.bind(this));
       }
 
       // In case of clone, need to be empty :
@@ -105,7 +121,7 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
       return;
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // Parameters
       this._reasoncolor = null; // To force refresh display
       this._modecategory = null; // To force refresh display
@@ -122,7 +138,7 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
     /**
      * Validate the (event) parameters
      */
-    validateParameters () {
+    validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
         console.error('missing attribute machine-id in reasonbutton.element');
         this.setError('missing machine-id'); // delayed error message
@@ -133,7 +149,7 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
       this.switchToNextContext();
     }
 
-    displayError (message) {
+    displayError(message) {
       this._isoPeriodStart = null;
       this._isoNowFromWebService = null;
       this._dateNow = new Date();
@@ -144,11 +160,11 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
       $(this.element).parents('.tile').removeClass('reasonbutton-severity-error');
     }
 
-    get refreshRate () {
+    get refreshRate() {
       return 1000.0 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
-    getShortUrl () {
+    getShortUrl() {
       // Return the Web Service URL here without path
       let url = 'CurrentReason?MachineId=' + this.element.getAttribute('machine-id');
       if (this.element.hasAttribute('textchange-context')) {
@@ -157,7 +173,7 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
       return url;
     }
 
-    _displayIcon (color, catId) {
+    _displayIcon(color, catId) {
       let needToRefreshDisplay = false; // Defined to avoid blinking
       if (this._reasoncolor != color) {
         needToRefreshDisplay = true;
@@ -210,7 +226,7 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
       }
     }
 
-    refresh (data) {
+    refresh(data) {
       if (data.TooOld) { //-> ErrorDTO ?
         this._isoPeriodStart = null;
         this._isoNowFromWebService = null;
@@ -248,7 +264,7 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
 
     }
 
-    manageSuccess (data) {
+    manageSuccess(data) {
       // Success:
       super.manageSuccess(data); // or this.switchToNextContext(() => this.refresh(data));
     }
@@ -260,12 +276,21 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
      *
      * @param {Object} event
      */
-    onAskForTextChange (event) {
+    onAskForTextChange(event) {
       let textchangecontext = pulseUtility.getTextChangeContext(this);
       eventBus.EventBus.dispatchToContext('textChangeEvent', textchangecontext,
         { text: this._yellowSinceText });
     }
+
+    /**
+     * Event bus callback triggered when 'machine-id' changes
+     *
+     * @param {Object} event
+     */
+    onMachineIdChange(event) {
+      this.element.setAttribute('machine-id', event.target.newMachineId);
+    }
   }
 
-  pulseComponent.registerElement('x-reasonbutton', ReasonButtonComponent, ['machine-id', 'textchange-context']);
+  pulseComponent.registerElement('x-reasonbutton', ReasonButtonComponent, ['machine-id', 'textchange-context', 'machine-context']);
 })();
