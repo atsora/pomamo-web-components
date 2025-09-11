@@ -24,6 +24,8 @@ const Chart = require('chart.js/auto');
     constructor(...args) {
       const self = super(...args);
 
+      this._chartInstance = undefined;
+
       self._content = undefined;
       self._graph = undefined;
       self._messageSpan = undefined;
@@ -37,7 +39,7 @@ const Chart = require('chart.js/auto');
       return self;
     }
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id':
@@ -45,22 +47,16 @@ const Chart = require('chart.js/auto');
           if (this.isInitialized()) {
             this.start();
           } break;
-          // TODO: ???
-        /* case 'machine-context': -> maybe create a new group-context ?
-          eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
-          eventBus.EventBus.addEventListener(this,
-            'machineIdChangeSignal', newVal,
-            this.onMachineIdChange.bind(this));
-          break;*/
-        case 'period-context': {
+        case 'machine-context':
           if (this.isInitialized()) {
-            eventBus.EventBus.removeEventListenerBySignal(this, 'dateTimeRangeChangeEvent');
+            eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
             eventBus.EventBus.addEventListener(this,
-              'dateTimeRangeChangeEvent', newVal,
-              this.onDateTimeRangeChange.bind(this));
+              'machineIdChangeSignal',
+              newVal,
+              this.onMachineIdChange.bind(this));
           }
-          this.start();
-        } break;
+          break;
+
         // for tests
         case 'range': {
           if (this._range == undefined) {
@@ -70,32 +66,72 @@ const Chart = require('chart.js/auto');
             }
           }
         } break;
+        case 'period-context':
+          if (this.isInitialized()) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'dateTimeRangeChangeEvent');
+            eventBus.EventBus.addEventListener(this,
+              'dateTimeRangeChangeEvent',
+              newVal,
+              this.onDateTimeRangeChange.bind(this));
+
+            if (!this.element.hasAttribute('range')) {
+              eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent',
+                this.element.getAttribute('period-context'));
+            }
+          }
+          break;
         default:
           break;
       }
     }
 
-    initialize () {
+    initialize() {
       // TODO: class?
       this.addClass('atsora-productiontrackergraph');
 
       // In case of clone, need to be empty :
-      this.element.replaceChildren();
+      if (this._content) {
+        this._content.innerHTML = '';
+      }
 
-      // Update here some internal parameters
-      // For tests
+      // Listener and dispatchers
+      if (this.element.hasAttribute('machine-context')) {
+        eventBus.EventBus.addEventListener(this,
+          'machineIdChangeSignal',
+          this.element.getAttribute('machine-context'),
+          this.onMachineIdChange.bind(this));
+      }
+
+      if (this.element.hasAttribute('period-context')) {
+        eventBus.EventBus.addEventListener(this,
+          'dateTimeRangeChangeEvent',
+          this.element.getAttribute('period-context'),
+          this.onDateTimeRangeChange.bind(this));
+      }
+      else {
+        eventBus.EventBus.addGlobalEventListener(this,
+          'dateTimeRangeChangeEvent',
+          this.onDateTimeRangeChange.bind(this));
+      }
+
       if (this.element.hasAttribute('range')) {
-        if (this._range == undefined) {
-          let newRange = pulseRange.createStringRangeFromString(
-            this.element.getAttribute('range'));
-          this._range = newRange;
+        this._range = pulseRange.createStringRangeFromString(
+          this.element.getAttribute('range'));
+      }
+      else {
+        if (this.element.hasAttribute('period-context')) {
+          eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent',
+            this.element.getAttribute('period-context'));
+        }
+        else {
+          eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
       }
 
       // Create DOM - Content
       this._content = this.document.createElement('div');
       this._content.className = 'productiontrackergraph-content';
-      this.element.appendChild(this._content);
+
 
       // Loader
       let loader = this.document.createElement('div');
@@ -126,11 +162,17 @@ const Chart = require('chart.js/auto');
       this.switchToNextContext();
     }
 
-    clearInitialization () {
+    clearInitialization() {
+      if (this._chartInstance) {
+        this._chartInstance.destroy();
+        this._chartInstance = undefined;
+      }
       // Parameters
 
       // DOM
-      this.element.replaceChildren();
+      if (this._content) {
+        this._content.innerHTML = '';
+      }
 
       this._graph = undefined;
       this._messageSpan = undefined;
@@ -144,10 +186,7 @@ const Chart = require('chart.js/auto');
     /**
      * Validate the (event) parameters
      */
-    validateParameters () {
-      // TODO: check group?
-      //let group = this.getConfigOrAttribute('group');
-      //if ((pulseUtility.isNotDefined(group)) || (group == '')) { }
+    validateParameters() {
 
       // Check the range is valid
       if (this._range == undefined) {
@@ -161,35 +200,15 @@ const Chart = require('chart.js/auto');
           this.switchToNextContext();
           return;
         }
-
-        if (this.element.hasAttribute('period-context')) {
-          eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent',
-            this.element.getAttribute('period-context'));
-        }
-        else {
-          eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
-        }
-        this.setError('missing range');
         return;
       }
 
-      if (this._range.isEmpty()) {
-        console.error('empty range');
-        if (this.element.hasAttribute('period-context')) {
-          eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent',
-            this.element.getAttribute('period-context'));
-        }
-        else {
-          eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
-        }
-        this.setError('empty range');
-        return;
-      }
+
 
       this.switchToNextContext();
     }
 
-    displayError (message) {
+    displayError(message) {
       if ('' === message) {
         this._content.removeAttribute('error-message');
       }
@@ -205,7 +224,7 @@ const Chart = require('chart.js/auto');
       this._resetAllData();
     }
 
-    _resetAllData () {
+    _resetAllData() {
       this._data = undefined;
 
       // TODO: ...
@@ -217,26 +236,27 @@ const Chart = require('chart.js/auto');
       this._staticCumulTarget = 0;
     }
 
-    removeError () {
+    removeError() {
       this._messageSpan.innerHTML = '';
       this._content.removeAttribute('error-message');
     }
 
-    get refreshRate () {
+    get refreshRate() {
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
-    getShortUrl () {
+    getShortUrl() {
       let url = 'ProductionTracker?';
       if (this.element.hasAttribute('group')) {
         url += 'GroupId='
           + this.element.getAttribute('group') + '&';
       }
       url += 'Range=' + this._getRangeToAsk();
+      console.log('ProductionTrackerGraph asking for', url);
       return url;
     }
 
-    _getRangeToAsk () {
+    _getRangeToAsk() {
       if (this._rangeToReturn == undefined)
         this._rangeToReturn = this._range;
 
@@ -256,27 +276,33 @@ const Chart = require('chart.js/auto');
       return pulseUtility.convertDateRangeForWebService(this._rangeToReturn);
     }
 
-    refresh (data) {
+    refresh(data) {
       this._data = data;
 
       this._draw();
     }
 
-    _cleanDisplay () {
-      this._content.replaceChildren();
+    _cleanDisplay() {
+      if (this._chartInstance) {
+        this._chartInstance.destroy();
+        this._chartInstance = undefined;
+      }
+      if (this._content) {
+        this._content.innerHTML = '';
+      }
       this._graph = undefined;
 
       this._resetAllData();
     }
 
-    _resize () {
+    _resize() {
       if (this._graph != undefined) {
         // TODO: ...neeeded???
         // check x-productiontrackergraph
       }
     }
 
-    _draw () {
+    _draw() {
       if ((this._content == undefined) || (this._content == null)) {
         return;
       }
@@ -302,7 +328,11 @@ const Chart = require('chart.js/auto');
         // TODO: target for the full hour
         // Create chart
         // TODO: max y
-        new Chart(this._graph, {
+        if (this._chartInstance) {
+          this._chartInstance.destroy();
+          this._chartInstance = undefined;
+        }
+        this._chartInstance = new Chart(this._graph, {
           data: {
             labels: labels,
             datasets: [
@@ -312,14 +342,14 @@ const Chart = require('chart.js/auto');
                 data: actualData,
                 borderWidth: 0, // No border
                 borderColor: 'rgba(2, 48, 2, 1)',
-                backgroundColor: 'rgba(29, 214, 29, 1)'
+                backgroundColor: '#008000'
               },
               {
                 type: 'line',
                 label: '', // No legend
                 data: targetData,
-                borderColor: 'rgba(117, 188, 255, 1)',
-                backgroundColor: 'rgba(117, 188, 255, 1)',
+                borderColor: '#0062C4',
+                backgroundColor: '#0062C4',
                 pointStyle: false,
                 fill: false
               }
@@ -341,7 +371,7 @@ const Chart = require('chart.js/auto');
               },
               y: {
                 beginAtZero: true,
-                // suggesgtedMax: 100, // TODO:
+                suggestedMax: Math.ceil((this._data.HourlyData[0].Target) * 1.1), // target + 10%, rounds up to the next integer
                 title: {
                   display: true,
                   text: 'Parts', // TODO: translate
@@ -357,7 +387,7 @@ const Chart = require('chart.js/auto');
     /**
        * @override
        */
-    manageError (data) {
+    manageError(data) {
       // Reset
       super.manageError(data);
     }
@@ -365,7 +395,7 @@ const Chart = require('chart.js/auto');
     /**
      * @override
      */
-    manageFailure (isTimeout, xhrStatus) {
+    manageFailure(isTimeout, xhrStatus) {
       if (!isTimeout) {
         if (xhrStatus == '404') {
           this.switchToKey('Error', () => this.displayError(
@@ -384,21 +414,21 @@ const Chart = require('chart.js/auto');
      *
      * @param {Object} event
      */
-    onDateTimeRangeChange (event) {
+    onDateTimeRangeChange(event) {
       let newRange = event.target.daterange;
+
       if (newRange.upper == null) { // No empty end
         newRange.upper = Date();
       }
-      if ((this._range == undefined) ||
-        (!pulseRange.equals(newRange, this._range, (a, b) => (a >= b) && (a <= b)))) {
-        this._range = newRange;
-        this.element.removeAttribute('range'); // In case it is used... for test only
 
-        //this._resetAllData(); included below
-        this._cleanDisplay();
+      this._range = newRange;
+      this.element.removeAttribute('range'); // In case it is used... for test only
 
-        this.start(); // To try validate again
-      }
+      //this._resetAllData(); included below
+      this._cleanDisplay();
+
+      this.start(); // To try validate again
+
     }
 
     /**
@@ -406,7 +436,7 @@ const Chart = require('chart.js/auto');
       * 
       * @param {*} event 
       */
-    onConfigChange (event) {
+    onConfigChange(event) {
       if ((event.target.config == 'machine')
         || (event.target.config == 'group')) {
         // Resize text... in 1 second
@@ -415,7 +445,11 @@ const Chart = require('chart.js/auto');
       }
     }
 
+    onMachineIdChange(event) {
+      this.element.setAttribute('group', event.target.newMachineId);
+    }
+
   }
 
-  pulseComponent.registerElement('x-productiontrackergraph', ProductionTrackerGraphComponent, ['machine-id', 'group', 'period-context']);
+  pulseComponent.registerElement('x-productiontrackergraph', ProductionTrackerGraphComponent, ['machine-id', 'group', 'period-context', 'range', 'machine-context']);
 })();
