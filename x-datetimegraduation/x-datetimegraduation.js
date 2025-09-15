@@ -14,6 +14,12 @@ var pulseComponent = require('pulsecomponent');
 var pulseRange = require('pulseRange');
 //var pulseUtility = require('pulseUtility');
 var eventBus = require('eventBus');
+const locales = {
+        'fr': require('d3-time-format/locale/fr-FR.json'),
+        'en': require('d3-time-format/locale/en-US.json'),
+        'de': require('d3-time-format/locale/de-DE.json'),
+        'es': require('d3-time-format/locale/es-ES.json'),
+      };
 
 //const d3 = require('d3');
 
@@ -53,9 +59,9 @@ var eventBus = require('eventBus');
       return self;
     }
 
-    get content () { return this._content; }
+    get content() { return this._content; }
 
-    load () { // To resize (old-name to keep compatibility)
+    load() { // To resize (old-name to keep compatibility)
       if (this.isInitialized()) {
         this._drawEmpty();
         this._draw();
@@ -67,7 +73,7 @@ var eventBus = require('eventBus');
       this._draw();
     }*/
 
-    _drawEmpty () { // For resize
+    _drawEmpty() { // For resize
       if (this._content == undefined) {
         return;
       }
@@ -77,7 +83,7 @@ var eventBus = require('eventBus');
       $(this.element).remove('.datetimegraduation-svg');
     }
 
-    _draw () {
+    _draw() {
       if (this._content == undefined) {
         return;
       }
@@ -102,6 +108,7 @@ var eventBus = require('eventBus');
       if (nbTicks < 3)
         nbTicks = 3;
 
+
       // re-draw svg (with good range)
       let x = d3.scaleTime()
         .domain([new Date(this._range.lower), new Date(this._range.upper)])
@@ -109,8 +116,32 @@ var eventBus = require('eventBus');
       //.range([0, bar_width+1]); /* +1 to draw last tick inside the border - FIREFOX*/
       // TODO: i18n, format
 
+      const language = moment.locale();
+
+      let localeData = locales[language];
+      
+      const d3TimeFormat = require('d3-time-format');
+      const locale = d3TimeFormat.timeFormatLocale(localeData);
+
+      const formatDay = locale.format('%a %d');
+      let formatHour;
+      if (language === 'en') {
+        formatHour = locale.format('%I %p');
+      }
+      else {
+        formatHour = locale.format('%H:%M');
+      }
+
+      function customTickFormat(date) {
+        if (date.getHours() === 0 && date.getMinutes() === 0) {
+          return formatDay(date);
+        } else {
+          return formatHour(date);
+        }
+      }
+
       if ($(this.element).attr('bottom') == 'true') {
-        let xAxis = d3.axisBottom(x);
+        let xAxis = d3.axisBottom(x).tickFormat(customTickFormat);
         if (nbTicks < 10) {
           xAxis.ticks(nbTicks);
         }
@@ -127,7 +158,7 @@ var eventBus = require('eventBus');
           .call(xAxis);
       }
       else {
-        let xAxis = d3.axisTop(x);
+        let xAxis = d3.axisTop(x).tickFormat(customTickFormat);
         if (nbTicks < 10) {
           xAxis.ticks(nbTicks);
         }
@@ -155,7 +186,7 @@ var eventBus = require('eventBus');
       /*.showToday() -> to show a line for NOW */
     }
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'bottom':
@@ -190,7 +221,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    initialize () {
+    initialize() {
 
       // Listener and dispatchers
       if (this.element.hasAttribute('period-context')) {
@@ -265,7 +296,7 @@ var eventBus = require('eventBus');
       return;
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // Parameters
       this._range = undefined;
       // DOM
@@ -277,20 +308,20 @@ var eventBus = require('eventBus');
       super.clearInitialization();
     }
 
-    validateParameters () {
+    validateParameters() {
       this.switchToNextContext();
     }
 
-    displayError (message) {
+    displayError(message) {
       // Code here to display the error message
     }
 
-    removeError () {
+    removeError() {
       // Code here to remove the error message
     }
 
     // Callback events
-    onDateTimeRangeChange (event) {
+    onDateTimeRangeChange(event) {
       let newRange = event.target.daterange;
       this._range = newRange;
       this._draw();
