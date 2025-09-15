@@ -14,6 +14,7 @@ var pulseComponent = require('pulsecomponent');
  * Build a custom tag <x-clock> to display an clock component. This tag gets following attribute : 
 *  display-seconds : Boolean
 *  display-24h : Boolean
+*  display-date : Boolean
  */
 (function () {
 
@@ -34,11 +35,12 @@ var pulseComponent = require('pulsecomponent');
       return self;
     }
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'display-seconds':
         case 'display-24h':
+        case 'display-date':
           this.start();
           break;
         default:
@@ -46,7 +48,7 @@ var pulseComponent = require('pulsecomponent');
       }
     }
 
-    initialize () {
+    initialize() {
       this.addClass('pulse-text');
 
       // In case of clone, need to be empty :
@@ -67,45 +69,56 @@ var pulseComponent = require('pulsecomponent');
       return;
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // Parameters
       // DOM
       $(this.element).empty();
       this._textclock = undefined;
       this._content = undefined;
-      
+
       super.clearInitialization();
     }
 
-    _startTime () {
+    _startTime() {
       let now = moment();
-
+    
       let stringToDisplay = '';
       let msBeforeNextChange = 1000 - now.millisecond();
-      if (this.element.getAttribute('display-seconds') == 'true'
+
+      if (this.element.getAttribute('display-date') === 'true'
+        || this.element.getAttribute('display-date') === true) {
+        if (moment.locale() === 'en') {
+          stringToDisplay += "dddd MM/DD/YYYY ";
+        }
+        else{
+          stringToDisplay += "dddd DD/MM/YYYY";
+        }
+      }
+      else if (this.element.getAttribute('display-seconds') == 'true'
         || this.element.getAttribute('display-seconds') == true) {
         if (this.element.getAttribute('display-24h') == 'true'
           || this.element.getAttribute('display-24h') == true) {
-          stringToDisplay = now.format('HH:mm:ss');
+          stringToDisplay += 'HH:mm:ss';
         }
         else {
-          stringToDisplay = now.format('hh:mm:ss a');
+          stringToDisplay += 'hh:mm:ss a';
         }
       }
       else { //let stringToDisplay = now.format('LT');
         if (this.element.getAttribute('display-24h') == 'true'
           || this.element.getAttribute('display-24h') == true) {
-          stringToDisplay = now.format('HH:mm');
+          stringToDisplay += 'HH:mm';
         }
         else {
-          stringToDisplay = now.format('hh:mm a');
+          stringToDisplay += 'hh:mm a';
         }
+
         msBeforeNextChange += 1000 * (60 - now.second());
       }
-      this._textclock.html(stringToDisplay);
+      this._textclock.html(now.format(stringToDisplay));
       setTimeout(this._startTime.bind(this), msBeforeNextChange);
     }
   }
 
-  pulseComponent.registerElement('x-clock', ClockComponent, ['display-seconds', 'display-24h']);
+  pulseComponent.registerElement('x-clock', ClockComponent, ['display-seconds', 'display-24h', 'display-date']);
 })();
