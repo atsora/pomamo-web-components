@@ -184,6 +184,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   },
   periodtoolbar: {
     dialogTitle: 'Setting date/time range',
+    homeBtn: 'home',
+    dayBtn: 'day',
+    shiftBtn: 'shift',
+    weekBtn: 'week',
+    semesterBtn: 'semester',
+    yearBtn: 'year',
     emptyPeriodError: 'Empty period',
     endAfterMaxError: 'End date/time is after maximum allowed date/time',
     endBeforeMinError: 'End date/time is before minimum allowed date/time',
@@ -197,6 +203,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     title: 'Production state'
   },
   productiontrackergraph: {
+    parts: 'parts'
   },
   productiontrackertable: {
     hourly: 'hourly',
@@ -437,12 +444,21 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     machine: 'Machine'
   },
   periodtoolbar: {
-    dialogTitle: "Entrer l'intervalle de temps"
+    dialogTitle: "Entrer l'intervalle de temps",
+    homeBtn: 'accueil',
+    dayBtn: 'journée',
+    shiftBtn: 'équipe',
+    weekBtn: 'semaine',
+    monthBtn: 'mois',
+    quarterBtn: 'trimestre',
+    semesterBtn: 'semestre',
+    yearBtn: 'année',
   },
   productionstatelegend: {
     title: 'État de production'
   },
   productiontrackergraph: {
+    parts: 'pièces'
   },
   productiontrackertable: {
     hourly: 'par heure',
