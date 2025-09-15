@@ -329,58 +329,65 @@ const Chart = require('chart.js/auto');
         // Create chart
         // TODO: max y
         if (this._chartInstance) {
-          this._chartInstance.destroy();
-          this._chartInstance = undefined;
+          this._chartInstance.data.labels = labels;
+          this._chartInstance.data.datasets[0].data = actualData;
+          this._chartInstance.data.datasets[1].data = targetData;
+          this._chartInstance.options.scales.y.suggestedMax = Math.ceil((targetData[0] || 1) * 1.1);
+          this._chartInstance.update();
         }
-        this._chartInstance = new Chart(this._graph, {
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                type: 'bar',
-                label: '', // No legend
-                data: actualData,
-                borderWidth: 0, // No border
-                borderColor: 'rgba(2, 48, 2, 1)',
-                backgroundColor: '#008000'
-              },
-              {
-                type: 'line',
-                label: '', // No legend
-                data: targetData,
-                borderColor: '#0062C4',
-                backgroundColor: '#0062C4',
-                pointStyle: false,
-                fill: false
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              color: 'rgba(235, 235, 235, 1)',
-              legend: {
-                display: false // No legend
-              }
+        else {
+          this._chartInstance = new Chart(this._graph, {
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  type: 'line',
+                  label: '', // No legend
+                  data: targetData,
+                  borderColor: '#FA0200',
+                  backgroundColor: '#FA0200',
+                  pointStyle: false,
+                  fill: false,
+                  borderDash: [6, 6]
+                },
+                {
+                  type: 'bar',
+                  label: '', // No legend
+                  data: actualData,
+                  borderWidth: 0, // No border
+                  borderColor: 'rgba(2, 48, 2, 1)',
+                  backgroundColor: '#008000'
+                }
+
+              ]
             },
-            scales: {
-              x: {
-                title: {
-                  display: false,
+            options: {
+              responsive: true,
+              plugins: {
+                color: 'rgba(235, 235, 235, 1)',
+                legend: {
+                  display: false // No legend
                 }
               },
-              y: {
-                beginAtZero: true,
-                suggestedMax: Math.ceil((this._data.HourlyData[0].Target) * 1.1), // target + 10%, rounds up to the next integer
-                title: {
-                  display: true,
-                  text: 'Parts', // TODO: translate
-                  align: 'end'
+              scales: {
+                x: {
+                  title: {
+                    display: false,
+                  }
+                },
+                y: {
+                  beginAtZero: true,
+                  suggestedMax: Math.ceil((this._data.HourlyData[0].Target) * 1.1), // target + 10%, rounds up to the next integer
+                  title: {
+                    display: true,
+                    text: this.getTranslation('parts', 'parts'), // TODO: translate
+                    align: 'end'
+                  }
                 }
               }
             }
-          }
-        });
+          });
+        }
       }
     }
 
