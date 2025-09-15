@@ -52,7 +52,7 @@ var eventBus = require('eventBus');
     //get content () { return this._content; } // Optional
 
     // -> animate
-    _startDashTimeRefreshTimer (seconds) {
+    _startDashTimeRefreshTimer(seconds) {
       this._stopDashTimeRefreshTimer();
       console.log('PartProductionStatusPie(' + this.element.getAttribute('machine-id') + ') '
         + ' Start timer(' + seconds + ')');
@@ -67,14 +67,14 @@ var eventBus = require('eventBus');
         1000 * seconds);
     }
 
-    _stopDashTimeRefreshTimer () {
+    _stopDashTimeRefreshTimer() {
       if (this._dashTimeRefreshTimer) {
         clearTimeout(this._dashTimeRefreshTimer);
         this._dashTimeRefreshTimer = null;
       }
     }
 
-    _translateSecondsToTextAndDisplay (seconds) {
+    _translateSecondsToTextAndDisplay(seconds) {
       if (Math.abs(seconds) < 60) {
         let text = seconds + 's';
         $(this.element).find('.time-in-pie').text(text);
@@ -93,7 +93,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    _setTimeColorAndDispatch () {
+    _setTimeColorAndDispatch() {
       if (pulseUtility.isNotDefined(this._eventDateTime)) {
         //
       }
@@ -129,7 +129,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    _checkTimeAndAnimateTimeAndDash () {
+    _checkTimeAndAnimateTimeAndDash() {
       let animateTimeAndDash = true;
       let stopDashAnimation = false;
 
@@ -295,7 +295,7 @@ var eventBus = require('eventBus');
     }
 
     // Draw arc : no or background colored - Never animated
-    _drawArc (svg) {
+    _drawArc(svg) {
       if (this._ringStrokeClass == 'completion-stroke-noinfo') {
         // 'BACKGROUND' color
         /*let circleBk = pulseSvg.createSegmentOnDonut(
@@ -316,7 +316,7 @@ var eventBus = require('eventBus');
 
     } // end _drawArc
 
-    _createFixedDashCircle (svg) {
+    _createFixedDashCircle(svg) {
       let circumference = 2 * Math.PI * this._dashCircleRadius;
       let dashSize = circumference / (60 * 2);
 
@@ -344,14 +344,48 @@ var eventBus = require('eventBus');
       svg.appendChild(bkColoredCircle);
     }
 
-    _fillProductionText () {
+    _fillProductionText() {
       if (!this._data)
         return; // For access using onConfigChange
 
+      let productionDisplay = $(this.element).find('.production-in-pie');
+
+      // If display-current-production is true, only show current pieces done
+      let displayCurrentOnly = (this.getConfigOrAttribute('display-current-production', 'false') == 'true');
+      let displayCurrentGoal = this.getConfigOrAttribute('display-current-goal', 'false') === 'true';
+
+      if (displayCurrentOnly) {
+        if (!pulseUtility.isNotDefined(this._data.NbPiecesDoneDuringShift)) {
+          let done = Math.floor(this._data.NbPiecesDoneDuringShift * 100) / 100;
+          $(productionDisplay).text(done);
+        }
+        else {
+          $(productionDisplay).text('');
+        }
+        // Clear secondary display
+        $(this.element).find('.second-production-in-pie').text('');
+        // Remove any efficiency classes
+        $(productionDisplay).removeClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
+        return;
+      }
+
+      else if (displayCurrentGoal) {
+        const productionDisplay = $(this.element).find('.production-in-pie');
+        if (!pulseUtility.isNotDefined(this._data) && !pulseUtility.isNotDefined(this._data.GoalNowShift)) {
+          const goal = Math.floor(this._data.GoalNowShift * 100) / 100;
+          $(productionDisplay).text(goal);
+        } else {
+          $(productionDisplay).text('');
+        }
+        // Clear secondary display and any efficiency classes
+        $(this.element).find('.second-production-in-pie').text('');
+        $(productionDisplay).removeClass('good-efficiency mid-efficiency bad-efficiency');
+        return;
+      }
+
+      // Default behavior: show actual / goal or percent depending on config
       let textPercent = '';
       let production = '';
-
-      let productionDisplay = $(this.element).find('.production-in-pie');
 
       if (!pulseUtility.isNotDefined(this._data.NbPiecesDoneDuringShift)) {
         // Trunk with 2 decimal if needed
@@ -415,7 +449,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    _createTextInTheMiddle (svg, topTextToDisplay, bottomTextToDisplay/*, production*/) {
+    _createTextInTheMiddle(svg, topTextToDisplay, bottomTextToDisplay/*, production*/) {
       // Show text + positions -> GROUP
       let middleAvailableWidth = Math.sqrt(2 * this._middleRadius * this._middleRadius);
       let topTextWidth = middleAvailableWidth / 2;
@@ -547,7 +581,7 @@ var eventBus = require('eventBus');
       svg.appendChild(smallBottomTextGroup);
     }
 
-    _findTopTextAndStoreEventData () {
+    _findTopTextAndStoreEventData() {
       // EVENTS
       if (this._data.ActiveEvents && this._data.ActiveEvents.length > 0) {
         // Manage active events (STOPPED)
@@ -621,7 +655,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    _restoreDefaultValues () {
+    _restoreDefaultValues() {
       // Display
       this._ringStrokeClass = 'completion-stroke-noinfo';
 
@@ -660,7 +694,7 @@ var eventBus = require('eventBus');
       this._longText = '';
     }
 
-    _forwardWorkInfo () {
+    _forwardWorkInfo() {
       if (!this._data) {
         eventBus.EventBus.dispatchToContext('operationChangeEvent',
           this.element.getAttribute('machine-id'),
@@ -675,7 +709,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    _draw () {
+    _draw() {
       // Clean SVG
       if ((this._pie == undefined) || (this._pie == null)) {
         return;
@@ -740,11 +774,35 @@ var eventBus = require('eventBus');
       this._forwardWorkInfo();
     } // end _draw
 
+    _drawEmpty() {
+      // Stop any running timers
+      this._stopDashTimeRefreshTimer();
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+      // Remove old SVG if present
+      if (this._pie) {
+        $(this._pie).find('.partproductionstatuspie-svg').remove();
+      }
+
+      // Clear messages
+      if (this._messageSpan) {
+        $(this._messageSpan).html('');
+      }
+
+      // Clear any displayed texts inside the element
+      $(this.element).find('.time-in-pie').text('');
+      $(this.element).find('.production-in-pie').text('');
+
+      // Restore default internal values
+      this._restoreDefaultValues();
+    }
+
+
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id':
+        case 'display-current-production':
+        case 'display-current-goal':
         case 'group': // Not fully defined yet
           // Check 'textchange-context'
           if (this.isInitialized()) {
@@ -808,7 +866,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    initialize () {
+    initialize() {
       this.addClass('pulse-piegauge');
 
       let defaultThreshold1 = 600; // in seconds -> same as tagConfig !
@@ -871,7 +929,7 @@ var eventBus = require('eventBus');
       return;
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // STOP timer
       if (this._dashTimeRefreshTimer) {
         clearTimeout(this._dashTimeRefreshTimer);
@@ -891,7 +949,7 @@ var eventBus = require('eventBus');
     /**
      * Validate the (event) parameters
      */
-    validateParameters () {
+    validateParameters() {
       let group = this.getConfigOrAttribute('group');
       if ((pulseUtility.isNotDefined(group)) || (group == '')) {
         // machine-id
@@ -911,7 +969,7 @@ var eventBus = require('eventBus');
       this.switchToNextContext();
     }
 
-    displayError (message) {
+    displayError(message) {
       $(this._messageSpan).html(message);
       //$(this.element).find('.partproductionstatuspie-progresspie').hide();
       /*if ('NO_DATA' == statusString) {
@@ -920,16 +978,16 @@ var eventBus = require('eventBus');
       //+ SVG ? Non
     }
 
-    removeError () {
+    removeError() {
       $(this._messageSpan).html('');
       //$(this.element).find('.partproductionstatuspie-progresspie').show();
     }
 
-    get refreshRate () {
+    get refreshRate() {
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
-    getShortUrl () {
+    getShortUrl() {
       this._stopDashTimeRefreshTimer();
 
       let url = 'Operation/ProductionMachiningStatus?';
@@ -947,7 +1005,7 @@ var eventBus = require('eventBus');
       return url;
     }
 
-    refresh (data) {
+    refresh(data) {
       this._restoreDefaultValues();
       this._data = data;
       $(this.element).find('.partproductionstatuspie-progresspie').show();
@@ -955,7 +1013,7 @@ var eventBus = require('eventBus');
       this._draw();
     }
 
-    manageNotApplicable () {
+    manageNotApplicable() {
       // By default switch to context NotApplicable and add the class pulse-component-not-applicable
       //super.manageNotApplicable();
 
@@ -966,7 +1024,7 @@ var eventBus = require('eventBus');
     /**
        * @override
        */
-    manageError (data) {
+    manageError(data) {
       // Reset
       super.manageError(data);
     }
@@ -974,7 +1032,7 @@ var eventBus = require('eventBus');
     /**
      * @override
      */
-    manageFailure (isTimeout, xhrStatus) {
+    manageFailure(isTimeout, xhrStatus) {
       if (!isTimeout) {
         // Reset
       }
@@ -988,7 +1046,7 @@ var eventBus = require('eventBus');
      *
      * @param {Object} event
      */
-    onMachineIdChange (event) {
+    onMachineIdChange(event) {
       this.element.setAttribute('machine-id', event.target.newMachineId);
     }
 
@@ -997,7 +1055,7 @@ var eventBus = require('eventBus');
      *
      * @param {Object} event
      */
-    onAskForTextChange (event) {
+    onAskForTextChange(event) {
       let textchangecontext = pulseUtility.getTextChangeContext(this);
       eventBus.EventBus.dispatchToContext('textChangeEvent', textchangecontext,
         { text: this._longText });
@@ -1008,7 +1066,7 @@ var eventBus = require('eventBus');
       * 
       * @param {*} event 
       */
-    onConfigChange (event) {
+    onConfigChange(event) {
       if (event.target.config == 'hidesecondproductiondisplay')
         this._fillProductionText();
 
@@ -1026,5 +1084,5 @@ var eventBus = require('eventBus');
 
   }
 
-  pulseComponent.registerElement('x-partproductionstatuspie', PartProductionStatusPieComponent, ['machine-id', 'group', 'textchange-context', 'threshold1', 'threshold2', 'machine-context']);
+  pulseComponent.registerElement('x-partproductionstatuspie', PartProductionStatusPieComponent, ['machine-id', 'group', 'textchange-context', 'threshold1', 'threshold2', 'machine-context', 'display-current-production', 'display-current-goal']);
 })();
