@@ -72,7 +72,7 @@ require('x-datetimepicker/x-datetimepicker');
       let periodButtonsDiv = $('<div class="content-period-buttons"></div>');
       toolbar.append(periodButtonsDiv);
 
-      
+
 
       const hidePeriodButton = this.element.hasAttribute('hide-period-buttons');
       const hideZooms = this.element.hasAttribute('hide-zooms');
@@ -80,48 +80,56 @@ require('x-datetimepicker/x-datetimepicker');
       var self = this;
 
       let homeBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-home');
+      pulseUtility.addToolTip(homeBtn, this.getTranslation('homeBtn', 'home'));
       if (hidePeriodButton) homeBtn.hide();
       homeBtn.click(function () {
         self._clickOnButton('home')
       });
 
       let dayBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-day', 'day', true);
+      pulseUtility.addToolTip(dayBtn, this.getTranslation('dayBtn', 'day'));
       if (hidePeriodButton) dayBtn.hide();
       dayBtn.click(function () {
         self._clickOnButton('day')
       });
 
       let shiftBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-shift', 'shift', true);
+      pulseUtility.addToolTip(shiftBtn, this.getTranslation('shiftBtn', 'shift'));
       if (hidePeriodButton) shiftBtn.hide();
       shiftBtn.click(function () {
         self._clickOnButton('shift')
       });
 
       let weekBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-week', 'week', true);
+      pulseUtility.addToolTip(weekBtn, this.getTranslation('weekBtn', 'week'));
       if (hidePeriodButton) weekBtn.hide();
       weekBtn.click(function () {
         self._clickOnButton('week')
       });
 
       let monthBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-month', 'month', true);
+      pulseUtility.addToolTip(monthBtn, this.getTranslation('monthBtn', 'month'));
       if (hidePeriodButton) monthBtn.hide();
       monthBtn.click(function () {
         self._clickOnButton('month')
       });
 
       let quarterBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-quarter', 'quarter', true);
+      pulseUtility.addToolTip(quarterBtn, this.getTranslation('quarterBtn', 'quarter'));
       if (hidePeriodButton) quarterBtn.hide();
       quarterBtn.click(function () {
         self._clickOnButton('quarter')
       });
 
       let semesterBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-semester', 'semester', true);
+      pulseUtility.addToolTip(semesterBtn, this.getTranslation('semesterBtn', 'semester'));
       if (hidePeriodButton) semesterBtn.hide();
       semesterBtn.click(function () {
         self._clickOnButton('semester')
       });
 
       let yearBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-year', 'year', true);
+      pulseUtility.addToolTip(yearBtn, this.getTranslation('yearBtn', 'year'));
       if (hidePeriodButton) yearBtn.hide();
       yearBtn.click(function () {
         self._clickOnButton('year')
@@ -528,19 +536,17 @@ require('x-datetimepicker/x-datetimepicker');
         else { // empty string = default range display
           let display = pulseUtility.displayDateRange(this._dateRange);
           if (this._rangeType == 'shift') {
-            let parts = display.split(" - ");
-            if (parts.length == 2) {
-              let label = this._displayLabel || '';
+            let label = this._displayLabel || '';
+            if (label != '') {
               let html = `
-            <div class="periodtoolbar-display-left">${parts[0]}</div>
-            <div class="periodtoolbar-display-center">${label}</div>
-            <div class="periodtoolbar-display-right">${parts[1]}</div>
-          `;
+              <div class="periodtoolbar-display-center">${label}</div>
+            `;
               $(this.element).find('.periodtoolbar-display').html(html);
             }
             else {
               $(this.element).find('.periodtoolbar-display').html(display);
             }
+
           }
           // (this._dateRange); DO NOT WORK -> need Date, given isostring
           else {
