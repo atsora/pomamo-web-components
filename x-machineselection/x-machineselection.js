@@ -1246,7 +1246,7 @@ require('x-freetext/x-freetext');
             divRow.append(showHide).append(checkbox);
             if (groups[i].Dynamic) {
               let spanDynamic = $('<span></span>').addClass('machineselection-dynamic-label')
-                .html(this.getTranslation('dynamicKey','DYNAMIC'));
+                .html(machineselection.getTranslation('dynamicKey','DYNAMIC'));
               divRow.append(spanDynamic);
             }
             let category = $('<div></div>').addClass('machineselection-category').append(divRow);

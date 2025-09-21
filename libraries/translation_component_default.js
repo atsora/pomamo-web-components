@@ -406,7 +406,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     title: 'Mode machine'
   },
   machineselection: {
-    clearButton: 'Effacer',
+    clearButton: 'Réinitialiser',
     dynamicKey: 'DYNAMIQUE',
     errorMissingUnique: 'Prière de sélectionner une machine',
     errorMissing: 'Prière de sélectionner au-moins une machine',
@@ -418,7 +418,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     noMachineSelection: 'Pas de sélection de machine',
     noSelectedMachine: 'Pas de machine sélectionnée',
     noSelection: 'Pas de sélection',
-    searchDots: 'Chercher...',
+    searchDots: 'Rechercher...',
     selectMachine: 'Sélectionner une machine',
     selectMachines: 'Sélectionner des machines',
     selectedGroups: 'Groupes sélectionnés',
