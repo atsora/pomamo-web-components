@@ -189,7 +189,7 @@ require('x-datetimerange/x-datetimerange');
         .append(divdaterange).append(divinputtext);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this._content).append(loaderDiv);
       // Create DOM - message for error
@@ -242,7 +242,6 @@ require('x-datetimerange/x-datetimerange');
 
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
-        console.error('missing attribute machine-id in SaveSerialNumber.element');
         //this.setError('missing machine-id'); // delayed error message
         return;
       }

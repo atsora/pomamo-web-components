@@ -186,7 +186,7 @@ require('x-reasonsubdetails/x-reasonsubdetails');
         $(this._content).append(this._divReason);
 
         // Create DOM - Loader
-        let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+        let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
         let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
         $(this._divReason).append(loaderDiv);
 
@@ -209,7 +209,7 @@ require('x-reasonsubdetails/x-reasonsubdetails');
         $(this._content).append(this._divMode);
 
         // Create DOM - Loader below
-        let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+        let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
         $(this._divMode).append(loader);
       }
 
@@ -245,7 +245,6 @@ require('x-reasonsubdetails/x-reasonsubdetails');
     validateParameters () {
       if ((!this.element.hasAttribute('machine-id'))
         || (!pulseUtility.isInteger(Number(this.element.getAttribute('machine-id'))))) {
-        console.error('missing attribute machine-id in detailedreasonat.element');
         // Delayed display :
         this.setError('missing machine-id');
         return;
@@ -370,7 +369,7 @@ require('x-reasonsubdetails/x-reasonsubdetails');
             }
             if (number >= 1) {
               let moreReasonTextSpan = $('<span></span>').html(moreReasonText);
-              moreReasonTextSpan.attr('title', 'Click to see all reasons');
+              moreReasonTextSpan.attr('title', this.getTranslation('seeAllReasons', 'Click to see all reasons'));
               let moreReasonTextButton = $('<div></div>').addClass('detailed-more-auto-reason')
                 .append(moreReasonTextSpan);
 

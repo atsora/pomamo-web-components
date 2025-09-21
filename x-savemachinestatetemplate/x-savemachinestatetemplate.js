@@ -75,7 +75,7 @@ require('x-datetimerange/x-datetimerange');
       this._MSTselectCB = $('<select name=MST_CB ></select>');
       MST_CB.append(this._MSTselectCB);
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(MST_CB).append(loaderDiv);
       // Create DOM - message for error
@@ -180,7 +180,6 @@ require('x-datetimerange/x-datetimerange');
 
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
-        console.error('missing attribute machine-id in saveMST.element');
         // Delayed display :
         this.setError('missing machine-id');
         // or

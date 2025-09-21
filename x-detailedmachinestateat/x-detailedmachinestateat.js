@@ -112,7 +112,7 @@ var eventBus = require('eventBus');
       $(this._content).append(this._detailedContent);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this._content).append(loaderDiv);
 
@@ -152,7 +152,6 @@ var eventBus = require('eventBus');
     validateParameters () {
       if ((!this.element.hasAttribute('machine-id'))
         || (!pulseUtility.isInteger(Number(this.element.getAttribute('machine-id'))))) {
-        console.error('missing attribute machine-id in detailedmachinestateat.element');
         // Delayed display :
         this.setError('missing machine-id');
         // or

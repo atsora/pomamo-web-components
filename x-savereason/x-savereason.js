@@ -254,7 +254,6 @@ require('x-datetimerange/x-datetimerange');
 
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
-        console.error('missing attribute machine-id in saveReason.element');
         // Delayed display:
         this.setError('missing machine-id');
         return;

@@ -145,12 +145,13 @@ var eventBus = require('eventBus');
 
       // Update list of machines - Add ROWS
       const panel = document.getElementById("grouparray");
-
-      if (this._machineIdsArray.length == 1) {
-        panel.classList.toggle("hidden-content");
-      }
-      else if (this._machineIdsArray.length > 1 && panel.classList.contains("hidden-content")) {
-        panel.classList.remove("hidden-content");
+      if (null != panel) {
+        if (this._machineIdsArray.length == 1) {
+          panel.classList.toggle("hidden-content");
+        }
+        else if (this._machineIdsArray.length > 1 && panel.classList.contains("hidden-content")) {
+          panel.classList.remove("hidden-content");
+        }
       }
       for (let i = 0; i < this._machineIdsArray.length; i++) {
         let singleid = this._machineIdsArray[i];
@@ -373,7 +374,7 @@ var eventBus = require('eventBus');
         .addClass('group')
         .append(this._content);
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this._content).append(loaderDiv);
       // Create DOM - message for error

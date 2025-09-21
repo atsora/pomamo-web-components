@@ -172,7 +172,7 @@ require('x-datetimepicker/x-datetimepicker');
       let periodselection_btn = $('<li></li>').addClass('periodtoolbar-li-text')
         .append(display);
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       periodselection_btn.append(loaderDiv);
       // Create DOM - message for error

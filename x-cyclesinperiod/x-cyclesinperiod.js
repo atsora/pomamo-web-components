@@ -125,7 +125,7 @@ require('x-saveserialnumber/x-saveserialnumber');
           tr.append($('<td></td>').addClass('serialnumber').html(list[i].SerialNumber));
         }
         else {
-          tr.append($('<td></td>').addClass('serialnumber missing').html('Missing'));
+          tr.append($('<td></td>').addClass('serialnumber missing').html(this.getTranslation('missing', 'Missing')));
         }
         table.append(tr);
 
@@ -171,7 +171,7 @@ require('x-saveserialnumber/x-saveserialnumber');
         .addClass('cyclesinperiod-content');
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this._content).append(loaderDiv);
       // Create DOM - message for error

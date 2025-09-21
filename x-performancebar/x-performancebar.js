@@ -396,7 +396,7 @@ var eventBus = require('eventBus');
         .append(this._content);
 
       // HTML structure - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this._content).append(loaderDiv);
 
@@ -442,7 +442,6 @@ var eventBus = require('eventBus');
     validateParameters () {
       // machine-id
       if (!this.element.hasAttribute('machine-id')) {
-        console.error('missing attribute machine-id in PerformanceBar.element');
         this.setError('missing machine-id'); // delayed error message
         return;
       }

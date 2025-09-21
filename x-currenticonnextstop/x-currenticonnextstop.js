@@ -93,14 +93,6 @@ var eventBus = require('eventBus');
       this._threshold1 = Number(this.getConfigOrAttribute('threshold1', defaultThreshold1));
       this._threshold2 = Number(this.getConfigOrAttribute('threshold2', defaultThreshold2));
 
-      // Attributes
-      /*if (!this.element.hasAttribute('machine-id')) {
-        console.error('missing attribute machine-id');
-        // Initialization error => switch to the Error state
-        this.switchToKey('Error', () => this.displayError('missing attribute machine-id'), () => this.removeError());
-        return;
-      }*/
-
       // listeners/dispatchers
       this._createListenersDispatchers();
 

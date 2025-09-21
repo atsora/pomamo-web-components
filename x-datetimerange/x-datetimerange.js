@@ -174,7 +174,7 @@ require('x-datetimepicker/x-datetimepicker');
       let rangedisplay = $('<div></div>').addClass('datetimerange-rangedisplay');
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       rangedisplay.append(loaderDiv);
       // Create DOM - message for error
@@ -715,7 +715,7 @@ require('x-datetimepicker/x-datetimepicker');
      */
     onChangeDateTime () {
       if (!this._beginDTP[0].isValid() || !this._endDTP[0].isValid()) {
-        this._warningtext.html('Please, input valid dates');
+        this._warningtext.html(this.getTranslation('invalidDatesError', 'Please, input valid dates'));
         $('#' + this._settingsDialogId + ' .customDialogOk')[0].setAttribute('disabled', 'disabled');
         return;
       }
@@ -727,7 +727,7 @@ require('x-datetimepicker/x-datetimepicker');
       let begin = new Date(this._beginDTP[0].getISOValue());
       let end = new Date(this._endDTP[0].getISOValue());
       if (end < begin) {
-        this._warningtext.html('WARNING ! Begin of period is after end');
+        this._warningtext.html(this.getTranslation('endBeforeStartError', 'End date/time is before start date/time'));
         $('#' + this._settingsDialogId + ' .customDialogOk')[0].setAttribute('disabled', 'disabled');
         return;
       }

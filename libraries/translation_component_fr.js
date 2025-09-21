@@ -21,6 +21,7 @@ ATSORA_LOCALE_CATALOG.fr.general = {
 ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   changebutton: 'Changer',
   contactsupport: "Prière de consulter l'équipe support",
+  loadingDots: 'En chargement...',
   missingconfiguration: 'Configuration manquante',
   errorColon: 'Erreur : ',
   error: {
@@ -60,6 +61,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     noDataTooOld: '-', // N/A'
   },
   cyclesinperiod: {
+    missing: 'Missing',
     saveSerialNumber: 'Enregistrer le numéro de série'
   },
   datetimerange: {
@@ -69,6 +71,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     endBeforeMinError: 'La date de fin est antérieure à la date minimum autorisée',
     endBeforeStartError: 'La date de fin est antérieure à la date de début',
     endNotValidError: 'La date de fin n’est pas valide',
+    invalidDatesError: 'Les dates ne sont pas valides',
     selectAnd: ' et ',
     selectBetween: 'Sélectionner la période entre ',
     selectFrom: 'Sélectionner la période après ',
@@ -77,6 +80,13 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     startAfterMaxError: 'La date de début est postérieure à la date maximum autorisée',
     startBeforeMinError: 'La date de début est antérieure à la date minimum autorisée',
     startNotValidError: 'La date de début n’est pas valide'
+  },
+  detailedcncvaluesat: {
+    true: 'vrai',
+    false: 'faux'
+  },
+  detailedreasonat: {
+    seeAllReasons: "Cliquer pour voir toutes les raisons"
   },
   detailsViewSubTitles: {
     reason: "raison d'arrêt",
@@ -100,10 +110,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     scheduledStatus: 'État planifié : '
   },
   lastmachinestatus: {
-    reason: "Raison d'arrêt courante : ",
-    pastReasonData: "Raisons passées",
+    currentReasonColon: "Raison d'arrêt courante : ",
     currentTooltip: "Changer la raison d'arrêt courante",
-    pastTooltip: "Consulter ou changer une raison passée"
+    loading: 'En chargement...',
+    pastReasonData: "Raisons passées",
+    pastTooltip: "Consulter ou changer une raison passée",
+    tooOld: 'Donnée trop vieille'
   },
   lastserialnumber: {
     currentserialnumber: 'Numéro de série : ',

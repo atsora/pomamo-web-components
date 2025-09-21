@@ -63,7 +63,7 @@ var pulseUtility = require('pulseUtility');
       this._content.append(this._spanDisplay);
 
       // Create DOM - (smalltext == NO Loader + NO error message displayed. see .less)
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', ' Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this._content).append(loaderDiv);
 

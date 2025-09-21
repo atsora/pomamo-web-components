@@ -114,7 +114,6 @@ function hexToRGB(hex)
     validateParameters () {
       // machine-id
       if (!this.element.hasAttribute('machine-id')) {
-        console.error('missing attribute machine-id in Stacklight.element');
         this.setError('missing machine-id'); // delayed error message
         return;
       }

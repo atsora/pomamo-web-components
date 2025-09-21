@@ -315,7 +315,7 @@ require('x-datetimepicker/x-datetimepicker');
       let minMaxDiv = $('<div></div>').addClass('pulse-report-datetime-min-max-div');
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(minMaxDiv).append(loaderDiv);
 

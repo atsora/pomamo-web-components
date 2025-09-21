@@ -23,6 +23,7 @@ ATSORA_LOCALE_CATALOG.default.general = {
 ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   changebutton: 'Change',
   contactsupport: 'Please contact the support team',
+  loadingDots: 'Loading...',
   missingconfiguration: 'Missing configuration',
   errorColon: 'Error: ',
   error: {
@@ -62,6 +63,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     noDataTooOld: '-', // N/A'
   },
   cyclesinperiod: {
+    missing: 'Missing',
     saveSerialNumber: 'Save serial number'
   },
   datetimerange: {
@@ -71,6 +73,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     endBeforeMinError: 'End date/time is before minimum allowed date/time',
     endBeforeStartError: 'End date/time is before start date/time',
     endNotValidError: 'End date/time is not valid',
+    invalidDatesError: 'Please, input valid dates',
     selectAnd: ' and ',
     selectBetween: 'Select period between ',
     selectFrom: 'Select period from ',
@@ -79,6 +82,13 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     startAfterMaxError: 'Start date/time is after maximum allowed date/time',
     startBeforeMinError: 'Start date/time is before minimum allowed date/time',
     startNotValidError: 'Start date/time is not valid'
+  },
+  detailedcncvaluesat: {
+    true: 'true',
+    false: 'false'
+  },
+  detailedreasonat: {
+    seeAllReasons: "Click to see all reasons"
   },
   detailsViewSubTitles: {
     reason: 'motion status',
@@ -102,10 +112,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     scheduledStatus: 'Scheduled status:'
   },
   lastmachinestatus: {
-    reason: 'Currrent motion status: ',
-    pastReasonData: 'Past motion status details',
-    currentTooltip: 'Change current motion status',
-    pastTooltip: 'Look or change past motion status'
+    currentReasonColon: 'Currrent reason: ',
+    currentTooltip: 'Change current reason',
+    loading: 'Loading...',
+    pastReasonData: 'Past reason details',
+    pastTooltip: 'Look or change past reason details',
+    tooOld: 'Reason is too old'
   },
   lastserialnumber: {
     currentserialnumber: 'Serial Number: ',
@@ -295,6 +307,7 @@ ATSORA_LOCALE_CATALOG.fr.general = {
 ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   changebutton: 'Changer',
   contactsupport: "Prière de consulter l'équipe support",
+  loadingDots: 'En chargement...',
   missingconfiguration: 'Configuration manquante',
   errorColon: 'Erreur : ',
   error: {
@@ -334,14 +347,32 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     noDataTooOld: '-', // N/A'
   },
   cyclesinperiod: {
+    missing: 'Manquant',
     saveSerialNumber: 'Enregistrer le numéro de série'
   },
   datetimerange: {
+    emptyPeriodError: 'Période vide',
+    emptyPeriodMessage: "Attention! La période sélectionnée est vide",
+    endAfterMaxError: 'La date de fin est postérieure à la date maximum autorisée',
+    endBeforeMinError: 'La date de fin est antérieure à la date minimum autorisée',
+    endBeforeStartError: 'La date de fin est antérieure à la date de début',
+    endNotValidError: 'La date de fin n’est pas valide',
+    invalidDatesError: 'Les dates ne sont pas valides',
     selectAnd: ' et ',
     selectBetween: 'Sélectionner la période entre ',
     selectFrom: 'Sélectionner la période après ',
     splitPeriod: 'Couper une période',
-    selectPeriod: 'Sélectionner une période'
+    selectPeriod: 'Sélectionner une période',
+    startAfterMaxError: 'La date de début est postérieure à la date maximum autorisée',
+    startBeforeMinError: 'La date de début est antérieure à la date minimum autorisée',
+    startNotValidError: 'La date de début n’est pas valide'
+  },
+  detailedcncvaluesat: {
+    true: 'vrai',
+    false: 'faux'
+  },
+  detailedreasonat: {
+    seeAllReasons: "Cliquer pour voir toutes les raisons"
   },
   detailsViewSubTitles: {
     reason: "raison d'arrêt",
@@ -365,10 +396,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     scheduledStatus: 'État planifié : '
   },
   lastmachinestatus: {
-    reason: "Raison d'arrêt courante : ",
-    pastReasonData: "Raisons passées",
+    currentReasonColon: "Raison d'arrêt courante : ",
     currentTooltip: "Changer la raison d'arrêt courante",
-    pastTooltip: "Consulter ou changer une raison passée"
+    loading: 'En chargement...',
+    pastReasonData: "Raisons passées",
+    pastTooltip: "Consulter ou changer une raison passée",
+    tooOld: 'Donnée trop vieille'
   },
   lastserialnumber: {
     currentserialnumber: 'Numéro de série : ',

@@ -94,7 +94,6 @@ var pulseSvg = require('pulseSvg');
       if (!this.element.hasAttribute('group')) {
         // machine-id
         if (!this.element.hasAttribute('machine-id')) {
-          console.error('missing attribute machine-id in ZoomInPage.element');
           this.setError('missing machine-id'); // delayed error message
           return;
         }

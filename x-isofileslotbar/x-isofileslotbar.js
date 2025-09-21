@@ -257,7 +257,7 @@ var eventBus = require('eventBus');
       this._content = $('<div></div>').addClass('isofileslotbar-content pulse-bar-content');
       this._content.height(this._height);
       // HTML structure - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this._content).append(loaderDiv);
 

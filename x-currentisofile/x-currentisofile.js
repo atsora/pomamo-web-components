@@ -50,18 +50,6 @@ var pulseComponent = require('pulsecomponent');
     initialize () {
       this.addClass('pulse-smalltext');
 
-      /* In validate :
-      if (!this.element.hasAttribute('machine-id')) {
-        console.error('missing attribute machine-id in CurrentIsoFileComponent.element');
-        this.switchToKey('Error', () => this.displayError('missing machine-id'), () => this.removeError());
-        return;
-      }
-      if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
-        console.error('invalid attribute machine-id in CurrentIsoFileComponent.element');
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
-        return;
-      }*/
-
       // In case of clone, need to be empty :
       $(this.element).empty();
 
@@ -104,7 +92,6 @@ var pulseComponent = require('pulsecomponent');
     validateParameters () {
       // machine-id
       if (!this.element.hasAttribute('machine-id')) {
-        console.error('missing attribute machine-id in CurrentIsoFile.element');
         this.setError('missing machine-id'); // delayed error message
         return;
       }

@@ -157,7 +157,7 @@ require('x-revisionprogress/x-revisionprogress');
         .append(this._messageSpan);
       $(this.element).append(messageDiv);
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this.element).append(loaderDiv);
 
@@ -183,7 +183,6 @@ require('x-revisionprogress/x-revisionprogress');
      */
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
-        console.error('missing attribute machine-id in LastMachineStateTemplate.element');
         this.setError('missing machine-id'); // delayed error message
         return;
       }

@@ -102,8 +102,6 @@ var eventBus = require('eventBus');
         // Success
         this.switchToNextContext();
       }
-      // Failed
-      console.error('missing attribute machine-ids in FieldLegend.element');
       // Delayed display :
       this.setError('missing machine-ids');
       return;

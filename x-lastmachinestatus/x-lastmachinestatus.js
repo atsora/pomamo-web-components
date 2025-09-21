@@ -141,7 +141,7 @@ require('x-revisionprogress/x-revisionprogress');
       // Create DOM
       // Reason
       let reasonlabel = $('<span></span>').addClass('lastmachinestatus-reason-label');
-      reasonlabel.html(this.getTranslation('reason', 'Motion status:'));
+      reasonlabel.html(this.getTranslation('currentReasonColon', 'Current reason:'));
       // display reason OR error message :
       let spanreasondata = $('<span></span>').addClass('lastmachinestatus-reason-data');
       this._currentCell = $('<div></div>').addClass('pulse-cellbar-first')
@@ -157,12 +157,12 @@ require('x-revisionprogress/x-revisionprogress');
 
       // Past reason
       let pastreasonlabel = $('<span></span>');
-      pastreasonlabel.append(this.getTranslation('pastReasonData', 'Past motion status details'));
+      pastreasonlabel.append(this.getTranslation('pastReasonData', 'Past reason details'));
       let divpastreason = $('<div></div>').addClass('pulse-cellbar-last')
         .addClass('pulse-cellbar-past-data')
         .append(pastreasonlabel);
       pulseUtility.addToolTip(divpastreason,
-        this.getTranslation('pastTooltip', 'Look or change past motion status'));
+        this.getTranslation('pastTooltip', 'Look or change past reason details'));
 
       // Red dot = missing data
       pulseSvg.createMissingdata(divpastreason);
@@ -196,7 +196,7 @@ require('x-revisionprogress/x-revisionprogress');
       $(this.element).append(messageDiv);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('Loading', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this.element).append(loaderDiv);
 
@@ -231,7 +231,6 @@ require('x-revisionprogress/x-revisionprogress');
      */
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
-        console.error('missing attribute machine-id in LastMachineStatus.element');
         this.setError('missing machine-id'); // delayed error message
         return;
       }
@@ -295,7 +294,7 @@ require('x-revisionprogress/x-revisionprogress');
 
       if (data.ReasonTooOld == true) {
         $(this.element).find('.lastmachinestatus-reason-data').addClass('lastmachinestatus-reasontooold');
-        $(this.element).find('.lastmachinestatus-reason-data').html('Reason is too old');
+        $(this.element).find('.lastmachinestatus-reason-data').html(this.getTranslation('tooOld', 'Reason is too old'));
       }
       else {
         if (data.MachineStatus.ReasonSlot.OverwriteRequired == true) {
