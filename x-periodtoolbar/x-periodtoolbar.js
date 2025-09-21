@@ -54,7 +54,7 @@ require('x-datetimepicker/x-datetimepicker');
       return self;
     }
 
-    _appendButtons (toolbar) {
+    _appendButtons(toolbar) {
       let _addButtonToToolbar = function (toolbar, btnClass, btnId, isSelectable) {
         let svg = $('<div></div>').addClass('periodtoolbar-btn').addClass(btnClass).attr('id', btnId);
         if (btnId != null) {
@@ -69,43 +69,68 @@ require('x-datetimepicker/x-datetimepicker');
         return btn;
       }
 
+      let periodButtonsDiv = $('<div class="content-period-buttons"></div>');
+      toolbar.append(periodButtonsDiv);
+
+
+
+      const hidePeriodButton = this.element.hasAttribute('hide-period-buttons');
+      const hideZooms = this.element.hasAttribute('hide-zooms');
+
       var self = this;
-      let homeBtn = _addButtonToToolbar(toolbar, 'periodtoolbar-home');
+
+      let homeBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-home');
+      pulseUtility.addToolTip(homeBtn, this.getTranslation('homeBtn', 'home'));
+      if (hidePeriodButton) homeBtn.hide();
       homeBtn.click(function () {
         self._clickOnButton('home')
       });
 
-      let dayBtn = _addButtonToToolbar(toolbar, 'periodtoolbar-day', 'day', true);
+      let dayBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-day', 'day', true);
+      pulseUtility.addToolTip(dayBtn, this.getTranslation('dayBtn', 'day'));
+      if (hidePeriodButton) dayBtn.hide();
       dayBtn.click(function () {
         self._clickOnButton('day')
       });
 
-      let shiftBtn = _addButtonToToolbar(toolbar, 'periodtoolbar-shift', 'shift', true);
+      let shiftBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-shift', 'shift', true);
+      pulseUtility.addToolTip(shiftBtn, this.getTranslation('shiftBtn', 'shift'));
+      if (hidePeriodButton) shiftBtn.hide();
       shiftBtn.click(function () {
         self._clickOnButton('shift')
       });
 
-      let weekBtn = _addButtonToToolbar(toolbar, 'periodtoolbar-week', 'week', true);
+      let weekBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-week', 'week', true);
+      pulseUtility.addToolTip(weekBtn, this.getTranslation('weekBtn', 'week'));
+      if (hidePeriodButton) weekBtn.hide();
       weekBtn.click(function () {
         self._clickOnButton('week')
       });
 
-      let monthBtn = _addButtonToToolbar(toolbar, 'periodtoolbar-month', 'month', true);
+      let monthBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-month', 'month', true);
+      pulseUtility.addToolTip(monthBtn, this.getTranslation('monthBtn', 'month'));
+      if (hidePeriodButton) monthBtn.hide();
       monthBtn.click(function () {
         self._clickOnButton('month')
       });
 
-      let quarterBtn = _addButtonToToolbar(toolbar, 'periodtoolbar-quarter', 'quarter', true);
+      let quarterBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-quarter', 'quarter', true);
+      pulseUtility.addToolTip(quarterBtn, this.getTranslation('quarterBtn', 'quarter'));
+      if (hidePeriodButton) quarterBtn.hide();
       quarterBtn.click(function () {
         self._clickOnButton('quarter')
       });
 
-      let semesterBtn = _addButtonToToolbar(toolbar, 'periodtoolbar-semester', 'semester', true);
+      let semesterBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-semester', 'semester', true);
+      pulseUtility.addToolTip(semesterBtn, this.getTranslation('semesterBtn', 'semester'));
+      if (hidePeriodButton) semesterBtn.hide();
       semesterBtn.click(function () {
         self._clickOnButton('semester')
       });
 
-      let yearBtn = _addButtonToToolbar(toolbar, 'periodtoolbar-year', 'year', true);
+      let yearBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-year', 'year', true);
+      pulseUtility.addToolTip(yearBtn, this.getTranslation('yearBtn', 'year'));
+      if (hidePeriodButton) yearBtn.hide();
       yearBtn.click(function () {
         self._clickOnButton('year')
       });
@@ -164,18 +189,23 @@ require('x-datetimepicker/x-datetimepicker');
         self._goToNextPeriod()
       });
 
-      let zoomInBtn = _addButtonToToolbar(toolbar, 'periodtoolbar-zoomin');
+      let zoomButtonsDiv = $('<div class="content-zoom-buttons"></div>');
+      toolbar.append(zoomButtonsDiv);
+
+      let zoomInBtn = _addButtonToToolbar(zoomButtonsDiv, 'periodtoolbar-zoomin');
+      if (hideZooms) zoomInBtn.hide();
       zoomInBtn.click(function () {
         self._zoomin()
       });
 
-      let zoomOutBtn = _addButtonToToolbar(toolbar, 'periodtoolbar-zoomout');
+      let zoomOutBtn = _addButtonToToolbar(zoomButtonsDiv, 'periodtoolbar-zoomout');
+      if (hideZooms) zoomOutBtn.hide();
       zoomOutBtn.click(function () {
         self._zoomout()
       });
     }
 
-    _clickOnButton (buttonName) {
+    _clickOnButton(buttonName) {
       if ($(this.element).hasClass('pulse-component-loading')) {
         // If any button is disabled, stop allowing clicks
         return;
@@ -233,7 +263,7 @@ require('x-datetimepicker/x-datetimepicker');
       }
     }
 
-    _goToPreviousPeriod () {
+    _goToPreviousPeriod() {
       if ($(this.element).hasClass('pulse-component-loading')) {
         // If any button is disabled, stop allowing clicks
         return;
@@ -269,7 +299,7 @@ require('x-datetimepicker/x-datetimepicker');
       }
     }
 
-    _goToNextPeriod () {
+    _goToNextPeriod() {
       if ($(this.element).hasClass('pulse-component-loading')) {
         // If any button is disabled, stop allowing clicks
         return;
@@ -307,7 +337,7 @@ require('x-datetimepicker/x-datetimepicker');
       }
     }
 
-    _zoomin () {
+    _zoomin() {
       if ($(this.element).hasClass('pulse-component-loading')) {
         // If any button is disabled, stop allowing clicks
         return;
@@ -421,7 +451,7 @@ require('x-datetimepicker/x-datetimepicker');
       }
     }
 
-    _zoomout () {
+    _zoomout() {
       if ($(this.element).hasClass('pulse-component-loading')) {
         // If any button is disabled, stop allowing clicks
         return;
@@ -498,16 +528,31 @@ require('x-datetimepicker/x-datetimepicker');
     }
 
     // this._dateRange must be set just before
-    _rangeHaveChanged (forcedDisplay) {
+    _rangeHaveChanged(forcedDisplay) {
       if (typeof forcedDisplay != 'undefined') { // if not defined, do not update
         if (forcedDisplay != '') {
           $(this.element).find('.periodtoolbar-display').html(forcedDisplay);
         }
         else { // empty string = default range display
           let display = pulseUtility.displayDateRange(this._dateRange);
+          if (this._rangeType == 'shift') {
+            let label = this._displayLabel || '';
+            if (label != '') {
+              let html = `
+              <div class="periodtoolbar-display-center">${label}</div>
+            `;
+              $(this.element).find('.periodtoolbar-display').html(html);
+            }
+            else {
+              $(this.element).find('.periodtoolbar-display').html(display);
+            }
+
+          }
           // (this._dateRange); DO NOT WORK -> need Date, given isostring
-          $(this.element).find('.periodtoolbar-display')
-            .html(display);
+          else {
+            $(this.element).find('.periodtoolbar-display').html(display);
+          }
+
         }
       }
 
@@ -527,7 +572,7 @@ require('x-datetimepicker/x-datetimepicker');
       }
     }
 
-    _updateButtonsSelection () {
+    _updateButtonsSelection() {
       $(this.element).find('.selected').removeClass('selected');
       if (this._rangeType != '') {
         $(this.element).find('#' + this._rangeType).addClass('selected');
@@ -537,7 +582,7 @@ require('x-datetimepicker/x-datetimepicker');
     /**
      * Set MIN / MAX for begin & end DateTimePicker according to attributes
      */
-    _setBeginEndBound (beginValue, endValue) {
+    _setBeginEndBound(beginValue, endValue) {
       // BEGIN
       if (this.element.hasAttribute('min-begin')) {
         $(this._beginDTP)[0].setAttribute('mindatetime',
@@ -588,7 +633,7 @@ require('x-datetimepicker/x-datetimepicker');
     /**
      * Callback (called after validate button)
      */
-    _callback_validate_settings () {
+    _callback_validate_settings() {
       if (!this._beginDTP[0].isValid()) {
         pulseCustomDialog.openError(this.getTranslation('startNotValidError', 'Start date/time is not valid'));
         return false;
@@ -675,7 +720,7 @@ require('x-datetimepicker/x-datetimepicker');
     /**
      * Display to change date time range - copy datetimerange
      */
-    _displayToolBarSettingDialog () { // TO Re-do
+    _displayToolBarSettingDialog() { // TO Re-do
       if ($(this.element).hasClass('pulse-component-loading')) {
         // If any button is disabled, stop allowing clicks
         return;
@@ -745,7 +790,7 @@ require('x-datetimepicker/x-datetimepicker');
 
       var self = this;
       let dialogId = pulseCustomDialog.initialize(divinput, {
-        title: this.getTranslation ('dialogTitle', 'Setting date/time range'),
+        title: this.getTranslation('dialogTitle', 'Setting date/time range'),
         onOk: function () { // Validate
           if (self._callback_validate_settings()) {
             //pulseCustomDialogs.closeDialog(divinput);
@@ -765,7 +810,7 @@ require('x-datetimepicker/x-datetimepicker');
      * @param {!string} context - Context
      * @return {!string} key
      */
-    getStartKey (context) {
+    getStartKey(context) {
       switch (context) {
         case 'Loaded':
           return 'Standard';
@@ -781,7 +826,7 @@ require('x-datetimepicker/x-datetimepicker');
      * @param {!string} key - Key
      * @returns {!State} Created states
      */
-    defineState (context, key) {
+    defineState(context, key) {
       switch (context) {
         case 'Loaded': // == Refresh until click on button == NO !!! At end of display, switch to next period ///  used ONLY FOR range NOT around now
           return new state.StaticState(context, key, this);
@@ -790,7 +835,7 @@ require('x-datetimepicker/x-datetimepicker');
       }
     }
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'period-context':
@@ -827,7 +872,7 @@ require('x-datetimepicker/x-datetimepicker');
       }
     }
 
-    initialize () {
+    initialize() {
       this.addClass('pulse-text');
 
       // listeners
@@ -888,7 +933,7 @@ require('x-datetimepicker/x-datetimepicker');
       return;
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // Parameters
       // DOM
       $(this.element).empty();
@@ -902,7 +947,7 @@ require('x-datetimepicker/x-datetimepicker');
     /**
      * Validate the (event) parameters
      */
-    validateParameters () {
+    validateParameters() {
       /* Not mandatory anymore
       if (!this.element.hasAttribute('period-context')) {
         console.error('missing attribute period-context in periodtoolbar');
@@ -917,17 +962,17 @@ require('x-datetimepicker/x-datetimepicker');
       this.switchToNextContext();
     }
 
-    displayError (message) {
+    displayError(message) {
       // Forward to x-message ?
       $(this.element).find('.periodtoolbar-display').html('');
       $(this._messageSpan).html(message);
     }
 
-    removeError () {
+    removeError() {
       this.displayError(''); // Forward to x-message ?
     }
 
-    get refreshRate () {
+    get refreshRate() {
       // Return here the refresh rate in ms. (for AUTO refresh at end of period)
       let now = moment();
       let inOneWeek = moment().add(7, 'days');
@@ -957,7 +1002,7 @@ require('x-datetimepicker/x-datetimepicker');
       return true;
     }*/
 
-    getShortUrl () { // Return the Web Service URL without path
+    getShortUrl() { // Return the Web Service URL without path
       // When reloading, remove current text + disable ALL buttons
       $(this.element).find('.periodtoolbar-display').html('');
       $(this.element).find('.periodtoolbar-btn').addClass('disabled');
@@ -970,11 +1015,15 @@ require('x-datetimepicker/x-datetimepicker');
       return url;
     }
 
-    refresh (data) {
-      // Update the component with data returned by the web service in case of success
+    refresh(data) {
+      // Update the component with data returned by the web service in case of success     
 
       // Fill this._dateRange is already done to define next context
-
+      if (data && data.Display) {
+        this._displayLabel = data.Display;
+      } else {
+        this._displayLabel = '';
+      }
       this._rangeHaveChanged('');
       /*if (data.Display && data.Display != '') {
         let m_dayString = pulseUtility.getDisplayDay(data.DayRange.Begin)
@@ -999,7 +1048,7 @@ require('x-datetimepicker/x-datetimepicker');
       }
     }
 
-    manageSuccess (data) {
+    manageSuccess(data) {
       // Enable again buttons
       $(this.element).find('.periodtoolbar-btn').removeClass('disabled');
 
@@ -1030,7 +1079,7 @@ require('x-datetimepicker/x-datetimepicker');
     }
 
     /* Instead of calling web service with an URL. Go to next period to see next period (when not a day shift or... ) */
-    _runAlternateGetData () {
+    _runAlternateGetData() {
       if (this._rangeType && this._rangeType != '') {
         return false;
       }
@@ -1042,7 +1091,7 @@ require('x-datetimepicker/x-datetimepicker');
 
     /* NORMAL ==  for current display, go to next at end of period = reset refresh rate
        LOADED == fixed display */
-    _switchToNormalOrLoadedWhenManual () {
+    _switchToNormalOrLoadedWhenManual() {
       let m_begin = moment(this._dateRange.lower);
       let m_end = moment(this._dateRange.upper);
       let now = moment();
@@ -1073,7 +1122,7 @@ require('x-datetimepicker/x-datetimepicker');
      *
      * @param {Object} event
      */
-    onAskForDateTimeChange (event) {
+    onAskForDateTimeChange(event) {
       if (this._dateRange) { // To avoid loop and problems
         if (this.element.hasAttribute('period-context')) {
           eventBus.EventBus.dispatchToContext('dateTimeRangeChangeEvent',
@@ -1097,7 +1146,7 @@ require('x-datetimepicker/x-datetimepicker');
      *
      * @param {*} event
      */
-    onConfigChange (event) {
+    onConfigChange(event) {
       if (event.target.config == 'displayshiftrange')
         this.start();
     }
@@ -1106,7 +1155,7 @@ require('x-datetimepicker/x-datetimepicker');
      * Callback called when datetime is modified
      * To display warning message or not
      */
-    onChangeDateTime () {
+    onChangeDateTime() {
       if (!this._beginDTP[0].isValid() || !this._endDTP[0].isValid()) {
         this._warningtext.html('Please, input valid dates');
         return;
@@ -1133,5 +1182,5 @@ require('x-datetimepicker/x-datetimepicker');
     }
   }
 
-  pulseComponent.registerElement('x-periodtoolbar', periodtoolbarComponent, ['period-context', 'displayshiftrange', 'range']);
+  pulseComponent.registerElement('x-periodtoolbar', periodtoolbarComponent, ['period-context', 'displayshiftrange', 'range', 'hide-period-buttons', 'hide-zooms']);
 })();
