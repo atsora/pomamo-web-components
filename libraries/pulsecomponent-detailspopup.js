@@ -68,6 +68,7 @@ require('x-clock/x-clock');
 require('x-reasongroups/x-reasongroups');
 require('x-fieldlegends/x-fieldlegends');
 require('x-machinemodelegends/x-machinemodelegends');
+require('x-stopperiods/x-stopperiods');
 
 /**
  * @module PulseComponentFunctions -> detailspopup AND change
@@ -420,7 +421,6 @@ var openChangeReasonDialog = exports.openChangeReasonDialog = function (componen
     bigSize: true,
     helpName: 'savereason'
   });
-
   let machid = $(component.element).attr('machine-id');
   let rangeString = dtRange.toString(d => d.toISOString());
   let xreasonslotlist = pulseUtility.createjQueryElementWithAttribute('x-reasonslotlist', {
@@ -438,6 +438,51 @@ var openChangeReasonDialog = exports.openChangeReasonDialog = function (componen
     'machine-id': machid
   });
   $('#' + saveDialogId + ' .customDialogTitle').append(xMachine);
+}
+
+/**
+ * Open a change reason dialog for a machine and a specific range
+ *
+ * @memberof module:PulseComponentFunctions
+ * @function openChangeStopClassificationDialog
+ * 
+ * @param {Object} component - component calling openChangeStopClassificationDialog -> must define following attributes : machine-id
+ * @param {Range} dtRange - date range
+ *
+ */
+var openChangeStopClassificationDialog = exports.openChangeStopClassificationDialog = function (component, dtRange) {
+  if ($('.dialog-stopclassification').length > 0) {
+    return;
+  }
+
+  // PAGE 1
+  let dialog = $('<div></div>').addClass('dialog-stopclassification');
+  let stopClassificationDialogId = pulseCustomDialog.initialize(dialog, {
+    title: component.getTranslation('stopclassification.title', 'Unplanned stops'),
+    onClose: function () {
+      $('.popup-block').fadeOut();
+    }.bind(component),
+    autoClose: false,
+    autoDelete: true,
+    okButton: 'hidden',
+    cancelButton: 'hidden',
+    fullScreenOnSmartphone: true,
+    fixedHeight: true,
+    bigSize: true,
+    helpName: 'savereason',
+    className: 'stopclassification'
+  });
+  let machid = $(component.element).attr('machine-id');
+  let rangeString = dtRange.toString(d => d.toISOString());
+  // Use a provider that fetches ReasonOnlySlots and builds the classifier
+  let xstopperiods = pulseUtility.createjQueryElementWithAttribute('x-stopperiods', {
+    'machine-id': machid,
+    'range': rangeString,
+    'autocreate-stopclassification': true
+  });
+  dialog.append(xstopperiods);
+
+  pulseCustomDialog.open('#' + stopClassificationDialogId);
 }
 
 /**
