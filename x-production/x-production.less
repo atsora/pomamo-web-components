@@ -5,18 +5,13 @@
  */
 
 @import "pulsewebcomponents-common.less";
+@import "x-clock/x-clock.less";
 
 x-production {
   display: block; /* To make is(':visible') works */ 
   
-  .production-actual-value:before {
-	  content: "Actual ";
-  }
   .production-separator {
 	  content: " "; // '/' can be added OR min-width
-  }
-  .production-target-value:before {
-	  content: "Target ";
   }
 
   .bad-efficiency {
@@ -36,6 +31,41 @@ x-production {
       color: @mid_efficiency_base !important;
     }
   }
+
+  .production-actual-value {
+    column-gap: 5px;
+    display: flex;
+  }
+
+  .production-content-text-actual {
+    display: inline-flex;
+    column-gap: 5px;
+  }
+
+  .production-target-value {
+    column-gap: 5px;
+    display: flex;
+  }
+
+  .production-content-text-target {
+    display: inline-flex;
+    column-gap: 5px;
+  }
+
+  .production-clock-content {
+    display: inline-flex;
+    column-gap: 5px;
+  }
+
+  .clock-div {
+    height: unset;
+    line-height: unset;
+
+    .clock-text {
+      vertical-align: unset;
+    }
+  }
+
   /*
   .good-efficiency {
     .production-actual-value {
