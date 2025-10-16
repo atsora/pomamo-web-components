@@ -397,12 +397,13 @@ require('x-stopclassification/x-stopclassification');
           if ((modif.ranges[i].lower < now)
             && (modif.ranges[i].upper == null || modif.ranges[i].upper > now)) {
             this._forceReload = true;
+            $(this.element).find('.lastmachinestatus-reason-data').html('');
+            $(this.element).find('#questionmarkcurrentcell').hide();
             this.switchToContext('Reload');
             return;
           }
         }
       }
-      // else = do nothing (progress en cours)
     }
 
     /**
