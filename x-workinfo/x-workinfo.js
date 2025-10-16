@@ -56,7 +56,6 @@ var eventBus = require('eventBus');
 
       // Attributes
       if (!this.element.hasAttribute('machine-id')) {
-        console.error('missing attribute machine-id');
         // Initialization error => switch to the Error state
         this.switchToKey('Error', () => this.displayError('missing attribute machine-id'), () => this.removeError());
         return;

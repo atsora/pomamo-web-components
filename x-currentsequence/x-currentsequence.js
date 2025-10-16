@@ -45,7 +45,6 @@ var pulseComponent = require('pulsecomponent');
       this.addClass('pulse-smalltext');
 
       if (!this.element.hasAttribute('machine-id')) {
-        console.error('missing attribute machine-id in CurrentSequenceComponent.element');
         this.switchToKey('Error', () => this.displayError('missing machine-id'), () => this.removeError());
         return;
       }
