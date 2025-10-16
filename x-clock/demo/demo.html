@@ -15,14 +15,14 @@ SPDX-License-Identifier: Apache-2.0
     <x-clock id="clock_without_seconds_12h" display-seconds=false></x-clock>
   </div>
 
-  <label>Clock with seconds (24h)</label>
+  <label>Clock with seconds (auto format based on locale)</label>
   <div class="div-with-border">
-    <x-clock id="clock_with_seconds_24h" display-seconds=true display-24h=true></x-clock>
+    <x-clock id="clock_with_seconds_locale" display-seconds=true></x-clock>
   </div>
 
-  <label>Clock without seconds (24h)</label>
+  <label>Clock without seconds (auto format based on locale)</label>
   <div class="div-with-border">
-    <x-clock id="clock_without_seconds_24h" display-seconds=false display-24h=true></x-clock>
+    <x-clock id="clock_without_seconds_locale" display-seconds=false></x-clock>
   </div>
 
   <label>Clock without parameters </label>
@@ -31,3 +31,6 @@ SPDX-License-Identifier: Apache-2.0
   </div>
 </div>
 <div class="static-tests"></div>
+<div class="js-tests" id="js-tests">
+  <label>Clock JS without seconds (auto format based on locale)</label>
+</div>
