@@ -25,6 +25,7 @@ var eventBus = require('eventBus');
       const self = super(...args);
 
       self._dispatchersListenersCreated = false;
+      self._isUnanswered = false;
 
       self._content = undefined;
 
@@ -33,7 +34,7 @@ var eventBus = require('eventBus');
 
     //get content () { return this._content; } // Optional
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id':
@@ -79,7 +80,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    initialize () {
+    initialize() {
       this.addClass('pulse-icon');
 
       // listeners/dispatchers
@@ -102,7 +103,7 @@ var eventBus = require('eventBus');
       return;
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // Parameters
       // DOM
       $(this.element).empty();
@@ -112,16 +113,18 @@ var eventBus = require('eventBus');
       super.clearInitialization();
     }
 
-    reset () {
+    reset() {
+      debugger;
       // Clean component
       (this._content).empty();
+      this._isUnanswered = false;
       // Remove Error
       //this.removeError();
 
       this.switchToNextContext();
     }
 
-    _createListenersDispatchers () {
+    _createListenersDispatchers() {
       if (false == this._dispatchersListenersCreated) {
         /*if (this.element.hasAttribute('machine-context')) {
           eventBus.EventBus.addEventListener(this, 'machineIdChangeSignal', this.element.getAttribute('machine-context'), this.onMachineIdChange.bind(this), this);
@@ -148,7 +151,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    _setRangeFromAttribute () {
+    _setRangeFromAttribute() {
       if (this.element.hasAttribute('range')) {
         let attr = this.element.getAttribute('range');
         let range = pulseRange.createDateRangeFromString(attr);
@@ -161,7 +164,7 @@ var eventBus = require('eventBus');
     /**
      * Validate the (event) parameters
      */
-    validateParameters () {
+    validateParameters() {
 
       // RANGE
       this._setRangeFromAttribute();
@@ -207,7 +210,7 @@ var eventBus = require('eventBus');
     }
 
     // Overload to always refresh value
-    get isVisible () {
+    get isVisible() {
       if (!this._connected) { // == is connected
         return false;
       }
@@ -217,11 +220,11 @@ var eventBus = require('eventBus');
       return false;
     }
 
-    get refreshRate () {  // refresh rate in ms. 
+    get refreshRate() {  // refresh rate in ms. 
       return 1000 * (Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10)) + 1); // +1 to allow refresh from bars
     }
 
-    getShortUrl () {
+    getShortUrl() {
       // Maybe check if range is OK somewhere... -> in validate param
 
       //let webRange = this.element.getAttribute('range');
@@ -231,25 +234,30 @@ var eventBus = require('eventBus');
       return url;
     }
 
-    refresh (data) {
-      if (this._isUnanswered != data.IsUnansweredPeriod) {
-        this._isUnanswered = data.IsUnansweredPeriod;
-        if (this._isUnanswered) {
+    refresh(data) {
+      // Only update display if the state actually changes
+      if (data.IsUnansweredPeriod) {
+        if (!this._isUnanswered) {
           this.displayUnanswered();
-        }
-        else {
-          this.hideUnanswered();
+          this._isUnanswered = true;
         }
       }
+      else {
+        if (this._isUnanswered) {
+          this.hideUnanswered();
+          this._isUnanswered = false;
+        }
+      }
+
     }
 
-    hideUnanswered () {
+    hideUnanswered() {
       if (this._content != undefined) {
         (this._content).empty();
       }
     }
 
-    displayUnanswered () {
+    displayUnanswered() {
       if (this._content != undefined) {
         (this._content).empty();
         this._image = $('<div></div>').addClass('pulse-icon-missing-reason');
@@ -285,7 +293,7 @@ var eventBus = require('eventBus');
      *
      * @param {Object} event
      */
-    onDateTimeRangeChange (event) {
+    onDateTimeRangeChange(event) {
       let newRange = event.target.daterange;
       // Maybe check if range is KO somewhere... where ? RR
       /* TODO : if range = KO -> switch to error ??? Verif/Define NR / RR  */
@@ -298,10 +306,10 @@ var eventBus = require('eventBus');
      *
      * @param {Object} event
      */
-    onReasonStatusChange (event) {
+    onReasonStatusChange(event) {
       if (this.element.hasAttribute('active') &&
         this.element.getAttribute('active') == 'true') {
-        if (this._isUnanswered != event.target.status) {
+        if (this._isUnanswered !== event.target.status) {
           this._isUnanswered = event.target.status;
           if (this._isUnanswered) {
             this.displayUnanswered();
@@ -322,7 +330,7 @@ var eventBus = require('eventBus');
      * initModifications: undefined, // pending modifications the first time
      * pendingModifications: undefined // pending modifications 'now'
      */
-    onModificationEvent (event) {
+    onModificationEvent(event) {
       //let modif = event.target;
       if (event.target.kind != 'reason') {
         return;
@@ -332,7 +340,7 @@ var eventBus = require('eventBus');
       }
 
       if (event.target.pendingModifications == 0) {
-        this.start(); // or this.switchToContext('Reload');
+        this.switchToContext('Reload');
       }
     }
 
