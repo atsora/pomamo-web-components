@@ -21,6 +21,8 @@ require('x-datetimerange/x-datetimerange');
 require('x-savereason/x-savereason');
 require('x-reasonslotlist/x-reasonslotlist');
 require('x-revisionprogress/x-revisionprogress');
+require('x-stopclassification/x-stopclassification');
+
 
 
 (function () {
@@ -55,7 +57,7 @@ require('x-revisionprogress/x-revisionprogress');
     //get reasonOverwriteRequired () { return this._reasonOverwriteRequired; }
     //get requiredReason () { return this._requiredReason; }
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id':
@@ -95,7 +97,7 @@ require('x-revisionprogress/x-revisionprogress');
       }
     }
 
-    initialize () {
+    initialize() {
       this.addClass('pulse-lastbar');
 
       // Update here some internal parameters
@@ -140,6 +142,11 @@ require('x-revisionprogress/x-revisionprogress');
 
       // Create DOM
       // Reason
+
+      let interrogationCurrentMark = document.createElement('i'); // Add interrogation mark
+      interrogationCurrentMark.setAttribute('class', 'fa-solid fa-circle-question');
+      interrogationCurrentMark.setAttribute('id', 'questionmarkcurrentcell');
+
       let reasonlabel = $('<span></span>').addClass('lastmachinestatus-reason-label');
       reasonlabel.html(this.getTranslation('currentReasonColon', 'Current reason:'));
       // display reason OR error message :
@@ -148,19 +155,27 @@ require('x-revisionprogress/x-revisionprogress');
         .addClass('pulse-cellbar-current-data')
         .addClass('clickable') // To change display when hover
         // + class error if needed
+        .append(interrogationCurrentMark)
         .append(reasonlabel).append(spanreasondata);
       pulseUtility.addToolTip(this._currentCell,
         this.getTranslation('currentTooltip', 'Change current motion status'));
-        
+
       // Red dot = missing data
       pulseSvg.createMissingdata(this._currentCell);
 
       // Past reason
       let pastreasonlabel = $('<span></span>');
-      pastreasonlabel.append(this.getTranslation('pastReasonData', 'Past reason details'));
+      pastreasonlabel.append(this.getTranslation('pastReasonData', 'Past motion status details'));
+
+
+      let interrogationPastMark = document.createElement('i');
+      interrogationPastMark.setAttribute('class', 'fa-solid fa-circle-question');
+      interrogationPastMark.setAttribute('id', 'questionmarkpastcell');
       let divpastreason = $('<div></div>').addClass('pulse-cellbar-last')
         .addClass('pulse-cellbar-past-data')
+        .append(interrogationPastMark)
         .append(pastreasonlabel);
+
       pulseUtility.addToolTip(divpastreason,
         this.getTranslation('pastTooltip', 'Look or change past reason details'));
 
@@ -205,7 +220,7 @@ require('x-revisionprogress/x-revisionprogress');
       return;
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // Parameters
       // DOM
       $(this.element).empty();
@@ -216,7 +231,7 @@ require('x-revisionprogress/x-revisionprogress');
       super.clearInitialization();
     }
 
-    reset () { // Code here to clean the component, for example after a parameter change
+    reset() { // Code here to clean the component, for example after a parameter change
       this.removeError();
       // Clean content
       $(this.element).find('.pulse-cellbar-past-data')
@@ -229,7 +244,7 @@ require('x-revisionprogress/x-revisionprogress');
     /**
      * Validate the (event) parameters
      */
-    validateParameters () {
+    validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
         this.setError('missing machine-id'); // delayed error message
         return;
@@ -244,7 +259,7 @@ require('x-revisionprogress/x-revisionprogress');
       this.switchToNextContext();
     }
 
-    displayError (message) {
+    displayError(message) {
       $(this._messageSpan).html(message);
 
       this._requiredReason = null;
@@ -257,15 +272,15 @@ require('x-revisionprogress/x-revisionprogress');
         { status: false })
     }
 
-    removeError () {
+    removeError() {
       $(this._messageSpan).html('');
     }
 
-    get refreshRate () {
+    get refreshRate() {
       return 1000 * (Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10)));
     }
 
-    getShortUrl () {
+    getShortUrl() {
       let url = 'GetLastMachineStatusV2?Id=' + this.element.getAttribute('machine-id');
       if (!pulseUtility.isNotDefined(this._beginDate)) {
         url += '&Begin=' + this._beginDate;
@@ -277,17 +292,16 @@ require('x-revisionprogress/x-revisionprogress');
       return url;
     }
 
-    refresh (data) {
+    refresh(data) {
       this._reasonText = data.MachineStatus.ReasonSlot.Reason.Text;
       this._reasonColor = data.MachineStatus.ReasonSlot.Reason.Color;
       this._lastReasonBegin = data.MachineStatus.ReasonSlot.Begin;
       this._reasonOverwriteRequired = data.MachineStatus.ReasonSlot.OverwriteRequired;
       this._reasonTooOld = data.ReasonTooOld;
-
       let status = false;
-
       $(this.element).find('.pulse-cellbar-current-data')
-        .removeClass('pulse-cellbar-cell-missing');
+        .removeClass('pulse-cellbar-cell-missing')
+      $(this.element).find('#questionmarkcurrentcell').hide();
 
       $(this.element).find('.lastmachinestatus-reason-data')
         .removeClass('lastmachinestatus-reasontooold');
@@ -299,7 +313,11 @@ require('x-revisionprogress/x-revisionprogress');
       else {
         if (data.MachineStatus.ReasonSlot.OverwriteRequired == true) {
           $(this.element).find('.pulse-cellbar-current-data').addClass('pulse-cellbar-cell-missing');
+          $(this.element).find('#questionmarkcurrentcell').show();
           status = true;
+          eventBus.EventBus.dispatchToContext('reasonStatusCurrentChange',
+            this.element.getAttribute('status-context'),
+            { status: status });
         }
         $(this.element).find('.lastmachinestatus-reason-data').html(this._reasonText);
       }
@@ -308,16 +326,25 @@ require('x-revisionprogress/x-revisionprogress');
       this._requiredReason = data.RequiredReason;
       if (data.RequiredReason == true) {
         $(this.element).find('.pulse-cellbar-past-data')
-          .addClass('pulse-cellbar-cell-missing');
+          .addClass('pulse-cellbar-cell-missing')
+        $(this.element).find('#questionmarkpastcell').show();
+        let stopNumber = "";
+        if (data.RequiredNumber) {
+          stopNumber = data.RequiredNumber.toString();
+        }
+        this.element.querySelector('.pulse-cellbar-past-data span').textContent = stopNumber + " " + this.getTranslation('dataToClassified', 'STOP to be classified');
         status = true;
       }
       else {
         $(this.element).find('.pulse-cellbar-past-data')
-          .removeClass('pulse-cellbar-cell-missing');
+          .removeClass('pulse-cellbar-cell-missing')
+        $(this.element).find('#questionmarkpastcell').hide();
+        this.element.querySelector('.pulse-cellbar-past-data span').textContent = this.getTranslation('pastReasonData', 'Past motion status details');
       }
       eventBus.EventBus.dispatchToContext('reasonStatusChange',
         this.element.getAttribute('status-context'),
         { status: status });
+
     }
 
     // Callback events
@@ -329,7 +356,7 @@ require('x-revisionprogress/x-revisionprogress');
      * initModifications: undefined, // pending modifications the first time
      * pendingModifications: undefined // pending modifications 'now'
      */
-    onModificationEvent (event) {
+    onModificationEvent(event) {
       let modif = event.target;
       if (event.target.kind != 'reason') {
         return;
@@ -392,7 +419,7 @@ require('x-revisionprogress/x-revisionprogress');
      *
      * @param {Object} event
      */
-    onMachineIdChange (event) {
+    onMachineIdChange(event) {
       this.element.setAttribute('machine-id', event.target.newMachineId);
     }
     /**
@@ -400,7 +427,7 @@ require('x-revisionprogress/x-revisionprogress');
      *
      * @param {Object} event
      */
-    onDateTimeRangeChange (event) {
+    onDateTimeRangeChange(event) {
       let newRange = event.target.daterange;
       if ((this._dateRange == undefined) ||
         (!pulseRange.equals(newRange, this._dateRange, (a, b) => (a >= b) && (a <= b)))) {
@@ -415,12 +442,21 @@ require('x-revisionprogress/x-revisionprogress');
      *
      * @param {event} e - DOM event
      */
-    clickOnCurrent (e) {
+    clickOnCurrent(e) {
       let applicableRange =
         pulseRange.createDateRangeDefaultInclusivity(
           this._lastReasonBegin, this._dateRange.upper);
       // no end == current = KO -> _dateRange.upper
-      pulseDetailsPopup.openChangeReasonDialog(this, applicableRange, true);
+      
+      // Check configuration to determine which dialog to open
+      let lastMachineStatusMode = this.getConfigOrAttribute('lastmachinestatus', 'reasonslotlist');
+      
+      if (lastMachineStatusMode === 'stopclassification') {
+        pulseDetailsPopup.openChangeStopClassificationDialog(this, applicableRange);
+      } else {
+        // Default behavior: 'reasonslotlist' or any other value
+        pulseDetailsPopup.openChangeReasonDialog(this, applicableRange, true);
+      }
     }
 
     /**
@@ -428,7 +464,7 @@ require('x-revisionprogress/x-revisionprogress');
      *
      * @param {event} e - DOM event
      */
-    clickOnPast (e) {
+    clickOnPast(e) {
       pulseDetailsPopup.openChangeReasonDialog(this, this._dateRange, false);
     }
   }
