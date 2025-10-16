@@ -113,6 +113,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   },
   lastmachinestatus: {
     currentReasonColon: 'Currrent reason: ',
+    dataToClassified: 'STOP to be classified',
     currentTooltip: 'Change current reason',
     loading: 'Loading...',
     pastReasonData: 'Past reason details',
@@ -211,6 +212,14 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     startBeforeMinError: 'Start date/time is before minimum allowed date/time',
     startNotValidError: 'Start date/time is not valid'
   },
+  production: {
+    actual: 'Actual',
+    target: 'Target',
+    preposition: 'at'
+  },
+  productionshiftgoal: {
+    productionshiftgoal: 'Production shift goal: '
+  },
   productionstatelegend: {
     title: 'Production state'
   },
@@ -286,6 +295,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     setupsince: 'setup since: ',
     switchTo: 'Switch to ',
     switchToProduction: 'Switch to production'
+  },
+  stopclassification : {
+    title: 'Unplanned Stops',
+    options: 'Advanced Options',
   },
   toollifemachine: {
     noOperation: 'No operation'
@@ -397,9 +410,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   lastmachinestatus: {
     currentReasonColon: "Raison d'arrêt courante : ",
+    pastReasonData: "Raisons d'arrêt passées",
+    dataToClassified: 'STOP à classifier',
     currentTooltip: "Changer la raison d'arrêt courante",
     loading: 'En chargement...',
-    pastReasonData: "Raisons passées",
     pastTooltip: "Consulter ou changer une raison passée",
     tooOld: 'Donnée trop vieille'
   },
@@ -487,6 +501,14 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     semesterBtn: 'semestre',
     yearBtn: 'année',
   },
+   production: {
+    actual: 'Production',
+    target: 'Objectif',
+    preposition: 'à'
+  },
+  productionshiftgoal: {
+    productionshiftgoal: 'Objectif fin d\'équipe : '
+  },
   productionstatelegend: {
     title: 'État de production'
   },
@@ -562,6 +584,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     setupsince: "En réglage depuis :",
     switchTo: 'Switch to ',
     switchToProduction: 'Passer en production'
+  },
+  stopclassification : {
+    title: 'Arrêts Non-Planifiés',
+    options: 'Options Avancées',
   },
   toollifemachine: {
     noOperation: "Pas d'opération"

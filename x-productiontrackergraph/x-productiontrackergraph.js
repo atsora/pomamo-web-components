@@ -128,6 +128,19 @@ const Chart = require('chart.js/auto');
         }
       }
 
+      if (!this._themeBtnListener) {
+        this._themeBtnListener = () => {
+          if (this._chartInstance) {
+            setTimeout(() => this._updateColor(), 100);
+          }
+        };
+        const btn = document.getElementById('darkthemebtn');
+        if (btn) {
+          btn.addEventListener('click', this._themeBtnListener);
+        }
+      }
+
+
       // Create DOM - Content
       this._content = this.document.createElement('div');
       this._content.className = 'productiontrackergraph-content';
@@ -180,6 +193,13 @@ const Chart = require('chart.js/auto');
 
       this._resetAllData();
 
+      // Remove listeners
+      const btn = document.getElementById('darkthemebtn');
+      if (btn && this._themeBtnListener) {
+        btn.removeEventListener('click', this._themeBtnListener);
+        this._themeBtnListener = null;
+      }
+
       super.clearInitialization();
     }
 
@@ -218,9 +238,17 @@ const Chart = require('chart.js/auto');
 
       this._messageSpan.innerHTML = message;
 
-      this._graph.replaceChildren();
-      this._graph = undefined;
+      if (this._chartInstance) {
+        this._chartInstance.destroy();
+        this._chartInstance = undefined;
+      }
 
+      if (this._graph && this._graph.parentNode) {
+        this._graph.replaceChildren();
+        this._graph.parentNode.removeChild(this._graph);
+      }
+      this._graph = undefined;
+      
       this._resetAllData();
     }
 
@@ -287,8 +315,9 @@ const Chart = require('chart.js/auto');
         this._chartInstance.destroy();
         this._chartInstance = undefined;
       }
-      if (this._content) {
-        this._content.innerHTML = '';
+      if (this._graph && this._graph.parentNode) {
+        this._graph.replaceChildren();
+        this._graph.parentNode.removeChild(this._graph);
       }
       this._graph = undefined;
 
@@ -302,12 +331,30 @@ const Chart = require('chart.js/auto');
       }
     }
 
+    _updateColor() {
+      if (!this._chartInstance) {
+        this._draw();
+      }
+      else {
+        const axisColor = getComputedStyle(document.documentElement).getPropertyValue('--chart_axis_color');
+        const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--chart_grid_color');
+
+        this._chartInstance.options.scales.x.ticks.color = axisColor;
+        this._chartInstance.options.scales.x.grid.color = gridColor;
+        this._chartInstance.options.scales.y.ticks.color = axisColor;
+        this._chartInstance.options.scales.y.grid.color = gridColor;
+        this._chartInstance.options.scales.y.title.color = axisColor;
+
+        this._chartInstance.update();
+      }
+    }
+
     _draw() {
       if ((this._content == undefined) || (this._content == null)) {
         return;
       }
-
       if (this._data) {
+
         if ((this._graph == undefined) || (this._graph == null)) {
           // Create graph
           this._graph = this.document.createElement('canvas');
@@ -326,13 +373,13 @@ const Chart = require('chart.js/auto');
           targetData.push(this._data.HourlyData[i].Target);
         }
         // TODO: target for the full hour
-        // Create chart
-        // TODO: max y
+        // Create chart      
         if (this._chartInstance) {
           this._chartInstance.data.labels = labels;
-          this._chartInstance.data.datasets[0].data = actualData;
-          this._chartInstance.data.datasets[1].data = targetData;
+          this._chartInstance.data.datasets[1].data = actualData;
+          this._chartInstance.data.datasets[0].data = targetData;
           this._chartInstance.options.scales.y.suggestedMax = Math.ceil((targetData[0] || 1) * 1.1);
+
           this._chartInstance.update();
         }
         else {
@@ -356,7 +403,7 @@ const Chart = require('chart.js/auto');
                   data: actualData,
                   borderWidth: 0, // No border
                   borderColor: 'rgba(2, 48, 2, 1)',
-                  backgroundColor: '#008000'
+                  backgroundColor: '#3B82F6',
                 }
 
               ]
@@ -364,7 +411,7 @@ const Chart = require('chart.js/auto');
             options: {
               responsive: true,
               plugins: {
-                color: 'rgba(235, 235, 235, 1)',
+                color: getComputedStyle(document.documentElement).getPropertyValue('--chart_axis_color'),
                 legend: {
                   display: false // No legend
                 }
@@ -373,6 +420,12 @@ const Chart = require('chart.js/auto');
                 x: {
                   title: {
                     display: false,
+                  },
+                  ticks: {
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart_axis_color')
+                  },
+                  grid: {
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart_grid_color')
                   }
                 },
                 y: {
@@ -380,8 +433,15 @@ const Chart = require('chart.js/auto');
                   suggestedMax: Math.ceil((this._data.HourlyData[0].Target) * 1.1), // target + 10%, rounds up to the next integer
                   title: {
                     display: true,
-                    text: this.getTranslation('parts', 'parts'), // TODO: translate
-                    align: 'end'
+                    text: this.getTranslation('parts', 'parts'),
+                    align: 'end',
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart_axis_color')
+                  },
+                  ticks: {
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart_axis_color')
+                  },
+                  grid: {
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart_grid_color')
                   }
                 }
               }

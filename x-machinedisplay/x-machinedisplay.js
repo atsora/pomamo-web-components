@@ -79,6 +79,8 @@ var eventBus = require('eventBus');
           this.onMachineIdChange.bind(this));
       }
 
+      this.start();
+
       this.switchToNextContext();
     }
 

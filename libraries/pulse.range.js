@@ -390,6 +390,7 @@ class DateRange extends Range {
     }
   }
 }
+exports.DateRange = DateRange;
 
 /** Create a native Javascript Date range from a string (calling new Date ())
  * 

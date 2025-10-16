@@ -13,7 +13,6 @@ var pulseComponent = require('pulsecomponent');
 /**
  * Build a custom tag <x-clock> to display an clock component. This tag gets following attribute : 
 *  display-seconds : Boolean
-*  display-24h : Boolean
 *  display-date : Boolean
  */
 (function () {
@@ -31,6 +30,8 @@ var pulseComponent = require('pulsecomponent');
       self._textclock = undefined;
       self._content = undefined;
 
+      self._timerId = null;
+
 
       return self;
     }
@@ -39,13 +40,22 @@ var pulseComponent = require('pulsecomponent');
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'display-seconds':
-        case 'display-24h':
         case 'display-date':
           this.start();
           break;
         default:
           break;
       }
+    }
+
+    /**
+     * Determines if 24-hour format should be used based on the current locale.
+     * @returns {boolean} true for 24h format, false for 12h format
+     */
+    _shouldUse24HourFormat() {
+      const locale = moment.locale();
+      // Use 24h format for French and German locales
+      return locale === 'fr' || locale === 'de' || locale.startsWith('fr-') || locale.startsWith('de-');
     }
 
     initialize() {
@@ -72,6 +82,10 @@ var pulseComponent = require('pulsecomponent');
     clearInitialization() {
       // Parameters
       // DOM
+      if (this._timerId) {
+        clearTimeout(this._timerId);
+        this._timerId = null;
+      }
       $(this.element).empty();
       this._textclock = undefined;
       this._content = undefined;
@@ -81,44 +95,48 @@ var pulseComponent = require('pulsecomponent');
 
     _startTime() {
       let now = moment();
-    
       let stringToDisplay = '';
       let msBeforeNextChange = 1000 - now.millisecond();
 
-      if (this.element.getAttribute('display-date') === 'true'
-        || this.element.getAttribute('display-date') === true) {
-        if (moment.locale() === 'en') {
-          stringToDisplay += "dddd MM/DD/YYYY ";
-        }
-        else{
-          stringToDisplay += "dddd DD/MM/YYYY";
-        }
-      }
-      else if (this.element.getAttribute('display-seconds') == 'true'
-        || this.element.getAttribute('display-seconds') == true) {
-        if (this.element.getAttribute('display-24h') == 'true'
-          || this.element.getAttribute('display-24h') == true) {
-          stringToDisplay += 'HH:mm:ss';
-        }
-        else {
-          stringToDisplay += 'hh:mm:ss a';
-        }
-      }
-      else { //let stringToDisplay = now.format('LT');
-        if (this.element.getAttribute('display-24h') == 'true'
-          || this.element.getAttribute('display-24h') == true) {
-          stringToDisplay += 'HH:mm';
-        }
-        else {
-          stringToDisplay += 'hh:mm a';
-        }
+      // Determine if 24h format should be used based on locale
+      let use24HourFormat = this._shouldUse24HourFormat();
 
-        msBeforeNextChange += 1000 * (60 - now.second());
+      if (this.element.hasAttribute('display-date')) {
+        if (this.element.getAttribute('display-date') === 'true'
+          || this.element.getAttribute('display-date') === true) {
+          if (moment.locale() === 'en') {
+            stringToDisplay += "dddd MM/DD/YYYY ";
+          }
+          else {
+            stringToDisplay += "dddd DD/MM/YYYY ";
+          }
+        }
+      }
+      else {
+        if (this.element.getAttribute('display-seconds') == 'true'
+          || this.element.getAttribute('display-seconds') == true) {
+          if (use24HourFormat) {
+            stringToDisplay += 'HH:mm:ss';
+          }
+          else {
+            stringToDisplay += 'hh:mm:ss a';
+          }
+        }
+        else {
+          if (use24HourFormat) {
+            stringToDisplay += 'HH:mm';
+          }
+          else {
+            stringToDisplay += 'hh:mm a';
+          }
+
+          msBeforeNextChange += 1000 * (60 - now.second());
+        }
       }
       this._textclock.html(now.format(stringToDisplay));
-      setTimeout(this._startTime.bind(this), msBeforeNextChange);
+      this._timerId = setTimeout(this._startTime.bind(this), msBeforeNextChange);
     }
   }
 
-  pulseComponent.registerElement('x-clock', ClockComponent, ['display-seconds', 'display-24h', 'display-date']);
+  pulseComponent.registerElement('x-clock', ClockComponent, ['display-seconds', 'display-date']);
 })();

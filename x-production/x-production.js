@@ -12,6 +12,8 @@ var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
 var eventBus = require('eventBus');
 
+require('x-clock/x-clock');
+
 (function () {
 
   class productionComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
@@ -33,23 +35,39 @@ var eventBus = require('eventBus');
 
     //get content () { return this._content; } // Optional
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id':
           this.start(); // To re-validate parameters
+          break;
+        case 'machine-context':
+          if (this.isInitialized()) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
+            eventBus.EventBus.addEventListener(this,
+              'machineIdChangeSignal',
+              newVal,
+              this.onMachineIdChange.bind(this));
+          }
           break;
         default:
           break;
       }
     }
 
-    initialize () {
+    initialize() {
       this.addClass('pulse-text');
 
       // Update here some internal parameters
 
       // listeners
+
+      if (this.element.hasAttribute('machine-context')) {
+        eventBus.EventBus.addEventListener(this,
+          'machineIdChangeSignal',
+          this.element.getAttribute('machine-context'),
+          this.onMachineIdChange.bind(this));
+      }
 
       // In case of clone, need to be empty :
       $(this.element).empty();
@@ -59,9 +77,82 @@ var eventBus = require('eventBus');
       // No Work info -> remote
       // No global -> for the moment
       // Shift info : Actual 2 Target 3
-      this._actualDisplay = $('<span></span>').addClass('production-actual-value');
+
+      // Actual production
+      this._actualDisplay = $('<div></div>').addClass('production-actual-value');
+
+      let contentTextActualDisplay = document.createElement('div');
+      contentTextActualDisplay.classList.add('production-content-text-actual');
+
+      let textActualDisplay = document.createElement('span');
+      textActualDisplay.classList.add('production-text-actual');
+      textActualDisplay.innerText = this.getTranslation('actual', 'Actual');
+      contentTextActualDisplay.append(textActualDisplay);
+
+      let clockActualContent = document.createElement('div');
+      clockActualContent.classList.add('production-clock-content');
+
+      let prepositionActualDisplay = document.createElement('span');
+      prepositionActualDisplay.classList.add('production-preposition-actual');
+      prepositionActualDisplay.innerText = this.getTranslation('preposition', 'at');
+      clockActualContent.append(prepositionActualDisplay);
+
+      let clockActualDisplay = document.createElement('x-clock');
+      clockActualDisplay.setAttribute('display-seconds', 'false');
+      clockActualContent.append(clockActualDisplay);
+
+      let separatorActualDisplay = document.createElement('span');
+      separatorActualDisplay.classList.add('production-actual-separator');
+      separatorActualDisplay.innerText = ": ";
+      clockActualContent.append(separatorActualDisplay);
+
+      contentTextActualDisplay.append(clockActualContent);
+      this._actualDisplay.append(contentTextActualDisplay);
+
+      let contentActualDisplay = document.createElement('span');
+      contentActualDisplay.classList.add('production-number-actual');
+      this._actualDisplay.append(contentActualDisplay);
+
+      // Separator
       this._separator = $('<span></span>').addClass('production-separator');
-      this._targetDisplay = $('<span></span>').addClass('production-target-value');
+
+      // Target production
+      this._targetDisplay = $('<div></div>').addClass('production-target-value');
+
+      let contentTextTargetDisplay = document.createElement('div');
+      contentTextTargetDisplay.classList.add('production-content-text-target');
+
+      let textTargetDisplay = document.createElement('span');
+      textTargetDisplay.classList.add('production-text-target');
+      textTargetDisplay.innerText = this.getTranslation('target', 'Target');
+      contentTextTargetDisplay.append(textTargetDisplay);
+
+      let clockTargetContent = document.createElement('div');
+      clockTargetContent.classList.add('production-clock-content');
+      
+
+      let prepositionTargetDisplay = document.createElement('span');
+      prepositionTargetDisplay.classList.add('production-preposition-target');
+      prepositionTargetDisplay.innerText = this.getTranslation('preposition', 'at');
+      clockTargetContent.append(prepositionTargetDisplay);
+
+      let clockTargetDisplay = document.createElement('x-clock');
+      clockTargetDisplay.setAttribute('display-seconds', 'false');
+      clockTargetContent.append(clockTargetDisplay);
+
+      let separatorTargetDisplay = document.createElement('span');
+      separatorTargetDisplay.classList.add('production-target-separator');
+      separatorTargetDisplay.innerText = ": ";
+      clockTargetContent.append(separatorTargetDisplay);
+
+      contentTextTargetDisplay.append(clockTargetContent);
+      this._targetDisplay.append(contentTextTargetDisplay);
+
+      let contentTargetDisplay = document.createElement('span');
+      contentTargetDisplay.classList.add('production-number-target');
+      this._targetDisplay.append(contentTargetDisplay);
+
+
       this._2on3Display = $('<div></div>').addClass('production-2-on-3')
         .append(this._actualDisplay).append(this._separator).append(this._targetDisplay);
 
@@ -107,7 +198,7 @@ var eventBus = require('eventBus');
       return;
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // Parameters
       // DOM
       $(this.element).empty();
@@ -123,7 +214,7 @@ var eventBus = require('eventBus');
       super.clearInitialization();
     }
 
-    reset () { // Optional implementation
+    reset() { // Optional implementation
       // Code here to clean the component when the component has been initialized for example after a parameter change
       this.removeError();
       // Empty this._content
@@ -144,7 +235,7 @@ var eventBus = require('eventBus');
     /**
      * Validate the (event) parameters
      */
-    validateParameters () {
+    validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
         this.setError('missing machine-id'); // delayed error message
         return;
@@ -158,36 +249,36 @@ var eventBus = require('eventBus');
       this.switchToNextContext();
     }
 
-    displayError (message) {
+    displayError(message) {
       $(this._content).hide();
       eventBus.EventBus.dispatchToContext('operationChangeEvent',
         this.element.getAttribute('machine-id'), {});
     }
 
-    removeError () {
+    removeError() {
       $(this._content).hide();
       eventBus.EventBus.dispatchToContext('operationChangeEvent',
         this.element.getAttribute('machine-id'), {});
     }
 
-    get refreshRate () {
+    get refreshRate() {
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
-    getShortUrl () {
+    getShortUrl() {
       let url = 'Operation/ProductionMachiningStatus?MachineId=' + this.element.getAttribute('machine-id');
       /* To restore if global in needed... maybe one day or never
       if (!hideglobal) {  url += '&Option=' + 'TrackTask'; }*/
       return url;
     }
 
-    refresh (data) {
+    refresh(data) {
       $(this._content).show();
       if (data.NbPiecesDoneDuringShift != undefined) {
         $(this._actualDisplay).show();
         // Trunk with 2 decimal if needed
         let done = Math.floor(data.NbPiecesDoneDuringShift * 100) / 100;
-        $(this._actualDisplay).text(done);
+        this._actualDisplay.find('.production-number-actual').text(done);
       }
       else {
         $(this._actualDisplay).hide();
@@ -196,7 +287,7 @@ var eventBus = require('eventBus');
       if (data.GoalNowShift != undefined) {
         // Trunk with 2 decimal if needed
         let goal = Math.floor(data.GoalNowShift * 100) / 100;
-        $(this._targetDisplay).text(goal);
+        this._targetDisplay.find('.production-number-target').text(goal);
       }
 
       if ((data.NbPiecesDoneDuringShift != undefined)
@@ -220,7 +311,7 @@ var eventBus = require('eventBus');
         let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 0);
         // colors and efficiency
         let diff = data.GoalNowShift - data.NbPiecesDoneDuringShift;
-        let multiplier = (thresholdunitispart=='true') ? 1 : (100.0 / data.GoalNowShift);
+        let multiplier = (thresholdunitispart == 'true') ? 1 : (100.0 / data.GoalNowShift);
         if ((diff * multiplier) > thresholdredproduction) {
           $(this._content).addClass('bad-efficiency').removeClass('mid-efficiency').removeClass('good-efficiency');
         }
@@ -251,7 +342,7 @@ var eventBus = require('eventBus');
       * 
       * @param {*} event 
       */
-    onConfigChange (event) {
+    onConfigChange(event) {
       if (event.target.config == 'productionpercent') {
         if ('true' == this.getConfigOrAttribute('productionpercent')) {
           $(this._percentDisplay).show();
@@ -276,6 +367,10 @@ var eventBus = require('eventBus');
         || (event.target.config == 'thresholdorangeproduction')) {
         this.start();
       }
+    }
+
+    onMachineIdChange(event) {
+      this.element.setAttribute('machine-id', event.target.newMachineId);
     }
   }
 

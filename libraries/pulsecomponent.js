@@ -355,7 +355,7 @@ class PulseStateComponent extends PulseComponent {
    *
    */
   clearDynamicStateContent () {
-    let classes = this.element.classList;
+    let classes = Array.from(this.element.classList);
     for (let c of classes) {
       if (0 == c.indexOf('pulse-component-')) {
         // -loading -not-applicable -warning -error 
@@ -980,7 +980,7 @@ class PulseInitializedComponent extends PulseStateComponent {
    * Show the error that has been previously stored
    */
   showError () {
-    this.displayError(this.errorMessage);
+    this.displayError(this._errorMessage);
   }
 
   /**

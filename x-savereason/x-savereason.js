@@ -458,7 +458,6 @@ require('x-datetimerange/x-datetimerange');
     /* CLICK - Save reason */
     _saveReason (reasonId, details, reasonData) {
       let machineId = Number($(this.element).attr('machine-id'));
-
       let rangesList = [];
       for (let i = 0; i < this._rangesList.length; i++) {
         let range = this._rangesList[i];
@@ -478,7 +477,6 @@ require('x-datetimerange/x-datetimerange');
       if (details) {
         url += '&ReasonDetails=' + details;
       }
-
       let timeout = this.timeout;
       let machid = this.element.getAttribute('machine-id'); // Should be copied. This.element disappear before request answer
       let postData = { 'Ranges': rangesList };
@@ -670,7 +668,6 @@ require('x-datetimerange/x-datetimerange');
     clickOnReason (e) {
       let td = e.target;
       let row = $(td).parent();
-
       let reasonId = Number(row[0].getAttribute('reason-id'));
       let reasonName = row[0].getAttribute('reason-text');
       let detailsRequired = ('true' == row[0].getAttribute('details-required'));

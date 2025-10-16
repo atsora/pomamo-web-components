@@ -10,6 +10,7 @@
 
 var pulseUtility = require('pulseUtility');
 var pulseSvg = require('pulseSvg');
+var pulseConfig = require('pulseConfig');
 
 var pulseCustomDialog = function () {
   // Convenient object to store and get data attached to a dialog
@@ -167,10 +168,16 @@ var pulseCustomDialog = function () {
     var fullSize = (attributes['fullSize'] == true);
     var smallSize = (attributes['smallSize'] == true);
     var helpName = attributes['helpName'];
+    if (attributes['className']) {
+      var className = 'customeDialog-' + attributes['className'];
+    }
+    else {
+      var className = '';
+    }
 
     // Create a dialog
     $('body').append(
-      "<div id='" + dialogId + "' class='customDialog'>" +
+      "<div id='" + dialogId + "' class='customDialog " + className + "'>" +
       "<div class='customDialogShadow'></div>" +
       "<div class='customDialogWindow" + (fullScreenOnSmartphone ? ' customDialogWindowFullScreenOnSmartphone' : '') +
       (fullSize ? ' fullSize' : (bigSize ? ' bigSize' : (smallSize ? ' smallSize' : ''))) + "'>" +
