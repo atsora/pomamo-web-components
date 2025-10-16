@@ -1,0 +1,77 @@
+/* Copyright (C) 2025 Atsora Solutions
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+x-productiongauge {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.productiongauge-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.productiongauge-gauge {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.productiongauge-svg {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+}
+
+.productiongauge-text {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: -18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Performance-based colors for text */
+.productiongauge-text.production-poor {
+  color: #FF0000;
+}
+
+.productiongauge-text.production-medium {
+  color: #FF9900;
+}
+
+.productiongauge-text.production-good {
+  color: #00AA00;
+}
+
+/* Gauge SVG styling */
+.productiongauge-svg .tick {
+  stroke: #333333;
+  stroke-width: 1;
+}
+
+.productiongauge-svg .needle {
+  fill: @color_text_alternate;
+}
+
+/* Responsive sizing */
+@media (max-width: 768px) {
+  x-productiongauge {
+    width: 120px;
+    height: 110px;
+  }
+  
+  .productiongauge-text {
+    font-size: 14px;
+  }
+}
