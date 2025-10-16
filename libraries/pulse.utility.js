@@ -12,6 +12,7 @@
 * @requires pulseRange
 */
 var pulseRange = require('pulseRange');
+var pulseConfig = require('pulseConfig');
 
 /** Get integer from string
  * 
