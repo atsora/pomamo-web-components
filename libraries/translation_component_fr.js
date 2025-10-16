@@ -111,9 +111,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   lastmachinestatus: {
     currentReasonColon: "Raison d'arrêt courante : ",
+    pastReasonData: "Raisons d'arrêt passées",
+    dataToClassified: 'STOP à classifier',
     currentTooltip: "Changer la raison d'arrêt courante",
     loading: 'En chargement...',
-    pastReasonData: "Raisons passées",
     pastTooltip: "Consulter ou changer une raison passée",
     tooOld: 'Donnée trop vieille'
   },
@@ -203,6 +204,14 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     startBeforeMinError: 'La date de début est antérieure à la date minimum autorisée',
     startNotValidError: 'La date de début n’est pas valide'
   },
+  production: {
+    actual: 'Production',
+    target: 'Objectif',
+    preposition: 'à'
+  },
+  productionshiftgoal: {
+    productionshiftgoal: 'Objectif fin d\'équipe : '
+  },
   productionstatelegend: {
     title: 'État de production'
   },
@@ -278,6 +287,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     setupsince: "En réglage depuis :",
     switchTo: 'Switch to ',
     switchToProduction: 'Passer en production'
+  },
+  stopclassification : {
+    title: 'Arrêts Non-Planifiés',
+    options: 'Options Avancées',
   },
   toollifemachine: {
     noOperation: "Pas d'opération"
