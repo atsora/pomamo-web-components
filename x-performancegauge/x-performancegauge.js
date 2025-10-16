@@ -38,7 +38,7 @@ var eventBus = require('eventBus');
   // }
   // ticks: array of values for displaying ticks (in radian), can be null
   var gradientNumber = 0;
-  function createCircularGauge (littleRadius, bigRadius, segments, ticks) {
+  function createCircularGauge (littleRadius, bigRadius, segments, ticks, gradientPrefix) {
     if (segments == null || segments.length == 0)
       return null;
 
@@ -114,7 +114,7 @@ var eventBus = require('eventBus');
         else {
           let gradient = document.createElementNS(pulseSvg.get_svgNS(), 'linearGradient');
           g.appendChild(gradient);
-          let gradientName = 'gradientConical-' + (gradientNumber++);
+          let gradientName = gradientPrefix + '-gradientConical-' + (gradientNumber++);
           gradient.setAttribute('id', gradientName);
           gradient.setAttribute('gradientUnits', 'userSpaceOnUse');
           gradient.setAttribute('x1', pointDx);
@@ -262,7 +262,7 @@ var eventBus = require('eventBus');
         }
       }
 
-      let svg = createCircularGauge(internalRadius, externalRadius, colors, ticks);
+  let svg = createCircularGauge(internalRadius, externalRadius, colors, ticks, 'perf');
 
       svg.setAttribute('class', 'performancegauge-svg');
       let minX = -1, maxX = 1, minY = 0, maxY = 1;

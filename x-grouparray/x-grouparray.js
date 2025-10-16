@@ -144,15 +144,18 @@ var eventBus = require('eventBus');
       //$(this.element).find('*').addClass('disableDeleteWhenDisconnect');
 
       // Update list of machines - Add ROWS
-      const panel = document.getElementById("grouparray");
-      if (null != panel) {
+      const panel = document.getElementById("grouparray"); // Hide when only one machine
+      if (panel != null) {
         if (this._machineIdsArray.length == 1) {
-          panel.classList.toggle("hidden-content");
+          if (!panel.classList.contains("hidden-content")) {
+            panel.classList.add("hidden-content");
+          }
         }
         else if (this._machineIdsArray.length > 1 && panel.classList.contains("hidden-content")) {
           panel.classList.remove("hidden-content");
         }
       }
+
       for (let i = 0; i < this._machineIdsArray.length; i++) {
         let singleid = this._machineIdsArray[i];
         let li;
@@ -204,6 +207,13 @@ var eventBus = require('eventBus');
           // restoreDeleteWhenDisconnect 
           machineRow[0].find ('*').removeClass('disableDeleteWhenDisconnect');
         }*/
+      }
+      let $tabs = $(this._content).find('x-machinetab');
+      if ($tabs) {
+        let $activeTab = $tabs.filter('[active="true"]');
+        if ($tabs.length > 0 && $activeTab.length === 0) {
+          $tabs[0].setAttribute('active', 'true');
+        }
       }
 
       //$(this.element).find('.disableDeleteWhenDisconnect').removeClass('disableDeleteWhenDisconnect'); // too early

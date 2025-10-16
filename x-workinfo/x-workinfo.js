@@ -16,7 +16,7 @@ var eventBus = require('eventBus');
  */
 (function () {
 
-  class workinfoComponent extends pulseComponent.PulseInitializedComponent {
+  class workinfoComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
      * 
@@ -46,6 +46,15 @@ var eventBus = require('eventBus');
               this.onOperationChange.bind(this));
             this.start(); // To re-validate parameters
           } break;
+          case 'machine-context':
+          if (this.isInitialized()) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
+            eventBus.EventBus.addEventListener(this,
+              'machineIdChangeSignal',
+              newVal,
+              this.onMachineIdChange.bind(this));
+          }
+          break;
         default:
           break;
       }
@@ -55,12 +64,12 @@ var eventBus = require('eventBus');
       this.addClass('pulse-text');
 
       // Attributes
-      if (!this.element.hasAttribute('machine-id')) {
+      /*if (!this.element.hasAttribute('machine-id')) {
         console.error('missing attribute machine-id');
         // Initialization error => switch to the Error state
         this.switchToKey('Error', () => this.displayError('missing attribute machine-id'), () => this.removeError());
         return;
-      }
+      }*/
 
       // In case of clone, need to be empty :
       $(this.element).empty();
@@ -92,9 +101,24 @@ var eventBus = require('eventBus');
         this.element.getAttribute('machine-id'),
         this.onOperationChange.bind(this));
 
+      if (this.element.hasAttribute('machine-context')) {
+        eventBus.EventBus.addEventListener(this,
+          'machineIdChangeSignal',
+          this.element.getAttribute('machine-context'),
+          this.onMachineIdChange.bind(this));
+      }
+
       // Initialization OK => switch to the next context
       this.switchToNextContext();
       return;
+    }
+
+    validateParameters() {
+      if (!this.element.hasAttribute('machine-id')) {
+        this.setError('missing machine-id');
+        return;
+      }
+      this.switchToNextContext();
     }
 
     clearInitialization () {
@@ -111,6 +135,7 @@ var eventBus = require('eventBus');
     displayError (message) {
       $(this._content).empty();
       this._displayedWorkInformations = null;
+      console.error('x-workinfo: ' + message);
     }
 
     // Callback events
@@ -151,7 +176,17 @@ var eventBus = require('eventBus');
         this._displayedWorkInformations = event.target.workinformations;
       }
     }
+
+    onMachineIdChange(event) {
+      this.element.setAttribute('machine-id', event.target.newMachineId);
+
+      eventBus.EventBus.removeEventListenerBySignal(this, 'operationChangeEvent');
+      eventBus.EventBus.addEventListener(this,
+        'operationChangeEvent',
+        this.element.getAttribute('machine-id'),
+        this.onOperationChange.bind(this));
+    }
   }
 
-  pulseComponent.registerElement('x-workinfo', workinfoComponent, ['machine-id']);
+  pulseComponent.registerElement('x-workinfo', workinfoComponent, ['machine-id', 'machine-context']);
 })();

@@ -43,11 +43,11 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       return self;
     }
 
-    get content () {
+    get content() {
       return this._content;
     } // Optional
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id':
@@ -63,9 +63,14 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
           if (this.isInitialized()) {
             if (newVal == 'true') {
               $(this._machineContent).addClass('active');
+              if (!this.element._isActive) {
+                this.element._isActive = true;
+                this.changeSelectedMachine();
+              }    
               //$(this).find(".pulse-icon-content").addClass("active"); // To change icon display -> done in icon
             }
             else {
+              this.element._isActive = false;
               $(this._machineContent).removeClass('active');
               //$(this).find(".pulse-icon-content").removeClass("active"); // To change icon display -> done in icon
             }
@@ -110,7 +115,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       }
     }
 
-    initialize () {
+    initialize() {
       //this.addClass('pulse-bigdisplay'); // No loading display (done in machinedisplay)
 
       // Update here some internal parameters
@@ -122,6 +127,8 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
           this.element.getAttribute('machine-context'),
           this.onMachineIdChange.bind(this));
       }
+
+      this.element._isActive = false; // to know if the tab is already active
 
       // In case of clone, need to be empty :
       $(this.element).empty();
@@ -172,7 +179,6 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
           this.clickMachineTab(e);
         }.bind(this)
       );
-
 
       if ((this.element.hasAttribute('active')) &&
         (this.element.getAttribute('active') == 'true')) {
@@ -256,7 +262,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       return;
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // Parameters
       // DOM
       $(this.element).empty();
@@ -272,7 +278,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
     /**
      * Validate the (event) parameters
      */
-    validateParameters () {
+    validateParameters() {
       // machine-id
       if (!this.element.hasAttribute('machine-id')) {
         this.setError('missing machine-id'); // delayed error message
@@ -288,26 +294,26 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       this.switchToNextContext();
     }
 
-    displayError (message) {
+    displayError(message) {
       $(this._content)
         .addClass('machinetab-modecolor-undefined');
     }
 
-    removeError () {
+    removeError() {
       // Do nothing
     }
 
-    get refreshRate () {
+    get refreshRate() {
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
-    getShortUrl () {
+    getShortUrl() {
       let url = 'CurrentReason?MachineId=' +
         this.element.getAttribute('machine-id');
       return url;
     }
 
-    refresh (data) {
+    refresh(data) {
       $(this._content)
         .removeClass('machinetab-modecolor-undefined')
         .css('border-right-color', data.Reason.Color);
@@ -320,7 +326,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
      *
      * @param {Object} event
      */
-    onMachineIdChange (event) {
+    onMachineIdChange(event) {
       if (this.element.getAttribute('machine-id') == event.target.newMachineId) {
         this.element.setAttribute('active', 'true');
       }
@@ -334,7 +340,11 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
      *
      * @param {event} e - DOM event
      */
-    clickMachineTab (e) {
+    clickMachineTab(e) {
+      this.changeSelectedMachine();
+    }
+
+    changeSelectedMachine() {
       eventBus.EventBus.dispatchToContext('machineIdChangeSignal',
         this.element.getAttribute('machine-context'),
         {

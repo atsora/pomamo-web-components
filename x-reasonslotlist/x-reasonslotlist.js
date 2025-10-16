@@ -540,7 +540,6 @@ require('x-revisionprogress/x-revisionprogress');
       this._table.empty()
         .removeClass('reasonslotlist-error')
         .addClass('reasonslotlist-table  pulse-selection-table-container');
-
       this._dataReasonsList = data.ReasonOnlySlots
 
       // Prepare the visibility of elements
