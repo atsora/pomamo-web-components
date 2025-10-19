@@ -114,7 +114,6 @@ var eventBus = require('eventBus');
     }
 
     reset() {
-      debugger;
       // Clean component
       (this._content).empty();
       this._isUnanswered = false;

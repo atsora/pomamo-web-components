@@ -470,7 +470,8 @@ class PulseStateComponent extends PulseComponent {
    */
   get stateContext () {
     if (null == this._stateContext) {
-      debugger; // eslint-disable-line no-debugger
+     console.error('stateContext.get: no state context is defined');
+     debugger; // eslint-disable-line no-debugger
       throw 'No defined state context';
     }
     return this._stateContext;
@@ -481,6 +482,7 @@ class PulseStateComponent extends PulseComponent {
    */
   get stateKey () {
     if (null == this._stateKey) {
+      console.error('stateKey.get: no state key is defined');
       debugger; // eslint-disable-line no-debugger
       throw 'No defined state key';
     }
@@ -832,7 +834,7 @@ class PulseInitializedComponent extends PulseStateComponent {
       case 'Reset':
         return 'Initialized';
       case 'Initialized':
-        console.log(`No next context for ${context}`);
+        console.error(`No next context for ${context}`);
         debugger; // eslint-disable-line no-debugger
         throw 'No next context';
     }

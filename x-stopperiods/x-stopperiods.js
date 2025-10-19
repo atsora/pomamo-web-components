@@ -105,7 +105,6 @@ require('x-stopclassification/x-stopclassification');
          * @param {Object} data Service response
          */
         refresh(data) {
-            debugger;
             // Use PeriodStart from the response (always current reason)
             if (!data || !data.PeriodStart) {
                 this._publish(null, null);
