@@ -441,6 +441,48 @@ var openChangeReasonDialog = exports.openChangeReasonDialog = function (componen
 }
 
 /**
+ * Open a change scrap classification dialog for a machine
+ *
+ * @memberof module:PulseComponentFunctions
+ * @function openChangeScrapClassificationDialog
+ *
+ * @param {Object} component - component calling openChangeScrapClassificationDialog -> must define following attributes : machine-id
+ * @param {Range} dtRange - date range
+ *
+ */
+var openChangeScrapClassificationDialog = exports.openChangeScrapClassificationDialog = function (component) {
+  if ($('.dialog-scrapclassification').length > 0) {
+    return;
+  }
+
+  // PAGE 1
+  let dialog = $('<div></div>').addClass('dialog-scrapclassification');
+  let scrapClassificationDialogId = pulseCustomDialog.initialize(dialog, {
+    title: component.getTranslation('scrapClassification.title', 'Declare scrap'),
+    onClose: function () {
+      $('.popup-block').fadeOut();
+    }.bind(component),
+    autoClose: false,
+    autoDelete: true,
+    okButton: 'hidden',
+    cancelButton: 'hidden',
+    fullScreenOnSmartphone: true,
+    fixedHeight: true,
+    fullSize: true,
+    helpName: 'savereason',
+    className: 'scrapclassification'
+  });
+  let machid = $(component.element).attr('machine-id');
+  // Use a provider that fetches ReasonOnlySlots and builds the classifier
+  let xscrapclassification = pulseUtility.createjQueryElementWithAttribute('x-scrapclassification', {
+    'machine-id': machid,
+  });
+  dialog.append(xscrapclassification);
+
+  pulseCustomDialog.open('#' + scrapClassificationDialogId);
+}
+
+/**
  * Open a change reason dialog for a machine and a specific range
  *
  * @memberof module:PulseComponentFunctions

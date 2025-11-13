@@ -1,0 +1,262 @@
+@import "pulsewebcomponents-common.less";
+
+@import "pulse.customdialog.less";
+
+x-savescrapreason {
+    .savescrapreason-content {
+        width: 100%;
+        min-height: 31.25vw;
+        background-color: @container_color;
+        display: flex;
+        flex-direction: column;
+        border-radius: 4px;
+        align-items: center;
+        gap: 40px;
+
+        .savescrapreason-panel {
+            width: 100%;
+            //border-top: 1px solid #5F5F5F;
+
+            .savescrapreason-cells-list {
+
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                padding-right: 2.1vw;
+                padding-left: 2.1vw;
+                margin-bottom: 1.6vw;
+                margin-top: 1.6vw;
+                row-gap: 3vw;
+                column-gap: 4.85vw;
+
+                max-height: 50vh; // Limit height to 50% of viewport height
+                overflow-y: auto; // Enable vertical scrolling
+                overflow-x: hidden; // Hide horizontal scrollbar
+
+                .savescrapreason-cell-item {
+                    list-style-type: none;
+
+                    .savescrapreason-cell-box {
+                        width: 100%;
+                        height: 6vw;
+                        background-color: var(--bar_in_box_bk_color);
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: space-between;
+                        border-radius: 4px;
+                        position: relative;
+                        box-shadow: @box_shadow;
+                        padding: 0.5vw;
+
+                        .savescrapreason-cell-box-color {
+                            width: 1.5vw;
+                            height: 100%;
+                            border-top-left-radius: 4px;
+                            border-bottom-left-radius: 4px;
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                        }
+
+                        .savescrapreason-cell-box-text {
+                            width: 100%;
+                            align-items: center;
+                            justify-content: center;
+                            display: flex;
+                            flex: 1;
+
+                            .savescrapreason-cell-text {
+                                font-size: 1.4vw;
+                            }
+
+                            i {
+                                font-size: 3vw;
+                            }
+                        }
+
+                        .savescrapreason-cell-box-input {
+                            width: 100%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 0.5vw;
+
+                            i {
+                                font-size: 1.2vw;
+                                cursor: pointer;
+                                padding: 0.3vw;
+
+                                &:hover {
+                                    color: @color_highlight;
+                                }
+                            }
+
+                            .savescrapreason-cell-input {
+                                width: 2.5vw;
+                                height: 2.5vw;
+                                text-align: center;
+                                font-size: 1.2vw;
+                                border: 1px solid #5F5F5F;
+                                border-radius: 4px;
+                                background-color: @container_color;
+                                color: @color_text;
+
+                                /* Remove spinner arrows */
+                                appearance: textfield;
+                                -moz-appearance: textfield;
+
+                                &::-webkit-outer-spin-button,
+                                &::-webkit-inner-spin-button {
+                                    -webkit-appearance: none;
+                                    margin: 0;
+                                }
+                            }
+                        }
+
+                        .savescrapreason-cell-box-arrow {
+                            position: absolute;
+                            right: 0;
+                            bottom: 0;
+
+                            i {
+                                font-size: 1.3vw;
+                                margin: 0.4em;
+                            }
+                        }
+
+                        .triangle {
+                            position: absolute;
+                            right: 0;
+                            bottom: 0;
+                            display: inline-block;
+                            height: 0;
+                            width: 0;
+                            border-bottom: 3.65vw solid @color_window_hover;
+                            border-left: 4.2vw solid transparent;
+                            border-bottom-right-radius: 4px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .savescrapreason-button-content {
+            display: flex;
+            gap: 100px;
+
+            .savescrapreason-submit-button {
+                background-color: #008000;
+                border-radius: 4px;
+                font-size: 40px;
+                padding: 10px 30px;
+                color: #dfdfdf;
+                border: unset;
+                cursor: pointer;
+
+                transition: background-color 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
+
+                &:hover {
+                    background-color: #006600;
+                    /* darker green on hover */
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+                }
+
+                &:active {
+                    transform: translateY(0);
+                }
+            }
+
+            .savescrapreason-details-button {
+                background-color: #008000;
+                border-radius: 4px;
+                font-size: 40px;
+                padding: 10px 30px;
+                color: #dfdfdf;
+                border: unset;
+                cursor: pointer;
+
+                transition: background-color 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
+
+                &:hover {
+                    background-color: #006600;
+                    /* darker green on hover */
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+                }
+
+                &:active {
+                    transform: translateY(0);
+                }
+            }
+        }
+    }
+}
+
+.savereason-dialog-details {
+    padding: 5px;
+
+    .savereason-machine,
+    .savereason-datetimerange-details,
+    .savereason-details-reason {
+        margin-bottom: 10px;
+    }
+
+    .savereason-datetimerange-label,
+    .savereason-machine-label,
+    .savereason-details-label {
+        vertical-align: bottom;
+        display: inline-block;
+        margin-right: 5px;
+        font-weight: bold;
+    }
+
+    .savereason-machine {
+        x-machinedisplay {
+            display: inline-block; // To remove -> must be block
+            font-weight: normal;
+        }
+    }
+
+    .savereason-datetimerange-details {
+        x-datetimerange {
+            display: inline-block; // To remove -> must be block
+            vertical-align: bottom;
+
+            .datetimerange-rangedisplay {
+                margin: 0;
+                background-color: @color_window;
+                color: @color_text;
+
+                &:after {
+                    display: none;
+                }
+            }
+
+            .datetimerange-toolbar {
+                display: none;
+            }
+
+            .datetimerange-display {
+                padding: 0;
+                line-height: inherit;
+            }
+        }
+    }
+
+    .savereason-details-reason {
+        .savereason-details-input {
+            display: inline-block;
+        }
+    }
+
+    .savereason-details {
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            resize: none;
+        }
+    }
+}
+
+// end .savereason-dialog-details = dialog for details

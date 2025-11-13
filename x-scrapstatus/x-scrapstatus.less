@@ -1,0 +1,42 @@
+@import "pulsewebcomponents-common.less";
+
+@import "x-scrapclassification/x-scrapclassification.less";
+
+x-scrapstatus {
+    .scrapstatus-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+
+        .scrapstatus-text {
+            font-weight: bolder;
+            font-size: 20px;
+        }
+
+        .scrapstatus-value {
+            font-weight: bold;
+            font-size: 80px;
+        }
+
+        .scrapstatus-button-content {
+            font-size: 1.5em;
+            padding: 12px 24px;
+            border-radius: 4px;
+            background-color: #FF7C35;
+            color: #101521;
+            transition: 0.1s;
+            cursor: pointer;
+            box-shadow:
+                inset 4px 4px 4px rgba(0, 0, 0, 0.25),
+                inset -4px -4px 4px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            column-gap: 0.5em;
+
+            &:hover {
+                background-color: #FCA975;
+            }
+        }
+    }
+}

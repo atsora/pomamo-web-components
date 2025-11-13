@@ -1,0 +1,59 @@
+@import "pulsewebcomponents-common.less";
+
+@import "x-savescrapreason/x-savescrapreason.less";
+
+x-scrapclassification {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+
+    .scrapclassification-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 30px;
+
+        .operation-content {
+            display: flex;
+            gap: 20px;
+            border: 1px solid #202020;
+            padding: 10px 20px;
+        }
+
+        .range-content {
+            display: flex;
+            gap: 20px;
+            border: 1px solid #202020;
+            padding: 10px 20px;
+        }
+
+        i {
+            cursor: pointer;
+
+            &:hover {
+                color: @color_highlight;
+            }
+        }
+
+        .parts-content {
+            display: flex;
+            width: 35%;
+            justify-content: space-between;
+
+            .number-parts-content {
+                display: flex;
+                border: 1px solid #202020;
+                padding: 10px 20px;
+
+                .parts-label {
+                    white-space: pre;
+                }
+            }
+        }
+
+        x-savescrapreason {
+            width: 80%;
+        }
+    }
+}
