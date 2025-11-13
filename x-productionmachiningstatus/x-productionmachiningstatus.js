@@ -255,18 +255,16 @@ var eventBus = require('eventBus');
       if ((data.GoalNowShift) && (0 < data.GoalNowShift)) {
         this._shiftEfficiency = data.NbPiecesDoneDuringShift / data.GoalNowShift;
 
-        let thresholdunitispart = this.getConfigOrAttribute('thresholdunitispart', 'true');
-        let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 0);
-        let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 0);
+        let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 60);
+        let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 80);
         // colors
-        let diff = data.GoalNowShift - data.NbPiecesDoneDuringShift;
-        let multiplier = (thresholdunitispart == 'true') ? 1 : (100.0 / data.GoalNowShift);
-        if ((diff * multiplier) > thresholdredproduction) {
+        let ratio = data.NbPiecesDoneDuringShift / data.GoalNowShift;
+        if (ratio < thresholdredproduction / 100) {
           classToAdd = 'bad-efficiency';
           classToRemove = 'mid-efficiency good-efficiency';
         }
         else {
-          if ((diff * multiplier) > thresholdorangeproduction) {
+          if (ratio < thresholdorangeproduction / 100) {
             classToAdd = 'mid-efficiency';
             classToRemove = 'bad-efficiency good-efficiency';
           }

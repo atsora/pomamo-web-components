@@ -26,8 +26,8 @@ PULSE_DEFAULT_CONFIG.general = {
 
   // for x-production, x-partproductionstatuspie, x-productionmachiningstatus...
   thresholdunitispart: true,
-  thresholdorangeproduction: 0,
-  thresholdredproduction: 0,
+  thresholdorangeproduction: 80,
+  thresholdredproduction: 60,
 
   /* The following def are BELOW in tagConfig :
     reportpath: 'http://lctr:8080/atrackingreporting/',

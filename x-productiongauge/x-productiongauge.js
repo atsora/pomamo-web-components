@@ -281,7 +281,7 @@ var eventBus = require('eventBus');
       let minRad = 3.76519; // left
       let maxRad = -0.623599; // right
       let tickDivision = 10;
-      
+
       // Get target percentage from config based on threshold mode
       // Note: In piece mode, this will use default 75% initially since we don't have production data yet
       let targetPercentage = this._calculateTargetPercentage();
@@ -398,24 +398,24 @@ var eventBus = require('eventBus');
       return url;
     }
 
-  /**
-   * @typedef {Object} ProductionStatusData
-   * @property {number} [NbPiecesDoneDuringShift] - Number of pieces produced during the current shift.
-   * @property {number} [GoalNowShift] - Current target pieces for the shift.
-   */
-  /**
-   * Updates the component with fresh data:
-   * - Computes production ratio (capped to 1.0 for needle angle)
-   * - Redraws the needle
-   * - Updates the textual display (ratio or percent)
-   * - In piece mode: redraws gauge if production goal changes (affects target visualization)
-   * @param {ProductionStatusData} data
-   * @returns {void}
-   */
+    /**
+     * @typedef {Object} ProductionStatusData
+     * @property {number} [NbPiecesDoneDuringShift] - Number of pieces produced during the current shift.
+     * @property {number} [GoalNowShift] - Current target pieces for the shift.
+     */
+    /**
+     * Updates the component with fresh data:
+     * - Computes production ratio (capped to 1.0 for needle angle)
+     * - Redraws the needle
+     * - Updates the textual display (ratio or percent)
+     * - In piece mode: redraws gauge if production goal changes (affects target visualization)
+     * @param {ProductionStatusData} data
+     * @returns {void}
+     */
     refresh(data) {
       // Store previous target to detect changes
       let previousTargetProduction = this._targetProduction;
-      
+
       // Update production data
       this._actualProduction = (data.NbPiecesDoneDuringShift !== undefined) ? data.NbPiecesDoneDuringShift : 0;
       this._targetProduction = (data.GoalNowShift !== undefined) ? data.GoalNowShift : 0;
@@ -429,14 +429,13 @@ var eventBus = require('eventBus');
 
       // In piece mode, if the production goal changed, we need to redraw the entire gauge
       // because the target line position depends on the current production goal
-      let thresholdMode = this.getConfigOrAttribute('productiongauge.thresholdmode', 'percentage');
-      if (thresholdMode === 'piece' && previousTargetProduction !== this._targetProduction) {
+      if (previousTargetProduction !== this._targetProduction) {
         this._redrawGauge();
       } else {
         // Update only the needle
         this._drawNeedle();
       }
-      
+
       this._updateTextDisplay();
     }
 
@@ -446,32 +445,11 @@ var eventBus = require('eventBus');
      * - In 'percentage' mode: target value (0-100) is converted to a ratio (0-1).
      *   Example: target=75 means the target line appears at 75% on the gauge.
      * 
-     * - In 'piece' mode: target value represents expected piece count, converted to ratio
-     *   based on current production goal (GoalNowShift).
-     *   Example: target=50 pieces, current goal=100 pieces → target line at 50% (50/100).
-     *   If goal is 200 pieces → target line at 25% (50/200).
-     * 
      * @returns {number} Target percentage between 0 and 1 for gauge visualization
      */
     _calculateTargetPercentage() {
-      let thresholdMode = this.getConfigOrAttribute('productiongauge.thresholdmode', 'percentage');
-      let targetValue = this.getConfigOrAttribute('productiongauge.target', 70);
-      let targetPercentage;
-
-      if (thresholdMode === 'piece') {
-        // In piece mode, target represents the number of pieces expected
-        // The gauge should show where this target sits relative to the current production goal
-        if (this._targetProduction > 0) {
-          // targetPercentage = target pieces / current goal
-          targetPercentage = targetValue / this._targetProduction;
-        } else {
-          // No production data yet, use 70% as default
-          targetPercentage = 0.70;
-        }
-      } else {
-        // Percentage mode: direct percentage value
-        targetPercentage = targetValue / 100;
-      }
+      let targetValue = this.getConfigOrAttribute('thresholdorangeproduction', 80);
+      let targetPercentage = targetValue / 100;
 
       // Clamp between 0 and 1
       return Math.max(0, Math.min(1, targetPercentage));
@@ -563,59 +541,34 @@ var eventBus = require('eventBus');
       if (this._targetProduction > 0) {
         let ratio = this._actualProduction / this._targetProduction;
 
-        // Get threshold mode (percentage or piece)
-        let thresholdMode = this.getConfigOrAttribute('productiongauge.thresholdmode', 'percentage');
-        
+
         // Get thresholds from config
-        let redThreshold, orangeThreshold;
-        
-        if (thresholdMode === 'piece') {
-          // Piece mode: values represent number of pieces below target
-          // In piece mode: higher piece values = worse performance (more pieces missing)
-          // red > orange (e.g., red=5, orange=2 means red when ≤5 from target, orange when ≤2 from target)
-          let redPieces = this.getConfigOrAttribute('productiongauge.red', 5);
-          let orangePieces = this.getConfigOrAttribute('productiongauge.orange', 2);
-          
-          // Validation: red must be greater than orange in piece mode
-          if (redPieces <= orangePieces) {
-            // Fallback values
-            redPieces = 5;
-            orangePieces = 2;
-          }
-          
-          // Convert to ratios
-          // Example: target=10, red=5 → redThreshold = 0.5 (applies when actual ≤ 5)
-          // Example: target=10, orange=2 → orangeThreshold = 0.8 (applies when actual ≤ 8)
-          redThreshold = Math.max(0, (this._targetProduction - redPieces) / this._targetProduction);
-          orangeThreshold = Math.max(0, (this._targetProduction - orangePieces) / this._targetProduction);
-        } else {
-          // Percentage mode: values are percentages (0-100)
-          // In percentage mode: orange > red (e.g., orange=80, red=50)
-          redThreshold = this.getConfigOrAttribute('productiongauge.red', 50) / 100;
-          orangeThreshold = this.getConfigOrAttribute('productiongauge.orange', 80) / 100;
+        let redThreshold = this.getConfigOrAttribute('thresholdredproduction', 60) / 100;
+        let orangeThreshold = this.getConfigOrAttribute('thresholdorangeproduction', 80) / 100;
 
-          if (redThreshold || redThreshold === 0) {
-            redThreshold = Math.max(0, redThreshold);
-            redThreshold = Math.min(0.95, redThreshold);
-          }
-          else {
-            redThreshold = 0.5;
-          }
 
-          if (orangeThreshold || orangeThreshold === 0) {
-            orangeThreshold = Math.max(0, orangeThreshold);
-            orangeThreshold = Math.min(0.95, orangeThreshold);
-          }
-          else {
-            orangeThreshold = 0.8;
-          }
-          
-          // Validation: orange must be greater than red in percentage mode
-          if (orangeThreshold <= redThreshold) {
-            redThreshold = 0.5;
-            orangeThreshold = 0.8;
-          }
+        if (redThreshold) {
+          redThreshold = Math.max(0, redThreshold);
+          redThreshold = Math.min(1, redThreshold);
         }
+        else {
+          redThreshold = 0.6;
+        }
+
+        if (orangeThreshold) {
+          orangeThreshold = Math.max(0, orangeThreshold);
+          orangeThreshold = Math.min(1, orangeThreshold);
+        }
+        else {
+          orangeThreshold = 0.8;
+        }
+
+        // Validation: orange must be greater than red in percentage mode
+        if (orangeThreshold <= redThreshold) {
+          redThreshold = 0.6;
+          orangeThreshold = 0.8;
+        }
+
 
         // Apply CSS classes based on thresholds
         // In both modes, redThreshold < orangeThreshold after conversion
@@ -640,9 +593,11 @@ var eventBus = require('eventBus');
     }
 
     onConfigChange(event) {
-      if (event.target.config === 'productiongauge') {
-        this._redrawGauge();
-        this._updateTextDisplay();
+      if (event.target.config === 'thresholdsupdated') {
+        if (this._actualProduction) {
+          this._redrawGauge();
+          this._updateTextDisplay();
+        }
       }
     }
 

@@ -398,22 +398,20 @@ var eventBus = require('eventBus');
             production += ' / ' + goal;
 
             if (this._data.GoalNowShift > 0) {
-              let thresholdunitispart = this.getConfigOrAttribute('thresholdunitispart', 'true');
-              let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 0);
-              let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 0);
+              let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 60);
+              let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 80);
               // colors and efficiency
-              let diff = this._data.GoalNowShift - this._data.NbPiecesDoneDuringShift;
-              let multiplier = (thresholdunitispart == 'true') ? 1 : (100.0 / this._data.GoalNowShift);
+              let ratio = this._data.NbPiecesDoneDuringShift / this._data.GoalNowShift;
               let previousClass = productionDisplay[0].getAttribute('class');
-              previousClass.replace(' bad-efficiency', '');
-              previousClass.replace(' mid-efficiency', '');
-              previousClass.replace(' good-efficiency', '');
-              if ((diff * multiplier) > thresholdredproduction) {
+              previousClass = previousClass.replace(' bad-efficiency', '');
+              previousClass = previousClass.replace(' mid-efficiency', '');
+              previousClass = previousClass.replace(' good-efficiency', '');
+              if (ratio < thresholdredproduction / 100) {
                 productionDisplay[0].setAttribute('class', previousClass + ' bad-efficiency');
                 //$(productionDisplay).addClass('bad-efficiency').removeClass('mid-efficiency').removeClass('good-efficiency');
               }
               else {
-                if ((diff * multiplier) > thresholdorangeproduction) {
+                if (ratio < thresholdorangeproduction / 100) {
                   productionDisplay[0].setAttribute('class', previousClass + ' mid-efficiency');
                   //$(productionDisplay).addClass('mid-efficiency').removeClass('bad-efficiency').removeClass('good-efficiency');
                 }
@@ -1066,16 +1064,15 @@ var eventBus = require('eventBus');
       * @param {*} event 
       */
     onConfigChange(event) {
+      if (event.target.config == 'thresholdsupdated') this._fillProductionText();
       if (event.target.config == 'hidesecondproductiondisplay')
         this._fillProductionText();
 
       if (event.target.config == 'productionpercentinpie')
         this._fillProductionText();
 
-      if ((event.target.config == 'thresholdunitispart')
-        || (event.target.config == 'thresholdredproduction')
+      if ((event.target.config == 'thresholdredproduction')
         || (event.target.config == 'thresholdorangeproduction')) {
-        //this.start();
         this._fillProductionText();
       }
 

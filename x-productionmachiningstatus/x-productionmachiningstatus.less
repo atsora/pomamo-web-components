@@ -36,35 +36,22 @@ x-productionmachiningstatus {
     }
   }
 
-  // bar-style display :
-  &.pulse-lastbar {
 
-    //good-efficiency ??? 
-    .bad-efficiency {
-      background: @bad_efficiency_base;
-      color: @bad_efficiency_base_contrasted_color;
 
-      a {
-        color: @bad_efficiency_base_contrasted_color;
-      }
-
-      a:visited {
-        color: @bad_efficiency_base_contrasted_color;
-      }
-    }
-    .mid-efficiency {
-      background: @bad_efficiency_base;
-      color: @bad_efficiency_base_contrasted_color;
-
-      a {
-        color: @bad_efficiency_base_contrasted_color;
-      }
-
-      a:visited {
-        color: @bad_efficiency_base_contrasted_color;
-      }
+  //good-efficiency ??? 
+  .bad-efficiency {
+    span {
+      color: @bad_efficiency_base !important;
     }
   }
+
+  .mid-efficiency {
+    span {
+      color: @mid_efficiency_base !important;
+    }
+
+  }
+
 
   // BOX format :
   &.pulse-text {

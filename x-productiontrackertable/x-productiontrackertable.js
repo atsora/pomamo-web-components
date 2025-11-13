@@ -400,9 +400,8 @@ var eventBus = require('eventBus');
         let cumulProductionCapacity = this._staticCumulProductionCapacity;
 
         // Prepare colors
-        let thresholdunitispart = this.getConfigOrAttribute('thresholdunitispart', 'true');
-        let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 0);
-        let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 0);
+        let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 60);
+        let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 80);
 
         // Add  or change rows
         for (let i = 0; i < this._data.HourlyData.length; i++) {
@@ -471,13 +470,12 @@ var eventBus = require('eventBus');
             // Add color when needed
             // color : actual / target
             if (!pulseUtility.isNotDefined(target) && target > 0) {
-              let diff = target - actual;
-              let multiplier = (thresholdunitispart == 'true') ? 1 : (100.0 / target);
-              if ((diff * multiplier) > thresholdredproduction) {
+              let ratio = actual / target;
+              if (ratio < thresholdredproduction / 100) {
                 $(hActual).addClass('bad-efficiency');
               }
               else {
-                if ((diff * multiplier) > thresholdorangeproduction) {
+                if (ratio < thresholdorangeproduction / 100) {
                   $(hActual).addClass('mid-efficiency');
                 }
                 else {
@@ -487,13 +485,12 @@ var eventBus = require('eventBus');
             }
             // color : cumulActual / cumulTarget
             if (!pulseUtility.isNotDefined(cumulTarget) && target > 0) {
-              let diff = cumulTarget - cumulActual;
-              let multiplier = (thresholdunitispart == 'true') ? 1 : (100.0 / cumulTarget);
-              if ((diff * multiplier) > thresholdredproduction) {
+              let ratio = cumulActual / cumulTarget;
+              if (ratio < thresholdredproduction / 100) {
                 $(sActual).addClass('bad-efficiency');
               }
               else {
-                if ((diff * multiplier) > thresholdorangeproduction) {
+                if (ratio < thresholdorangeproduction / 100) {
                   $(sActual).addClass('mid-efficiency');
                 }
                 else {
@@ -550,13 +547,12 @@ var eventBus = require('eventBus');
               .removeClass('mid-efficiency').removeClass('good-efficiency');
             // color : actual / target
             if (!pulseUtility.isNotDefined(target) && target > 0) {
-              let diff = target - actual;
-              let multiplier = (thresholdunitispart == 'true') ? 1 : (100.0 / target);
-              if ((diff * multiplier) > thresholdredproduction) {
+              let ratio = actual / target;
+              if (ratio < thresholdredproduction / 100) {
                 $(hourlyActualForThisRange).addClass('bad-efficiency');
               }
               else {
-                if ((diff * multiplier) > thresholdorangeproduction) {
+                if (ratio < thresholdorangeproduction / 100) {
                   $(hourlyActualForThisRange).addClass('mid-efficiency');
                 }
                 else {
@@ -566,16 +562,15 @@ var eventBus = require('eventBus');
             }
             // color : cumulActual / cumulTarget
             if (!pulseUtility.isNotDefined(cumulTarget) && target > 0) {
-              let diff = cumulTarget - cumulActual;
-              let multiplier = (thresholdunitispart == 'true') ? 1 : (100.0 / cumulTarget);
+              let ratio = cumulActual / cumulTarget;
 
               let summaryActualForThisRange = $(this._table).find('.summary-actual[range="' + isoRange + '"]');
 
-              if ((diff * multiplier) > thresholdredproduction) {
+              if (ratio < thresholdredproduction / 100) {
                 $(summaryActualForThisRange).addClass('bad-efficiency');
               }
               else {
-                if ((diff * multiplier) > thresholdorangeproduction) {
+                if (ratio < thresholdorangeproduction / 100) {
                   $(summaryActualForThisRange).addClass('mid-efficiency');
                 }
                 else {
@@ -664,9 +659,8 @@ var eventBus = require('eventBus');
           return;
         }
         // Prepare color limits
-        let thresholdunitispart = this.getConfigOrAttribute('thresholdunitispart', 'true');
-        let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 0);
-        let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 0);
+        let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 60);
+        let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 80);
 
         // Remove colors
         let hourlyActuals = $(this._table).find('.hourly-actual');
@@ -694,13 +688,12 @@ var eventBus = require('eventBus');
           // Add colors
           // color : actual / target
           if (!pulseUtility.isNotDefined(target) && target > 0) {
-            let diff = target - actual;
-            let multiplier = (thresholdunitispart == 'true') ? 1 : (100.0 / target);
-            if ((diff * multiplier) > thresholdredproduction) {
+            let ratio = actual / target;
+            if (ratio < thresholdredproduction / 100) {
               $(hourlyActuals[iAct]).addClass('bad-efficiency');
             }
             else {
-              if ((diff * multiplier) > thresholdorangeproduction) {
+              if (ratio < thresholdorangeproduction / 100) {
                 $(hourlyActuals[iAct]).addClass('mid-efficiency');
               }
               else {
@@ -710,16 +703,15 @@ var eventBus = require('eventBus');
           }
           // color : cumulActual / cumulTarget
           if (!pulseUtility.isNotDefined(cumulTarget) && target > 0) {
-            let diff = cumulTarget - cumulActual;
-            let multiplier = (thresholdunitispart == 'true') ? 1 : (100.0 / cumulTarget);
+            let ratio = cumulActual / cumulTarget;
 
             let summaryActualForThisRange = $(this._table).find('.summary-actual[range="' + isoRange + '"]');
 
-            if ((diff * multiplier) > thresholdredproduction) {
+            if (ratio < thresholdredproduction / 100) {
               $(summaryActualForThisRange).addClass('bad-efficiency');
             }
             else {
-              if ((diff * multiplier) > thresholdorangeproduction) {
+              if (ratio < thresholdorangeproduction / 100) {
                 $(summaryActualForThisRange).addClass('mid-efficiency');
               }
               else {

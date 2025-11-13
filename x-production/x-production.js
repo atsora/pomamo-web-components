@@ -10,6 +10,7 @@
 var pulseComponent = require('pulsecomponent');
 //var pulseRange = require('pulseRange');
 var pulseUtility = require('pulseUtility');
+var pulseConfig = require('pulseConfig');
 var eventBus = require('eventBus');
 
 require('x-clock/x-clock');
@@ -129,7 +130,7 @@ require('x-clock/x-clock');
 
       let clockTargetContent = document.createElement('div');
       clockTargetContent.classList.add('production-clock-content');
-      
+
 
       let prepositionTargetDisplay = document.createElement('span');
       prepositionTargetDisplay.classList.add('production-preposition-target');
@@ -215,22 +216,13 @@ require('x-clock/x-clock');
     }
 
     reset() { // Optional implementation
-      // Code here to clean the component when the component has been initialized for example after a parameter change
       this.removeError();
-      // Empty this._content
+
+      this.element.querySelector('.production-number-actual').innerText = '';
+      this.element.querySelector('.production-number-target').innerText = '';
 
       this.switchToNextContext();
     }
-
-    /*_setRangeFromAttribute () {
-      if (this.element.hasAttribute('range')) {
-        let attr = this.element.getAttribute('range');
-        let range = pulseRange.createDateRangeFromString(attr);
-        if (!range.isEmpty()) {
-          this._range = range;
-        }
-      }
-    }*/
 
     /**
      * Validate the (event) parameters
@@ -273,6 +265,7 @@ require('x-clock/x-clock');
     }
 
     refresh(data) {
+      this._data = data;
       $(this._content).show();
       if (data.NbPiecesDoneDuringShift != undefined) {
         $(this._actualDisplay).show();
@@ -284,10 +277,14 @@ require('x-clock/x-clock');
         $(this._actualDisplay).hide();
       }
 
-      if (data.GoalNowShift != undefined) {
+      if (data.GoalNowShift != undefined && Number(data.GoalNowShift) > 0) {
         // Trunk with 2 decimal if needed
         let goal = Math.floor(data.GoalNowShift * 100) / 100;
         this._targetDisplay.find('.production-number-target').text(goal);
+        this.element.querySelector('.production-target-value').style.display = 'flex';
+      }
+      else {
+        this.element.querySelector('.production-target-value').style.display = 'none';
       }
 
       if ((data.NbPiecesDoneDuringShift != undefined)
@@ -304,19 +301,27 @@ require('x-clock/x-clock');
         //$(this._percentDisplaySpan).hide();
       }
 
-      if ((data.GoalNowShift != undefined)
-        && (Number(data.GoalNowShift) > 0)) {
-        let thresholdunitispart = this.getConfigOrAttribute('thresholdunitispart', 'true');
-        let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 0);
-        let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 0);
+      this._updateColorEfficiency();
+
+      // Forward workinfo data to external display
+      //if (this.element.hasAttribute('machine-id')) { Always
+      eventBus.EventBus.dispatchToContext('operationChangeEvent',
+        this.element.getAttribute('machine-id'),
+        { workinformations: data.WorkInformations });
+    }
+
+    _updateColorEfficiency() {
+      if ((this._data.GoalNowShift != undefined)
+        && (Number(this._data.GoalNowShift) > 0)) {
+        let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 60);
+        let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 80);
         // colors and efficiency
-        let diff = data.GoalNowShift - data.NbPiecesDoneDuringShift;
-        let multiplier = (thresholdunitispart == 'true') ? 1 : (100.0 / data.GoalNowShift);
-        if ((diff * multiplier) > thresholdredproduction) {
+        let ratio = this._data.NbPiecesDoneDuringShift / this._data.GoalNowShift;
+        if (ratio < thresholdredproduction / 100) {
           $(this._content).addClass('bad-efficiency').removeClass('mid-efficiency').removeClass('good-efficiency');
         }
         else {
-          if ((diff * multiplier) > thresholdorangeproduction) {
+          if (ratio < thresholdorangeproduction / 100) {
             $(this._content).addClass('mid-efficiency').removeClass('bad-efficiency').removeClass('good-efficiency');
           }
           else {
@@ -327,12 +332,6 @@ require('x-clock/x-clock');
       else {
         $(this._content).removeClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
       }
-
-      // Forward workinfo data to external display
-      //if (this.element.hasAttribute('machine-id')) { Always
-      eventBus.EventBus.dispatchToContext('operationChangeEvent',
-        this.element.getAttribute('machine-id'),
-        { workinformations: data.WorkInformations });
     }
 
     // Callback events
@@ -343,6 +342,9 @@ require('x-clock/x-clock');
       * @param {*} event 
       */
     onConfigChange(event) {
+      if (event.target.config === 'thresholdsupdated') {
+        if (this._data) this._updateColorEfficiency();
+      }
       if (event.target.config == 'productionpercent') {
         if ('true' == this.getConfigOrAttribute('productionpercent')) {
           $(this._percentDisplay).show();
@@ -361,11 +363,6 @@ require('x-clock/x-clock');
           this._separator.show();
           this._targetDisplay.show();
         }
-      }
-      if ((event.target.config == 'thresholdunitispart')
-        || (event.target.config == 'thresholdredproduction')
-        || (event.target.config == 'thresholdorangeproduction')) {
-        this.start();
       }
     }
 
