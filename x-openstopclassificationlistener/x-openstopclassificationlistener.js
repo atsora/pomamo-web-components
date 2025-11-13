@@ -12,6 +12,7 @@ var pulseComponent = require('pulsecomponent');
 var pulseService = require('pulseService');
 var pulseRange = require('pulseRange');
 var pulseDetailsPopup = require('pulsecomponent-detailspopup');
+var pulseConfig = require('pulseConfig');
 var eventBus = require('eventBus');
 
 (function () {
@@ -24,6 +25,7 @@ var eventBus = require('eventBus');
             self._dateRange = undefined;
             self._machineId = undefined;
             self._listening = false;
+            self._lastDialogCloseTime = 0;
             return self;
         }
 
@@ -52,6 +54,12 @@ var eventBus = require('eventBus');
                     'machineIdChangeSignal',
                     this.element.getAttribute('machine-context'),
                     this._onMachineIdChange.bind(this));
+                eventBus.EventBus.addEventListener(this,
+                    'requestMachineIdSignal',
+                    this.element.getAttribute('machine-context'),
+                    this._onAskForMachineId.bind(this));
+                eventBus.EventBus.dispatchToContext('askForMachineIdSignal',
+                    this.element.getAttribute('machine-context'));
             }
 
             // Also allow fixed machine-id via attribute
@@ -64,7 +72,8 @@ var eventBus = require('eventBus');
             eventBus.EventBus.addEventListener(this,
                 'reasonStatusCurrentChange', statusCtx,
                 this._onReasonStatusChange.bind(this));
-            return;
+
+            this.switchToNextContext();
         }
 
         clearInitialization() {
@@ -100,6 +109,10 @@ var eventBus = require('eventBus');
                 if (!event || !event.target) return;
                 // Do not try to open if the dialog is already present
                 if (this._isDialogOpen()) return;
+                // Do not open if machine selection dialog is visible
+                if (this._isMachineSelectionVisible()) return;
+                // Check if we need to wait before reopening
+                if (!this._canReopenDialog()) return;
                 // Do not open if a revision progress is active for this machine
                 if (this._isRevisionInProgress()) return;
                 const status = event.target.status;
@@ -120,7 +133,7 @@ var eventBus = require('eventBus');
          */
         _openDialogFromLastStatus() {
             // If already open or revision in progress, skip any work
-            if (this._isDialogOpen() || this._isRevisionInProgress()) return Promise.resolve();
+            if (this._isDialogOpen() || this._isMachineSelectionVisible() || !this._canReopenDialog() || this._isRevisionInProgress()) return Promise.resolve();
             const machineId = this._machineId || Number(this.element.getAttribute('machine-id'));
             if (!machineId) return Promise.resolve();
 
@@ -129,7 +142,7 @@ var eventBus = require('eventBus');
             return new Promise((resolve) => {
                 pulseService.runAjaxSimple(url, (data) => {
                     // Check again in case dialog opened or revision started in the meantime
-                    if (this._isDialogOpen() || this._isRevisionInProgress()) { resolve(); return; }
+                    if (this._isDialogOpen() || this._isMachineSelectionVisible() || !this._canReopenDialog() || this._isRevisionInProgress()) { resolve(); return; }
                     const ms = data && data.MachineStatus;
                     const rs = ms && ms.ReasonSlot;
                     const beginIso = rs && rs.Begin;
@@ -141,8 +154,10 @@ var eventBus = require('eventBus');
                             // Ensure helper can read machine-id off the element
                             this.element.setAttribute('machine-id', machineId);
                             // Final guard before opening (check both dialog and revision)
-                            if (!this._isDialogOpen() && !this._isRevisionInProgress()) {
-                                pulseDetailsPopup.openChangeStopClassificationDialog(this, dr);
+                            if (!this._isDialogOpen() && !this._isMachineSelectionVisible() && this._canReopenDialog() && !this._isRevisionInProgress()) {
+                                pulseDetailsPopup.openChangeStopClassificationDialog(this, this._dateRange);
+                                // Register close listener to track when dialog is closed
+                                this._registerDialogCloseListener();
                             }
                         } catch (e) { /* no-op */ }
                     }
@@ -160,7 +175,58 @@ var eventBus = require('eventBus');
             // Pure DOM check: is the dialog element present in the document?
             const doc = (typeof document !== 'undefined') ? document : null;
             if (!doc || !doc.querySelector) return false;
-            return doc.querySelector('.dialog-stopclassification') !== null;
+            return doc.querySelector('.customDialog') !== null;
+        }
+
+        /**
+         * Check if a machine selection dialog is visible on the page.
+         * @returns {boolean}
+         */
+        _isMachineSelectionVisible() {
+            const doc = (typeof document !== 'undefined') ? document : null;
+            if (!doc || !doc.querySelector) return false;
+            const elem = doc.querySelector('.machineSelectionDialogPart1');
+            if (!elem) return false;
+            // Check if element is visible (not display:none or hidden)
+            const style = window.getComputedStyle(elem);
+            return style.display !== 'none' && style.visibility !== 'hidden' && elem.offsetParent !== null;
+        }
+
+        /**
+         * Check if enough time has passed since the last dialog close.
+         * @returns {boolean}
+         */
+        _canReopenDialog() {
+            const delaySeconds = pulseConfig.getInt('stopClassificationReopenDelay', 0);
+            if (delaySeconds === 0) return true;
+
+            const now = Date.now();
+            const elapsedSeconds = (now - this._lastDialogCloseTime) / 1000;
+            return elapsedSeconds >= delaySeconds;
+        }
+
+        /**
+         * Register a listener to track when the stop classification dialog is closed.
+         */
+        _registerDialogCloseListener() {
+            const doc = (typeof document !== 'undefined') ? document : null;
+            if (!doc) return;
+
+            // Use MutationObserver to detect when dialog is removed from DOM
+            const observer = new MutationObserver((mutations) => {
+                for (let mutation of mutations) {
+                    for (let removedNode of mutation.removedNodes) {
+                        if (removedNode.classList && removedNode.classList.contains('customeDialog-stopclassification')) {
+                            this._lastDialogCloseTime = Date.now();
+                            observer.disconnect();
+                            return;
+                        }
+                    }
+                }
+            });
+
+            // Observe the body for removed children
+            observer.observe(doc.body, { childList: true, subtree: true });
         }
 
         /**
@@ -171,7 +237,7 @@ var eventBus = require('eventBus');
             // Check if there's an active x-revisionprogress for reason modifications on this machine
             const doc = (typeof document !== 'undefined') ? document : null;
             if (!doc || !doc.querySelector) return false;
-            
+
             const machineId = this._machineId || Number(this.element.getAttribute('machine-id'));
             if (!machineId) return false;
 
@@ -185,6 +251,13 @@ var eventBus = require('eventBus');
                 }
             }
             return false;
+        }
+
+        _onAskForMachineId(event) {
+            this._machineId = event.target.machineId;
+            if (this._machineId) {
+                this.element.setAttribute('machine-id', this._machineId);
+            }
         }
     }
 

@@ -279,6 +279,25 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     split: 'Couper',
     withComment: 'avec commentaire'
   },
+  savescrapreason: {
+    submitbutton: 'Valider',
+    detailsbutton: 'Avec commentaires',
+    machineColon: 'Machine: ',
+    reasonColon: 'Raison: ',
+    scrapreasons: 'Classification des rebuts',
+    reasonDetailsTitle: 'Détails de la raison',
+    errorNoDetails: 'Veuillez ajouter un commentaire',
+    validparts: 'Pièces valides'
+  },
+  scrapclassification: {
+    partcount: 'Nombre de pièces : ',
+    scrapcount: 'Nombre de rebuts : ',
+    unproducedcount: 'Pièces non-produites : ',
+  },
+  scrapstatus: {
+    shiftscrap: 'Rebuts d\'équipe',
+    scrapDeclaration: 'Déclarer Rebuts'
+  },
   sequencebar: {
     sequence: 'Séquence '
   },
@@ -288,7 +307,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     switchTo: 'Switch to ',
     switchToProduction: 'Passer en production'
   },
-  stopclassification : {
+  stopclassification: {
     title: 'Arrêts Non-Planifiés',
     options: 'Options Avancées',
   },

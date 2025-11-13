@@ -287,6 +287,25 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     split: 'Split',
     withComment: 'with comment'
   },
+  savescrapreason: {
+    submitbutton: 'Submit',
+    detailsbutton: 'With details',
+    machineColon: 'Machine: ',
+    reasonColon: 'Reason: ',
+    scrapreasons: 'scrap classification',
+    reasonDetailsTitle: 'Reason details',
+    errorNoDetails: 'Please add a comment',
+    validparts: 'Valid parts'
+  },
+  scrapclassification: {
+    partcount: 'Part count: ',
+    scrapcount: 'Scrap count: ',
+    unproducedcount: 'Unproduced count: ',
+  },
+  scrapstatus: {
+    shiftscrap: 'Shift scrap',
+    scrapDeclaration: 'Scrap Declaration'
+  },
   sequencebar: {
     'sequence': 'Sequence '
   },
@@ -575,6 +594,25 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     selectedPeriodsColon: 'Période(s) sélectionnée(s) : ',
     split: 'Couper',
     withComment: 'avec commentaire'
+  },
+  savescrapreason: {
+    submitbutton: 'Valider',
+    detailsbutton: 'Avec commentaires',
+    machineColon: 'Machine: ',
+    reasonColon: 'Raison: ',
+    scrapreasons: 'Classification des rebuts',
+    reasonDetailsTitle: 'Détails de la raison',
+    errorNoDetails: 'Veuillez ajouter un commentaire',
+    validparts: 'Pièces valides'
+  },
+  scrapclassification: {
+    partcount: 'Nombre de pièces : ',
+    scrapcount: 'Nombre de rebuts : ',
+    unproducedcount: 'Pièces non-produites : ',
+  },
+  scrapstatus: {
+    shiftscrap: 'Rebuts d\'équipe',
+    scrapDeclaration: 'Déclarer rebuts'
   },
   sequencebar: {
     sequence: 'Séquence '

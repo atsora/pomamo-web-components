@@ -32,13 +32,14 @@ require('x-datetimerange/x-datetimerange');
 
       // DOM - not here
       //this._content = undefined;
+      self._optionSelected = null;
 
       return self;
     }
 
     //get content () { return this._content; } // Optional
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id':
@@ -49,7 +50,7 @@ require('x-datetimerange/x-datetimerange');
       }
     }
 
-    initialize () {
+    initialize() {
       this.addClass('pulse-bigdisplay'); // Mandatory for loader
 
       // Attribute is not modified by an event. It can be managed during the initialization phase
@@ -63,16 +64,12 @@ require('x-datetimerange/x-datetimerange');
       // Create DOM - Content
       // Create dialog
       this._dialog = $('<div></div>').addClass('savemachinestatetemplate-dialog');
-      //$(this.element).append(this._dialog);
-      let switchLabel = $('<div></div>').addClass('savemachinestatetemplate-dialog-label')
-        .html(this.getTranslation('switch', 'Switch to  '));
       let MST_CB = $('<div></div>')
-        //.addClass('savemachinestatetemplate-dialog-label')
         .addClass('savemachinestatetemplate-dialog-div-select');
 
       // Combobox
-      //this._MSTselectCB = $('<select name=MST_CB size=' + data.MachineStateTemplates.length + '></select>');
-      this._MSTselectCB = $('<select name=MST_CB ></select>');
+      this._MSTselectCB = document.createElement('ul');
+      this._MSTselectCB.classList.add('savemachinestatetemplate-cells-list');
       MST_CB.append(this._MSTselectCB);
       // Create DOM - Loader
       let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
@@ -116,7 +113,7 @@ require('x-datetimerange/x-datetimerange');
       });
       let rangeDiv = $('<div></div>').addClass('savemachinestatetemplate-dialog-dtp-div').append(this._dtRange);
 
-      this._dialog.append(switchLabel).append(MST_CB).append(rangeDiv);
+      this._dialog/*.append(switchLabel)*/.append(rangeDiv).append(MST_CB);
 
       let title = this.getTranslation('changeMachineStateTitle', 'Change machine state');
 
@@ -124,16 +121,15 @@ require('x-datetimerange/x-datetimerange');
         title: title,
         onOk: function (x_save) { // to avoid closure
           return function () {
-            //let begin = $(dtRange)[0].getBegin();
-            //let end = $(dtRange)[0].getEnd();     // can be null
-
+            // Check if an option is selected
+            if (!x_save._optionSelected) {
+              return false; // Prevent closing the dialog
+            }
             let range = $(x_save._dtRange)[0].getRangeString();
-            let newMST = x_save._MSTselectCB[0].options[x_save._MSTselectCB[0].selectedIndex].value;
+            let newMST = x_save._optionSelected;
             let machid = x_save.element.getAttribute('machine-id'); // Should be copied. This.element disappear before request answer
             let url = x_save.getConfigOrAttribute('path', '') + 'MachineStateTemplateMachineAssociation/Save?MachineId=' + machid
               + '&Range=' + range + '&MachineStateTemplateId=' + newMST + '&RevisionId=-1';
-            // revision=-1 : to force new revision creation
-            /*&UserId=&ShiftId=&Force=*/
             return pulseService.runAjaxSimple(url,
               function (data) {
                 this._saveSuccess(data, machid);
@@ -143,8 +139,17 @@ require('x-datetimerange/x-datetimerange');
           }
         }(this),
         autoClose: true,
-        autoDelete: true
+        autoDelete: true,
+        fixedHeight: true,
+        bigSize: true,
       });
+      
+      // Store the dialog ID for later use
+      this._saveDialogId = saveDialogId;
+      
+      // Disable OK button initially
+      this._updateOkButtonState();
+      
       pulseCustomDialog.open('#' + saveDialogId);
 
       /* // This DO NOT WORK [TODO] find a way to reload parent
@@ -156,7 +161,7 @@ require('x-datetimerange/x-datetimerange');
       return;
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // Parameters
       // DOM
       $(this.element).empty();
@@ -166,11 +171,12 @@ require('x-datetimerange/x-datetimerange');
       this._dtRange = undefined;
       this._messageSpan = undefined;
       this._content = undefined;
+      this._saveDialogId = undefined;
 
       super.clearInitialization();
     }
 
-    reset () { // Optional implementation
+    reset() { // Optional implementation
       // Code here to clean the component when the component has been initialized for example after a parameter change
       this.removeError();
       // Empty this._content
@@ -178,7 +184,7 @@ require('x-datetimerange/x-datetimerange');
       this.switchToNextContext();
     }
 
-    validateParameters () {
+    validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
         // Delayed display :
         this.setError('missing machine-id');
@@ -192,15 +198,15 @@ require('x-datetimerange/x-datetimerange');
       this.switchToNextContext();
     }
 
-    displayError (message) {
+    displayError(message) {
       $(this._messageSpan).html(message);
     }
 
-    removeError () {
+    removeError() {
       this.displayError('');
     }
 
-    getShortUrl () {
+    getShortUrl() {
       // Always current data = no range
 
       let url = 'NextMachineStateTemplate?'
@@ -221,28 +227,81 @@ require('x-datetimerange/x-datetimerange');
       return url;
     }
 
-    refresh (data) {
+    refresh(data) {
       // Combobox
-      $(this._MSTselectCB).empty();
+      this._MSTselectCB.innerHTML = '';
 
-      $(this._MSTselectCB).attr('size', data.MachineStateTemplates.length);
+      //$(this._MSTselectCB).attr('size', data.MachineStateTemplates.length);
       for (let index = 0; index < data.MachineStateTemplates.length; index++) {
-        let MSToptionCB;
-        if (index == 0) {
-          MSToptionCB = $('<option value=' + data.MachineStateTemplates[index].Id + ' selected></option>').html(data.MachineStateTemplates[index].Display);
-        }
-        else {
-          MSToptionCB = $('<option value=' + data.MachineStateTemplates[index].Id + '></option>').html(data.MachineStateTemplates[index].Display);
-        }
-        MSToptionCB.addClass('savemachinestatetemplate-option');
-        this._MSTselectCB.append(MSToptionCB).addClass('savemachinestatetemplate-select');
+        this._drawCell(data.MachineStateTemplates[index]);
       }
       if (0 == data.MachineStateTemplates.length) {
         pulseCustomDialog.openError('No flow is defined. Please contact support', 'No data');
       }
     }
 
-    _saveSuccess (data, machid) {
+    _drawCell(option) {
+      let cellItem = document.createElement('li');
+      cellItem.classList.add('savemachinestatetemplate-cell-item');
+      cellItem.addEventListener('click', (e) => {
+        this._selectOption(cellItem);
+      });
+
+      let box = document.createElement('div');
+      box.classList.add('savemachinestatetemplate-cell-box');
+
+      let boxColor = document.createElement('div');
+      boxColor.classList.add('savemachinestatetemplate-cell-box-color');
+      boxColor.style.backgroundColor = option.BgColor;
+      box.appendChild(boxColor);
+
+      let boxText = document.createElement('div');
+      boxText.classList.add('savemachinestatetemplate-cell-box-text');
+
+      let spanText = document.createElement('span');
+      spanText.classList.add('savemachinestatetemplate-cell-text');
+      spanText.innerHTML = option.Display;
+      boxText.appendChild(spanText);
+
+      box.appendChild(boxText);
+
+      cellItem.setAttribute('id', option.Id);
+
+      cellItem.appendChild(box);
+
+      this._MSTselectCB.appendChild(cellItem);
+    }
+
+    _selectOption(cell) {
+      let pastCell = document.getElementById(this._optionSelected);//.querySelector('.savemachinestatetemplate-cell-box');
+      if (pastCell) {
+        pastCell.classList.remove('savemachinestatetemplate-cell-item-selected');
+      }
+      cell.classList.add('savemachinestatetemplate-cell-item-selected');
+      this._optionSelected = cell.getAttribute('id');
+      
+      // Enable OK button when an option is selected
+      this._updateOkButtonState();
+    }
+    
+    _updateOkButtonState() {
+      if (this._saveDialogId) {
+        const okButton = document.querySelector('#' + this._saveDialogId + ' .customDialogOk');
+        if (okButton) {
+          if (this._optionSelected) {
+            okButton.disabled = false;
+            okButton.style.opacity = '1';
+            okButton.style.cursor = 'pointer';
+          } else {
+            okButton.disabled = true;
+            okButton.style.opacity = '0.5';
+            okButton.style.cursor = 'not-allowed';
+          }
+        }
+      }
+    }
+
+    _saveSuccess(data, machid) {
       console.log('_saveSuccess');
 
       let revisionId = null;
@@ -266,14 +325,14 @@ require('x-datetimerange/x-datetimerange');
           machid, ranges);
     }
 
-    _saveError (data) {
+    _saveError(data) {
       let close = function () {
         // DO nothing because of autoclose
       };
       //close(); // ???
       pulseCustomDialog.openError(data.ErrorMessage, 'Error', close);
     }
-    _saveFail (url) {
+    _saveFail(url) {
       let close = function () {
         // DO nothing because of autoclose
       };

@@ -30,6 +30,7 @@ const Chart = require('chart.js/auto');
       self._graph = undefined;
       self._messageSpan = undefined;
 
+      self._hourlyLabels = [];
       // TODO: check...
       // Map [range] = {actual=x, target=y, isStatic}
       // How to use map : https://www.zendevs.xyz/les-nouveaux-objets-set-et-map-en-javascript-es6/
@@ -86,7 +87,6 @@ const Chart = require('chart.js/auto');
     }
 
     initialize() {
-      // TODO: class?
       this.addClass('atsora-productiontrackergraph');
 
       // In case of clone, need to be empty :
@@ -172,6 +172,10 @@ const Chart = require('chart.js/auto');
 
       this.element.appendChild(this._content);
 
+      if (this.element.hasAttribute('range')) {
+        this._parseDate(this.element.getAttribute('range'));
+      }
+
       this.switchToNextContext();
     }
 
@@ -223,6 +227,12 @@ const Chart = require('chart.js/auto');
         return;
       }
 
+      if (!this.element.hasAttribute('group')) {
+        console.error('missing attribute machine or group in MachineDisplayComponent.element');
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('invalidMachineGroup', 'Invalid machine or group')), () => this.removeError());
+        return;
+      }
+
 
 
       this.switchToNextContext();
@@ -248,7 +258,7 @@ const Chart = require('chart.js/auto');
         this._graph.parentNode.removeChild(this._graph);
       }
       this._graph = undefined;
-      
+
       this._resetAllData();
     }
 
@@ -280,7 +290,6 @@ const Chart = require('chart.js/auto');
           + this.element.getAttribute('group') + '&';
       }
       url += 'Range=' + this._getRangeToAsk();
-      console.log('ProductionTrackerGraph asking for', url);
       return url;
     }
 
@@ -366,19 +375,25 @@ const Chart = require('chart.js/auto');
         let labels = [];
         let actualData = [];
         let targetData = [];
-        for (let i = 0; i < this._data.HourlyData.length; i++) {
-          labels.push(pulseUtility.displayRangeLowerTime(
-            this._data.HourlyData[i].Range, false));
-          actualData.push(this._data.HourlyData[i].Actual);
-          targetData.push(this._data.HourlyData[i].Target);
+        for (let i = 0; i < this._hourlyLabels.length; i++) {
+          if (i < this._data.HourlyData.length) {
+            labels.push(pulseUtility.displayRangeLowerTime(
+              this._data.HourlyData[i].Range, false));
+            actualData.push(this._data.HourlyData[i].Actual);
+            targetData.push(this._data.HourlyData[i].Target);
+          }
+          else {
+            labels.push(this._hourlyLabels[i]);
+          }
         }
+
         // TODO: target for the full hour
         // Create chart      
         if (this._chartInstance) {
           this._chartInstance.data.labels = labels;
           this._chartInstance.data.datasets[1].data = actualData;
           this._chartInstance.data.datasets[0].data = targetData;
-          this._chartInstance.options.scales.y.suggestedMax = Math.ceil((targetData[0] || 1) * 1.1);
+          this._chartInstance.options.scales.y.suggestedMax = Math.ceil((Math.max(...targetData) || 1) * 1.1);
 
           this._chartInstance.update();
         }
@@ -389,19 +404,18 @@ const Chart = require('chart.js/auto');
               datasets: [
                 {
                   type: 'line',
-                  label: '', // No legend
+                  label: '',
                   data: targetData,
                   borderColor: '#FA0200',
                   backgroundColor: '#FA0200',
                   pointStyle: false,
-                  fill: false,
-                  borderDash: [6, 6]
+                  fill: false
                 },
                 {
                   type: 'bar',
-                  label: '', // No legend
+                  label: '',
                   data: actualData,
-                  borderWidth: 0, // No border
+                  borderWidth: 0,
                   borderColor: 'rgba(2, 48, 2, 1)',
                   backgroundColor: '#3B82F6',
                 }
@@ -430,7 +444,7 @@ const Chart = require('chart.js/auto');
                 },
                 y: {
                   beginAtZero: true,
-                  suggestedMax: Math.ceil((this._data.HourlyData[0].Target) * 1.1), // target + 10%, rounds up to the next integer
+                  suggestedMax: Math.ceil((Math.max(...targetData) || 1) * 1.1), // target + 10%, rounds up to the next integer
                   title: {
                     display: true,
                     text: this.getTranslation('parts', 'parts'),
@@ -474,6 +488,62 @@ const Chart = require('chart.js/auto');
       super.manageFailure(isTimeout, xhrStatus);
     }
 
+    // Create hourly labels from range
+    _parseDate(rangeString) {
+      // Parse the range string: '[2020-05-05T08:00:00.000Z,2020-05-05T16:00:00.000Z)'
+      let range;
+
+      // If it's already a Range object
+      if (typeof rangeString === 'object' && rangeString.lower && rangeString.upper) {
+        range = rangeString;
+      } else {
+        // Convert string to Range object
+        range = pulseRange.createStringRangeFromString(rangeString);
+      }
+
+      if (!range || !range.lower || !range.upper) {
+        console.error('Invalid range:', rangeString);
+        return [];
+      }
+
+      // Get start and end dates
+      const startDate = new Date(range.lower);
+      const endDate = new Date(range.upper);
+
+      // Array to store hourly labels
+      const hourlyLabels = [];
+
+      // Create a copy of start date to iterate
+      let currentHour = new Date(startDate);
+
+      // Round down to the start of the hour
+      currentHour.setMinutes(0, 0, 0);
+
+      // Iterate hour by hour
+      while (currentHour < endDate) {
+        let nextHour = new Date(currentHour);
+        nextHour.setHours(nextHour.getHours() + 1);
+
+        // Don't go past the end date
+        if (nextHour > endDate) {
+          nextHour = new Date(endDate);
+        }
+
+        // Create range string in the format expected by displayRangeLowerTime
+        // Format: [2020-05-05T08:00:00Z,2020-05-05T09:00:00Z
+        const hourRangeString = '[' + currentHour.toISOString().replace('.000Z', 'Z') +
+          ',' + nextHour.toISOString().replace('.000Z', 'Z') + ',)';
+
+        // Use pulseUtility.displayRangeLowerTime to format the hour
+        hourlyLabels.push(pulseUtility.displayRangeLowerTime(hourRangeString, false));
+
+        // Move to next hour
+        currentHour = nextHour;
+      }
+
+      this._hourlyLabels = hourlyLabels;
+    }
+
     // Callback events
 
     /**
@@ -490,6 +560,8 @@ const Chart = require('chart.js/auto');
 
       this._range = newRange;
       this.element.removeAttribute('range'); // In case it is used... for test only
+
+      this._parseDate(newRange);
 
       //this._resetAllData(); included below
       this._cleanDisplay();

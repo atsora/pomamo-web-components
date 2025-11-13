@@ -38,23 +38,14 @@ var pulseSvg = require('pulseSvg');
       // Create DOM - Content
       this._content = $('<div></div>').addClass('machinemodelegends');
       $(this.element).append(this._content);
-      // Create DOM - Loader - probably not in legends... to verify
-      /*let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
-      // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);*/
-
-      // Listener and dispatchers
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
       return;
+    }
+
+    validateParameters () {
+      this.switchToNextContext();
     }
 
     clearInitialization () {

@@ -66,7 +66,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
               if (!this.element._isActive) {
                 this.element._isActive = true;
                 this.changeSelectedMachine();
-              }    
+              }
               //$(this).find(".pulse-icon-content").addClass("active"); // To change icon display -> done in icon
             }
             else {
@@ -87,6 +87,12 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
             eventBus.EventBus.addEventListener(this,
               'machineIdChangeSignal', newVal,
               this.onMachineIdChange.bind(this));
+
+            eventBus.EventBus.removeEventListenerBySignal(this,
+              'askForMachineIdSignal');
+            eventBus.EventBus.addEventListener(this,
+              'askForMachineIdSignal', newVal,
+              this.onAskForMachineId.bind(this));
 
             let xicon = $(this._iconsDiv).find('.machinetab-icon');
             for (let iIcon = 0; iIcon < xicon.length; iIcon++) {
@@ -126,6 +132,11 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
           'machineIdChangeSignal',
           this.element.getAttribute('machine-context'),
           this.onMachineIdChange.bind(this));
+
+        eventBus.EventBus.addEventListener(this,
+          'askForMachineIdSignal',
+          this.element.getAttribute('machine-context'),
+          this.onAskForMachineId.bind(this));
       }
 
       this.element._isActive = false; // to know if the tab is already active
@@ -332,6 +343,16 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       }
       else {
         this.element.setAttribute('active', 'false');
+      }
+    }
+
+    onAskForMachineId() {
+      if (this.element.querySelector('.active')) {
+        eventBus.EventBus.dispatchToContext('requestMachineIdSignal',
+          this.element.getAttribute('machine-context'),
+          {
+            machineId: Number(this.element.getAttribute('machine-id'))
+          });
       }
     }
 

@@ -125,7 +125,8 @@ require('x-stopclassification/x-stopclassification');
                 if (!existing) {
                     let xstopclassification = pulseUtility.createjQueryElementWithAttribute('x-stopclassification', {
                         'machine-id': this.element.getAttribute('machine-id'),
-                        'range': selectedRangeStr
+                        'range': selectedRangeStr,
+                        'fullRange': this.element.getAttribute('range')
                     });
                     // Append as child
                     $(this.element).append(xstopclassification);

@@ -28,9 +28,9 @@ var pulseUtility = require('pulseUtility');
       return self;
     }
 
-    get content () { return this._content; } // Optional
+    get content() { return this._content; } // Optional
 
-    initialize () {
+    initialize() {
       this.addClass('pulse-text');
 
       // In case of clone, need to be empty :
@@ -40,58 +40,48 @@ var pulseUtility = require('pulseUtility');
       this._content = $('<div></div>').addClass('reasongroups');
       $(this.element).append(this._content);
 
-      // Create DOM - Loader - probably not in legends... to verify
-      /*let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
-      // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);*/
-
-      // Listener and dispatchers
-
       // Initialization OK => switch to the next context
       this.switchToNextContext();
       return;
     }
 
-    clearInitialization () {
+    validateParameters() {
+      this.switchToNextContext();
+    }
+
+    clearInitialization() {
       // Parameters
       // DOM
       $(this.element).empty();
-      
+
       //this._messageSpan = undefined;
       this._content = undefined;
-      
+
       super.clearInitialization();
     }
 
-    displayError (message) {
+    displayError(message) {
       $(this._content).hide();
       // Note that you can use the CSS class .pulse-component-error or .pulse-component-warning instead
     }
 
-    removeError () {
+    removeError() {
       $(this._content).show();
     }
 
     // Overload to always refresh value
-    get isVisible () {
+    get isVisible() {
       return true;
     }
 
-    getShortUrl () { // Return the Web Service URL here without path
+    getShortUrl() { // Return the Web Service URL here without path
       return 'ReasonGroupLegend';
     }
 
-    refresh (data) {
+    refresh(data) {
       $(this._content).empty();
 
-      let titleSpan = $('<span></span>').html(this.getTranslation ('title', 'Reason'));
+      let titleSpan = $('<span></span>').html(this.getTranslation('title', 'Reason'));
       let divTitle = $('<div></div>').addClass('pulse-legend-title')
         .append(titleSpan);
       let divElements = $('<div></div>').addClass('pulse-legend-elements');

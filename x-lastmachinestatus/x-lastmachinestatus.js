@@ -285,6 +285,9 @@ require('x-stopclassification/x-stopclassification');
       if (!pulseUtility.isNotDefined(this._beginDate)) {
         url += '&Begin=' + this._beginDate;
       }
+      if (!pulseUtility.isNotDefined(this._endDate)) {
+        url += '&End=' + this._endDate;
+      }
       if (this._forceReload) {
         url += '&Cache=No';
         this._forceReload = false;
@@ -433,7 +436,8 @@ require('x-stopclassification/x-stopclassification');
       if ((this._dateRange == undefined) ||
         (!pulseRange.equals(newRange, this._dateRange, (a, b) => (a >= b) && (a <= b)))) {
         this._dateRange = newRange;
-        this._beginDate = event.target.begin;
+        this._beginDate = pulseUtility.convertDateForWebService(event.target.daterange._lower);
+        this._endDate = pulseUtility.convertDateForWebService(event.target.daterange._upper);
         this.start();
       }
     }
@@ -453,7 +457,7 @@ require('x-stopclassification/x-stopclassification');
       let lastMachineStatusMode = this.getConfigOrAttribute('lastmachinestatus', 'reasonslotlist');
       
       if (lastMachineStatusMode === 'stopclassification') {
-        pulseDetailsPopup.openChangeStopClassificationDialog(this, applicableRange);
+        pulseDetailsPopup.openChangeStopClassificationDialog(this, this._dateRange);
       } else {
         // Default behavior: 'reasonslotlist' or any other value
         pulseDetailsPopup.openChangeReasonDialog(this, applicableRange, true);

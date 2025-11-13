@@ -209,6 +209,7 @@ require('x-revisionprogress/x-revisionprogress');
          */
         refresh(data) {
             this._data = data;
+            this._clearPanel();
             this._drawReasons();
         }
 
@@ -415,6 +416,10 @@ require('x-revisionprogress/x-revisionprogress');
             let boxText = document.createElement('div');
             boxText.classList.add('stopclassification-cell-box-text');
 
+            let icon = document.createElement('i');
+            icon.classList.add('fa-solid', 'fa-screwdriver-wrench');
+            boxText.appendChild(icon);
+
             let text = document.createElement('span');
             text.innerHTML = this.getTranslation('options', 'Advanced Options');
             text.classList.add('stopclassification-cell-text');
@@ -430,9 +435,7 @@ require('x-revisionprogress/x-revisionprogress');
             cellsList.appendChild(cellItem);
 
             box.addEventListener('click', () => {
-                if (!this._rangeString) return;
-                let dr = pulseRange.createDateRangeFromString(this._rangeString);
-                pulseDetailsPopup.openChangeReasonDialog(this, dr, true);
+                pulseDetailsPopup.openChangeReasonDialog(this, this.element.getAttribute('fullRange'), true);
             });
         }
 
