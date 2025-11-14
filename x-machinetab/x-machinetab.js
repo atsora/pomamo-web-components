@@ -194,6 +194,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       if ((this.element.hasAttribute('active')) &&
         (this.element.getAttribute('active') == 'true')) {
         $(this._machineContent).addClass('active');
+        this.clickMachineTab();
       }
       else {
         // Try to find automatically if thsi machinetab is the first in a x-grouparray
