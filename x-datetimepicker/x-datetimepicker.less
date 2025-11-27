@@ -15,21 +15,43 @@ x-datetimepicker {
     padding-left: 15px;
     padding-right: 15px;
   }
-  .datetimepicker-input-time{
+
+  .datetimepicker-input-time {
     min-width: 140px; // For zoom display
   }
-  .datetimepicker-input-date{
+
+  .datetimepicker-input-date {
     min-width: 140px; // For consistency
+  }
+
+  input[type="date"] {
+    appearance: none;
+    -moz-appearance: none;
+    position: relative;
   }
 
   .datetimepicker-input-nullable {
     margin-left: 6px;
     vertical-align: bottom;
   }
+
   .datetimepicker-input-nullable-label {
     margin-left: 6px;
     vertical-align: bottom;
 
     font-style: italic;
+  }
+
+}
+
+.datetimerange-dialog-divinput {
+  x-datetimepicker {
+    .datetimepicker-input-time {
+      font-size: 30px;
+    }
+
+    .datetimepicker-input-date {
+      font-size: 30px;
+    }
   }
 }

@@ -165,7 +165,7 @@ var eventBus = require('eventBus');
           && (this.getConfigOrAttribute('displayweekrange', 'false') != 'true')) {
           if ((this._nbDays == 1)
             && (this.element.getAttribute('exclude-now') != 'true')) {
-            this._shiftText = 'Today';
+            this._shiftText = this.getTranslation('today', 'Today');
             eventBus.EventBus.dispatchToContext('textChangeEvent',
               this.element.getAttribute('textchange-context'),
               { text: this._shiftText });
@@ -334,7 +334,7 @@ var eventBus = require('eventBus');
       }
       else {
         if ((this._nbDays == 1) && (this.element.getAttribute('exclude-now') != 'true')) {
-          this._shiftText = 'Today';
+          this._shiftText = this.getTranslation('today', 'Today');
         }
       }
       if (this.element.hasAttribute('textchange-context')) {

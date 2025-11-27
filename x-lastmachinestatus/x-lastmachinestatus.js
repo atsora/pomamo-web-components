@@ -335,7 +335,8 @@ require('x-stopclassification/x-stopclassification');
         if (data.RequiredNumber) {
           stopNumber = data.RequiredNumber.toString();
         }
-        this.element.querySelector('.pulse-cellbar-past-data span').textContent = stopNumber + " " + this.getTranslation('dataToClassified', 'STOP to be classified');
+        if (data.RequiredNumber <= 1) this.element.querySelector('.pulse-cellbar-past-data span').textContent = stopNumber + " " + this.getTranslation('dataToClassified', 'STOP to be classified');
+        else this.element.querySelector('.pulse-cellbar-past-data span').textContent = stopNumber + " " + this.getTranslation('dataToClassifiedPlural', 'STOPS to be classified');
         status = true;
       }
       else {

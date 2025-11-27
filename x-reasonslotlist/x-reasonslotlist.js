@@ -71,8 +71,8 @@ require('x-revisionprogress/x-revisionprogress');
      *
      * @return {pulseRange:DateRange} Current range in native Javascript Date
      */
-    get range () { return this._range; }
-    _setAutoRange () {
+    get range() { return this._range; }
+    _setAutoRange() {
       if (this.element.hasAttribute('range')) {
         let attr = this.element.getAttribute('range');
         let range = pulseRange.createDateRangeFromString(attr);
@@ -85,7 +85,7 @@ require('x-revisionprogress/x-revisionprogress');
     /**
      * @override
      */
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id': {
@@ -117,14 +117,14 @@ require('x-revisionprogress/x-revisionprogress');
       }
     }
 
-    cleanTable (table) {
+    cleanTable(table) {
       this._table.empty();
       if (this._xsaveReason != null) {
-        this._xsaveReason[0].cleanRanges();
+        this._xsaveReason[0].cleanReasons();
       }
     }
 
-    fillTable () {
+    fillTable() {
       this.cleanTable();
 
       if (this._dataReasonsList.length == 0) {
@@ -186,16 +186,23 @@ require('x-revisionprogress/x-revisionprogress');
           (machineModeDisplay.substr(len - 1, 1) == ',')) {
           machineModeDisplay = machineModeDisplay.substring(0, len - 1);
         }
+        let tr = $('<div></div>').addClass('selectable').addClass('reasonslotlist-tr');
 
-        let tr = $('<div></div>').addClass('selectable').addClass('reasonslotlist-tr')
-          .attr({
-            'range': rangeString,
-            'reason-text': display,
-            'current': item.Current,
-            'is-default': item.DefaultReason,
-            'is-running': item.Running,
-            'is-selectable': item.IsSelectable
-          });
+        let attributeTr = {
+          'range': rangeString,
+          'reason-text': item.Display,
+          'mode': machineModeDisplay,
+          'current': item.Current,
+          'is-default': item.DefaultReason,
+          'is-running': item.Running,
+          'is-selectable': item.IsSelectable
+        };
+
+        if (item.Details) {
+          attributeTr['details'] = item.Details;
+        }
+
+        tr.attr(attributeTr);
 
         //if (item.Current == true) { // range.upper should be null
         let displayedRange = pulseUtility.displayDateRange(range);
@@ -287,7 +294,7 @@ require('x-revisionprogress/x-revisionprogress');
       this._firstLoad = false;
     }
 
-    _getXSaveReason () {
+    _getXSaveReason() {
       if (!pulseUtility.isNotDefined(this._xsaveReason)) {
         return this._xsaveReason;
       }
@@ -309,7 +316,7 @@ require('x-revisionprogress/x-revisionprogress');
       return this._xsaveReason;
     }
 
-    _reloadOrClose () {
+    _reloadOrClose() {
       if ($('.dialog-savereason').length == 0)
         return; // dialog has been closed. Stop refreshing !
 
@@ -329,7 +336,7 @@ require('x-revisionprogress/x-revisionprogress');
     /**
      * @override
      */
-    getShortUrl () {
+    getShortUrl() {
       let url = 'ReasonOnlySlots?MachineId=' + this.element.getAttribute('machine-id');
       url += '&Range=' + pulseUtility.convertDateRangeForWebService(this._range);
       url += '&SelectableOption=true';
@@ -342,7 +349,7 @@ require('x-revisionprogress/x-revisionprogress');
     /**
      * Initialize the component
      */
-    initialize () {
+    initialize() {
       this.addClass('pulse-bigdisplay');
 
       if (!this.element.hasAttribute('machine-id')) {
@@ -436,7 +443,7 @@ require('x-revisionprogress/x-revisionprogress');
         // Remove selection in bar
         $(this.element).find('x-highlightperiodsbar').get(0).cleanRanges();
         if (this._xsaveReason != null) {
-          this._xsaveReason[0].cleanRanges();
+          this._xsaveReason[0].cleanReasons();
         }
         // Fill table (no-load needed)
         this.fillTable();
@@ -446,7 +453,7 @@ require('x-revisionprogress/x-revisionprogress');
         // Remove selection in bar
         $(this.element).find('x-highlightperiodsbar').get(0).cleanRanges();
         if (this._xsaveReason != null) {
-          this._xsaveReason[0].cleanRanges();
+          this._xsaveReason[0].cleanReasons();
         }
         // Fill table (no-load needed)
         this.fillTable();
@@ -506,7 +513,7 @@ require('x-revisionprogress/x-revisionprogress');
       this.switchToNextContext();
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // Parameters
       // DOM
       $(this.element).empty();
@@ -520,7 +527,7 @@ require('x-revisionprogress/x-revisionprogress');
       super.clearInitialization();
     }
 
-    reset () { // Optional implementation
+    reset() { // Optional implementation
       // Code here to clean the component when the component has been initialized for example after a parameter change
       this.removeError();
       // Empty this.?
@@ -531,7 +538,7 @@ require('x-revisionprogress/x-revisionprogress');
     /**
      * @override
      */
-    refresh (data) {
+    refresh(data) {
       let divfilter = $(this.element).find('.reasonslotlist div.reasonslotlist-filter').first();
       divfilter.show();
 
@@ -586,7 +593,7 @@ require('x-revisionprogress/x-revisionprogress');
     /**
      * @override
      */
-    displayError (text) {
+    displayError(text) {
       let divfilter = $(this.element).find('.reasonslotlist div.reasonslotlist-filter').first();
       divfilter.hide();
 
@@ -600,14 +607,14 @@ require('x-revisionprogress/x-revisionprogress');
     /**
      * @override
      */
-    removeError () {
+    removeError() {
       this.displayError('');
     }
 
     /**
      * @override
      */
-    startLoading () {
+    startLoading() {
       $(this.element).find('.reasonslotlist').hide();
       super.startLoading();
       //pulseCustomDialogs.showLoadingDialog($(this.component));
@@ -616,7 +623,7 @@ require('x-revisionprogress/x-revisionprogress');
     /**
      * @override
      */
-    endLoading () {
+    endLoading() {
       //pulseCustomDialogs.hideLoadingDialog($(this.component));
       $(this.element).find('.reasonslotlist').show();
       super.endLoading();
@@ -636,7 +643,7 @@ require('x-revisionprogress/x-revisionprogress');
     }*/
 
     /** Check if range is in modification list AND get it ! */
-    _getRangeInModifications (range) {
+    _getRangeInModifications(range) {
       for (let modif of this._mapOfModifications) { // kind, machineid == ok
         for (let i = 0; i < modif[1].ranges.length; i++) {
           if (pulseRange.overlaps(modif[1].ranges[i], range)) {
@@ -655,7 +662,7 @@ require('x-revisionprogress/x-revisionprogress');
      *
      * @param {Object} event
      */
-    onDateTimeRangeChange (event) {
+    onDateTimeRangeChange(event) {
       let newRange = event.target.daterange;
       // TODO use event.target.range
       if (!pulseRange.equals(newRange, this._range, (a, b) => a.getTime() == b.getTime())) {
@@ -678,7 +685,7 @@ require('x-revisionprogress/x-revisionprogress');
      * initModifications: undefined, // pending modifications the first time
      * pendingModifications: undefined // pending modifications 'now'
      */
-    onModificationEvent (event) {
+    onModificationEvent(event) {
       let modif = event.target;
       if (event.target.kind != 'reason') {
         return;
@@ -736,7 +743,7 @@ require('x-revisionprogress/x-revisionprogress');
           this._reloadOrClose();
         }*/
 
-    _getRangeWithCurrent (range, current) {
+    _getRangeWithCurrent(range, current) {
       let r;
       if (typeof range == 'string') {
         r = pulseRange.createDateRangeFromString(range);
@@ -752,13 +759,13 @@ require('x-revisionprogress/x-revisionprogress');
       }
     }
 
-    _getRangeFromRowWithCurrent (row) {
+    _getRangeFromRowWithCurrent(row) {
       let range = $(row).attr('range');
       let current = $(row).attr('current');
       return this._getRangeWithCurrent(range, current);
     }
 
-    removeAllSelections () {
+    removeAllSelections() {
       let rows = $(this.element).find('.reasonslotlist-tr');
 
       for (let i = 0; i < rows.length; i++) {
@@ -776,7 +783,7 @@ require('x-revisionprogress/x-revisionprogress');
       }
       let xSR = this._getXSaveReason();
       if (xSR != null) { // No dialog in a testing environment
-        xSR[0].cleanRanges();
+        xSR[0].cleanReasons();
       }
       let highlightBar = $(this.element).find('x-highlightperiodsbar');
       highlightBar.get(0).cleanRanges();
@@ -789,7 +796,8 @@ require('x-revisionprogress/x-revisionprogress');
      *
      * @param {event} e - DOM event
      */
-    checkBoxClick (e) {
+    checkBoxClick(e) {
+      debugger;
       let row = $(e.target).closest('.reasonslotlist-tr');
       let tdCheck = row.find('input[type=checkbox]');//.first();
       if (this._firstLoad) {
@@ -802,13 +810,21 @@ require('x-revisionprogress/x-revisionprogress');
       let rangeString = $(row).attr('range');
       let range = pulseRange.createDateRangeFromString(rangeString);
       let isDefault = $(row).attr('is-default');
+      let reasonSelected = {
+        range: rangeString,
+        reason: $(row).attr('reason-text'),
+        mode: $(row).attr('mode'),
+      }
+      if ($(row).attr('details')) {
+        reasonSelected.details = $(row).attr('details');
+      }
 
       if (checked) {
         row.addClass('row-selected');
         highlightBar.get(0).addRange(range);
         let xSR = this._getXSaveReason();
         if (xSR != null) { // No dialog in a testing environment
-          xSR[0].addRange(rangeString);
+          xSR[0].addReason(reasonSelected);
           if (isDefault == 'false') {
             row.addClass('row-notdefault-selected');
           }
@@ -819,7 +835,7 @@ require('x-revisionprogress/x-revisionprogress');
         highlightBar.get(0).removeRange(range);
         let xSR = this._getXSaveReason();
         if (xSR != null) { // No dialog in a testing environment
-          xSR[0].removeRange(rangeString);
+          xSR[0].removeReason(reasonSelected);
           if (isDefault == 'false') {
             row.removeClass('row-notdefault-selected');
           }
@@ -832,7 +848,7 @@ require('x-revisionprogress/x-revisionprogress');
      *
      * @param {event} e - DOM event
      */
-    rowClick (e) {
+    rowClick(e) {
       let row = $(e.target).closest('.reasonslotlist-tr');
       let isSelectable = $(row).attr('is-selectable');
       if (isSelectable == 'false') {

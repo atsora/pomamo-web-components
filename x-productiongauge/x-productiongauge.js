@@ -186,6 +186,9 @@ var eventBus = require('eventBus');
       self._content = undefined;
       self._gaugeContainer = undefined;
       self._textDisplay = undefined;
+      
+      // Unique instance ID for gradient naming
+      self._instanceId = 'prod-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
 
       return self;
     }
@@ -283,7 +286,6 @@ var eventBus = require('eventBus');
       let tickDivision = 10;
 
       // Get target percentage from config based on threshold mode
-      // Note: In piece mode, this will use default 75% initially since we don't have production data yet
       let targetPercentage = this._calculateTargetPercentage();
 
       // Colors of the gauge with target
@@ -312,7 +314,7 @@ var eventBus = require('eventBus');
       for (let i = 0; i <= tickDivision; i++) {
         ticks.push(minRad - i * (minRad - maxRad) / tickDivision);
       }
-      let svg = createCircularGauge(internalRadius, externalRadius, colors, ticks, 'prod');
+      let svg = createCircularGauge(internalRadius, externalRadius, colors, ticks, this._instanceId);
       svg.setAttribute('class', 'productiongauge-svg');
       let minX = -1, maxX = 1, minY = 0, maxY = 1;
       for (let i = 0; i < colors.length; i++) {
@@ -408,7 +410,6 @@ var eventBus = require('eventBus');
      * - Computes production ratio (capped to 1.0 for needle angle)
      * - Redraws the needle
      * - Updates the textual display (ratio or percent)
-     * - In piece mode: redraws gauge if production goal changes (affects target visualization)
      * @param {ProductionStatusData} data
      * @returns {void}
      */
@@ -427,7 +428,7 @@ var eventBus = require('eventBus');
         this._productionRatio = 0;
       }
 
-      // In piece mode, if the production goal changed, we need to redraw the entire gauge
+      // if the production goal changed, we need to redraw the entire gauge
       // because the target line position depends on the current production goal
       if (previousTargetProduction !== this._targetProduction) {
         this._redrawGauge();
@@ -650,7 +651,7 @@ var eventBus = require('eventBus');
         ticks.push(minRad - i * (minRad - maxRad) / tickDivision);
       }
 
-      let svg = createCircularGauge(internalRadius, externalRadius, colors, ticks, 'prod');
+      let svg = createCircularGauge(internalRadius, externalRadius, colors, ticks, this._instanceId);
       svg.setAttribute('class', 'productiongauge-svg');
       let minX = -1, maxX = 1, minY = 0, maxY = 1;
       for (let i = 0; i < colors.length; i++) {

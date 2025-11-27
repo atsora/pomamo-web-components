@@ -406,8 +406,8 @@ const Chart = require('chart.js/auto');
                   type: 'line',
                   label: '',
                   data: targetData,
-                  borderColor: '#FA0200',
-                  backgroundColor: '#FA0200',
+                  borderColor: 'rgba(39, 223, 39, 1)',
+                  backgroundColor: 'rgba(39, 223, 39, 1)',
                   pointStyle: false,
                   fill: false
                 },

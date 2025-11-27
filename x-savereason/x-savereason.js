@@ -29,19 +29,20 @@ require('x-datetimerange/x-datetimerange');
 
       // Default
       self._rangesList = [];
+      self._reasonsSelected = [];
       self._closeAfterSave = false;
 
       self.methods = {
-        'addRange': self.addRange,
-        'removeRange': self.removeRange,
-        'cleanRanges': self.cleanRanges,
-        'closeAfterSave': self.closeAfterSave
+        'closeAfterSave': self.closeAfterSave,
+        'addReason': self.addReason,
+        'removeReason': self.removeReason,
+        'cleanReasons': self.cleanReasons,
       };
 
       return self;
     }
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id': {
@@ -51,7 +52,11 @@ require('x-datetimerange/x-datetimerange');
           let ranges = newVal.split('&');
           ranges.forEach(function (element, index, array) {
             let beginEnd = pulseRange.createStringRangeFromString(element);
-            this.addRange(beginEnd);
+            this.addReason({
+              range: beginEnd,
+              reason: null,
+              mode: null
+            })
           });
           this.start(); // Call reset
         } break;
@@ -60,7 +65,7 @@ require('x-datetimerange/x-datetimerange');
       }
     }
 
-    initialize () {
+    initialize() {
       // In case of clone, need to be empty :
       $(this.element).empty();
 
@@ -137,7 +142,11 @@ require('x-datetimerange/x-datetimerange');
         let ranges = this.element.getAttribute('ranges').split('&');
         ranges.forEach(function (element, index, array) {
           let beginEnd = pulseRange.createStringRangeFromString(element);
-          this.addRange(beginEnd);
+          this.addReason({
+            range: beginEnd,
+            reason: null,
+            mode: null
+          });
         });
       }
 
@@ -146,9 +155,9 @@ require('x-datetimerange/x-datetimerange');
       return;
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // Parameters
-      this._rangesList = [];
+      this._reasonsSelected = [];
 
       // DOM
       $(this.element).empty();
@@ -167,7 +176,7 @@ require('x-datetimerange/x-datetimerange');
      * @param {!string} context - Context
      * @return {!string} key
      */
-    getStartKey (context) {
+    getStartKey(context) {
       switch (context) {
         case 'NoPeriod':
           return 'Normal'; // Could be 'pipo'
@@ -176,7 +185,7 @@ require('x-datetimerange/x-datetimerange');
       }
     }
     /* NoPeriod STATE description + actions */
-    defineState (context, key) {
+    defineState(context, key) {
       switch (context) {
         case 'NoPeriod':
           return new state.StaticState(context, key, this);
@@ -185,38 +194,38 @@ require('x-datetimerange/x-datetimerange');
       }
     }
 
-    displayNoPeriod () { //  if _rangesList = empty
+    displayNoPeriod() { //  if _rangesList = empty
       // Hide the period
-      $('.savereason-infoperiod .savereason-periodlabel').html(this.getTranslation('noSelectedPeriod','No period is selected'));
+      $('.savereason-infoperiod .savereason-periodlabel').html(this.getTranslation('noSelectedPeriod', 'No period is selected'));
       this._tagdatetimerange.hide();
       $('.savereason-infoperiod .savereason-splitbutton').hide();
 
       // Infos
-      $(this.element).find('.savereason-info-reason').html(`${this.getTranslation('currentReasonColon','Current reason: ')}-`);
-      $(this.element).find('.savereason-info-modes').html(`${this.getTranslation('modesColon','Modes: ')}-`);
+      $(this.element).find('.savereason-info-reason').html(`${this.getTranslation('currentReasonColon', 'Current reason: ')}-`);
+      $(this.element).find('.savereason-info-modes').html(`${this.getTranslation('modesColon', 'Modes: ')}-`);
 
       // Reasons
       $('.savereason-defaultbutton').hide();
       this._emptyTable();
     }
 
-    hideNoPeriod () { // if _rangesList = NOT empty
+    hideNoPeriod() { // if _rangesList = NOT empty
       // Prepare infos (will be updated later)
-      $(this.element).find('.savereason-info-reason').html(`${this.getTranslation('currentReasonColon: ','Current reason')}`);
-      $(this.element).find('.savereason-info-modes').html(`${this.getTranslation('modesColon','Modes: ')}`);
+      $(this.element).find('.savereason-info-reason').html(`${this.getTranslation('currentReasonColon: ', 'Current reason')}`);
+      $(this.element).find('.savereason-info-modes').html(`${this.getTranslation('modesColon', 'Modes: ')}`);
       $('.savereason-defaultbutton').hide();
 
       // Period(s) and associated
-      if (this._rangesList.length == 1) {
+      if (this._reasonsSelected.length == 1) {
         // ONLY ONE PERIOD SELECTED
 
         // Configure the datetime picker and show the range
-        let strRange = pulseRange.createStringRangeFromString(this._rangesList[0]);
+        let strRange = pulseRange.createStringRangeFromString(this._reasonsSelected[0].range);
         let begin = strRange.lower;
         let end = strRange.upper;
         let now = pulseUtility.convertDateForWebService(new Date());
         this._tagdatetimerange.attr('min-begin', begin);
-        this._tagdatetimerange.attr('range', this._rangesList[0]);
+        this._tagdatetimerange.attr('range', this._reasonsSelected[0].range);
         if (pulseUtility.isNotDefined(end)) {
           //this._tagdatetimerange.removeAttr('max-end');
           this._tagdatetimerange.attr('max-end', now);
@@ -228,7 +237,7 @@ require('x-datetimerange/x-datetimerange');
           this._tagdatetimerange.removeAttr('novaluetext');
           this._tagdatetimerange.attr('possible-no-end', false);
         }
-        $('.savereason-infoperiod .savereason-periodlabel').html(this.getTranslation ('periodColon', 'Period: '));
+        $('.savereason-infoperiod .savereason-periodlabel').html(this.getTranslation('periodColon', 'Period: '));
         this._tagdatetimerange.show();
 
         // Show the split button
@@ -238,7 +247,7 @@ require('x-datetimerange/x-datetimerange');
         // SEVERAL PERIODS SELECTED
 
         // Hide the datetime picker and show the number of selected periods
-        $('.savereason-infoperiod .savereason-periodlabel').html(this._rangesList.length + ' ' + this.getTranslation('nSelectedPeriods','selected periods'));
+        $('.savereason-infoperiod .savereason-periodlabel').html(this._reasonsSelected.length + ' ' + this.getTranslation('nSelectedPeriods', 'selected periods'));
         this._tagdatetimerange.hide();
 
         // Hide the split button
@@ -246,20 +255,20 @@ require('x-datetimerange/x-datetimerange');
       }
     }
 
-    reset () { // Optional implementation
+    reset() { // Optional implementation
       // Code here to clean the component when the component has been initialized for example after a parameter change
       this.removeError();
       this.switchToNextContext();
     }
 
-    validateParameters () {
+    validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
         // Delayed display:
         this.setError('missing machine-id');
         return;
       }
 
-      if (this._rangesList.length == 0) {
+      if (this._reasonsSelected.length == 0) {
         this.switchToContext('NoPeriod', // see below in defineState
           () => this.displayNoPeriod(), () => this.hideNoPeriod());
         return;
@@ -274,55 +283,61 @@ require('x-datetimerange/x-datetimerange');
       }
     }
 
-    displayError (message) {
+    displayError(message) {
       // Code here to display the error message
       // Note that you can use the CSS class .pulse-component-error or .pulse-component-warning instead
 
       // silent error
     }
 
-    removeError () { }
+    removeError() { }
 
-    _getInfosData () {
-      if (this._rangesList.length == 1) {
-        // Get Infos (ReasonOnlySlots -> )
-        let infoUrl = this.getConfigOrAttribute('path', '') + 'ReasonOnlySlots?MachineId=' + this.element.getAttribute('machine-id');
-        infoUrl += '&Range=' + this._rangesList[0];
-        infoUrl += '&NoPeriodExtension=true'; // to avoid too many machine modes
-        infoUrl += '&Cache=No'; // Avoid cache
 
-        pulseService.runAjaxSimple(infoUrl, this._refreshInfosSuccess.bind(this));
-      }
-    }
-
-    _refreshInfosSuccess (data) {
+    _getInfosData() {
+      debugger;
       let divReason = $(this.element).find('.savereason-info-reason');
       let divModes = $(this.element).find('.savereason-info-modes');
+      if (this._reasonsSelected.length == 1) {
+        // Current reason
+        divReason.html(`${this.getTranslation('currentReasonColon', 'Current reason: ')}` + this._reasonsSelected[0].reason);
 
-      if (this._rangesList.length == 1) {
-
-        if (data.ReasonOnlySlots.length == 1) {
-          // Current reason
-          divReason.html(`${this.getTranslation('currentReasonColon', 'Current reason: ')}` + data.ReasonOnlySlots[0].Display);
-
-          if ((typeof (data.ReasonOnlySlots[0].Details) != 'undefined') && (data.ReasonOnlySlots[0].Details != '')) {
-            let spanDetailsReason = $('<span></span>').addClass('savereason-info-reason-details')
-              .html(' (' + data.ReasonOnlySlots[0].Details + ')');
-            divReason.append(spanDetailsReason);
-          }
-
-          // Machine modes
-          let modes = new Array();
-          for (let iMode = 0; iMode < data.ReasonOnlySlots[0].MachineModes.length; iMode++) {
-            modes.push(data.ReasonOnlySlots[0].MachineModes[iMode].Display);
-          }
-          divModes.html(`${this.getTranslation('modesColon', 'Modes: ')}` + modes.join(', '));
+        if ((typeof (this._reasonsSelected[0].details) != 'undefined') && (this._reasonsSelected[0].details != '')) {
+          let spanDetailsReason = $('<span></span>').addClass('savereason-info-reason-details')
+            .html(' (' + this._reasonsSelected[0].details + ')');
+          divReason.append(spanDetailsReason);
         }
+
+        divModes.html(`${this.getTranslation('modesColon', 'Modes: ')}` + this._reasonsSelected[0].mode);
+
         $('.savereason-defaultbutton').show();
       }
-      else if (this._rangesList.length > 1) {
-        divReason.html(`${this.getTranslation('currentReasonColon')}${this.getTranslation('multiple', 'multiple')}`);
-        divModes.html(`${this.getTranslation('modesColon')}${this.getTranslation('muliple', 'multiple')}`);
+      else if (this._reasonsSelected.length > 1) {
+        let index = 1;
+        let reasonDifferent = false;
+        let modeDifferent = false;
+        
+        while (index < this._reasonsSelected.length && (!reasonDifferent || !modeDifferent)) {
+          if (this._reasonsSelected[0].reason != this._reasonsSelected[index].reason) {
+            reasonDifferent = true;
+          }
+          if (this._reasonsSelected[0].mode != this._reasonsSelected[index].mode) {
+            modeDifferent = true;
+          }
+          index++;
+        }
+
+        if (!reasonDifferent) {
+          divReason.html(`${this.getTranslation('currentReasonColon', 'Current reason: ')}` + this._reasonsSelected[0].reason);
+        }
+        else {
+          divReason.html(`${this.getTranslation('currentReasonColon')}${this.getTranslation('multiple', 'multiple')}`);
+        }
+        if (!modeDifferent) {
+          divModes.html(`${this.getTranslation('modesColon', 'Modes: ')}` + this._reasonsSelected[0].mode);
+        }
+        else {
+          divModes.html(`${this.getTranslation('modesColon')}${this.getTranslation('multiple', 'multiple')}`);
+        }
         $('.savereason-defaultbutton').show();
       }
       else {
@@ -333,17 +348,17 @@ require('x-datetimerange/x-datetimerange');
 
     // Data linked to URL -> to post data
     // used in _runAjaxWhenIsVisible
-    postData () {
+    postData() {
       let webServiceRangesList = [];
-      for (let i = 0; i < this._rangesList.length; i++) {
-        webServiceRangesList[i] = this._rangesList[i];
+      for (let i = 0; i < this._reasonsSelected.length; i++) {
+        webServiceRangesList[i] = this._reasonsSelected[i].range;
       }
       return {
         'Ranges': webServiceRangesList
       };
     }
 
-    getShortUrl () {
+    getShortUrl() {
       // Main url to GET possible reasons
       let urlSelection = 'ReasonSelection/Post'
         + '?MachineId=' + Number($(this.element).attr('machine-id'));
@@ -351,7 +366,7 @@ require('x-datetimerange/x-datetimerange');
     }
 
     // Refresh after ReasonSelection/Post returns a list of reasons to display in table
-    refresh (data) {
+    refresh(data) {
       // Fill the table
       this._emptyTable();
 
@@ -396,11 +411,11 @@ require('x-datetimerange/x-datetimerange');
     }
 
     // Empty table with reasons OR reasongroups
-    _emptyTable () {
+    _emptyTable() {
       this._table.empty();
     }
 
-    _getReasonGroup (groupName) {
+    _getReasonGroup(groupName) {
       let group = $('<li></li>')
         .append($('<span></span>').html(groupName))
         .append('<ul></ul>');
@@ -408,7 +423,7 @@ require('x-datetimerange/x-datetimerange');
       return group;
     }
 
-    _addReasonInGroup (group, reason) {
+    _addReasonInGroup(group, reason) {
       let elt = $('<li></li>')
         .attr('reason-id', reason.Id)
         .attr('reason-text', reason.Display)
@@ -456,12 +471,12 @@ require('x-datetimerange/x-datetimerange');
     }
 
     /* CLICK - Save reason */
-    _saveReason (reasonId, details, reasonData) {
+    _saveReason(reasonId, details, reasonData) {
       let machineId = Number($(this.element).attr('machine-id'));
       let rangesList = [];
-      for (let i = 0; i < this._rangesList.length; i++) {
-        let range = this._rangesList[i];
-        if (this._rangesList.length == 1) {
+      for (let i = 0; i < this._reasonsSelected.length; i++) {
+        let range = this._reasonsSelected[i].range;
+        if (this._reasonsSelected.length == 1) {
           // Check if range have been changed
           range = this._tagdatetimerange[0].getRangeString();
         }
@@ -493,7 +508,7 @@ require('x-datetimerange/x-datetimerange');
         this._saveFail.bind(this));
       // Reload cache -> in savesuccess / progress
 
-      this._savedRangesList = this._rangesList; // To avoid clean when removeAllSelections
+      this._savedRangesList = this._reasonsSelected; // To avoid clean when removeAllSelections
       // Remove selection in RSL
       $('.dialog-savereason').find('x-reasonslotlist')[0].removeAllSelections();
 
@@ -505,7 +520,7 @@ require('x-datetimerange/x-datetimerange');
     }
 
     // Called when a reason is successfully saved
-    _saveSuccess (ajaxToken, data, machid) {
+    _saveSuccess(ajaxToken, data, machid) {
       // ignore ajaxToken
       console.log('_saveSuccess');
       console.info('Reason revision id=' + data.Revision.Id);
@@ -513,7 +528,7 @@ require('x-datetimerange/x-datetimerange');
       // Store modification.s :
       let ranges = [];
       for (let i = 0; i < this._savedRangesList.length; i++) {
-        ranges.push(pulseRange.createDateRangeFromString(this._savedRangesList[i]));
+        ranges.push(pulseRange.createDateRangeFromString(this._savedRangesList[i].range));
       }
       pulseUtility.getOrCreateSingleton('x-modificationmanager')
         .addModification(data.Revision.Id, 'reason',
@@ -527,7 +542,7 @@ require('x-datetimerange/x-datetimerange');
       } */
     }
 
-    _saveError (ajaxToken, data) {
+    _saveError(ajaxToken, data) {
       // ignore ajaxToken
       let errorMessage = 'Error';
       if (typeof data === 'undefined') {
@@ -551,7 +566,7 @@ require('x-datetimerange/x-datetimerange');
       return;
     }
 
-    _saveFail (ajaxToken, url, isTimeout, xhrStatus) {
+    _saveFail(ajaxToken, url, isTimeout, xhrStatus) {
       // ignore ajaxToken
       if (isTimeout) {
         pulseCustomDialog.openError('Timeout');
@@ -563,7 +578,7 @@ require('x-datetimerange/x-datetimerange');
     }
 
     /* CLICK - Get details */
-    _getDetailsAndSave (reasonId, reasonName, detailsRequired, reasonData) {
+    _getDetailsAndSave(reasonId, reasonName, detailsRequired, reasonData) {
       // Machine
       let machineDisplay = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
         'machine-id': this.element.getAttribute('machine-id')
@@ -581,7 +596,7 @@ require('x-datetimerange/x-datetimerange');
         'period-context': 'savereasondetails' + this.element.getAttribute('machine-id')
       });
       let divdatetimerange = $('<div></div>').addClass('savereason-datetimerange-details')
-        .append($('<div></div>').addClass('savereason-datetimerange-label').html(this.getTranslation('periodColon','Period: ')))
+        .append($('<div></div>').addClass('savereason-datetimerange-label').html(this.getTranslation('periodColon', 'Period: ')))
         .append(details_tagdatetimerange);
 
       // Reason
@@ -646,7 +661,7 @@ require('x-datetimerange/x-datetimerange');
       }
       var self = this;
       input.on('keyup paste input', notifyTextChanged);
-      function notifyTextChanged () {
+      function notifyTextChanged() {
         if (detailsRequired) { // show / hide validateButton
           if (0 == $(this).val().length) {
             $('#' + self._detailsDialogId + ' .customDialogOk')[0].setAttribute('disabled', 'disabled');
@@ -665,7 +680,7 @@ require('x-datetimerange/x-datetimerange');
      *
      * @param {event} e - DOM event
      */
-    clickOnReason (e) {
+    clickOnReason(e) {
       let td = e.target;
       let row = $(td).parent();
       let reasonId = Number(row[0].getAttribute('reason-id'));
@@ -683,7 +698,7 @@ require('x-datetimerange/x-datetimerange');
      *
      * @param {event} e - DOM event
      */
-    clickOnComment (e) {
+    clickOnComment(e) {
       let td = e.target;
       let row = $(td).parent();
 
@@ -699,47 +714,76 @@ require('x-datetimerange/x-datetimerange');
      *
      * @param {Object} event
      */
-    onReload (event) {
+    onReload(event) {
       //this.switchToContext('Reload');
       this.start();
     }
 
-    /* Public methods to update ranges */
-    // range == rangeString
-    addRange (range) {
-      if (typeof range != 'string') {
-        return; // error ?
-      }
-      let indexOf = this._rangesList.indexOf(range);
-      if (-1 == indexOf) { // == Not found
-        // FILL this._rangesList
-        this._rangesList[this._rangesList.length] = range;
-        this._rangesList = this._rangesList.sort();
+    addReason(reason) {
+      debugger;
+      if (reason) {
+        if (reason.range && typeof reason.range != 'string') {
+          return;
+        }
+        else if (reason.reason && typeof reason.reason != 'string') {
+          return;
+        }
+        else if (reason.mode && typeof reason.mode != 'string') {
+          return;
+        }
 
-        this.start();
+        // Check if reason already exists by comparing properties
+        let exists = this._reasonsSelected.some(item =>
+          item.range === reason.range &&
+          item.reason === reason.reason &&
+          item.mode === reason.mode &&
+          item.details === reason.details
+        );
+
+        if (!exists) {
+          this._reasonsSelected.push(reason);
+          this._reasonsSelected.sort((a, b) => a.range.localeCompare(b.range));
+          this.start();
+        }
+      }
+      return;
+    }
+
+    removeReason(reason) {
+      if (reason) {
+        if (reason.range && typeof reason.range != 'string') {
+          return;
+        }
+        else if (reason.reason && typeof reason.reason != 'string') {
+          return;
+        }
+        else if (reason.mode && typeof reason.mode != 'string') {
+          return;
+        }
+        let indexOf = this._reasonsSelected.findIndex(item =>
+          item.range === reason.range &&
+          item.reason === reason.reason &&
+          item.mode === reason.mode &&
+          item.details === reason.details
+        );
+        if (indexOf != -1) {
+          this._reasonsSelected.splice(indexOf, 1);
+          this.start();
+        }
       }
     }
-    // range == rangeString
-    removeRange (range) {
-      if (typeof range != 'string') {
-        return; // error ?
-      }
-      let indexOf = this._rangesList.indexOf(range);
-      if (-1 != indexOf) { // == Found
-        this._rangesList.splice(indexOf, 1); // = remove 1 element
-        this._rangesList = this._rangesList.sort();
 
-        this.start();
-      }
-    }
-    cleanRanges () {
-      this._rangesList = [];
+
+
+    cleanReasons() {
+      this._reasonsSelected = [];
       this.start();
     }
-    closeAfterSave (closeAfterSave) {
+
+    closeAfterSave(closeAfterSave) {
       this._closeAfterSave = closeAfterSave;
     }
   }
 
-  pulseComponent.registerElement('x-savereason', SaveReasonComponent, ['machine-id', 'range']);
+  pulseComponent.registerElement('x-savereason', SaveReasonComponent, ['machine-id', 'range', 'ranges']);
 })();

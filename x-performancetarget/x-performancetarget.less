@@ -10,13 +10,12 @@ x-performancetarget {
   display: block; /* To make is(':visible') works */ 
   .performancetarget-content{
     min-width: 1px; // To avoid being hidden == not loaded
+    display: flex;
+    flex-direction: column;
+    align-self: center;
   }
 
   .performancetarget-span {
-    &::before {
-      content: 'Target ';
-    }
- 
     &.empty-performancetarget::before {
       content: '' !important;
     }

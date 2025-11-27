@@ -311,11 +311,11 @@ var eventBus = require('eventBus');
           //this._resize();
 
           // Header 1 - hourly / summary
-          let text = $('<div></div>').addClass('text-position').html('hourly');
+          let text = $('<div></div>').addClass('text-position').html(this.getTranslation('hourly', 'hourly'));
           let hourly = $('<div></div>').addClass('header').addClass('header-hourly')
             .append(text);
 
-          text = $('<div></div>').addClass('text-position').html('cumulative');
+          text = $('<div></div>').addClass('text-position').html(this.getTranslation('cumulative', 'cumulative'));
           let summary = $('<div></div>').addClass('header').addClass('header-summary')
             .append(text);
           this._table.append(hourly).append(summary);
@@ -324,15 +324,15 @@ var eventBus = require('eventBus');
             this._table.addClass('with-reserve-capacity');
 
             // Reserve capacity columns headers
-            text = $('<div></div>').addClass('text-position').html('parts to machine'); // Remaining parts to machine
+            text = $('<div></div>').addClass('text-position').html(this.getTranslation('partsToMachine', 'parts to machine')); // Remaining parts to machine
             let parts = $('<div></div>').addClass('header').addClass('header-capacity')
               .append(text);
 
-            text = $('<div></div>').addClass('text-position').html('capacity'); // Remaining capacity
+            text = $('<div></div>').addClass('text-position').html(this.getTranslation('capacity', 'capacity')); // Remaining capacity
             let capacity = $('<div></div>').addClass('header').addClass('header-capacity')
               .append(text);
 
-            text = $('<div></div>').addClass('text-position').html('reserve capacity');
+            text = $('<div></div>').addClass('text-position').html(this.getTranslation('reserveCapacity', 'reserve capacity'));
             let reserve = $('<div></div>').addClass('header').addClass('header-capacity')
               .append(text);
             this._table.append(parts).append(capacity).append(reserve);

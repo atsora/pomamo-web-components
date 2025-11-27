@@ -17,7 +17,6 @@ x-savemachinestatetemplate {
 .customDialogContent>div.savemachinestatetemplate-dialog {
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
   flex-direction: column;
 }
 
@@ -39,13 +38,21 @@ x-savemachinestatetemplate {
   }
 
   .savemachinestatetemplate-dialog-dtp-div {
-    display: inline-block;
-    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    width: 100%;
+    justify-content: center;
 
     x-datetimerange {
+      width: auto; // Allow the component to adapt to content
+      min-width: fit-content; // Ensure it fits the content
+      
       .datetimerange-display {
         font-size: 20px;
         padding: 8px;
+        white-space: nowrap; // Prevent text wrapping
+        width: auto; // Allow display to adapt to text
       }
     }
   }
@@ -65,7 +72,7 @@ input[name=dtp_date] {
   margin-top: 1.6vw;
   row-gap: 3vw;
   column-gap: 4.85vw;
-  
+
   // Add scrollbar when content is too tall
   max-height: 50vh; // Limit height to 50% of viewport height
   overflow-y: auto; // Enable vertical scrolling
@@ -73,7 +80,6 @@ input[name=dtp_date] {
 
   .savemachinestatetemplate-cell-item {
     list-style-type: none;
-    opacity: 0.6;
 
     .savemachinestatetemplate-cell-box {
       height: 6vw;
@@ -130,6 +136,11 @@ input[name=dtp_date] {
   }
 }
 
-.savemachinestatetemplate-cell-item-selected {
-  opacity: 1 !important;
+.savemachinestatetemplate-home-btn {
+  width: 2%;
+  cursor: pointer;
+
+  .savemachinestatetemplate-home-svg {
+    .create_svg_nostroke('periodtoolbar-nowzoom', @container_text_color, @color_highlight);
+  }
 }

@@ -112,7 +112,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   lastmachinestatus: {
     currentReasonColon: "Raison d'arrêt courante : ",
     pastReasonData: "Raisons d'arrêt passées",
-    dataToClassified: 'STOP à classifier',
+    dataToClassified: 'arrêt à classifier',
+    dataToClassifiedPlural: 'arrêts à classifier',
     currentTooltip: "Changer la raison d'arrêt courante",
     loading: 'En chargement...',
     pastTooltip: "Consulter ou changer une raison passée",
@@ -193,6 +194,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     errorRemove: 'Erreur en enlevant un jalon',
     machine: 'Machine'
   },
+  performancetarget: {
+    target: 'Objectif'
+  },
+  periodmanager: {
+    today: 'Aujourd\'hui'
+  },
   periodtoolbar: {
     dialogTitle: "Entrer l'intervalle de temps",
     emptyPeriodError: 'Période vide',
@@ -219,10 +226,14 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
 
   },
   productiontrackertable: {
-    hourly: 'par heure',
-    summary: 'résumé',
     actual: 'courant',
-    target: 'objectif'
+    capacity: 'capacité',
+    cumulative: 'cumulatif',
+    hourly: 'par heure',
+    partsToMachine: 'pièces à usiner',
+    reserveCapacity: 'capacité de réserve',
+    summary: 'résumé',
+    target: 'objectif',
   },
   productionmachiningstatus: {
     notavailable: 'Non disponible'

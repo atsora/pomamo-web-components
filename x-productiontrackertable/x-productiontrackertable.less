@@ -20,7 +20,7 @@ x-productiontrackertable {
 
     .productiontrackertable-table {
       display: grid;
-      grid-template-columns: 1fr repeat(4, minmax(min-content, 15%));
+      grid-template-columns: 1fr repeat(4, auto);
       column-gap: 2px;
       row-gap: 2px;
       justify-items: stretch;
@@ -30,7 +30,7 @@ x-productiontrackertable {
       //font-size: clamp(1rem, 0.2500rem + 3.3333vw, 2rem); -> in js code
 
       &.with-reserve-capacity {
-        grid-template-columns: 1fr repeat(7, minmax(min-content, 10%));
+        grid-template-columns: 1fr repeat(7, auto);
       }
 
       /*
@@ -50,14 +50,14 @@ x-productiontrackertable {
 
       >div {
         border: 1px solid darken(@container_color, 10%);
-        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         min-height: 1.6em;
+        padding: 0.2em 0.5em;
 
         .text-position {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
+          text-align: center;
         }
 
         .text-range {

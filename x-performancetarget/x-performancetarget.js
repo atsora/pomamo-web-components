@@ -58,8 +58,10 @@ var pulseUtility = require('pulseUtility');
       $(this.element).append(this._content);
 
       // Prepare span
+      let targetSpan = $('<span></span>').html(this.getTranslation('target', 'Target'));
       this._spanDisplay = $('<span></span>').addClass('performancetarget-span')
         .addClass('empty-performancetarget');
+      this._content.append(targetSpan);
       this._content.append(this._spanDisplay);
 
       // Create DOM - (smalltext == NO Loader + NO error message displayed. see .less)

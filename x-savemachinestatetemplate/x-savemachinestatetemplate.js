@@ -15,9 +15,12 @@ var pulseService = require('pulseService');
 var pulseRange = require('pulseRange');
 var pulseCustomDialog = require('pulseCustomDialog');
 var pulseConfig = require('pulseConfig');
+var pulseSvg = require('pulseSvg');
 var pulseLogin = require('pulseLogin');
+var eventBus = require('eventBus');
 
 require('x-datetimerange/x-datetimerange');
+require('x-modificationmanager/x-modificationmanager');
 
 (function () {
 
@@ -43,7 +46,25 @@ require('x-datetimerange/x-datetimerange');
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id':
-          this.start(); // == validate + send ajax request
+          if (this.isInitialized()) {
+            this.element.setAttribute('period-context', 'savemst' + newVal);
+          }
+          this.start();
+          break;
+        case 'range':
+          if (pulseUtility.convertDateRangeForWebService(this._initalDate) != newVal) {
+            this._mstId = this.element.getAttribute('mst-id');
+            this.element.removeAttribute('mst-id');
+          }
+          else this.element.setAttribute('mst-id', this._mstId);
+          this.start();
+          break;
+        case 'period-context':
+          eventBus.EventBus.removeEventListenerBySignal(this, 'dateTimeRangeChangeEvent');
+          eventBus.EventBus.addEventListener(this,
+            'dateTimeRangeChangeEvent',
+            this.element.getAttribute('period-context'),
+            this.onDateTimeRangeChange.bind(this));
           break;
         default:
           break;
@@ -57,6 +78,12 @@ require('x-datetimerange/x-datetimerange');
       // Update here some internal parameters
 
       // Listeners
+      if (this.element.hasAttribute('period-context')) {
+        eventBus.EventBus.addEventListener(this,
+          'dateTimeRangeChangeEvent',
+          this.element.getAttribute('period-context'),
+          this.onDateTimeRangeChange.bind(this));
+      }
 
       // In case of clone, need to be empty :
       $(this.element).empty();
@@ -83,10 +110,8 @@ require('x-datetimerange/x-datetimerange');
         .append(this._messageSpan);
       $(MST_CB).append(messageDiv);
 
-      //let nowISO = pulseUtility.convertMomentToDateTimeString(moment());
-      //let isobegin = nowISO;
       let rangeForDisplay = pulseRange.createDefaultInclusivity(new Date(), null);
-      if (this.element.hasAttribute('range')) { // Hope No
+      if (this.element.hasAttribute('range')) {
         rangeForDisplay = pulseRange.createStringRangeFromString(this.element.getAttribute('range'));
       }
       // Check nullable end
@@ -104,6 +129,7 @@ require('x-datetimerange/x-datetimerange');
         (!moment(rangeForDisplay.lower).isValid())) {
         rangeForDisplay.lower = pulseUtility.convertMomentToDateTimeString(moment());
       }
+      this._initalDate = rangeForDisplay;
       // FROM / TO = datetimerange
       this._dtRange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
         'possible-no-end': (isoend == null),
@@ -111,45 +137,41 @@ require('x-datetimerange/x-datetimerange');
         'period-context': 'savemst' + this.element.getAttribute('machine-id'),
         'hide-buttons': 'true'
       });
-      let rangeDiv = $('<div></div>').addClass('savemachinestatetemplate-dialog-dtp-div').append(this._dtRange);
 
-      this._dialog/*.append(switchLabel)*/.append(rangeDiv).append(MST_CB);
+      let svg = $('<div></div>').addClass('savemachinestatetemplate-home-svg');
+      let homeBtn = $('<div></div>').addClass('savemachinestatetemplate-home-btn').append(svg);
+      pulseSvg.inlineBackgroundSvg(svg);
+      pulseUtility.addToolTip(homeBtn, this.getTranslation('homeBtn', 'home'));
+      var self = this;
+      homeBtn.click(function () {
+        self._dtRange[0].setAttribute('range', pulseUtility.convertDateRangeForWebService(rangeForDisplay));
+      });
+
+      let rangeDiv = $('<div></div>').addClass('savemachinestatetemplate-dialog-dtp-div').append(homeBtn).append(this._dtRange);
+
+      this._dialog.append(rangeDiv).append(MST_CB);
+
+      this._mstId = this.element.getAttribute('mst-id');
 
       let title = this.getTranslation('changeMachineStateTitle', 'Change machine state');
 
       let saveDialogId = pulseCustomDialog.initialize(this._dialog, {
         title: title,
-        onOk: function (x_save) { // to avoid closure
-          return function () {
-            // Check if an option is selected
-            if (!x_save._optionSelected) {
-              return false; // Prevent closing the dialog
-            }
-            let range = $(x_save._dtRange)[0].getRangeString();
-            let newMST = x_save._optionSelected;
-            let machid = x_save.element.getAttribute('machine-id'); // Should be copied. This.element disappear before request answer
-            let url = x_save.getConfigOrAttribute('path', '') + 'MachineStateTemplateMachineAssociation/Save?MachineId=' + machid
-              + '&Range=' + range + '&MachineStateTemplateId=' + newMST + '&RevisionId=-1';
-            return pulseService.runAjaxSimple(url,
-              function (data) {
-                this._saveSuccess(data, machid);
-              }.bind(x_save),
-              x_save._saveError.bind(x_save),
-              x_save._saveFail.bind(x_save));
-          }
-        }(this),
         autoClose: true,
         autoDelete: true,
         fixedHeight: true,
         bigSize: true,
+        okButton: 'hidden',
+        helpName: 'savemachinestatetemplate',
+        className: 'machinestatetemplate'
       });
-      
+
       // Store the dialog ID for later use
       this._saveDialogId = saveDialogId;
-      
+
       // Disable OK button initially
-      this._updateOkButtonState();
-      
+      //this._updateOkButtonState();
+
       pulseCustomDialog.open('#' + saveDialogId);
 
       /* // This DO NOT WORK [TODO] find a way to reload parent
@@ -176,7 +198,7 @@ require('x-datetimerange/x-datetimerange');
       super.clearInitialization();
     }
 
-    reset() { // Optional implementation
+    reset() {
       // Code here to clean the component when the component has been initialized for example after a parameter change
       this.removeError();
       // Empty this._content
@@ -188,9 +210,6 @@ require('x-datetimerange/x-datetimerange');
       if (!this.element.hasAttribute('machine-id')) {
         // Delayed display :
         this.setError('missing machine-id');
-        // or
-        // Immediat display :
-        //this.switchToKey('Error', () => this.displayError('invalid param'), () => this.removeError());
         return;
       }
       // Additional checks with attribute param
@@ -207,18 +226,24 @@ require('x-datetimerange/x-datetimerange');
     }
 
     getShortUrl() {
-      // Always current data = no range
-
       let url = 'NextMachineStateTemplate?'
       let nbParam = 0;
       if (this.element.hasAttribute('mst-id')) {
         url += 'CurrentMachineStateTemplateId=' + this.element.getAttribute('mst-id');
+        url += '&';
+      }
+      else if (this.element.hasAttribute('range')) {
+        let range = pulseUtility.convertDateForWebService(pulseRange.createDateRangeFromString(this.element.getAttribute('range'))._lower);
+        url += 'At=' + range;
         nbParam++;
+        if (this.element.hasAttribute('machine-id')) {
+          url += '&MachineId=' + this.element.getAttribute('machine-id');
+          url += '&';
+        }
       }
 
-      url += (nbParam == 0) ? '' : '&';
       let role = pulseLogin.getRole(); // or getAppContextOrRole ?
-      ///TODO : change and use 'rolekey=' + role WHEN READY in pulse
+      //TODO : change and use 'rolekey=' + role WHEN READY in pulse
       if (role == 'manager')
         url += 'RoleId=5'; // manager
       else
@@ -231,7 +256,6 @@ require('x-datetimerange/x-datetimerange');
       // Combobox
       this._MSTselectCB.innerHTML = '';
 
-      //$(this._MSTselectCB).attr('size', data.MachineStateTemplates.length);
       for (let index = 0; index < data.MachineStateTemplates.length; index++) {
         this._drawCell(data.MachineStateTemplates[index]);
       }
@@ -244,7 +268,7 @@ require('x-datetimerange/x-datetimerange');
       let cellItem = document.createElement('li');
       cellItem.classList.add('savemachinestatetemplate-cell-item');
       cellItem.addEventListener('click', (e) => {
-        this._selectOption(cellItem);
+        this._save(cellItem);
       });
 
       let box = document.createElement('div');
@@ -272,33 +296,19 @@ require('x-datetimerange/x-datetimerange');
       this._MSTselectCB.appendChild(cellItem);
     }
 
-    _selectOption(cell) {
-      let pastCell = document.getElementById(this._optionSelected);//.querySelector('.savemachinestatetemplate-cell-box');
-      if (pastCell) {
-        pastCell.classList.remove('savemachinestatetemplate-cell-item-selected');
-      }
-      cell.classList.add('savemachinestatetemplate-cell-item-selected');
+    _save(cell) {
       this._optionSelected = cell.getAttribute('id');
-      
-      // Enable OK button when an option is selected
-      this._updateOkButtonState();
-    }
-    
-    _updateOkButtonState() {
-      if (this._saveDialogId) {
-        const okButton = document.querySelector('#' + this._saveDialogId + ' .customDialogOk');
-        if (okButton) {
-          if (this._optionSelected) {
-            okButton.disabled = false;
-            okButton.style.opacity = '1';
-            okButton.style.cursor = 'pointer';
-          } else {
-            okButton.disabled = true;
-            okButton.style.opacity = '0.5';
-            okButton.style.cursor = 'not-allowed';
-          }
-        }
-      }
+      let range = $(this._dtRange)[0].getRangeString();
+      let newMST = this._optionSelected;
+      let machid = this.element.getAttribute('machine-id'); // Should be copied. This.element disappear before request answer
+      let url = this.getConfigOrAttribute('path', '') + 'MachineStateTemplateMachineAssociation/Save?MachineId=' + machid
+        + '&Range=' + range + '&MachineStateTemplateId=' + newMST + '&RevisionId=-1';
+      return pulseService.runAjaxSimple(url,
+        function (data) {
+          this._saveSuccess(data, machid);
+        }.bind(this),
+        this._saveError.bind(this),
+        this._saveFail.bind(this));
     }
 
     _saveSuccess(data, machid) {
@@ -310,7 +320,6 @@ require('x-datetimerange/x-datetimerange');
       }
       else {
         console.assert('NO revisionId');
-        //revisionId = data.Id;
         return;
       }
       console.info('MOS revision id=' + revisionId);
@@ -320,9 +329,11 @@ require('x-datetimerange/x-datetimerange');
       let range = pulseRange.createDateRangeFromString(rangeString);
       let ranges = [];
       ranges.push(range);
-      pulseUtility.getOrCreateSingleton('x-modificationmanager')
-        .addModification(data.Revision.Id, 'MST',
-          machid, ranges);
+
+      let modificationManager = pulseUtility.getOrCreateSingleton('x-modificationmanager');
+      modificationManager.addModification(data.Revision.Id, 'MST', machid, ranges);
+
+      pulseCustomDialog.close('.customeDialog-machinestatetemplate');
     }
 
     _saveError(data) {
@@ -340,7 +351,13 @@ require('x-datetimerange/x-datetimerange');
       pulseCustomDialog.openError('Error while saving', 'Error', close);
     }
 
+    onDateTimeRangeChange(event) {
+      if (event.target.stringrange) {
+        this.element.setAttribute('range', event.target.stringrange);
+      }
+    }
+
   }
 
-  pulseComponent.registerElement('x-savemachinestatetemplate', SaveMachineStateTemplateComponent, ['machine-id']);
+  pulseComponent.registerElement('x-savemachinestatetemplate', SaveMachineStateTemplateComponent, ['machine-id', 'range', 'period-context']);
 })();

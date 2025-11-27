@@ -371,7 +371,8 @@ require('x-revisionprogress/x-revisionprogress');
       let saveMST = pulseUtility.createjQueryElementWithAttribute('x-savemachinestatetemplate', {
         'machine-id': $(this.element).attr('machine-id'),
         //'range': this._current_MST, // NO !
-        'mst-id': this._currentMST_id
+        'mst-id': this._currentMST_id,
+        'period-context': 'savemst' + this.element.getAttribute('machine-id')
       });
       $(this.element).append(saveMST);
     }

@@ -113,7 +113,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   },
   lastmachinestatus: {
     currentReasonColon: 'Currrent reason: ',
-    dataToClassified: 'STOP to be classified',
+    dataToClassified: 'stop to be classified',
+    dataToClassifiedPlural: 'stops to be classified',
     currentTooltip: 'Change current reason',
     loading: 'Loading...',
     pastReasonData: 'Past reason details',
@@ -195,6 +196,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     errorRemove: 'Error in removing an item',
     machine: 'Machine'
   },
+  performancetarget: {
+    target: 'Target'
+  },
+  periodmanager: {
+    today: 'Today'
+  },
   periodtoolbar: {
     dialogTitle: 'Setting date/time range',
     homeBtn: 'home',
@@ -227,10 +234,15 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     parts: 'parts'
   },
   productiontrackertable: {
-    hourly: 'hourly',
-    summary: 'summary',
     actual: 'actual',
-    target: 'target'
+    capacity: 'capacity',
+    cumulative: 'cumulative',
+    hourly: 'hourly',
+    partsToMachine: 'parts to machine',
+    reserveCapacity: 'reserve capacity',
+    summary: 'summary',
+    target: 'target',
+    
   },
   productionmachiningstatus: {
     notavailable: 'Not Available'
@@ -430,7 +442,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   lastmachinestatus: {
     currentReasonColon: "Raison d'arrêt courante : ",
     pastReasonData: "Raisons d'arrêt passées",
-    dataToClassified: 'STOP à classifier',
+    dataToClassified: 'arrêt à classifier',
+    dataToClassifiedPlural: 'arrêts à classifier',
     currentTooltip: "Changer la raison d'arrêt courante",
     loading: 'En chargement...',
     pastTooltip: "Consulter ou changer une raison passée",
@@ -509,6 +522,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     errorRemove: 'Erreur en enlevant un jalon',
     machine: 'Machine'
   },
+  performancetarget: {
+    target: 'Objectif'
+  },
+  periodmanager: {
+    today: 'Aujourd\'hui'
+  },
   periodtoolbar: {
     dialogTitle: "Entrer l'intervalle de temps",
     homeBtn: 'accueil',
@@ -535,10 +554,14 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     parts: 'pièces'
   },
   productiontrackertable: {
-    hourly: 'par heure',
-    summary: 'résumé',
     actual: 'courant',
-    target: 'objectif'
+    capacity: 'capacité',
+    cumulative: 'cumulatif',
+    hourly: 'par heure',
+    partsToMachine: 'pièces à usiner',
+    reserveCapacity: 'capacité de réserve',
+    summary: 'résumé',
+    target: 'objectif',
   },
   productionmachiningstatus: {
     notavailable: 'Non disponible'
