@@ -177,6 +177,8 @@ var eventBus = require('eventBus');
     constructor(...args) {
       const self = super(...args);
 
+      this._range = undefined;
+
       // Production data
       self._actualProduction = 0;
       self._targetProduction = 0;
@@ -186,7 +188,7 @@ var eventBus = require('eventBus');
       self._content = undefined;
       self._gaugeContainer = undefined;
       self._textDisplay = undefined;
-      
+
       // Unique instance ID for gradient naming
       self._instanceId = 'prod-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
 
@@ -220,6 +222,15 @@ var eventBus = require('eventBus');
             this._updateTextDisplay();
           }
           break;
+        case 'period-context':
+          if (this.isInitialized()) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'dateTimeRangeChangeEvent');
+            eventBus.EventBus.addEventListener(this,
+              'dateTimeRangeChangeEvent',
+              newVal,
+              this.onDateTimeRangeChange.bind(this));
+          }
+          break;
         default:
           break;
       }
@@ -237,6 +248,13 @@ var eventBus = require('eventBus');
           'machineIdChangeSignal',
           this.element.getAttribute('machine-context'),
           this.onMachineIdChange.bind(this));
+      }
+
+      if (this.element.hasAttribute('period-context')) {
+        eventBus.EventBus.addEventListener(this,
+          'dateTimeRangeChangeEvent',
+          this.element.getAttribute('period-context'),
+          this.onDateTimeRangeChange.bind(this));
       }
 
       // In case of clone, need to be empty
@@ -396,7 +414,17 @@ var eventBus = require('eventBus');
      * @returns {string}
      */
     getShortUrl() {
-      let url = 'Operation/ProductionMachiningStatus?MachineId=' + this.element.getAttribute('machine-id');
+      let url;
+      if (this._range != undefined) {
+        url = 'Operation/PartProductionRange?GroupId='
+          + this.element.getAttribute('machine-id')
+          + '&Range='
+          + pulseUtility.convertDateRangeForWebService(this._range);
+      }
+      else {
+        url = 'Operation/ProductionMachiningStatus?MachineId=' + this.element.getAttribute('machine-id');
+      }
+
       return url;
     }
 
@@ -418,8 +446,14 @@ var eventBus = require('eventBus');
       let previousTargetProduction = this._targetProduction;
 
       // Update production data
-      this._actualProduction = (data.NbPiecesDoneDuringShift !== undefined) ? data.NbPiecesDoneDuringShift : 0;
-      this._targetProduction = (data.GoalNowShift !== undefined) ? data.GoalNowShift : 0;
+      if (this._range != undefined) {
+        this._actualProduction = (data.NbPieces !== undefined) ? data.NbPieces : 0;
+        this._targetProduction = (data.Goal !== undefined) ? Math.floor(data.Goal) : 0;
+      }
+      else {
+        this._actualProduction = (data.NbPiecesDoneDuringShift !== undefined) ? data.NbPiecesDoneDuringShift : 0;
+        this._targetProduction = (data.GoalNowShift !== undefined) ? data.GoalNowShift : 0;
+      }
 
       // Calculate ratio (0 to 1, capped at 1 for gauge display)
       if (this._targetProduction > 0) {
@@ -665,8 +699,23 @@ var eventBus = require('eventBus');
       // Redraw needle
       this._drawNeedle();
     }
+
+    onDateTimeRangeChange(event) {
+      let newRange = event.target.daterange;
+
+      if (!newRange._lower || !newRange._upper) return false;
+
+      const now = new Date();
+
+      const isIncluded = now >= newRange._lower && now < newRange._upper;
+
+      if (!isIncluded) this._range = newRange;
+      else this._range = undefined;
+
+      this.start();
+    }
   }
 
 
-  pulseComponent.registerElement('x-productiongauge', ProductionGaugeComponent, ['machine-id', 'machine-context', 'display-mode']);
+  pulseComponent.registerElement('x-productiongauge', ProductionGaugeComponent, ['machine-id', 'machine-context', 'display-mode', 'period-context']);
 })();

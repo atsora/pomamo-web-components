@@ -26,10 +26,9 @@ require('x-clock/x-clock');
     constructor(...args) {
       const self = super(...args);
 
-      //this._range = undefined;
+      this._range = undefined;
 
-      // DOM -> never in contructor
-      self._content = undefined; // Optional
+      self._content = undefined;
 
       return self;
     }
@@ -51,6 +50,15 @@ require('x-clock/x-clock');
               this.onMachineIdChange.bind(this));
           }
           break;
+        case 'period-context':
+          if (this.isInitialized()) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'dateTimeRangeChangeEvent');
+            eventBus.EventBus.addEventListener(this,
+              'dateTimeRangeChangeEvent',
+              newVal,
+              this.onDateTimeRangeChange.bind(this));
+          }
+          break;
         default:
           break;
       }
@@ -69,6 +77,14 @@ require('x-clock/x-clock');
           this.element.getAttribute('machine-context'),
           this.onMachineIdChange.bind(this));
       }
+
+      if (this.element.hasAttribute('period-context')) {
+        eventBus.EventBus.addEventListener(this,
+          'dateTimeRangeChangeEvent',
+          this.element.getAttribute('period-context'),
+          this.onDateTimeRangeChange.bind(this));
+      }
+
 
       // In case of clone, need to be empty :
       $(this.element).empty();
@@ -221,6 +237,15 @@ require('x-clock/x-clock');
       this.element.querySelector('.production-number-actual').innerText = '';
       this.element.querySelector('.production-number-target').innerText = '';
 
+      
+      this.element.querySelectorAll('.production-clock-content').forEach(el => {
+      if (this._range == undefined) {
+        el.style.display = '';
+      } else {
+        el.style.display = 'none';
+      }
+    });;
+
       this.switchToNextContext();
     }
 
@@ -258,39 +283,57 @@ require('x-clock/x-clock');
     }
 
     getShortUrl() {
-      let url = 'Operation/ProductionMachiningStatus?MachineId=' + this.element.getAttribute('machine-id');
-      /* To restore if global in needed... maybe one day or never
-      if (!hideglobal) {  url += '&Option=' + 'TrackTask'; }*/
+      let url;
+      if (this._range != undefined) {
+        url = 'Operation/PartProductionRange?GroupId='
+          + this.element.getAttribute('machine-id')
+          + '&Range='
+          + pulseUtility.convertDateRangeForWebService(this._range);
+      }
+      else {
+        url = 'Operation/ProductionMachiningStatus?MachineId=' + this.element.getAttribute('machine-id');
+      }
+
       return url;
     }
 
     refresh(data) {
       this._data = data;
       $(this._content).show();
-      if (data.NbPiecesDoneDuringShift != undefined) {
+      let nbPiecesDone = undefined;
+      let goal = undefined;
+      if (this._range != undefined) {
+        if (data.NbPieces != undefined) nbPiecesDone = data.NbPieces;
+        if (data.Goal != undefined) goal = Math.floor(data.Goal);
+      }
+      else {
+        if (data.NbPiecesDoneDuringShift != undefined) nbPiecesDone = data.NbPiecesDoneDuringShift;
+        if (data.GoalNowShift != undefined) goal = data.GoalNowShift;
+      }
+      if (nbPiecesDone != undefined) {
         $(this._actualDisplay).show();
         // Trunk with 2 decimal if needed
-        let done = Math.floor(data.NbPiecesDoneDuringShift * 100) / 100;
+        let done = Math.floor(nbPiecesDone * 100) / 100;
         this._actualDisplay.find('.production-number-actual').text(done);
       }
       else {
         $(this._actualDisplay).hide();
       }
 
-      if (data.GoalNowShift != undefined && Number(data.GoalNowShift) > 0) {
+      if (goal && Number(goal) > 0) {
         // Trunk with 2 decimal if needed
-        let goal = Math.floor(data.GoalNowShift * 100) / 100;
-        this._targetDisplay.find('.production-number-target').text(goal);
+        let goalValue = Math.floor(goal * 100) / 100;
+        this._targetDisplay.find('.production-number-target').text(goalValue);
         this.element.querySelector('.production-target-value').style.display = 'flex';
       }
       else {
         this.element.querySelector('.production-target-value').style.display = 'none';
       }
 
-      if ((data.NbPiecesDoneDuringShift != undefined)
-        && (data.GoalNowShift != undefined)
-        && (Number(data.GoalNowShift) > 0)) {
-        let percent = 100.0 * data.NbPiecesDoneDuringShift / data.GoalNowShift;
+      if ((nbPiecesDone != undefined)
+        && (goal != undefined)
+        && (Number(goal) > 0)) {
+        let percent = 100.0 * nbPiecesDone / goal;
         // Trunk
         percent = Math.floor(percent);
         $(this._percentDisplaySpan).text(percent + '%');
@@ -305,18 +348,31 @@ require('x-clock/x-clock');
 
       // Forward workinfo data to external display
       //if (this.element.hasAttribute('machine-id')) { Always
-      eventBus.EventBus.dispatchToContext('operationChangeEvent',
-        this.element.getAttribute('machine-id'),
-        { workinformations: data.WorkInformations });
+      if (data.WorkInformations) {
+        eventBus.EventBus.dispatchToContext('operationChangeEvent',
+          this.element.getAttribute('machine-id'),
+          { workinformations: data.WorkInformations });
+      }
     }
 
     _updateColorEfficiency() {
-      if ((this._data.GoalNowShift != undefined)
-        && (Number(this._data.GoalNowShift) > 0)) {
+      let nbPiecesDone = undefined;
+      let goal = undefined;
+      if (this._range != undefined) {
+        if (this._data.NbPieces != undefined) nbPiecesDone = this._data.NbPieces;
+        if (this._data.Goal != undefined) goal = Math.floor(this._data.Goal);
+      }
+      else {
+        if (this._data.NbPiecesDoneDuringShift != undefined) nbPiecesDone = this._data.NbPiecesDoneDuringShift;
+        if (this._data.GoalNowShift != undefined) goal = this._data.GoalNowShift;
+      }
+
+      if ((goal != undefined)
+        && (Number(goal) > 0)) {
         let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 60);
         let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 80);
         // colors and efficiency
-        let ratio = this._data.NbPiecesDoneDuringShift / this._data.GoalNowShift;
+        let ratio = nbPiecesDone / goal;
         if (ratio < thresholdredproduction / 100) {
           $(this._content).addClass('bad-efficiency').removeClass('mid-efficiency').removeClass('good-efficiency');
         }
@@ -369,7 +425,22 @@ require('x-clock/x-clock');
     onMachineIdChange(event) {
       this.element.setAttribute('machine-id', event.target.newMachineId);
     }
+
+    onDateTimeRangeChange(event) {
+      let newRange = event.target.daterange;
+
+      if (!newRange._lower || !newRange._upper) return false;
+
+      const now = new Date();
+
+      const isIncluded = now >= newRange._lower && now < newRange._upper;
+
+      if (!isIncluded) this._range = newRange;
+      else this._range = undefined;
+
+      this.start();
+    }
   }
 
-  pulseComponent.registerElement('x-production', productionComponent, ['machine-id']);
+  pulseComponent.registerElement('x-production', productionComponent, ['machine-id', 'period-context', 'machine-context']);
 })();

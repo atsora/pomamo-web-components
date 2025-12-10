@@ -246,6 +246,7 @@ var eventBus = require('eventBus');
     onDateTimeRangeChange (event) {
       let newRange = event.target.daterange;
       this._range = newRange;
+      this.start();
     }
   }
 
