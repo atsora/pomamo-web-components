@@ -217,7 +217,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     preposition: 'à'
   },
   productionshiftgoal: {
-    productionshiftgoal: 'Objectif fin d\'équipe : '
+    productionshiftgoal: 'Objectif fin d\'équipe'
   },
   productionstatelegend: {
     title: 'État de production'
