@@ -17,6 +17,8 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 var pulseService = require('pulseService');
 var pulseCustomDialog = require('pulseCustomDialog');
 var pulseUtility = require('pulseUtility');
+var pulseLogin = require('pulseLogin');
+
 require('x-savereason/x-savereason');
 require('x-reasonslotlist/x-reasonslotlist');
 require('x-revisionprogress/x-revisionprogress');
@@ -189,6 +191,13 @@ require('x-revisionprogress/x-revisionprogress');
             if (this.element.hasAttribute('machine-id')) {
                 url += '?MachineId=' + this.element.getAttribute('machine-id');
             }
+
+            let role = pulseLogin.getRole(); 
+
+            if (role) {
+                url += '&RoleKey=' + role;
+            }
+
             return url;
         }
 
@@ -260,7 +269,12 @@ require('x-revisionprogress/x-revisionprogress');
             if (this._data.length <= 12) {
 
                 for (const reason of this._data) {
-                    this._drawCell(reason.Display, reason.Color, false, reason.Id, reason.DetailsRequired, reason.Data);
+                    let reasonId;
+
+                    if (reason.ClassificationId) reasonId = reason.ClassificationId;
+                    else reasonId = reason.Id;
+
+                    this._drawCell(reason.Display, reason.Color, false, reasonId, reason.DetailsRequired, reason.Data);
                 }
                 this._drawAdancedButton(this._data.length);
             }

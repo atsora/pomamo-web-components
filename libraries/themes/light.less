@@ -37,11 +37,11 @@
 @color_window_border_light: lighten(@color_window, 15%);
 @color_window_alternate_border: darken(@color_window_alternate, 10%);
 @color_window_hover: darken(@color_window, 5%);
-@container_color: @color_window_alternate;
-@container_text_color: @color_text_alternate;
-@container_text_color_transparent: rgba(2, 2, 2, 0.3); // @color_text_alternate + opacity
-@container_header_color: darken(@color_window_alternate, 2.5%);
-@container_header_text_color: @color_text_alternate;
+@box_color: @color_window_alternate;
+@box_text_color: @color_text_alternate;
+@box_text_color_transparent: rgba(2, 2, 2, 0.3); // @color_text_alternate + opacity
+@box_header_color: darken(@color_window_alternate, 2.5%);
+@box_header_text_color: @color_text_alternate;
 
 // Input
 @input_background_color: @color_window_border_light;
@@ -58,7 +58,7 @@
 ***********************************************************/
 
 // Widgets
-@widget_background: @container_header_color;
+@widget_background: @box_header_color;
 @widget_text: @color_text_alternate;
 @widget_separator: @color_text_alternate;
 // Widgets - opposite color (setup)
@@ -66,7 +66,7 @@
 @widget_contrasted_separator_or_text: #ffffff; // #dfdfdf;
 
 //Current data
-@current_background_color: @widget_background; // @container_header_color; // can be changed
+@current_background_color: @widget_background; // @box_header_color; // can be changed
 @current_text_color: @color_window_alternate;
 @current_border_color: @color_window_alternate_border;
 
@@ -86,6 +86,23 @@
 *******/
 
 @box_shadow: 0px 5px 7px -6px rgba(0, 0, 0, 0.5);
+
+
+/*****************
+* VUE APP COLORS *
+*****************/
+
+@vue-bg-red: rgb(239, 68, 68);
+@vue-bg-green: rgb(34, 197, 94);
+@vue-bg-orange: rgb(249, 115, 22);
+@vue-bg-blue: rgb(59, 130, 246);
+@vue-bg-gray: rgb(100, 116, 139);
+
+@vue-text-red: #ffb4b4;
+@vue-text-green: rgb(34, 197, 94);
+@vue-text-orange: #ffb988;
+@vue-text-blue: #b9d4ff;
+@vue-text-gray: rgb(100, 116, 139);
 
 
 /*******************************

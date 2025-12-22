@@ -11,6 +11,7 @@ var pulseService = require('pulseService');
 var pulseRange = require('pulseRange');
 var pulseCustomDialog = require('pulseCustomDialog');
 var pulseComponent = require('pulsecomponent');
+var pulseLogin = require('pulseLogin');
 var state = require('state');
 
 require('x-machinedisplay/x-machinedisplay');
@@ -315,7 +316,7 @@ require('x-datetimerange/x-datetimerange');
         let index = 1;
         let reasonDifferent = false;
         let modeDifferent = false;
-        
+
         while (index < this._reasonsSelected.length && (!reasonDifferent || !modeDifferent)) {
           if (this._reasonsSelected[0].reason != this._reasonsSelected[index].reason) {
             reasonDifferent = true;
@@ -359,10 +360,16 @@ require('x-datetimerange/x-datetimerange');
     }
 
     getShortUrl() {
-      // Main url to GET possible reasons
-      let urlSelection = 'ReasonSelection/Post'
+      let url = 'ReasonSelection/Post'
         + '?MachineId=' + Number($(this.element).attr('machine-id'));
-      return urlSelection;
+
+      let role = pulseLogin.getRole(); 
+      
+      if (role) {
+        url += '&RoleKey=' + role;
+      }
+
+      return url;
     }
 
     // Refresh after ReasonSelection/Post returns a list of reasons to display in table
@@ -424,8 +431,16 @@ require('x-datetimerange/x-datetimerange');
     }
 
     _addReasonInGroup(group, reason) {
+      let reasonId;
+      let reasonNoDetails = false;
+
+      if (reason.ClassificationId) reasonId = reason.ClassificationId;
+      else reasonId = reason.Id;
+
+      if (reason.NoDetails) reasonNoDetails = reason.NoDetails;
+
       let elt = $('<li></li>')
-        .attr('reason-id', reason.Id)
+        .attr('reason-id', reasonId)
         .attr('reason-text', reason.Display)
         .attr('details-required', reason.DetailsRequired);
       elt[0].reasondata = reason.Data;
@@ -441,7 +456,7 @@ require('x-datetimerange/x-datetimerange');
           }.bind(this)
         );
       }
-      else {
+      else if (!reasonNoDetails) {
         let applyWithComment = $('<div></div>')
           .addClass('applyreasonwithcomment').addClass('pushButton')
           .html(this.getTranslation('withComment', 'with comment'));
@@ -456,6 +471,19 @@ require('x-datetimerange/x-datetimerange');
             this.clickOnComment(e);
           }.bind(this)
         );
+        apply.click(
+          function (e) {
+            this.clickOnReason(e);
+          }.bind(this)
+        );
+      }
+      else {
+        let apply = $('<div></div>')
+          .addClass('applyreason').addClass('pushButton')
+          .html(this.getTranslation('apply', 'Apply'));
+        elt.append(applyWithComment)
+          .append(apply);
+
         apply.click(
           function (e) {
             this.clickOnReason(e);

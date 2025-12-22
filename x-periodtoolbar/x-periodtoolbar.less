@@ -42,9 +42,9 @@ x-periodtoolbar {
     //.bar-rounded-shadow; // Rounded border + shadow
 
     display: inline-block;
-    background-color: @container_color;
-    //color: @container_text_color;
-    border: 1px solid darken(@container_color, 10%);
+    background-color: @box_color;
+    //color: @box_text_color;
+    border: 1px solid darken(@box_color, 10%);
     padding: 0px;
     margin: 0 0 0 10px;
     border-radius: @cellbar-corner-radius;
@@ -154,15 +154,15 @@ x-periodtoolbar {
       width: 100%;
 
       rect {
-        fill: @container_text_color;
+        fill: @box_text_color;
       }
 
       polygon {
-        fill: @container_text_color;
+        fill: @box_text_color;
       }
 
       path {
-        fill: @container_text_color;
+        fill: @box_text_color;
       }
 
       transition: stroke 0.3s ease-in-out,
@@ -187,57 +187,57 @@ x-periodtoolbar {
   // SVG transition and colors -> IN common.less //.create_svg(@svgName, @baseColor: @color_text, @hoverColor: @color_highlight)
 
   .periodtoolbar-prev {
-    .create_svg_nostroke('previous', @container_text_color, @color_highlight);
+    .create_svg_nostroke('previous', @box_text_color, @color_highlight);
   }
 
   .periodtoolbar-next {
-    .create_svg_nostroke('next', @container_text_color, @color_highlight);
+    .create_svg_nostroke('next', @box_text_color, @color_highlight);
   }
 
   .periodtoolbar-zoomin {
-    .create_svg_nostroke('periodtoolbar-zoomin', @container_text_color, @color_highlight);
+    .create_svg_nostroke('periodtoolbar-zoomin', @box_text_color, @color_highlight);
     //background-image: url('@{imagedir}/periodtoolbar-zoomin.svg');
   }
 
   .periodtoolbar-zoomout {
-    .create_svg_nostroke('periodtoolbar-zoomout', @container_text_color, @color_highlight);
+    .create_svg_nostroke('periodtoolbar-zoomout', @box_text_color, @color_highlight);
     //background-image: url('@{imagedir}/periodtoolbar-zoomout.svg');
   }
 
   .periodtoolbar-periodselection {
-    .create_svg_nostroke('periodtoolbar-periodselection', @container_text_color, @color_highlight);
+    .create_svg_nostroke('periodtoolbar-periodselection', @box_text_color, @color_highlight);
   }
 
   .periodtoolbar-home {
-    .create_svg_nostroke('periodtoolbar-nowzoom', @container_text_color, @color_highlight);
+    .create_svg_nostroke('periodtoolbar-nowzoom', @box_text_color, @color_highlight);
   }
 
   .periodtoolbar-day {
-    .create_svg_nostroke('periodtoolbar-1dayzoom', @container_text_color, @color_highlight);
+    .create_svg_nostroke('periodtoolbar-1dayzoom', @box_text_color, @color_highlight);
   }
 
   .periodtoolbar-shift {
-    .create_svg_nostroke('periodtoolbar-shiftzoom', @container_text_color, @color_highlight);
+    .create_svg_nostroke('periodtoolbar-shiftzoom', @box_text_color, @color_highlight);
   }
 
   .periodtoolbar-week {
-    .create_svg_nostroke('periodtoolbar-1weekzoom', @container_text_color, @color_highlight);
+    .create_svg_nostroke('periodtoolbar-1weekzoom', @box_text_color, @color_highlight);
   }
 
   .periodtoolbar-month {
-    .create_svg_nostroke('periodtoolbar-1monthzoom', @container_text_color, @color_highlight);
+    .create_svg_nostroke('periodtoolbar-1monthzoom', @box_text_color, @color_highlight);
   }
 
   .periodtoolbar-quarter {
-    .create_svg_nostroke('periodtoolbar-1quarterzoom', @container_text_color, @color_highlight);
+    .create_svg_nostroke('periodtoolbar-1quarterzoom', @box_text_color, @color_highlight);
   }
 
   .periodtoolbar-semester {
-    .create_svg_nostroke('periodtoolbar-1semesterzoom', @container_text_color, @color_highlight);
+    .create_svg_nostroke('periodtoolbar-1semesterzoom', @box_text_color, @color_highlight);
   }
 
   .periodtoolbar-year {
-    .create_svg_nostroke('periodtoolbar-1yearzoom', @container_text_color, @color_highlight);
+    .create_svg_nostroke('periodtoolbar-1yearzoom', @box_text_color, @color_highlight);
   }
 
   .periodtoolbar-dialog-divinput {

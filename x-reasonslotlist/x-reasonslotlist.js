@@ -797,7 +797,6 @@ require('x-revisionprogress/x-revisionprogress');
      * @param {event} e - DOM event
      */
     checkBoxClick(e) {
-      debugger;
       let row = $(e.target).closest('.reasonslotlist-tr');
       let tdCheck = row.find('input[type=checkbox]');//.first();
       if (this._firstLoad) {

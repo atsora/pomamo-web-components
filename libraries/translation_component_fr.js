@@ -322,6 +322,18 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     title: 'Arrêts Non-Planifiés',
     options: 'Options Avancées',
   },
+  taskslist: {
+    Late: 'En retard',
+    lateTextAfter: '',
+    lateTextBefore: 'il y a',
+    Todo: 'A faire',
+    todoTextAfter: '',
+    todoTextBefore: 'encore',
+    Upcoming: 'À venir',
+    upcomingTextAfter: '',
+    upcomingTextBefore: 'dans'
+
+  },
   toollifemachine: {
     noOperation: "Pas d'opération"
   },

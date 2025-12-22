@@ -331,6 +331,18 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     title: 'Unplanned Stops',
     options: 'Advanced Options',
   },
+  taskslist: {
+    Late: 'Late',
+    lateTextAfter: 'ago',
+    lateTextBefore: '',
+    Todo: 'To do',
+    todoTextAfter: 'left',
+    todoTextBefore: '',
+    Upcoming: 'Upcoming',
+    upcomingTextAfter: '',
+    upcomingTextBefore: 'in '
+
+  },
   toollifemachine: {
     noOperation: 'No operation'
   },
@@ -649,6 +661,18 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   stopclassification : {
     title: 'Arrêts Non-Planifiés',
     options: 'Options Avancées',
+  },
+  taskslist: {
+    Late: 'En retard',
+    lateTextAfter: '',
+    lateTextBefore: 'il y a',
+    Todo: 'A faire',
+    todoTextAfter: '',
+    todoTextBefore: 'encore',
+    Upcoming: 'À venir',
+    upcomingTextAfter: '',
+    upcomingTextBefore: 'dans'
+
   },
   toollifemachine: {
     noOperation: "Pas d'opération"
