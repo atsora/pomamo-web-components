@@ -33,28 +33,19 @@ x-productiontrackertable {
         grid-template-columns: 1fr repeat(7, auto);
       }
 
-      /*
-      .header-hourly,
-      .header-summary,
-      .header-hourly-actual,
-      .header-hourly-target,
-      .header-summary-actual,
-      .header-range*/
       .header {
         font-weight: bold;
-
         background-color: @box_header_color;
         color: @box_header_text_color;
-        //border: 1px solid darken(@box_color, 10%);
       }
 
       >div {
-        border: 1px solid darken(@box_color, 10%);
         display: flex;
         align-items: center;
         justify-content: center;
         min-height: 1.6em;
         padding: 0.2em 0.5em;
+        border-radius: 6px;
 
         .text-position {
           text-align: center;
@@ -86,17 +77,6 @@ x-productiontrackertable {
         grid-column: 2;
       }
 
-      /*.header-hourly-target {
-        //grid-column: 3;
-      }
-      .header-summary-actual {
-        //grid-column: 4;
-      }
-      .header-summary-target {
-        //grid-column: 5;
-      }*/
-      //.header-capacity-value {}
-
       .header-range {
         grid-column: 1;
         line-height: 1.5em;
@@ -111,18 +91,26 @@ x-productiontrackertable {
       
       .hourly-actual {
         grid-column: 2;
+        background-color: @color_window;
+        border: 1px solid @color_window_border;
       }
 
       .hourly-target {
         grid-column: 3;
+        background-color: @color_window;
+        border: 1px solid @color_window_border;
       }
 
       .summary-actual {
         grid-column: 4;
+        background-color: @color_window;
+        border: 1px solid @color_window_border;
       }
 
       .summary-target {
         grid-column: 5;
+        background-color: @color_window;
+        border: 1px solid @color_window_border;
       }
     }
   }

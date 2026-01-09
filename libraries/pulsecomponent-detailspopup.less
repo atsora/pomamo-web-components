@@ -31,9 +31,38 @@
 // ALL other styles COULD be included elsewhere to avoid double 
 
 .dialog-running {
+  overflow: auto;
+
   .pulse-mainarea {
     overflow-y: auto; // Add scrollbar
-    //background-image: @background_image; // == body... maybe... but not enough good to be kept
+    border-width: 0;
+
+    x-grouparray .group-main li {
+      border-width: 0;
+    }
+
+    .tile {
+      padding: 14px 4px;
+      margin: 4px 22px;
+    }
+
+    .main-table {
+      margin-top: 24px;
+      margin-bottom: 20px;
+
+      .div-current:has(x-clock) {
+        border-radius: @border_radius_small;
+        border: 1px solid @color_window_border;
+        margin-left: 10px;
+      }
+
+      .div-machine:has(x-machinedisplay) {
+        border-radius: @border_radius_small;
+        background-color: @color_background_alternate;
+        margin-right: 12px;
+        padding: 12px;
+      }
+    }
 
     .pulse-mainarea-full {
       bottom: auto;
@@ -51,4 +80,8 @@
       height: auto;
     }
   }
+}
+
+x-groupsingroup {
+  max-height: 85% !important;
 }

@@ -113,7 +113,7 @@ require('x-freetext/x-freetext');
       return self;
     }
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         //case 'enableGroups': // Probably in config -> always
@@ -127,11 +127,11 @@ require('x-freetext/x-freetext');
       }
     }
 
-    validateParameters () {
+    validateParameters() {
       this.switchToNextContext();
     }
 
-    clearInitialization () {
+    clearInitialization() {
       $(this.element).empty();
 
       this._editbutton = undefined;
@@ -142,7 +142,7 @@ require('x-freetext/x-freetext');
     }
 
     // return value input - maybe define this function in a common lib
-    initParamForReport (divToFill, name, parameterkey, dataType, parameterType,
+    initParamForReport(divToFill, name, parameterkey, dataType, parameterType,
       defaultValue, value, required, hidden, helptext) {
       $(divToFill).addClass('parameter');
       $(divToFill).append("<input type='hidden' id='name' value='" + name + "' />");
@@ -164,7 +164,7 @@ require('x-freetext/x-freetext');
     }
 
     // Creation of the component (empty)
-    initialize () {
+    initialize() {
       this.addClass('pulse-text'); // Mandatory for loader
 
       // Parameters
@@ -226,12 +226,12 @@ require('x-freetext/x-freetext');
       this.switchToNextContext();
     }
 
-    displayError (message) {
+    displayError(message) {
       //this._disable(message);
     }
 
     // Overload to always refresh value
-    get isVisible () {
+    get isVisible() {
       // Si page login = Hidden = Do not call web service
       if (pulseConfig.isLoginPage()) {
         return false;
@@ -244,14 +244,14 @@ require('x-freetext/x-freetext');
     }
 
     // Return the Web Service URL here
-    getShortUrl () {
+    getShortUrl() {
       let url = 'Machine/Groups?Zoom=true&MachineList=true';
       // Login is set in global service call
       return url;
     }
 
     // Update the component with data which is returned by the web service in case of success
-    refresh (data) {
+    refresh(data) {
       // Store lists of available categories (=groups)
       this._groups = data.GroupCategories;
       this._machinesFromService = data.MachineList;
@@ -272,7 +272,7 @@ require('x-freetext/x-freetext');
     ///////////////////////////////////////////////////////////////
     // public FUNCTIONS FOR UPDATING THE SELECTION = open dialog //
     ///////////////////////////////////////////////////////////////
-    changeMachineSelection () {
+    changeMachineSelection() {
       this._createDialogIfNotDone();
 
       // open Dialog
@@ -284,7 +284,7 @@ require('x-freetext/x-freetext');
     //////////////////////////////////////////
     // FUNCTIONS FOR DIALOG                 //
     //////////////////////////////////////////
-    _createDialogIfNotDone () {
+    _createDialogIfNotDone() {
       if (undefined != this._dialogId)
         return;
 
@@ -309,7 +309,7 @@ require('x-freetext/x-freetext');
       // G
       this._switchToGroups_button = $('<button></button>')
         .addClass('machineselection-button')
-        .addClass('machineselection-switch-to-groups').html(this.getTranslation('groupsButton', 'Groups'));
+        .addClass('machineselection-switch-to-groups').html(this.getTranslation('groupsButton', ' by Groups'));
       this._switchToGroups_button.click(function () {
         this._groupSelectionArray = [];
         this._machineSelectionArray = [];
@@ -320,7 +320,7 @@ require('x-freetext/x-freetext');
       // M
       this._switchToMachines_button = $('<button></button>')
         .addClass('machineselection-button')
-        .addClass('machineselection-switch-to-machines').html(this.getTranslation('machinesButton', 'Machines'));
+        .addClass('machineselection-switch-to-machines').html(this.getTranslation('machinesButton', ' by Machines'));
       this._switchToMachines_button.click(function () {
         this._groupSelectionArray = [];
         this._machineSelectionArray = [];
@@ -329,13 +329,17 @@ require('x-freetext/x-freetext');
       }.bind(this));
       div_switch_buttons.append(this._switchToMachines_button);
       // append buttons
-      div_buttons.append(div_switch_buttons);
-      page1.append(div_buttons);
+
       // END - FIRST div - for buttons
+
+      let div_container_page1 = $('<div></div>')
+        .addClass('machineselection-container-page1');
+
+      div_container_page1.append(div_switch_buttons);
 
       // GROUPS
       this._categoryList = $('<div></div>').addClass('machineselection-categorylist');
-      page1.append(this._categoryList);
+      div_container_page1.append(this._categoryList);
 
       // MACHINES
       this._machinesList = $('<div></div>').addClass('machineselection-machines-list');
@@ -345,10 +349,10 @@ require('x-freetext/x-freetext');
 
       this._machinesSearchDiv = $('<div></div>').addClass('machineselection-machines-search-div');
 
-      this._clearSearchButton = $('<button title="Clear search" role="button"></button>')
+      /*this._clearSearchButton = $('<button title="Clear search" role="button"></button>')
         .addClass('buttonDialog')
         .addClass('machineselection-clear-search');
-      this._machinesSearchDiv.append(this._clearSearchButton);
+      this._machinesSearchDiv.append(this._clearSearchButton);*/
 
       this._inputSearch = $('<input></input>').addClass('machineselection-machines-search-input')
         .attr('type', 'text').attr('placeholder', this.getTranslation('searchDots', 'Search...'));
@@ -357,7 +361,7 @@ require('x-freetext/x-freetext');
       // FILL must be one AFTER dialog creation to display icons 
       //this._fillMachinesList();
 
-      page1.append(this._machinesListContainer).append(this._machinesSearchDiv);
+      div_container_page1.append(this._machinesSearchDiv).append(this._machinesListContainer);
 
       // Use filter
       $(this._inputSearch).on('input', function () {
@@ -365,10 +369,13 @@ require('x-freetext/x-freetext');
       }.bind(this));
 
       // Clear filter
-      $(this._clearSearchButton).click(function () {
+      /*$(this._clearSearchButton).click(function () {
         $(this._inputSearch).val('');
         this._showHideMachinesInList();
-      }.bind(this));
+      }.bind(this));*/
+
+      div_container_page1.append(div_buttons);
+      page1.append(div_container_page1);
 
 
       ////////// //////////
@@ -396,7 +403,7 @@ require('x-freetext/x-freetext');
         'textchange-context': 'machineselection'
       });
       this._useMachineButton = $('<div></div>').addClass('machineselection-usemachines-button')
-        .attr('title', this.getTranslation('switchToMachineSelection','Switch to machine selection'));
+        .attr('title', this.getTranslation('switchToMachineSelection', 'Switch to machine selection'));
       this._previewHeader = $('<div></div>').addClass('machineselection-preview-header')
         .append(previewTitle).append(this._freeTextLastUpdate).append(this._useMachineButton);
       this._previewList = $('<div></div>').addClass('machineselection-preview-list');
@@ -502,7 +509,7 @@ require('x-freetext/x-freetext');
     ////////////////////////////////////////////////
     // Toggle between machine and group selection //
     ////////////////////////////////////////////////
-    _switchToMachineSelection () {
+    _switchToMachineSelection() {
       this._useMachineSelection = true;
 
       if (this._machinesListContainer == undefined)
@@ -510,7 +517,7 @@ require('x-freetext/x-freetext');
       this._previewHeader.hide();
       this._previewListContainer.hide();
 
-      this._selectionTitle.html(this.getTranslation('selectedMachines','Selected machines'));
+      this._selectionTitle.html(this.getTranslation('selectedMachines', 'Selected machines'));
 
       this._machinesSearchDiv.show();
       this._machinesListContainer.show();
@@ -528,7 +535,7 @@ require('x-freetext/x-freetext');
       this._switchToGroups_button.prop('disabled', false);
     }
 
-    _switchToGroupSelection () {
+    _switchToGroupSelection() {
       this._useMachineSelection = false;
 
       if (this._machinesListContainer == undefined)
@@ -536,7 +543,7 @@ require('x-freetext/x-freetext');
       this._previewHeader.show();
       this._previewListContainer.show();
 
-      this._selectionTitle.html(this.getTranslation('selectedGroups','Selected groups'));
+      this._selectionTitle.html(this.getTranslation('selectedGroups', 'Selected groups'));
 
       this._machinesSearchDiv.hide();
       this._machinesListContainer.hide();
@@ -552,7 +559,7 @@ require('x-freetext/x-freetext');
     ////////////////
     // ADD EVENTS //
     ////////////////
-    _addMoveUpDownEvents () {
+    _addMoveUpDownEvents() {
       var machineselection = this;
 
       $(this._selectionList).find('.reorderDownButton').click(function () {
@@ -601,11 +608,11 @@ require('x-freetext/x-freetext');
       });
     }
 
-    _addDragAndDropEvents () {
+    _addDragAndDropEvents() {
       var machineselection = this;
       var dragSrcEl = null;
 
-      function handleDragStart (e) {
+      function handleDragStart(e) {
         // Target (this) element is the source node.
         dragSrcEl = this;
 
@@ -614,7 +621,7 @@ require('x-freetext/x-freetext');
 
         this.classList.add('dragElem');
       }
-      function handleDragOver (e) {
+      function handleDragOver(e) {
         if (e.preventDefault) {
           e.preventDefault(); // Necessary. Allows us to drop.
         }
@@ -633,17 +640,17 @@ require('x-freetext/x-freetext');
         return false;
       }
 
-      function handleDragEnter (e) {
+      function handleDragEnter(e) {
         // this / e.target is the current hover target.
       }
 
-      function handleDragLeave (e) {
+      function handleDragLeave(e) {
         // this / e.target is previous target element.
         this.classList.remove('dragOverTop');
         this.classList.remove('dragOverBottom');
       }
 
-      function handleDrop (e) {
+      function handleDrop(e) {
         // this/e.target is current target element.
 
         if (e.stopPropagation) {
@@ -698,7 +705,7 @@ require('x-freetext/x-freetext');
         return false;
       }
 
-      function handleDragEnd (e) {
+      function handleDragEnd(e) {
         // this/e.target is the source node.
         this.classList.remove('dragOverTop');
         this.classList.remove('dragOverBottom');
@@ -725,7 +732,7 @@ require('x-freetext/x-freetext');
     ////////////////////////////////////////////////////////////////////////
 
     // Fill machines list
-    _fillMachinesList () {
+    _fillMachinesList() {
       if (this._machinesList == undefined)
         return;
       $(this._machinesList).empty();
@@ -824,7 +831,7 @@ require('x-freetext/x-freetext');
       }
     }
 
-    _showHideMachinesInList () {
+    _showHideMachinesInList() {
       let searchString = $(this._inputSearch)[0].value;
       // Use as filter
 
@@ -840,7 +847,7 @@ require('x-freetext/x-freetext');
       }
     }
 
-    _changeSelectionInMachineList () {
+    _changeSelectionInMachineList() {
       if (this._dialogPage1 == undefined)
         return;
 
@@ -865,7 +872,7 @@ require('x-freetext/x-freetext');
     // FUNCTIONS FOR UPDATING THE SELECTION : storage -> display //
     ///////////////////////////////////////////////////////////////
 
-    _fillSelection () {// -> to fill right panel (Warning ! Change _fillSummaryDisplay accordingly)
+    _fillSelection() {// -> to fill right panel (Warning ! Change _fillSummaryDisplay accordingly)
       if (this._selectionList == undefined)
         return;
       $(this._selectionList).empty();
@@ -878,7 +885,7 @@ require('x-freetext/x-freetext');
 
       if (arrayToDisplay.length == 0) {
         let noSel = $('<span></span>').addClass('no-selection')
-          .html(this.getTranslation('noSelection','No selection'));
+          .html(this.getTranslation('noSelection', 'No selection'));
         this._selectionList.append(noSel);
 
         // Update preview = empty
@@ -912,17 +919,17 @@ require('x-freetext/x-freetext');
         row.append(spanDisplay).append(removeButton);
         if (displayClass.singlemachine) {
           let spanMachine = $('<span></span>').addClass('machineselection-machine-label')
-            .html(this.getTranslation('machineKey','M'));
+            .html(this.getTranslation('machineKey', 'M'));
           row.append(spanMachine);
         }
         else {
           let spanGroup = $('<span></span>').addClass('machineselection-group-label')
-            .html(this.getTranslation('groupKey','G'));
+            .html(this.getTranslation('groupKey', 'G'));
           row.append(spanGroup);
         }
         if (displayClass.dynamic) {
           let spanDynamic = $('<span></span>').addClass('machineselection-dynamic-label')
-            .html(this.getTranslation('dynamicKey','DYNAMIC'));
+            .html(this.getTranslation('dynamicKey', 'DYNAMIC'));
           row.append(spanDynamic);
         }
         selection.append(row);
@@ -979,7 +986,7 @@ require('x-freetext/x-freetext');
       this._fillMachinePreview();
     }
 
-    _fillMachinePreview () {
+    _fillMachinePreview() {
       this._previewList.empty();
       this._freeTextLastUpdate[0].cleanDisplay();
 
@@ -1014,7 +1021,7 @@ require('x-freetext/x-freetext');
     ///////////////////////////////////////////////////////
 
     // Array -> CONFIG
-    _storeSelection () {
+    _storeSelection() {
       if (false == this._useMachineSelection) {
         // Update machines list
         let grouparrays = $(this._previewList).find('x-grouparray');
@@ -1062,7 +1069,7 @@ require('x-freetext/x-freetext');
       }
     }
 
-    _getSelectedIndexes (attribute) {
+    _getSelectedIndexes(attribute) {
       let arr = [];
       let arrString = this.getConfigOrAttribute(attribute, '')
       if (arrString != '') {
@@ -1072,7 +1079,7 @@ require('x-freetext/x-freetext');
     }
 
     // CONFIG -> this._groupSelectionArray / this._machineSelectionArray
-    _loadSelection () {
+    _loadSelection() {
       let joinedMachines = "";
       let joinedGroups = "";
 
@@ -1136,7 +1143,7 @@ require('x-freetext/x-freetext');
       }
     }
 
-    _clearSelection () {
+    _clearSelection() {
       $(this._dialogPage1).find('input:checkbox').prop('checked', false);
       //this._switchToGroupSelection(); // Show / Hide -> Not anymore
 
@@ -1149,7 +1156,7 @@ require('x-freetext/x-freetext');
       this._changeSelectionInMachineList();
     }
 
-    _updateNumberOfSelections (mainCategory) {
+    _updateNumberOfSelections(mainCategory) {
       let selections = $(mainCategory).find('input:checkbox');
       let nbSel = 0;
       for (let iSel = 0; iSel < selections.length; iSel++) {
@@ -1167,7 +1174,7 @@ require('x-freetext/x-freetext');
     }
 
     ///////////////////////////////////////////////////////////////////////
-    _storeDisplays () {
+    _storeDisplays() {
       this._groupDisplays.clear();
 
       let storeSubGroups = function (machineselection, groups) {
@@ -1216,7 +1223,7 @@ require('x-freetext/x-freetext');
     ///////////////////////////////////////////////////////////////////////
     // FUNCTIONS FOR DISPLAYING groups and selection in left panel       //
     ///////////////////////////////////////////////////////////////////////
-    _fillCategoryList () {
+    _fillCategoryList() {
       if (this._categoryList == undefined)
         return; // Can happen before dialog creation
 
@@ -1239,14 +1246,13 @@ require('x-freetext/x-freetext');
               .html(groups[i].TreeName);
             let nbSel = $('<span></span>').addClass('number-of-selections').html('');
             let checkbox = $('<input type="checkbox" groupid="' + groups[i].Id + '" dynamic="' + groups[i].Dynamic + '">');
-            let divRow = $('<div></div>').addClass('machineselection-category-row')
-              .append(spanDisplay).append(nbSel);
+            let divRow = $('<div></div>').addClass('machineselection-category-row'); 
+            divRow.append(showHide).append(checkbox).append(spanDisplay).append(nbSel);
             if (isMain)
               divRow.addClass('is-main');
-            divRow.append(showHide).append(checkbox);
             if (groups[i].Dynamic) {
               let spanDynamic = $('<span></span>').addClass('machineselection-dynamic-label')
-                .html(machineselection.getTranslation('dynamicKey','DYNAMIC'));
+                .html(machineselection.getTranslation('dynamicKey', 'DYNAMIC'));
               divRow.append(spanDynamic);
             }
             let category = $('<div></div>').addClass('machineselection-category').append(divRow);
@@ -1341,7 +1347,8 @@ require('x-freetext/x-freetext');
           if (!pulseUtility.isNotDefined(omitCat) && omitCat == true
             && groups.length == 1 && groups[0].Display != '') {
             // Ignore ONE LEVEL
-            let category = $('<div></div>').addClass('machineselection-category');
+            let category = $('<div></div>').addClass('machineselection-category')
+              .addClass('main-category');
             let nbSubGroups = getSubGroups(this, category, groups, true);
             if (nbSubGroups == 1)
               fullListToScroll.append(category);
@@ -1363,8 +1370,9 @@ require('x-freetext/x-freetext');
             let nbSel = $('<span></span>').addClass('number-of-selections').html('');
             let divHeader = $('<div></div>')
               .addClass('machineselection-category-row').addClass('is-main')
-              .append(span).append(nbSel).append(showHide);
+              .append(showHide).append(span).append(nbSel);
             let category = $('<div></div>').addClass('machineselection-category')
+              .addClass('main-category')
               .append(divHeader);
 
             // Collapse / Expand machine categories
@@ -1403,7 +1411,7 @@ require('x-freetext/x-freetext');
 
     // _groupSelectionArray -> fill check boxes accordingly
     // (andOpen == true) -> open selection
-    _changeSelectionInCategoryList (andOpen) {
+    _changeSelectionInCategoryList(andOpen) {
       if (this._dialogPage1 == undefined)
         return;
 
@@ -1451,7 +1459,7 @@ require('x-freetext/x-freetext');
     /////////////////////////////////////////////////////////
     // FUNCTIONS FOR DISPLAYING selected machines / groups //
     /////////////////////////////////////////////////////////
-    _fillSummaryDisplay () {
+    _fillSummaryDisplay() {
       if (this._summary == undefined)
         return;
       $(this._summary).empty();
@@ -1498,7 +1506,7 @@ require('x-freetext/x-freetext');
     /////////////////////////////////////////////////////////////
     // EXTERNAL FUNCTION TO DISPLAY selected machines / groups //
     /////////////////////////////////////////////////////////////
-    fillExternalSummaryDisplay (summary) {
+    fillExternalSummaryDisplay(summary) {
       if (summary == undefined)
         return;
       $(summary).empty();
@@ -1514,7 +1522,7 @@ require('x-freetext/x-freetext');
       let oneGroupIsAdded = false;
       for (let iGroup = 0; iGroup < arrayToDisplay.length; iGroup++) {
         let groupId = arrayToDisplay[iGroup];
-        let display = this.getTranslation('noMachineSelection','No machine selection');
+        let display = this.getTranslation('noMachineSelection', 'No machine selection');
         if (this._groupDisplays.has(groupId)) {
           let displayClass = this._groupDisplays.get(groupId);
           display = displayClass.display;
@@ -1528,7 +1536,7 @@ require('x-freetext/x-freetext');
 
       // Missing config or not :
       if (!oneGroupIsAdded) {
-        summary.html(this.getTranslation('noSelectedMachine','No selected machine'));
+        summary.html(this.getTranslation('noSelectedMachine', 'No selected machine'));
         summary.addClass('missing-config');
       }
       else {
@@ -1540,16 +1548,16 @@ require('x-freetext/x-freetext');
     /////////////////////////////////////////////////////////////
     // EXTERNAL FUNCTIONS TO get selected machines / groups    //
     /////////////////////////////////////////////////////////////
-    getMachinesArray () {
+    getMachinesArray() {
       return ([].concat(this._machineSelectionArray));
     }
-    getGroupsArray () {
+    getGroupsArray() {
       return ([].concat(this._groupSelectionArray));
     }
-    getMachinesString () {
+    getMachinesString() {
       return this._machineSelectionArray.join();
     }
-    getGroupsString () {
+    getGroupsString() {
       return this._groupSelectionArray.join();
     }
 

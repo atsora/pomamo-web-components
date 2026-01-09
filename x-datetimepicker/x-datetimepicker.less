@@ -48,10 +48,42 @@ x-datetimepicker {
   x-datetimepicker {
     .datetimepicker-input-time {
       font-size: 30px;
+      background-color: @color_window;
+      color: @color_text_alternate;
+      border-radius: @border_radius_small;
+      outline: 0 none transparent;
+      outline-offset: 0;
+      border: 1px solid @color_window_border;
+
+      &:hover {
+        border-color: @color_window_border_light;
+        color: @color_text;
+      }
+
+      &:focus {
+        border-color: @color_highlight;
+        color: @color_text;
+      }
     }
 
     .datetimepicker-input-date {
       font-size: 30px;
+      background-color: @color_window;
+      color: @color_text_alternate;
+      border-radius: @border_radius_small;
+      outline: 0 none transparent;
+      outline-offset: 0;
+      border: 1px solid @color_window_border;
+
+      &:hover {
+        border-color: @color_window_border_light;
+        color: @color_text;
+      }
+
+      &:focus {
+        border-color: @color_highlight;
+        color: @color_text;
+      }
     }
   }
 }

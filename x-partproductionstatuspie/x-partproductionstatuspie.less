@@ -24,14 +24,13 @@ x-partproductionstatuspie {
   }
   
   .partproductionstatuspie-invisible-bk{
-    stroke: @widget_background;
-    filter: url(#innerShadow);
+    //stroke: @widget_background;
+    stroke: lighten(@color_background_alternate, 15%);
   }
 
   /* COLORS -> maybe linked to theme - same as bar */
   .donut-ring-background{
     stroke: @color_alternate; //== @color_window;
-    filter: url(#innerShadow);
   }
   
   .stroke-color-as-background{ // For dash display
@@ -43,7 +42,6 @@ x-partproductionstatuspie {
     stroke: @widget_background; // @color_text; Nearly hidden if no info
   }
   .completion-stroke-activeevent{ // was stop 
-    filter: url(#innerShadow);
     stroke: @color_gray; // @color_blue;
 
     // +Severity level :
@@ -52,7 +50,6 @@ x-partproductionstatuspie {
     }
   }
   .completion-stroke-comingevent{
-    filter: url(#innerShadow);
     stroke: @color_gray; // @color_blue;
   }
 

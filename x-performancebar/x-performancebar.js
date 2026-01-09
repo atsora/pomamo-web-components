@@ -82,12 +82,51 @@ var eventBus = require('eventBus');
         let pointCx = margin.left + percentMax * (width - margin.left - margin.right) - offsetRight;
         let pointCy = height - margin.bottom;
 
-        // Compute the path
-        let d = 'M ' + pointAx + ',' + pointAy; // Initial position
-        d += ' L ' + pointCx + ',' + pointAy; // First segment
-        d += ' L ' + pointCx + ',' + pointCy; // Second segment
-        d += ' L ' + pointAx + ',' + pointCy; // Third segment
-        d += ' z'; // Close the figure
+        // Déterminer quels coins doivent être arrondis
+        let isFirstSubSegment = (segmentNumber == 0 && colorNumber == 0);
+        let isLastSubSegmentOfSegment = (colorNumber == (subSegmentCount - 1));
+        let isLastSegment = (segmentNumber == (segments.length - 1));
+        let radius = 6;
+
+        // Compute the path with selective rounded corners
+        let d = '';
+        if (isFirstSubSegment && !isLastSubSegmentOfSegment) {
+          // First segment : round only the left corners
+          d = 'M ' + (pointAx + radius) + ',' + pointAy;
+          d += ' L ' + pointCx + ',' + pointAy;
+          d += ' L ' + pointCx + ',' + pointCy;
+          d += ' L ' + (pointAx + radius) + ',' + pointCy;
+          d += ' Q ' + pointAx + ',' + pointCy + ' ' + pointAx + ',' + (pointCy - radius);
+          d += ' L ' + pointAx + ',' + (pointAy + radius);
+          d += ' Q ' + pointAx + ',' + pointAy + ' ' + (pointAx + radius) + ',' + pointAy;
+        } else if (isLastSegment) {
+          // Last segment : round all corners
+          d = 'M ' + (pointAx + radius) + ',' + pointAy;
+          d += ' L ' + (pointCx - radius) + ',' + pointAy;
+          d += ' Q ' + pointCx + ',' + pointAy + ' ' + pointCx + ',' + (pointAy + radius);
+          d += ' L ' + pointCx + ',' + (pointCy - radius);
+          d += ' Q ' + pointCx + ',' + pointCy + ' ' + (pointCx - radius) + ',' + pointCy;
+          d += ' L ' + (pointAx + radius) + ',' + pointCy;
+          d += ' Q ' + pointAx + ',' + pointCy + ' ' + pointAx + ',' + (pointCy - radius);
+          d += ' L ' + pointAx + ',' + (pointAy + radius);
+          d += ' Q ' + pointAx + ',' + pointAy + ' ' + (pointAx + radius) + ',' + pointAy;
+        } else if (isLastSubSegmentOfSegment && !isFirstSubSegment) {
+          // Last sub-segment of a segment : round only the right corners
+          d = 'M ' + pointAx + ',' + pointAy;
+          d += ' L ' + (pointCx - radius) + ',' + pointAy;
+          d += ' Q ' + pointCx + ',' + pointAy + ' ' + pointCx + ',' + (pointAy + radius);
+          d += ' L ' + pointCx + ',' + (pointCy - radius);
+          d += ' Q ' + pointCx + ',' + pointCy + ' ' + (pointCx - radius) + ',' + pointCy;
+          d += ' L ' + pointAx + ',' + pointCy;
+          d += ' z';
+        } else {
+          // Pas d'arrondi
+          d = 'M ' + pointAx + ',' + pointAy;
+          d += ' L ' + pointCx + ',' + pointAy;
+          d += ' L ' + pointCx + ',' + pointCy;
+          d += ' L ' + pointAx + ',' + pointCy;
+          d += ' z';
+        }
         path.setAttribute('d', d);
 
         // Apply color

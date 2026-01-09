@@ -10,39 +10,42 @@
 * MAIN COLORS *
 **************/
 
-@color_window: #393939;
-@color_text: #dfdfdf;
-@color_window_alternate: #303030;
-@color_text_alternate: #dfdfdf;
+@color_window: #09090b;
+@color_background: #18181b;
+@color_background_alternate: #27272A;
+@color_window_alternate: @color_background_alternate;
+@color_text: #ffffff;
+@color_text_alternate: #a1a1aa;
+@color_text_button: #d4d4d8;
 @color_alternate: #dfdfdf; // Not text
-@color_highlight: #6faef5;
+@color_highlight: #38bff8;
 @color_highlight_contrasted: #121212;
-@color_highlight_alternate: #dfdfdf; // Background for highlight
+@color_highlight_alternate: #27272a; // Background for highlight
 
-@color_red: #df4343;
-@color_orange: #DF7722;
+
+@color_red: #B91C1C;
+@color_orange: #c2410c;
 @color_yellow: #eeee22;
-@color_blue: #0078D7;
-@color_green: #1dab00;
-@color_gray: #888;
+@color_blue: #0369A1;
+@color_green: #15803d;
+@color_gray: #27272A;
 @color_white: #dfdfdf;
 @color_purple: rgb(189, 77, 129);
-
 
 /******************
 * RELATIVE COLORS *
 ******************/
 
 // Containers
-@color_window_border: darken(@color_window, 10%);
-@color_window_border_light: lighten(@color_window, 15%);
+@color_window_border: #3f3f46;
+@color_window_border_light: lighten(@color_window_border, 15%);
 @color_window_alternate_border: darken(@color_window_alternate, 10%);
 @color_window_hover: lighten(@color_window, 5%);
-@box_color: @color_window;
+@box_color: @color_background;
 @box_text_color: @color_text;
 @box_text_color_transparent: rgba(223, 223, 223, 0.3); // @color_text + opacity
 @box_header_color: @color_window_alternate;
-@box_header_text_color: @color_text_alternate;
+@box_header_text_color: @color_text;
 
 // Input
 @input_background_color: @color_text;
@@ -62,6 +65,7 @@
 @widget_background: @box_header_color;
 @widget_text: @color_text_alternate;
 @widget_separator: @color_text_alternate;
+@color_needle: #f1f1f1;
 // Widgets - opposite color (setup)
 @widget_contrasted_background: darken(#ffffff, 2.5%);
 ;
@@ -80,7 +84,7 @@
 
 @imagedir: "../../images";
 @background_image: url('@{imagedir}/background_dark.png'); // color: @color_text_alternate
-@product_logo: url('@{imagedir}/product_logo_dark.svg');
+@product_logo: url('@{imagedir}/product_logo.svg');
 @customer_logo: url('@{imagedir}/customer_logo_dark.png');
 
 
@@ -95,12 +99,6 @@
 * VUE APP COLORS *
 *****************/
 
-@vue-bg-red: #B91C1C;
-@vue-bg-green: #047857;
-@vue-bg-orange: #c2410c;
-@vue-bg-blue: #0369A1;
-@vue-bg-gray: #27272A;
-
 @vue-text-red: #FCA5A5;
 @vue-text-green: #6EE7B7;
 @vue-text-orange: #fa8;
@@ -113,7 +111,7 @@
 
 :root {
   // MAIN APP Colors
-  --app_bk_color: #393939; //rgb(3, 78, 162); // Blue
+  --app_bk_color: #18181B; //rgb(3, 78, 162); // Blue
   --app_text_color: #dfdfdf;
 
   // Shadows - TODO : dispatch or make uniform ?
@@ -133,14 +131,14 @@
   --header_border_color: #202020;
 
   // Right / Left panels
-  --panel_bk_color: #393939;
+  --panel_bk_color: #18181B;
   --panel_text_color: #dfdfdf;
   --panel_border_color: #202020;
   --box_in_panel_bk_color: #202020; // Ex: Button
   --box_in_panel_text_color: #dfdfdf;
 
   // Bottom / Legend
-  --legend_bk_color: #393939;
+  --legend_bk_color: #18181B;
   --legend_text_color: #dfdfdf;
   --legend_border_color: #272727;
 
@@ -151,7 +149,7 @@
 
   // Any box in main display, with ou without header
   --box_border_color: #202020;
-  --box_bk_color: #393939;
+  --box_bk_color: #18181B;
   --box_text_color: #dfdfdf;
   --box_header_bk_color: #303030;
   --box_header_text_color: #dfdfdf;
@@ -165,9 +163,12 @@
   --chart_grid_color: rgba(255, 255, 255, 0.1);
   --chart_axis_color: #dfdfdf;
 
-  /*
+  // Color
+  --color_green: #15803d;
+  --color_blue: #0369A1;
+
   // BUTTONS DISCREET
 
   // BUTTONS SHOWY
-*/
+
 }

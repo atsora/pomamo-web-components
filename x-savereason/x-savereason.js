@@ -295,7 +295,6 @@ require('x-datetimerange/x-datetimerange');
 
 
     _getInfosData() {
-      debugger;
       let divReason = $(this.element).find('.savereason-info-reason');
       let divModes = $(this.element).find('.savereason-info-modes');
       if (this._reasonsSelected.length == 1) {
@@ -748,7 +747,6 @@ require('x-datetimerange/x-datetimerange');
     }
 
     addReason(reason) {
-      debugger;
       if (reason) {
         if (reason.range && typeof reason.range != 'string') {
           return;

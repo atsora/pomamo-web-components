@@ -17,8 +17,8 @@ svg {
 
 /* SELECTION TABLE - should be changed - but always used in 2019-01 */
 .pulse-selection-table-container {
-  background-color: @color_window_alternate;
-  color: @color_text_alternate;
+  background-color: @color_background;
+  color: @color_text;
 
   table {
     width: 100%;
@@ -586,13 +586,14 @@ svg {
         // flex-grow: 2; NEVER else bar can be too wide for small text
 
         //padding: 0 6px;
-        border-right: 1px solid @widget_separator;
+        border-right: 1px solid @color_window_border;
 
         &.clickable {
           cursor: pointer;
+          color: @color_text_button;
 
           &:hover {
-            background-color: @color_highlight;
+            background-color: @color_background_alternate;
           }
         }
       }
@@ -614,20 +615,21 @@ svg {
       padding: 0 6px;
 
       &.pulse-cellbar-left-border {
-        border-left: 1px solid @widget_separator;
+        border-left: 1px solid @color_window_border;
       }
 
       &.pulse-cellbar-past-data {
         height: 2em;
         overflow: hidden;
         //padding: 0 6px;
-        border-left: 1px solid @widget_separator;
+        border-left: 1px solid @color_window_border;
+        color: @color_text_button;
 
         // Always clickable :
         cursor: pointer;
 
         &:hover {
-          background-color: @color_highlight;
+          background-color: @color_background_alternate;
         }
       }
     }
@@ -1687,12 +1689,10 @@ x-machinedisplay.pulse-component-warning {
   box-sizing: border-box;
   height: 100%;
   width: 100%;
-
   margin: auto;
-
-  // colors = like .tile-title
-  background-color: @box_header_color;
-  color: @box_header_text_color;
+  color: @color_text;
+  border-radius: @border_radius_small;
+  border: 1px solid @color_window_border;
 
   svg {
     box-sizing: border-box;

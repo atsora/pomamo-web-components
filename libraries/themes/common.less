@@ -35,6 +35,11 @@
 
 @bar_rounded_border: rgba(0, 0, 0, 0.3);
 
+// Corner radius
+
+@border_radius: 12px;
+@border_radius_small: 6px;
+
 
 /***************
 * COMMON STYLE *
@@ -71,7 +76,7 @@
   }
 }
 
-.create_svg_nostroke(@svgName, @baseColor: @color_text, @hoverColor: @color_highlight) {
+.create_svg_nostroke(@svgName, @baseColor: @color_text, @hoverColor: @color_background_alternate) {
   background-image: url('@{imagedir}/@{svgName}.svg');
   background-repeat: no-repeat;
 
@@ -83,9 +88,8 @@
     color: @baseColor; // to use currentColor
     transition: stroke 0.3s ease-in-out, fill 0.3s ease-in-out;
   }
-  &:hover svg {
-    fill: @hoverColor;
-    color: @hoverColor; // to use currentColor
+  &:hover {
+    background-color: @hoverColor;
   }
   &:disabled svg {
     fill: @baseColor;
@@ -133,19 +137,15 @@
 
 .button-rounded-shadow {
   position: relative;
-  border-radius: @cellbar-corner-radius;
+  border-radius: @border_radius_small;
   overflow: hidden;
-
   font-weight: bold;
-
-  background-color: @input_background_color;
-  color: @input_color_bold;
-  border: 1px solid @input_border_color;
+  background-color: @color_background;
+  color: @color_text_button;
+  border: 1px solid @color_window_border;
 
   &:hover {
-    background-color: @input_background_color_hover;
-    color: @input_color_bold;
-    border: 1px solid @input_border_color;
+    background-color: @color_background_alternate;
   }
 
   &:disabled {
@@ -163,7 +163,6 @@
     left: 0;
     right: 0;
     bottom: 0;
-    box-shadow: inset 0 0 10px @bar_rounded_border;
     border-radius: 3px;
   }
 }
@@ -171,14 +170,14 @@
 // bar : rounded + shadow
 .bar-rounded-shadow {
   position: relative;
-  background-color: @widget_background;
-  color: @widget_text;
+  background-color: @color_background_alternate;
+  color: @color_text;
 
   a {
     color: @widget_text;
   }
 
-  border-radius: @cellbar-corner-radius;
+  border-radius: @border_radius_small;
   overflow: hidden;
 
   &::after {
@@ -190,7 +189,6 @@
     left: 0;
     right: 0;
     bottom: 0;
-    box-shadow: inset 0 0 10px @bar_rounded_border;
     border-radius: 3px;
   }
 }

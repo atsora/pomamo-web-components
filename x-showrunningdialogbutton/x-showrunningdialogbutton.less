@@ -17,6 +17,12 @@ x-showrunningdialogbutton {
     width: 22px;
     margin: 4px;
     cursor: pointer;
+    padding: 6px;
+    border-radius: @border_radius_small;
+
+    &:hover {
+      background-color: lighten(@color_background_alternate, 15%);
+    }
 
     svg {
       height: 100%;
@@ -25,8 +31,5 @@ x-showrunningdialogbutton {
       transition: stroke 0.3s ease-in-out, fill 0.3s ease-in-out;
     }
 
-    &:hover svg {
-      fill: @color_highlight;
-    }
   }
 }

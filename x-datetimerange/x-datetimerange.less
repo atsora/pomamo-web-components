@@ -12,119 +12,143 @@
 
 @button-icon-size : 24px; // Could be common
 
-x-datetimerange{
+x-datetimerange {
   .datetimerange {
     text-align: center;
     width: 100%;
   }
 
-  .datetimerange-dialog-div-warning{
+  .datetimerange-dialog-div-warning {
     color: red;
   }
-  .datetimerange-dialog-span-warning{
+
+  .datetimerange-dialog-span-warning {
     margin: 8px;
   }
 
   .datetimerange-rangedisplay {
-    .bar-rounded-shadow; // Rounded border + shadow
+    border-radius: @border_radius_small;
     display: inline-block;
   }
-    
+
   ol.datetimerange-toolbar {
     //.bar-rounded-shadow; // Rounded border + shadow
 
     display: inline-flex;
     padding: 0px;
-    list-style-type:none;
+    list-style-type: none;
     margin: 0 0 5px 0;
     vertical-align: top;
   }
-  
+
   .datetimerange-li-btn {
-    display:inline-block;
+    display: inline-block;
     margin: 4px 4px 4px 0;
     vertical-align: top;
   }
+
   .datetimerange-li-text {
-    display:inline-block;
+    display: inline-block;
     margin: 4px 4px 4px 0;
     vertical-align: top;
     height: @button-icon-size;
     min-width: 300px;
-  }  
+  }
 
   .datetimerange-display {
-    min-width: 150px; // was 200 but problem for save reason
+    min-width: 150px;
     text-align: center;
     padding: 4px; // 4px 4px 4px 0;
     line-height: @button-icon-size;
     vertical-align: middle;
-    //color: @box_text_color; // again else missing color
+    color: @color_text;
   }
 
-  .datetimerange-editable{
+  .datetimerange-editable {
     cursor: pointer;
+    color: @color_text_button;
+    border-radius: @border_radius_small;
+
     &:hover {
-      color:@color_highlight; // !important;
+      background-color: @color_background_alternate;
     }
   }
+
   /*buttons in toolbar*/
   .datetimerange-btn {
     height: @button-icon-size;
-    width:  @button-icon-size;
+    width: @button-icon-size;
     cursor: pointer;
-    //svg {
-      //height: 100%;
-      //width: 100%;
-      //fill: @color_text;
-      //transition: stroke 0.3s ease-in-out, fill 0.3s ease-in-out;
-    //}
-    /*
-    &:hover svg {
-      fill: @color_highlight;
-    }*/
   }
+
   // SVG transition and colors -> same AS common.less . Why is it not available ???
   //.create_svg(@svgName, @baseColor: @color_text, @hoverColor: @color_highlight)
-  
-  .datetimerange-button-previous{
-    //background-image: url("@{imagedir}/previous.svg");
-    .create_svg_hover('previous', @color_highlight);
+
+  .datetimerange-button-previous {
+    .create_svg_hover('previous', @color_text);
+
+    svg:hover {
+      border-radius: @border_radius_small;
+      background-color: @color_background_alternate;
+    }
   }
+
   .datetimerange-button-next {
-    //background-image: url("@{imagedir}/next.svg");
-    .create_svg_hover('next', @color_highlight);
+    .create_svg_hover('next', @color_text);
+
+    svg:hover {
+      border-radius: @border_radius_small;
+      background-color: @color_background_alternate;
+    }
   }
-  .datetimerange-button-zoomin{
-    //background-image: url("@{imagedir}/periodtoolbar-zoomin.svg");
-    .create_svg_hover('periodtoolbar-zoomin', @color_highlight);
+
+  .datetimerange-button-zoomin {
+    .create_svg_hover('periodtoolbar-zoomin', @color_text);
+
+    svg:hover {
+      border-radius: @border_radius_small;
+      padding: 2px;
+      background-color: @color_background_alternate;
+    }
   }
-  .datetimerange-button-zoomout{
-    //background-image: url("@{imagedir}/periodtoolbar-zoomout.svg");
-    .create_svg_hover('periodtoolbar-zoomout', @color_highlight);
+
+  .datetimerange-button-zoomout {
+    .create_svg_hover('periodtoolbar-zoomout', @color_text);
+
+    svg:hover {
+      border-radius: @border_radius_small;
+      padding: 2px;
+      background-color: @color_background_alternate;
+    }
   }
+
   /*end buttons*/
-  
-} // x-datetimerange END
+
+}
+
+// x-datetimerange END
 
 /* DIALOG - NOT INCLUDED in x-datetimerange */
 
-.datetimerange-dialog-divinput{ // MAIN dialog div
+.datetimerange-dialog-divinput {
+  // MAIN dialog div
   padding: 10px; // NOT in global dialog
   //margin-bottom: 20px; == too much !
   text-align: center;
 
-  .datetimerange-dialog-divinputbegin{
+  .datetimerange-dialog-divinputbegin {
     display: inline-block;
     margin: 10px;
     vertical-align: top;
   }
-  .datetimerange-dialog-divinputend{
+
+  .datetimerange-dialog-divinputend {
     display: inline-block;
     margin: 10px;
     vertical-align: top;
   }
-/*
+
+  /*
 input+label{
   margin-left:10px;
 }
@@ -144,4 +168,6 @@ input[name=begin_dtp], input[name=end_dtp]{
     color: @color_gray !important;
     //opacity : 0.5;
   }
-} // DIALOG END
+}
+
+// DIALOG END

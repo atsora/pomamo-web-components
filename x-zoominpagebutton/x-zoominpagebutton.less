@@ -17,18 +17,20 @@ x-zoominpagebutton {
     width: 22px;
     margin: 4px;
     cursor: pointer;
+    padding: 6px;
+    border-radius: @border_radius_small;
+
+    &:hover {
+      background-color: lighten(@color_background_alternate, 15%);
+    }
 
     svg {
       height: 100%;
       width: 100%;
-      fill: @color_text_alternate;
+      fill: @color_text;
       transition: stroke 0.3s ease-in-out, fill 0.3s ease-in-out;
 
       pointer-events: initial;
-    }
-
-    &:hover svg {
-      fill: @color_highlight;
     }
   }
 }

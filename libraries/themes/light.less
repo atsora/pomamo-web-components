@@ -10,20 +10,24 @@
 * MAIN COLORS *
 **************/
 
-@color_window: #353b41;
-@color_text: #fff;
-@color_window_alternate: #ffffff;
-@color_text_alternate: #222;
+@color_background: rgb(244, 244, 245);
+@color_background_alternate: #E4E4E7;
+@color_window: #fafafa;
+@color_window_alternate: @color_background_alternate;
+@color_text: #334155;
+@color_text_alternate: #67748b;
+@color_text_button: #334155;
 @color_alternate: #353b41; // Nearly text, more grey
-@color_highlight: #6faef5;
+@color_highlight: #0ea5e9;
 @color_highlight_contrasted: #121212;
+@color_highlight_alternate: #f8fafc; // Background for highlight
 
-@color_red: #df3030;
-@color_orange: #DF7722;
+@color_red: #ef4444;
+@color_orange: #f97316;
 @color_yellow: #ffff33;
-@color_blue: #0078D7;
-@color_green: #2e9719;
-@color_gray: #888;
+@color_blue: #3b82f6;
+@color_green: #22c55e;
+@color_gray: #64748b;
 @color_white: #ddd;
 @color_purple: rgb(150, 52, 98);
 
@@ -33,14 +37,14 @@
 ******************/
 
 // Windows
-@color_window_border: darken(@color_window, 10%);
+@color_window_border: rgb(212, 212, 216);
 @color_window_border_light: lighten(@color_window, 15%);
 @color_window_alternate_border: darken(@color_window_alternate, 10%);
 @color_window_hover: darken(@color_window, 5%);
-@box_color: @color_window_alternate;
+@box_color: @color_background;
 @box_text_color: @color_text_alternate;
 @box_text_color_transparent: rgba(2, 2, 2, 0.3); // @color_text_alternate + opacity
-@box_header_color: darken(@color_window_alternate, 2.5%);
+@box_header_color: @color_window_alternate;
 @box_header_text_color: @color_text_alternate;
 
 // Input
@@ -61,8 +65,9 @@
 @widget_background: @box_header_color;
 @widget_text: @color_text_alternate;
 @widget_separator: @color_text_alternate;
+@color_needle: #000000;
 // Widgets - opposite color (setup)
-@widget_contrasted_background: #393939; // #303030;
+@widget_contrasted_background: #18181B; // #303030;
 @widget_contrasted_separator_or_text: #ffffff; // #dfdfdf;
 
 //Current data
@@ -91,12 +96,6 @@
 /*****************
 * VUE APP COLORS *
 *****************/
-
-@vue-bg-red: rgb(239, 68, 68);
-@vue-bg-green: rgb(34, 197, 94);
-@vue-bg-orange: rgb(249, 115, 22);
-@vue-bg-blue: rgb(59, 130, 246);
-@vue-bg-gray: rgb(100, 116, 139);
 
 @vue-text-red: #ffb4b4;
 @vue-text-green: rgb(34, 197, 94);
@@ -166,4 +165,8 @@
   // Chart
   --chart_grid_color: rgba(0, 0, 0, 0.4);
   --chart_axis_color: #222;
+
+  // Color
+  --color_green: #22c55e;
+  --color_blue: #3b82f6;
 }

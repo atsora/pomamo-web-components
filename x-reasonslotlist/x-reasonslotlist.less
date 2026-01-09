@@ -30,12 +30,12 @@ x-reasonslotlist {
     width: 100%;
   }
 
-  .reasonslotlist-reason-svg{
+  .reasonslotlist-reason-svg {
     height: 28px;
     width: 28px;
   }
-  S
-  .reasonslotlist-filter {
+
+  S .reasonslotlist-filter {
     display: inline-block;
     margin-left: 6px;
     font-size: 0.8em;
@@ -43,6 +43,37 @@ x-reasonslotlist {
 
   .reasonslotlist-filter input {
     margin-right: 5px;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 1px solid @color_window_border ;
+    border-radius: 3px;
+    background-color: @color_window;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:checked {
+      background-color: @color_highlight;
+      border-color: @color_highlight;
+
+      &::after {
+        content: '✓';
+        display: block;
+        text-align: center;
+        color: @color_window;
+        font-size: 16px;
+        line-height: 18px;
+      }
+
+      &:hover {
+        border-color: lighten(@color_highlight, 15%);
+        background-color: lighten(@color_highlight, 15%);
+      }
+    }
+
+    &:hover {
+      border-color: @color_window_border_light;
+    }
   }
 
   .row-selected {
@@ -82,9 +113,10 @@ x-reasonslotlist {
     bottom: 25px;
     left: 10px;
     right: 10px;
-    background-color: @color_window_alternate;
-    color: @color_text_alternate;
+    background-color: @color_background;
+    color: @color_text;
     border: 1px solid @color_window_border;
+    border-radius: @border_radius_small;
   }
 
   .reasonslotlist-tr {
@@ -108,6 +140,40 @@ x-reasonslotlist {
     flex-grow: 1;
 
     width: 20px;
+
+    input {
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border: 1px solid @color_window_border ;
+      border-radius: 3px;
+      background-color: @color_window;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:checked {
+        background-color: @color_highlight;
+        border-color: @color_highlight;
+
+        &::after {
+          content: '✓';
+          display: block;
+          text-align: center;
+          color: @color_window;
+          font-size: 16px;
+          line-height: 18px;
+        }
+
+        &:hover {
+          border-color: lighten(@color_highlight, 15%);
+          background-color: lighten(@color_highlight, 15%);
+        }
+      }
+
+      &:hover {
+        border-color: @color_window_border_light;
+      }
+    }
   }
 
   .reasonslotlist-td-icon {
@@ -129,8 +195,9 @@ x-reasonslotlist {
 
     x-revisionprogress {
       top: 0;
+
       .pulse-revisionprogress-content {
-        background:gray;
+        background: gray;
         opacity: 0.8;
       }
     }

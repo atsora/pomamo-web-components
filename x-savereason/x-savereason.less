@@ -13,14 +13,16 @@ x-savereason {
   position: relative;
 
   // Header 1
-  .savereason-machine{
+  .savereason-machine {
     display: none; // For big screen only -> TODO
   }
+
   // Header 2
-  .savereason-period{
-    .savereason-no-period{
+  .savereason-period {
+    .savereason-no-period {
       font-size: 2em;
     }
+
     /*.savereason-one-period{
     }
     .savereason-multi-period{
@@ -33,37 +35,40 @@ x-savereason {
     font-size: @button-font-size;
     border-radius: @cellbar-corner-radius;
   }
-  
-  .savereason-mst-info{
+
+  .savereason-mst-info {
     display: block;
     overflow: auto;
 
     //.savereason-mst // MST Button + split -> REMOVED
-    
-    .savereason-infos{
+
+    .savereason-infos {
       display: block;
       float: right;
       margin-right: 5px;
     }
-    
-    .savereason-info-reason{
+
+    .savereason-info-reason {
       display: inline;
       font-weight: bold;
     }
-    
-    .savereason-info-reason-details{
+
+    .savereason-info-reason-details {
       display: inline;
       font-style: italic;
       //color: red; // #555555;
     }
-  } // end mst-info
-  
-  .savereason-info-modes{
+  }
+
+  // end mst-info
+
+  .savereason-info-modes {
     display: block;
     //color: // use main color
     /* ... */
     text-overflow: ellipsis;
-    -o-text-overflow: ellipsis; /* for Opera*/
+    -o-text-overflow: ellipsis;
+    /* for Opera*/
     white-space: nowrap;
     overflow: hidden;
     max-width: 400px;
@@ -78,20 +83,18 @@ x-savereason {
     bottom: 0px;
     left: 0px;
     right: 0px;
-    border-top: 1px solid @color_window_border;
-    
+
     .savereason-table {
       padding: 0;
       margin: 0;
       list-style-type: none;
-      border-left: 1px solid @color_window_border;
-      border-right: 1px solid @color_window_border;
-      border-bottom: 1px solid @color_window_border_light;
+      border: 1px solid @color_window_border;
+      border-radius: @border_radius_small;
 
-      &> li {
+      &>li {
         list-style-type: none;
 
-        &> span {
+        &>span {
           // Reason group name
           background-color: @color_window;
           color: @color_text;
@@ -106,6 +109,7 @@ x-savereason {
             background-color: @color_window_hover;
           }
         }
+
         ul {
           margin: 0;
           padding: 5px 0 0 0;
@@ -123,65 +127,77 @@ x-savereason {
               white-space: nowrap;
             }
 
-            .applyreason, .applyreasonwithcomment {
+            .applyreason,
+            .applyreasonwithcomment {
               float: right;
               height: 24px;
               line-height: 24px;
               margin-left: 5px;
             }
+
             .applyreason {
               width: 85px;
             }
+
             .applyreasonwithcomment {
               width: 130px;
             }
           }
+
           li[details-required='true'] {
             .applyreasonwithcomment {
               width: 240px;
             }
-          } 
+          }
         }
       }
     }
   }
 
   .pushButton {
-    text-shadow: 0 1px 0 @input_text_shadow_color;
     padding: 2px 10px;
-    background-color: @input_background_color;
-    color: @input_color_bold;
+    background-color: @color_background_alternate;
+    color: @color_text_alternate;
     cursor: pointer;
     transition: 0.3s;
     font-weight: bold;
-    border-radius: 5px;
+    border-radius: @border_radius_small;
     text-align: center;
+
     &:hover {
-      background-color: @color_highlight;
-      color: @color_highlight_contrasted;
-      text-shadow: none;
+      color: @color_text;
     }
   }
 
-  .savereason-periodlabel, x-datetimerange {
+  .savereason-periodlabel,
+  x-datetimerange {
     display: inline-block;
     vertical-align: middle;
   }
-  .savereason-periodlabel { margin-right: 4px; }
+
+  .savereason-periodlabel {
+    margin-right: 4px;
+  }
 
   // Datetime style
-  .datetimerange-rangedisplay::after { display: none !important; }
+  .datetimerange-rangedisplay::after {
+    display: none !important;
+  }
+
   .datetimerange-rangedisplay {
     background-color: transparent !important;
     color: @color_text !important;
     overflow: initial !important;
     margin: 0 !important;
   }
-  .datetimerange-toolbar { display: none !important; }
-  .datetimerange-display { padding: 0; }
+
+  .datetimerange-toolbar {
+    display: none !important;
+  }
 
   // Split button
-  .savereason-splitbutton, .savereason-defaultbutton {
+  .savereason-splitbutton,
+  .savereason-defaultbutton {
     float: right;
     line-height: 24px;
   }
@@ -192,7 +208,10 @@ x-savereason {
     vertical-align: middle;
     line-height: 30px;
   }
-  .savereason-infoperiod, .savereason-info-reason, .savereason-info-modes {
+
+  .savereason-infoperiod,
+  .savereason-info-reason,
+  .savereason-info-modes {
     height: 24px;
     line-height: 24px;
     width: 100%;
@@ -200,20 +219,30 @@ x-savereason {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .savereason-infoperiod { height: 28px; }
-} // end x-savereason
+
+  .savereason-infoperiod {
+    height: 28px;
+  }
+}
+
+// end x-savereason
 
 // Dialog details == outside
 .savereason-dialog-details {
   padding: 5px;
+  font-size: 1.3em;
 
-  .savereason-machine, .savereason-datetimerange-details, .savereason-details-reason {
+  .savereason-machine,
+  .savereason-datetimerange-details,
+  .savereason-details-reason {
     margin-bottom: 10px;
   }
 
-  .savereason-datetimerange-label, .savereason-machine-label, .savereason-details-label{
+  .savereason-datetimerange-label,
+  .savereason-machine-label,
+  .savereason-details-label {
     vertical-align: bottom;
-    display: inline-block; 
+    display: inline-block;
     margin-right: 5px;
     font-weight: bold;
   }
@@ -226,23 +255,27 @@ x-savereason {
   }
 
   .savereason-datetimerange-details {
+    display: flex;
+    align-items: center;
+
     x-datetimerange {
       display: inline-block; // To remove -> must be block
       vertical-align: bottom;
 
       .datetimerange-rangedisplay {
         margin: 0;
-        background-color: @color_window;
         color: @color_text;
+
         &:after {
           display: none;
         }
       }
+
       .datetimerange-toolbar {
         display: none;
       }
+
       .datetimerange-display {
-        padding: 0;
         line-height: inherit;
       }
     }
@@ -259,6 +292,23 @@ x-savereason {
       width: 100%;
       box-sizing: border-box;
       resize: none;
+      font-size: 1.3em;
+      background-color: @color_window;
+      color: @color_text;
+      border-radius: @border_radius_small;
+      outline: 0 none transparent;
+      outline-offset: 0;
+      border: 1px solid @color_window_border;
+
+      &:hover {
+        border-color: @color_window_border_light;
+      }
+
+      &:focus {
+        border-color: @color_highlight;
+      }
     }
   }
-} // end .savereason-dialog-details = dialog for details
+}
+
+// end .savereason-dialog-details = dialog for details

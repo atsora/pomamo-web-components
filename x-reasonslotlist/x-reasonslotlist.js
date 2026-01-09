@@ -430,10 +430,10 @@ require('x-revisionprogress/x-revisionprogress');
       fixedHeaderDiv.append(barDiv);
 
       // - filter
-      this._allIdleCheckbox = $("<input type='checkbox' id='reasonslotlist-allidle-checkbox' name='idle' value='AllIdle'>").html(this.getTranslation('idle', 'Idle'));
+      this._allIdleCheckbox = $("<input type='checkbox' id='reasonslotlist-allidle-checkbox' name='idle' value='AllIdle'>");
       let allIdlelabel = $("<label for='reasonslotlist-allidle-checkbox'></label>")
         .append(this.getTranslation('optionIdentified', 'Show identified idle periods'));
-      this._motionCheckbox = $("<input type='checkbox' id='reasonslotlist-motion-checkbox' name='motion' value='AllMotion'>").html(this.getTranslation('motion', 'Motion'));
+      this._motionCheckbox = $("<input type='checkbox' id='reasonslotlist-motion-checkbox' name='motion' value='AllMotion'>");
       let motionlabel = $("<label for='reasonslotlist-motion-checkbox'></label>")
         .append(this.getTranslation('optionRunning', 'Show running periods'));
       // Change check -> Call Fill Table

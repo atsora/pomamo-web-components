@@ -243,12 +243,12 @@ var pulseCustomDialog = function () {
     // Max height or height of the dialog
     if (attributes['fixedHeight'] == true) {
       $(window).on('resize', function () {
-        $('#' + dialogId + ' .customDialogContent > div').css('height', (($(this).height() - 70) * (fullSize ? 0.99 : (bigSize ? 0.75 : 0.6))) + 'px');
+        $('#' + dialogId + ' .customDialogContent > div').css('height', (($(this).height() - 70) * (fullSize ? 0.97 : (bigSize ? 0.75 : 0.6))) + 'px');
       });
     }
     else {
       $(window).on('resize', function () {
-        $('#' + dialogId + ' .customDialogContent > div').css('max-height', (($(this).height() - 70) * (fullSize ? 0.99 : (bigSize ? 0.75 : 0.6))) + 'px');
+        $('#' + dialogId + ' .customDialogContent > div').css('max-height', (($(this).height() - 70) * (fullSize ? 0.97 : (bigSize ? 0.75 : 0.6))) + 'px');
       });
     }
 
@@ -285,10 +285,10 @@ var pulseCustomDialog = function () {
     var fullSize = (attributes['fullSize'] == true);
     if (attributes['fixedHeight'] == true)
       $('#customDialog' + id + ' .customDialogContent > div')
-        .css('height', (($(window).height() - 70) * (fullSize ? 0.99 : (bigSize ? 0.75 : 0.6))) + 'px');
+        .css('height', (($(window).height() - 70) * (fullSize ? 0.97 : (bigSize ? 0.75 : 0.6))) + 'px');
     else
       $('#customDialog' + id + ' .customDialogContent > div')
-        .css('max-height', (($(window).height() - 70) * (fullSize ? 0.99 : (bigSize ? 0.75 : 0.6))) + 'px');
+        .css('max-height', (($(window).height() - 70) * (fullSize ? 0.97 : (bigSize ? 0.75 : 0.6))) + 'px');
 
     // Adapte the navigation buttons
     _displayNavigation(selector);

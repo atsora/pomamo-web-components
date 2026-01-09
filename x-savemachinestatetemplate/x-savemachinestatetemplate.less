@@ -47,7 +47,7 @@ x-savemachinestatetemplate {
     x-datetimerange {
       width: auto; // Allow the component to adapt to content
       min-width: fit-content; // Ensure it fits the content
-      
+
       .datetimerange-display {
         font-size: 20px;
         padding: 8px;
@@ -83,12 +83,11 @@ input[name=dtp_date] {
 
     .savemachinestatetemplate-cell-box {
       height: 6vw;
-      background-color: var(--bar_in_box_bk_color);
       display: flex;
       align-items: center;
-      border-radius: 4px;
+      border-radius: @border_radius_small;
       position: relative;
-      box-shadow: @box_shadow;
+      border: 1px solid @color_window_border;
 
 
       .savemachinestatetemplate-cell-box-color {
@@ -132,15 +131,36 @@ input[name=dtp_date] {
 
   .savemachinestatetemplate-cell-box:hover {
     cursor: pointer;
-    background-color: @color_window_hover;
+    background-color: @color_background_alternate;
   }
 }
 
 .savemachinestatetemplate-home-btn {
-  width: 2%;
+  width: 3%;
   cursor: pointer;
 
   .savemachinestatetemplate-home-svg {
-    .create_svg_nostroke('periodtoolbar-nowzoom', @box_text_color, @color_highlight);
+    .create_svg_nostroke('periodtoolbar-nowzoom', @box_text_color, @color_background_alternate);
+
+    padding: 8px 12px;
+    border-radius: @border_radius_small;
+  }
+}
+
+x-datetimerange {
+  .datetimerange {
+    .datetimerange-rangedisplay {
+      background-color: transparent;
+      color: @color_text_button;
+      border: 1px solid @color_window_border;
+
+      &:hover {
+        background-color: @color_background_alternate;
+      }
+
+      .datetimerange-editable:hover {
+        color: @color_text_button;
+      }
+    }
   }
 }

@@ -54,11 +54,12 @@
 
 .customDialogWindow {
   position: relative;
-  background-color: @color_window;
+  background-color: @color_background;
   color: @color_text;
   min-width: 700px;
-  box-shadow: @box_shadow;
   margin: auto;
+  border-radius: @border_radius;
+  border: 1px solid @color_window_border;
 
   width: 50%;
 
@@ -118,48 +119,42 @@
 }
 
 .customDialogHeader {
-  border-bottom: 1px solid @color_window_border;
   position: relative;
-  height: 30px;
+  border-bottom: 1px solid @color_window_border;
 }
 
 .customDialogTitle {
-  padding: 5px 10px;
+  padding: 12px 10px;
   font-weight: bold;
   text-transform: uppercase;
   text-shadow: 1px 1px 0 fade(darken(@color_text, 60%), 60%), -1px -1px 1px fade(darken(@color_text, 90%), 70%);
   color: fade(@color_text, 90%);
   margin-right: 60px;
-  font-size: 14px;
+  font-size: 1.5em;
 }
 
 .customDialogCloseBox {
   right: 0;
   height: 100%;
-  width: 20px;
+  width: 32px;
   padding: 0px 5px;
   position: absolute;
   background-size: 50%;
   background-repeat: no-repeat;
   background-position: center;
   cursor: pointer;
-  .create_svg('dialog-close', @color_text, @color_text);
+  .create_svg('dialog-close', @color_text, @color_red);
 }
 
 .customDialogHelpBox {
-  right: 28px;
+  right: 46px;
   height: 50%;
   width: 20px;
-  padding-top: 7px;
+  padding-top: 12px;
   position: absolute;
   cursor: pointer;
   pointer-events: initial; // restore click
   .create_svg('dialog-question-solid', @color_text, @color_text);
-}
-
-.customDialogContent {
-  border-top: 1px solid @color_window_border_light;
-  border-bottom: 1px solid @color_window_border;
 }
 
 .customDialogContent>div {
@@ -173,7 +168,6 @@
 
 .customDialogButtons {
   width: 100%;
-  border-top: 1px solid @color_window_border_light;
   text-align: center;
 }
 

@@ -347,12 +347,24 @@ const Chart = require('chart.js/auto');
       else {
         const axisColor = getComputedStyle(document.documentElement).getPropertyValue('--chart_axis_color');
         const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--chart_grid_color');
+        const lineColor = getComputedStyle(document.documentElement).getPropertyValue('--color_green');
+        const barColor = getComputedStyle(document.documentElement).getPropertyValue('--color_blue');
 
+        // Axes
         this._chartInstance.options.scales.x.ticks.color = axisColor;
         this._chartInstance.options.scales.x.grid.color = gridColor;
         this._chartInstance.options.scales.y.ticks.color = axisColor;
         this._chartInstance.options.scales.y.grid.color = gridColor;
         this._chartInstance.options.scales.y.title.color = axisColor;
+
+        // Datasets (line + bars)
+        if (this._chartInstance.data.datasets[0]) {
+          this._chartInstance.data.datasets[0].borderColor = lineColor;
+          this._chartInstance.data.datasets[0].backgroundColor = lineColor;
+        }
+        if (this._chartInstance.data.datasets[1]) {
+          this._chartInstance.data.datasets[1].backgroundColor = barColor;
+        }
 
         this._chartInstance.update();
       }
@@ -406,8 +418,8 @@ const Chart = require('chart.js/auto');
                   type: 'line',
                   label: '',
                   data: targetData,
-                  borderColor: 'rgba(39, 223, 39, 1)',
-                  backgroundColor: 'rgba(39, 223, 39, 1)',
+                  borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color_green'),
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color_green'),
                   pointStyle: false,
                   fill: false
                 },
@@ -417,7 +429,7 @@ const Chart = require('chart.js/auto');
                   data: actualData,
                   borderWidth: 0,
                   borderColor: 'rgba(2, 48, 2, 1)',
-                  backgroundColor: '#3B82F6',
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color_blue')
                 }
 
               ]

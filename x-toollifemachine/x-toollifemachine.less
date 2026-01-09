@@ -12,11 +12,8 @@ x-toollifemachine {
 
   .pulse-cellbar-main {
     position: relative;
-    // 2.6em -> to display vertical text, 2 lines, borders...
     line-height: 2.6em !important;
     height: 2.6em !important;
-    //background-color: @color_window_alternate;
-    //color: @color_text_alternate;
   }
 
   .pulse-cellbar-current-data {
@@ -86,9 +83,11 @@ x-toollifemachine {
     height: 100%;
     box-sizing: border-box;
     padding: 0 2px;
+    border-radius: @border_radius_small;
 
     .toollifemachine-soon-title-svg-background {
-      fill: @widget_separator; // background
+      border-radius: @border_radius_small;
+      fill: @color_text; // background
     }
 
     .toollifemachine-soon-title-svg-text {
@@ -112,30 +111,26 @@ x-toollifemachine {
 
   // Not added in webApp, thanks to style
   .toollifemachine-tool-span {
-    //border-radius: @cellbar-corner-radius;
+    border-radius: @border_radius_small;
     padding: 2px;
     margin: 2px;
-    //filter: url(#innerShadow);
     .bar-rounded-shadow; // Rounded border + shadow
   }
 
   .toollifemachine-tool-warn-span {
     background-color: @warn_main_color;
     color: @warn_contrasted_color;
-    filter: url(#innerShadow);
   }
 
   .toollifemachine-tool-in-error-span {
     background-color: @error_main_color; // color to remove in div
     color: @error_contrasted_color;
-    filter: url(#innerShadow);
   }
 
   // WITH 'a.' to avoid blinking between a and .toollifemachine-tool-in-error-span
   a.toollifemachine-tool-in-error-span {
     background-color: @error_main_color; // color to remove in div
     color: @error_contrasted_color;
-    filter: url(#innerShadow);
   }
 
   .toollifemachine-tool-isgroup {

@@ -43,15 +43,15 @@ x-productiongauge {
 
 /* Performance-based colors for text */
 .productiongauge-text.production-poor {
-  color: #FF0000;
+  color: @color_red;
 }
 
 .productiongauge-text.production-medium {
-  color: #FF9900;
+  color: @color_orange;
 }
 
 .productiongauge-text.production-good {
-  color: #00AA00;
+  color: @color_green;
 }
 
 /* Gauge SVG styling */
@@ -61,7 +61,7 @@ x-productiongauge {
 }
 
 .productiongauge-svg .needle {
-  fill: @color_text_alternate;
+  fill: @color_needle;
 }
 
 /* Responsive sizing */

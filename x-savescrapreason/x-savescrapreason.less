@@ -45,7 +45,6 @@ x-savescrapreason {
                         justify-content: space-between;
                         border-radius: 4px;
                         position: relative;
-                        box-shadow: @box_shadow;
                         padding: 0.5vw;
 
                         .savescrapreason-cell-box-color {
@@ -159,7 +158,6 @@ x-savescrapreason {
                     background-color: #006600;
                     /* darker green on hover */
                     transform: translateY(-1px);
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
                 }
 
                 &:active {
@@ -182,7 +180,6 @@ x-savescrapreason {
                     background-color: #006600;
                     /* darker green on hover */
                     transform: translateY(-1px);
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
                 }
 
                 &:active {
@@ -195,6 +192,7 @@ x-savescrapreason {
 
 .savereason-dialog-details {
     padding: 5px;
+    font-size: 1.3em;
 
     .savereason-machine,
     .savereason-datetimerange-details,
@@ -219,13 +217,15 @@ x-savescrapreason {
     }
 
     .savereason-datetimerange-details {
+        display: flex;
+        align-items: center;
+
         x-datetimerange {
             display: inline-block; // To remove -> must be block
             vertical-align: bottom;
 
             .datetimerange-rangedisplay {
                 margin: 0;
-                background-color: @color_window;
                 color: @color_text;
 
                 &:after {
@@ -238,7 +238,6 @@ x-savescrapreason {
             }
 
             .datetimerange-display {
-                padding: 0;
                 line-height: inherit;
             }
         }
@@ -255,6 +254,21 @@ x-savescrapreason {
             width: 100%;
             box-sizing: border-box;
             resize: none;
+            font-size: 1.3em;
+            background-color: @color_window;
+            color: @color_text;
+            border-radius: @border_radius_small;
+            outline: 0 none transparent;
+            outline-offset: 0;
+            border: 1px solid @color_window_border;
+
+            &:hover {
+                border-color: @color_window_border_light;
+            }
+
+            &:focus {
+                border-color: @color_highlight;
+            }
         }
     }
 }
