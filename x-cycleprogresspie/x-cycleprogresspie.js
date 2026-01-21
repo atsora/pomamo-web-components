@@ -862,11 +862,25 @@ var eventBus = require('eventBus');
       $(g).css('transform', 'rotate(-90deg)');
 
       // Circle background
+      let circleBorder = pulseSvg.createSegmentOnDonut(
+        this._xyPosition, this._xyPosition, this._circleRadius+1,
+        'transparent', 'cycleprogresspie-cicrcle-border',
+        null, this._ringWidth, 0, 1);
+      g.appendChild(circleBorder);
+
+      let circleBorderIns = pulseSvg.createSegmentOnDonut(
+        this._xyPosition, this._xyPosition, this._circleRadius-1,
+        'transparent', 'cycleprogresspie-cicrcle-border',
+        null, this._ringWidth, 0, 1);
+      g.appendChild(circleBorderIns);
+      
       let circleBk = pulseSvg.createSegmentOnDonut(
         this._xyPosition, this._xyPosition, this._circleRadius,
         'transparent', 'cycleprogresspie-invisible-bk',
         null, this._ringWidth, 0, 1);
       g.appendChild(circleBk);
+
+      
 
       // Circle in the middle (to allow writing something)
       let circleMiddle = pulseSvg.createCircle(this._xyPosition, this._xyPosition,

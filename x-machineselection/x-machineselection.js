@@ -309,7 +309,7 @@ require('x-freetext/x-freetext');
       // G
       this._switchToGroups_button = $('<button></button>')
         .addClass('machineselection-button')
-        .addClass('machineselection-switch-to-groups').html(this.getTranslation('groupsButton', ' by Groups'));
+        .addClass('machineselection-switch-to-groups').html(this.getTranslation('groupsButton', ' by group'));
       this._switchToGroups_button.click(function () {
         this._groupSelectionArray = [];
         this._machineSelectionArray = [];
@@ -320,7 +320,7 @@ require('x-freetext/x-freetext');
       // M
       this._switchToMachines_button = $('<button></button>')
         .addClass('machineselection-button')
-        .addClass('machineselection-switch-to-machines').html(this.getTranslation('machinesButton', ' by Machines'));
+        .addClass('machineselection-switch-to-machines').html(this.getTranslation('machinesButton', ' by machine'));
       this._switchToMachines_button.click(function () {
         this._groupSelectionArray = [];
         this._machineSelectionArray = [];

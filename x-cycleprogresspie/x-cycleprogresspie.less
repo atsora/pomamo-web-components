@@ -24,7 +24,7 @@ x-cycleprogresspie {
   }
   
   .cycleprogresspie-invisible-bk{
-    stroke: lighten(@color_background_alternate, 15%);
+    stroke: lighten(@color_background_alternate, 35%);
   }
 
   /* COLORS -> maybe linked to theme - same as bar */
@@ -33,6 +33,9 @@ x-cycleprogresspie {
   }
   .stroke-color-as-background{ // For 'stop' lines...
     stroke: @box_color;
+  }
+  .cycleprogresspie-cicrcle-border {
+    stroke: rgb(194, 190, 190);
   }
 
   // completion in pie (same colors as bar)
@@ -53,12 +56,12 @@ x-cycleprogresspie {
 
   // TEXT (same colors as bar)
   .text-top{
-    fill: @color_text_alternate;
+    fill: @color_text;
     // Style is defined in .js because most of it can not be defined here
   }
   //.text-bottom == cycleprogresspie-time == time-in-pie
   .time-in-pie{
-    fill: @color_text_alternate;
+    fill: @color_text;
 
     // Style is defined in .js because most of it can not be defined here
   }
