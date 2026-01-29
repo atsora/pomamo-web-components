@@ -115,6 +115,7 @@ require('x-scrapclassification/x-scrapclassification');
             this._content.appendChild(textSpan);
 
             let valueSpan = document.createElement('span');
+            this._scrapValueSpan = valueSpan;
             valueSpan.classList.add('scrapstatus-value');
             valueSpan.innerHTML = '0';
             this._content.appendChild(valueSpan);
@@ -207,7 +208,7 @@ require('x-scrapclassification/x-scrapclassification');
          * @param {Object} data - Server response
          */
         refresh(data) {
-
+            this._scrapValueSpan.innerHTML = 25;
         }
 
         /**

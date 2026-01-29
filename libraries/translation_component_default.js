@@ -242,7 +242,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     reserveCapacity: 'reserve capacity',
     summary: 'summary',
     target: 'target',
-    
+
   },
   productionmachiningstatus: {
     notavailable: 'Not Available'
@@ -327,7 +327,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     switchTo: 'Switch to ',
     switchToProduction: 'Switch to production'
   },
-  stopclassification : {
+  stopclassification: {
     title: 'Unplanned Stops',
     options: 'Advanced Options',
   },
@@ -341,7 +341,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     Upcoming: 'Upcoming',
     upcomingTextAfter: '',
     upcomingTextBefore: 'in '
-
+  },
+  task: {
+    Late: 'Late',
+    Todo: 'To do',
+    Upcoming: 'Upcoming',
   },
   toollifemachine: {
     noOperation: 'No operation'
@@ -551,7 +555,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     semesterBtn: 'semestre',
     yearBtn: 'année',
   },
-   production: {
+  production: {
     actual: 'Production',
     target: 'Objectif',
     preposition: 'à'
@@ -658,7 +662,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     switchTo: 'Switch to ',
     switchToProduction: 'Passer en production'
   },
-  stopclassification : {
+  stopclassification: {
     title: 'Arrêts Non-Planifiés',
     options: 'Options Avancées',
   },
@@ -672,7 +676,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     Upcoming: 'À venir',
     upcomingTextAfter: '',
     upcomingTextBefore: 'dans'
-
+  },
+  task: {
+    Late: 'En retard',
+    Todo: 'A faire',
+    Upcoming: 'À venir',
   },
   toollifemachine: {
     noOperation: "Pas d'opération"
