@@ -1,0 +1,23 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <h3>Size = default</h3>
+  <div class='divsize'>
+    <x-cycletask id="size_default_machine1" machine-id=0 path='http://localhost:8080/'></x-cycletask>
+  </div>
+  <div class='divsize'>
+    <x-cycletask id="size_default_machine1" machine-id=21 path='http://localhost:8080/'></x-cycletask>
+  </div>
+  <div class='divsize'>
+    <x-cycletask id="size_default_machine1" machine-id=22 path='http://localhost:8080/'></x-cycletask>
+  </div>
+
+  <h3>Size = big</h3>
+  <div class='divsize_big'>
+    <x-cycletask id="size_big_machine2" machine-id=18 path='http://localhost:8080/'></x-cycletask>
+  </div>
+</div>

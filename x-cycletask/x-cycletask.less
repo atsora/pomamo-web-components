@@ -1,0 +1,55 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+
+x-cycletask {
+  display: block;
+  height: 100% !important;
+  width: 100% !important;
+
+  .cycletask-content {
+    display: inline-block;
+    position: relative; // For loader position
+    height: 100% !important;
+    width: 100% !important;
+  }
+  .cycletask-progresspie, .cycletask-svg {
+    height: 100% !important;
+    width: 100% !important;
+  }
+
+  // Task state ring (GraphQL): grey / white / red
+  .cycletask-taskstate-none {
+    stroke: @widget_background;
+  }
+  .cycletask-taskstate-inprogress {
+    stroke: @color_text_alternate;
+  }
+  .cycletask-taskstate-negative {
+    stroke: @color_red;
+  }
+  // Task progress ring (GraphQL): empty by default, blue while in progress
+  .cycletask-taskprogress-empty {
+    stroke: transparent;
+  }
+  .cycletask-taskprogress-active {
+    stroke: @color_blue;
+  }
+
+  // TEXT (same colors as bar)
+  .text-top{
+    fill: @color_text;
+    // Style is defined in .js because most of it can not be defined here
+  }
+  //.text-bottom == cycletask-time == time-in-pie
+  .time-in-pie{
+    fill: @color_text;
+
+    // Style is defined in .js because most of it can not be defined here
+  }
+}
