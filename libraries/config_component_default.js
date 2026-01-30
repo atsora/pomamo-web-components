@@ -5,7 +5,7 @@
 
 var PULSE_DEFAULT_CONFIG = PULSE_DEFAULT_CONFIG || {};
 
-/* 
+/*
  * ** Please keep this comment ** *
  * Global configuration : each next line overload previous ones
 * tagConfig... see below
@@ -13,7 +13,7 @@ var PULSE_DEFAULT_CONFIG = PULSE_DEFAULT_CONFIG || {};
  * PULSE_DEFAULT_CONFIG.pages
  * PULSE_DEFAULT_CONFIG.roles
  * PULSE_DEFAULT_CONFIG.rolespages
- * 
+ *
  */
 
 /* ********** ********** ********** ********** */
@@ -26,7 +26,7 @@ PULSE_DEFAULT_CONFIG.general = {
 
   // for x-production, x-partproductionstatuspie, x-productionmachiningstatus...
   thresholdunitispart: true,
-  thresholdorangeproduction: 80,
+  thresholdtargetproduction: 85,
   thresholdredproduction: 60,
 
   /* The following def are BELOW in tagConfig :
@@ -141,8 +141,8 @@ PULSE_DEFAULT_CONFIG.roles = {
 };
 
 /* ********** ********** ********** ********** */
-// All default values for x-XXX are defined HERE 
-// please use the same in x-tag 
+// All default values for x-XXX are defined HERE
+// please use the same in x-tag
 /* ********** ********** ********** ********** */
 var tagConfig = {
   // The 3 following def could be in PULSE_DEFAULT_CONFIG - Keep here or change install + doc
@@ -162,12 +162,12 @@ var tagConfig = {
   },
   //freezedisplayminutes: 5, // To remove
   stopRefreshingRate: {
-    freezeMinutes: 3, // == Time Before bar disappear (transient)  
-    pastDataFreezeMinutes: 60 // == Time Before bar disappear (transient) for past data  
+    freezeMinutes: 3, // == Time Before bar disappear (transient)
+    pastDataFreezeMinutes: 60 // == Time Before bar disappear (transient) for past data
   },
 
   /* EXAMPLE : can be overloaded this way :
-  cncvaluebar: { 
+  cncvaluebar: {
     refreshingRate:{ // replace updateSeconds
       barDailyRefreshSeconds: 4
     }
@@ -216,7 +216,7 @@ var tagConfig = {
         showexpiredonly: true // To show tools expired only
         //mandatorygroup: 'ET0'
       },
-      // FYI : a group can be created using labels: [], showexpiredonly: false 
+      // FYI : a group can be created using labels: [], showexpiredonly: false
       // to show expired AND tools in warning with NO expirationdatetime
       {
         name: 'in1h',

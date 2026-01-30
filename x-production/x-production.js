@@ -20,8 +20,8 @@ require('x-clock/x-clock');
   class productionComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -237,7 +237,7 @@ require('x-clock/x-clock');
       this.element.querySelector('.production-number-actual').innerText = '';
       this.element.querySelector('.production-number-target').innerText = '';
 
-      
+
       this.element.querySelectorAll('.production-clock-content').forEach(el => {
       if (this._range == undefined) {
         el.style.display = '';
@@ -370,14 +370,14 @@ require('x-clock/x-clock');
       if ((goal != undefined)
         && (Number(goal) > 0)) {
         let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 60);
-        let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 80);
+        let thresholdtargetproduction = this.getConfigOrAttribute('thresholdtargetproduction', 80);
         // colors and efficiency
         let ratio = nbPiecesDone / goal;
         if (ratio < thresholdredproduction / 100) {
           $(this._content).addClass('bad-efficiency').removeClass('mid-efficiency').removeClass('good-efficiency');
         }
         else {
-          if (ratio < thresholdorangeproduction / 100) {
+          if (ratio < thresholdtargetproduction / 100) {
             $(this._content).addClass('mid-efficiency').removeClass('bad-efficiency').removeClass('good-efficiency');
           }
           else {
@@ -394,8 +394,8 @@ require('x-clock/x-clock');
 
     /**
       * Event callback in case a config is updated: (re-)start the component
-      * 
-      * @param {*} event 
+      *
+      * @param {*} event
       */
     onConfigChange(event) {
       if (event.target.config === 'thresholdsupdated') {

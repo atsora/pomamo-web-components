@@ -1,0 +1,57 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-productionbar {
+  display: flex;
+  position: relative;
+  width: auto; // 100%;
+  align-items: center;
+
+
+  .productionbar-content {
+    display: flex;
+    align-items: center; // Aligne verticalement au centre
+    width: 100%;
+
+    .productionbar-svg {
+      flex: 1; // Dit au SVG de prendre tout l'espace disponible
+      min-width: 0; // Crucial pour éviter que le SVG ne déborde
+      height: auto; // Laisse le flex gérer la hauteur si besoin
+    }
+
+    .productionbar-text {
+      font-size: 20px;
+      font-weight: bold;
+      flex: 0 0 auto; // Le texte ne grossit pas, il garde sa taille naturelle
+      margin-left: 10px; // Un peu d'espace entre les deux
+      white-space: nowrap; // Évite que le texte ne revienne à la ligne
+      width: 80px;
+    }
+  }
+
+  /* Performance-based colors for text */
+  .productionbar-text.production-poor {
+    color: @color_red;
+  }
+
+  .productionbar-text.production-medium {
+    color: @color_orange;
+  }
+
+  .productionbar-text.production-good {
+    color: @color_green;
+  }
+
+  .cursor {
+    fill: @color_text_alternate;
+  }
+
+  .tick {
+    stroke: @color_gray;
+  }
+}

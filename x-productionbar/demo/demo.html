@@ -1,0 +1,16 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+    <label>Height = default - Machine18</label>
+    <div><x-productionbar id="height_default_machine18" machine-id=18 path=http://localhost:8082/ ></x-productionbar></div>
+    
+    <label>Error: No monitored machine with id 300 (not working in 2018)</label>
+    <div><x-productionbar id="error_machineid" machine-id=300 path=http://localhost:8082/ height=104 ></x-productionbar></div>
+    
+    <label>Error: Gateway Timeout (not working in 2018)</label>
+    <div><x-productionbar id="error_gateway_timeout" machine-id=400 path=http://localhost:8082/ height=104 ></x-productionbar></div>
+</div>

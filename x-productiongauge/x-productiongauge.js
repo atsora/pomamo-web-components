@@ -476,14 +476,14 @@ var eventBus = require('eventBus');
 
     /**
      * Calculates the target percentage for gauge visualization based on the threshold mode.
-     * 
+     *
      * - In 'percentage' mode: target value (0-100) is converted to a ratio (0-1).
      *   Example: target=75 means the target line appears at 75% on the gauge.
-     * 
+     *
      * @returns {number} Target percentage between 0 and 1 for gauge visualization
      */
     _calculateTargetPercentage() {
-      let targetValue = this.getConfigOrAttribute('thresholdorangeproduction', 80);
+      let targetValue = this.getConfigOrAttribute('thresholdargetProduction', 80);
       let targetPercentage = targetValue / 100;
 
       // Clamp between 0 and 1
@@ -543,7 +543,7 @@ var eventBus = require('eventBus');
       let displayMode = 'percent'; // default
 
       // Check if config exists, otherwise use attribute
-      let configShowPercent = this.getConfigOrAttribute('productiongauge.showpercent', null);
+      let configShowPercent = this.getConfigOrAttribute('showpercent', null);
       if (configShowPercent !== null) {
         // Config exists, use it
         displayMode = (configShowPercent === true || configShowPercent === 'true') ? 'percent' : 'ratio';
@@ -579,7 +579,7 @@ var eventBus = require('eventBus');
 
         // Get thresholds from config
         let redThreshold = this.getConfigOrAttribute('thresholdredproduction', 60) / 100;
-        let orangeThreshold = this.getConfigOrAttribute('thresholdorangeproduction', 80) / 100;
+        let targetThreshold = this.getConfigOrAttribute('thresholdtargetproduction', 80) / 100;
 
 
         if (redThreshold) {
@@ -590,26 +590,26 @@ var eventBus = require('eventBus');
           redThreshold = 0.6;
         }
 
-        if (orangeThreshold) {
-          orangeThreshold = Math.max(0, orangeThreshold);
-          orangeThreshold = Math.min(1, orangeThreshold);
+        if (targetThreshold) {
+          targetThreshold = Math.max(0, targetThreshold);
+          targetThreshold = Math.min(1, targetThreshold);
         }
         else {
-          orangeThreshold = 0.8;
+          targetThreshold = 0.8;
         }
 
-        // Validation: orange must be greater than red in percentage mode
-        if (orangeThreshold <= redThreshold) {
+        // Validation: target must be greater than red in percentage mode
+        if (targetThreshold <= redThreshold) {
           redThreshold = 0.6;
-          orangeThreshold = 0.8;
+          targetThreshold = 0.8;
         }
 
 
         // Apply CSS classes based on thresholds
-        // In both modes, redThreshold < orangeThreshold after conversion
+        // In both modes, redThreshold < targetThreshold after conversion
         if (ratio < redThreshold) {
           this._textDisplay.classList.add('production-poor');
-        } else if (ratio < orangeThreshold) {
+        } else if (ratio < targetThreshold) {
           this._textDisplay.classList.add('production-medium');
         } else {
           this._textDisplay.classList.add('production-good');

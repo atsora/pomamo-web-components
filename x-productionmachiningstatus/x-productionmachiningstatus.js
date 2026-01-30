@@ -16,8 +16,8 @@ var eventBus = require('eventBus');
   class ProductionMachiningStatusComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -256,7 +256,7 @@ var eventBus = require('eventBus');
         this._shiftEfficiency = data.NbPiecesDoneDuringShift / data.GoalNowShift;
 
         let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 60);
-        let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 80);
+        let thresholdtargetproduction = this.getConfigOrAttribute('thresholdtargetproduction', 80);
         // colors
         let ratio = data.NbPiecesDoneDuringShift / data.GoalNowShift;
         if (ratio < thresholdredproduction / 100) {
@@ -264,7 +264,7 @@ var eventBus = require('eventBus');
           classToRemove = 'mid-efficiency good-efficiency';
         }
         else {
-          if (ratio < thresholdorangeproduction / 100) {
+          if (ratio < thresholdtargetproduction / 100) {
             classToAdd = 'mid-efficiency';
             classToRemove = 'bad-efficiency good-efficiency';
           }
@@ -341,13 +341,13 @@ var eventBus = require('eventBus');
 
     /**
       * Event callback in case a config is updated: (re-)start the component
-      * 
-      * @param {*} event 
+      *
+      * @param {*} event
       */
     onConfigChange (event) {
       if ((event.target.config == 'thresholdunitispart')
         || (event.target.config == 'thresholdredproduction')
-        || (event.target.config == 'thresholdorangeproduction')) {
+        || (event.target.config == 'thresholdtargetproduction')) {
         this.start();
       }
     }
