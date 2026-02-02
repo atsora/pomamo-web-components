@@ -1,0 +1,84 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+.taskslist-content {
+    ol {
+        list-style-type: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        max-height: 500px;
+        overflow-y: auto;
+        gap: 1rem;
+
+        .taskslist-task-instance {
+            display: flex;
+            background-color: @current_background_color;
+            border-radius: 12px;
+            margin: 0 16px 0 16px;
+            padding: 17.5px;
+            justify-content: space-between;
+
+            .taskslist-display {
+                flex: 0 0 auto;
+                display: flex;
+                flex-direction: column;
+                gap: 7px;
+
+                .taskslist-title {
+                    font-size: 14px;
+                }
+
+                .taskslist-group {
+                    font-size: 12px;
+                }
+
+                .taskslist-role {
+                    border: 1px solid @current_text_color;
+                    align-self: flex-start;
+                    padding: 3.5px 7px;
+                    border-radius: 6px;
+                    font-size: 12.25px;
+                    font-weight: 700;
+                }
+            }
+
+            .taskslist-time-content {
+                display: flex;
+                flex-direction: column;
+                font-size: 12px;
+                align-items: flex-end;
+                justify-content: space-between;
+            }
+
+            .taskslist-status {
+                margin: 0 0 0 auto;
+                border-radius: 4px;
+                padding: 6px;
+                font-weight: bold;
+                font-size: 12.5px;
+            }
+        }
+    }
+}
+
+
+.taskslist-status-late {
+    background-color: @color_red;
+    color: @vue_text_red;
+}
+
+.taskslist-status-todo {
+    background-color: @color_orange;
+    color: @vue_text_orange;
+}
+
+.taskslist-status-upcoming {
+    background-color: @color_blue;
+    color: @vue_text_blue;
+}

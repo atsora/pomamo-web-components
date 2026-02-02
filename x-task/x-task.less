@@ -1,0 +1,159 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-task {
+  .task-content {
+    display: flex;
+    flex-direction: column;
+    font-size: 21px;
+    row-gap: 4px;
+
+    .task-main-task {
+      min-width: 224px;
+      display: flex;
+      flex-direction: column;
+      row-gap: 10px;
+      background-color: @color_background;
+      border-radius: @border_radius_small;
+      padding: 12px 16px;
+
+      .task-main-task-top-side {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-width: 0;
+
+        .task-main-task-title {
+          min-width: 0;
+
+          .task-main-task-title-span {
+            display: block;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+      }
+
+      .task-main-task-bot-side {
+        flex: 0 0 auto;
+        display: flex;
+        justify-content: space-between;
+
+        .task-main-task-state-category {
+          display: flex;
+          column-gap: 8px;
+          font-size: 0.7em;
+
+          .task-main-task-category {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2px 8px;
+            border: 1px solid @color_window_border;
+            border-radius: @border_radius_small;
+
+            .task-main-task-category-icon {
+              line-height: 1;
+              font-size: 1.1em;
+            }
+          }
+
+          .task-main-task-state {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: @border_radius_small;
+          }
+        }
+
+        .task-main-task-timer-span {
+          font-weight: bold;
+        }
+      }
+    }
+
+    .task-tabs {
+      display: flex;
+      font-size: 0.5em;
+      column-gap: 4px;
+
+      .task-tab {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: stretch;
+        row-gap: 3px;
+        min-width: 0;
+        padding: 4px 6px;
+        border-radius: @border_radius_small;
+        background-color: @color_background;
+        cursor: pointer;
+
+        &:hover {
+          background-color: lighten(@color_background, 10%);
+        }
+
+        &.task-tab-selected {
+          background-color: darken(@color_background, 10%);
+        }
+
+        .task-tab-header {
+          display: flex;
+          align-items: center;
+          column-gap: 6px;
+          min-width: 0;
+        }
+
+        .task-tab-icon {
+          flex: 0 0 auto;
+          line-height: 1;
+        }
+
+        .task-tab-title {
+          flex: 1 1 auto;
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .task-tab-state-line {
+          height: 3px;
+          width: 100%;
+          border-radius: 2px;
+        }
+
+        &.task-tab-more {
+          cursor: default;
+
+          .task-tab-state-line {
+            height: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+.task-upcoming {
+  background-color: @color_blue !important;
+  color: @vue_text_blue !important;
+}
+
+.task-todo {
+  background-color: @color_orange !important;
+  color: @vue_text_orange !important;
+}
+
+.task-late {
+  background-color: @color_red !important;
+  color: @vue_text_red !important;
+}

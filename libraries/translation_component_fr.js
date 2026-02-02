@@ -332,7 +332,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     Upcoming: 'À venir',
     upcomingTextAfter: '',
     upcomingTextBefore: 'dans'
-
+  },
+  task: {
+    Late: 'En retard',
+    Todo: 'A faire',
+    Upcoming: 'À venir',
   },
   toollifemachine: {
     noOperation: "Pas d'opération"

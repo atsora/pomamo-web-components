@@ -177,8 +177,8 @@ require('x-machinedisplay/x-machinedisplay');
 
       postData.Reasons = reasons;
 
-      if (this._screapReportId) {
-        postData.Id = this._screapReportId;
+      if (this._scrapReportId) {
+        postData.Id = this._scrapReportId;
       }
 
       pulseService.postAjax(0, url,
@@ -388,7 +388,7 @@ require('x-machinedisplay/x-machinedisplay');
       this._validParts = event.target.ValidCount;
 
       if (event.target.ScrapReport) {
-        this._screapReportId = event.target.ScrapReport.Id;
+        this._scrapReportId = event.target.ScrapReport.Id;
         let reason = undefined;
         for (reason of event.target.ScrapReport.Reasons) {
           let reasonInput = document.getElementById(reason.Id);
