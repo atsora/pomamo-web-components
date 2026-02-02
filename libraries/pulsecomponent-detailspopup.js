@@ -79,7 +79,7 @@ require('x-stopperiods/x-stopperiods');
  *
  * @memberof module:PulseComponentFunctions
  * @function openDetails
- * 
+ *
  * @param {Object} component - component calling openDetails -> must define following attributes : machine-id (showcoloredbar.showdetails must be filled in config)
  * @param {Range} fullRange - full date range of the component
  * @param {Range} cellRange - date range of the clicked cell
@@ -214,7 +214,7 @@ var openDetails = exports.openDetails = function (component, fullRange, cellRang
  *
  * @memberof module:PulseComponentFunctions
  * @function openGenericPopup
- * 
+ *
  * @param {Function} fillMethod - method to fill the popup
  * @param {Object} evt - evt to get click position
  */
@@ -283,7 +283,7 @@ var openGenericPopup = exports.openGenericPopup = function (fillMethod, evt) {
  *
  * @memberof module:PulseComponentFunctions
  * @function openPopup
- * 
+ *
  * @param {Object} component - component calling openDetails -> must define following attributes : machine-id (showpopup must be filled in config)
  * @param {Range} fullRange - full date range of the component
  * @param {Range} cellRange - date range of the clicked cell
@@ -337,7 +337,7 @@ var openPopup = exports.openPopup = function (component, fullRange, cellRange, e
  *
  * @memberof module:PulseComponentFunctions
  * @function openChangeWorkInfoDialog
- * 
+ *
  * @param {Object} component - component calling openChangeWorkInfoDialog -> must define following attributes : machine-id
  * @param {Range} range - date range
  *
@@ -390,7 +390,7 @@ exports.openChangeWorkInfoDialog = function (component, dtRange) {
  *
  * @memberof module:PulseComponentFunctions
  * @function openChangeReasonDialog
- * 
+ *
  * @param {Object} component - component calling openChangeReasonDialog -> must define following attributes : machine-id
  * @param {Range} dtRange - date range
  * @param {Bool} skip1periodlist - true if 1 item list should display 2nd page
@@ -487,7 +487,7 @@ var openChangeScrapClassificationDialog = exports.openChangeScrapClassificationD
  *
  * @memberof module:PulseComponentFunctions
  * @function openChangeStopClassificationDialog
- * 
+ *
  * @param {Object} component - component calling openChangeStopClassificationDialog -> must define following attributes : machine-id
  * @param {Range} dtRange - date range
  *
@@ -532,7 +532,7 @@ var openChangeStopClassificationDialog = exports.openChangeStopClassificationDia
  *
  * @memberof module:PulseComponentFunctions
  * @function clickOnBar
- * 
+ *
  * @param {Object} component - component calling openDetails -> must define following attributes : machine-id (showpopup must be filled in config)
  * @param {Range} fullRange - full date range of the component
  * @param {Range} cellRange - date range of the clicked cell
@@ -567,7 +567,7 @@ exports.clickOnBar = function (component, fullRange, cellRange, event, callerNam
  *
  * @memberof module:PulseComponentFunctions
  * @function openRunningDialog
- * 
+ *
  * @param {Integer} groupId - group id
  */
 exports.openRunningDialog = function (groupId) {
@@ -635,7 +635,7 @@ exports.openRunningDialog = function (groupId) {
 
   let mainPageDivContent = $(
     '<div class="main-table running-page"> \
-      <div class="one_machine_cell"> \
+      <div class="one_machine_cell top_cell"> \
         <div class="div-machine"> \
           <div class="div-current"> \
             <label class="label-current">Current:</label> \
