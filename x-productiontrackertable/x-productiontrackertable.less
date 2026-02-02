@@ -17,6 +17,7 @@ x-productiontrackertable {
     position: relative; // For loader position
     height: 100% !important;
     width: 100% !important;
+    overflow: auto;
 
     .productiontrackertable-table {
       display: grid;
@@ -88,7 +89,7 @@ x-productiontrackertable {
       .mid-efficiency{
         color: @mid_efficiency_base !important;
       }
-      
+
       .hourly-actual {
         grid-column: 2;
         background-color: @color_window;

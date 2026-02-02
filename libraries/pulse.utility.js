@@ -15,7 +15,7 @@ var pulseRange = require('pulseRange');
 var pulseConfig = require('pulseConfig');
 
 /** Get integer from string
- * 
+ *
  * @memberof module:pulseUtility
  * @function string2int
  */
@@ -24,7 +24,7 @@ exports.string2int = function string2int (str) {
 };
 
 /** Get contrated color from rgb OR #hex
- * 
+ *
  * @memberof module:pulseUtility
  * @function getContrastColor
  */
@@ -56,7 +56,7 @@ exports.getContrastColor = function getContrastColor (hexcolor) {
  *
  * @memberof module:pulseUtility
  * @function isNumeric
- * 
+ *
  * @param {Object} value  object to check
  * @return {Boolean}
  */
@@ -73,7 +73,7 @@ exports.isNumeric = function (value) {
  *
  * @memberof module:pulseUtility
  * @function isFloat
- * 
+ *
  * @param {Object} value  object to check
  * @return {Boolean}
  */
@@ -85,7 +85,7 @@ exports.isFloat = function (value) {
  *
  * @memberof module:pulseUtility
  * @function isInteger
- * 
+ *
  * @param {Object} value  object to check
  * @return {Boolean}
  */
@@ -182,12 +182,12 @@ exports.getMomentLocalFromUtcDate = function (datetime) {
 }
 
 /** Convert a date for the REPORT
- * 
+ *
  * It just converts the date to a LOCAL string for calling reports
  * (used in toollifemachine bar)
- * 
+ *
  * If date is not defined or if it is an empty string, an empty string is returned
- * 
+ *
  * @memberof module:pulseUtility
  * @function convertDateForReport
  *
@@ -220,11 +220,11 @@ exports.convertDateForReport = function (date) {
 }
 
 /** Convert a date for the web service
- * 
+ *
  * It just converts the date to an ISO string
- * 
+ *
  * If date is not defined or if it is an empty string, an empty string is returned
- * 
+ *
  * @memberof module:pulseUtility
  * @function convertDateForWebService
  *
@@ -250,18 +250,18 @@ var convertDateForWebService = exports.convertDateForWebService = function (date
 }
 
 /** Convert a day for the web service
- * 
+ *
  * It just converts the day to an ISO string day (not date ! )
- * 
+ *
  * If day is not defined or if it is an empty string, an empty string is returned
- * 
+ *
  * @memberof module:pulseUtility
  * @function convertDateForWebService
  *
  * @param {string|Date} date - date to send to the web service ou day string
  * @return {string} Day string for the web service = YYYY-MM-DD
  */
-//var convertDayForWebService = 
+//var convertDayForWebService =
 exports.convertDayForWebService = function (day) {
   if (isNotDefined(day)) {
     return '';
@@ -282,14 +282,14 @@ exports.convertDayForWebService = function (day) {
 
 /**
  * Callback to convert an object to a string
- * 
+ *
  * @callback toStringCallback
  * @param {Object} - Object to convert
  * @return {string} Result
  */
 
 /** Convert a range for the web service
- * 
+ *
  * @memberof module:pulseUtility
  * @function convertRangeForWebService
  *
@@ -297,13 +297,13 @@ exports.convertDayForWebService = function (day) {
  * @param {toStringCallback} boundToString - Callback to convert a bound to a string
  * @return {string} string for the web service
  */
-var _convertRangeForWebService //= exports.convertRangeForWebService 
+var _convertRangeForWebService //= exports.convertRangeForWebService
   = function (range, boundToString) {
     return range.toString(boundToString);
   }
 
 /** Convert a range for the web service
- * 
+ *
  * @memberof module:pulseUtility
  * @function convertStringRangeForWebService
  *
@@ -315,7 +315,7 @@ exports.convertStringRangeForWebService = function (stringrange) {
 }
 
 /** Convert a date range for the web service
- * 
+ *
  * @memberof module:pulseUtility
  * @function convertDateRangeForWebService
  *
@@ -342,7 +342,7 @@ exports.createSingleRangeForWebService = function (datetime) {
 
 /**
  * Create range for webservice
- * 
+ *
  * The default inclusivity for a DateRange is:
  * [) if begin and end are not the same
  * else []
@@ -375,7 +375,7 @@ exports.getDisplayDay = function (day) {
   if ((!day) || (day == 'null')) {
     return '';
   }
-  if (day.length > 10) { // TMP code to make getRangeAround < 2016-03-07 work    
+  if (day.length > 10) { // TMP code to make getRangeAround < 2016-03-07 work
     let _day = convertDateToMoment(day); // day + midnight
     _day = _day.add(12, 'hours'); // To be sure to display the right day
     return _day.format('ll');
@@ -387,7 +387,7 @@ exports.getDisplayDay = function (day) {
 }
 
 /** Display a single date
- * 
+ *
  * @memberof module:pulseUtility
  *
  * @function displayDate
@@ -409,7 +409,7 @@ var displayDate = exports.displayDate = function (date, seconds) {
 }
 
 /** Display a date range
- * 
+ *
  * @memberof module:pulseUtility
  *
  * @function displayDateRange
@@ -418,7 +418,7 @@ var displayDate = exports.displayDate = function (date, seconds) {
  * @param {boolean} seconds - true == show seconds
  * @return {string} String that represents the date range
  */
-//var displayDateRange = 
+//var displayDateRange =
 exports.displayDateRange = function (range, seconds) {
   let r = pulseRange.convertToDateRange(range);
   if (r.isEmpty()) {
@@ -469,7 +469,7 @@ exports.displayDateRange = function (range, seconds) {
 }
 
 /** Display the lower time of the range
- * 
+ *
  * @memberof module:pulseUtility
  *
  * @function displayRangeLowerTime
@@ -478,7 +478,7 @@ exports.displayDateRange = function (range, seconds) {
  * @param {boolean} seconds - true == show seconds
  * @return {string} lower time of the range: HH:mm or HH:mm:ss
  */
-//var displayRangeLowerTime = 
+//var displayRangeLowerTime =
 exports.displayRangeLowerTime = function (range, seconds) {
   let r = pulseRange.convertToDateRange(range);
   if (r.isEmpty()) {
@@ -497,7 +497,7 @@ exports.displayRangeLowerTime = function (range, seconds) {
 }
 
 /** Append a date range display with separated begin and end
- * 
+ *
  * @memberof module:pulseUtility
  *
  * @function  appendDateRangeDisplay
@@ -508,7 +508,7 @@ exports.displayRangeLowerTime = function (range, seconds) {
  * @param {boolean} seconds - true == show seconds
  * @return {boolean} true in case of success
  */
-//var appendDateRangeDisplay = 
+//var appendDateRangeDisplay =
 exports.appendDateRangeDisplay = function (parent, range, seconds) {
 
   let appendRange = function (parent, beginString, endString) {
@@ -606,7 +606,7 @@ exports.secondsToHHMMSS = function (nbSeconds) {
  *
  * @function HHMMSStoSeconds
  *
- * @param {string} HHHMMSS 
+ * @param {string} HHHMMSS
  * @return {integer} number of seconds (duration)
  */
 
@@ -633,7 +633,7 @@ exports.HHMMSStoSeconds = function (str) {
  * @param {string} param parameter name whose name must be search in url
  * @return parameter value or null if given url do not contain this parameter name
  */
-//var getURLParameter = 
+//var getURLParameter =
 exports.getURLParameter = function (pageURL, param) {
   let sQuery = pageURL.split('?')[1];
   if (sQuery) {
@@ -694,7 +694,7 @@ exports.changeURLParameter = function (pageURL, param, value) {
  *
  * @param {string} pageURL url address
  * @param {string} param parameter name whose name must be search in url
- * @return an array with values of given parameters. if given url do not contain this parameter name, it returns an empty array 
+ * @return an array with values of given parameters. if given url do not contain this parameter name, it returns an empty array
  */
 var getURLParameterValues = exports.getURLParameterValues = function (pageURL, param) {
   let splittedString = pageURL.split('?');
@@ -732,7 +732,7 @@ var getURLParameterValues = exports.getURLParameterValues = function (pageURL, p
  * @param {string} param parameter name whose name must be search and removed in url
  * @return {string} an url
  */
-//var removeURLParameter = 
+//var removeURLParameter =
 exports.removeURLParameter = function (pageURL, param) {
   let splittedString = pageURL.split('?');
   if (splittedString.length == 0) {
@@ -772,7 +772,7 @@ exports.removeURLParameter = function (pageURL, param) {
  * @param {string} param parameter whose name must be search and removed in url (*param*)
  * @return {string} an url
  */
-//var removeURLParameterContaining = 
+//var removeURLParameterContaining =
 exports.removeURLParameterContaining = function (pageURL, param) {
   let splittedString = pageURL.split('?');
   if (splittedString.length == 0) {
@@ -807,7 +807,7 @@ exports.removeURLParameterContaining = function (pageURL, param) {
  * @function getMachineIdParameterValue
  *
  * @param {string} pageURL url address
- * @return an array with values of machine id parameter values. if given url do not contain this parameter name, it returns an empty array 
+ * @return an array with values of machine id parameter values. if given url do not contain this parameter name, it returns an empty array
  */
 exports.getMachineIdParameterValue = function (pageURL) {
   let identifiers = ['machine', 'machine-ids'];
@@ -830,7 +830,7 @@ exports.getMachineIdParameterValue = function (pageURL) {
  * @function getALLMachineIdParameterValue - TODO : REMOVE
  *
  * @param {string} pageURL url address
- * @return an array with values of machine id parameter values. if given url do not contain this parameter name, it returns an empty array 
+ * @return an array with values of machine id parameter values. if given url do not contain this parameter name, it returns an empty array
  */
 exports.getALLMachineIdParameterValue = function (pageURL) {
   let identifiers = ['machine', 'machine-ids', 'selected-machine-id', 'machinetop'];
@@ -851,7 +851,7 @@ exports.getALLMachineIdParameterValue = function (pageURL) {
  * @function getParametersExceptingMachineId
  *
  * @param {string} pageURL url address
- * @return an array with values of machine id parameter values. if given url do not contain this parameter name, it returns an empty array 
+ * @return an array with values of machine id parameter values. if given url do not contain this parameter name, it returns an empty array
  */
 exports.getParametersExceptingMachineId = function (pageURL) {
   let retString = '';
@@ -1012,7 +1012,7 @@ var convertDateToMoment = exports.convertDateToMoment = function (date) {
 
 /**
  * Convert moment object to datetime in iso string format 'YYYY-MM-DDTHH:mm:ssZ'
- * 
+ *
  *
  * @memberof module:pulseUtility
  *
@@ -1020,7 +1020,7 @@ var convertDateToMoment = exports.convertDateToMoment = function (date) {
  *
  * @param {Moment} m dateTimeString representation of datetime with following format: 'YYYY-MM-DDTHH:mm:ssZ' / 'YYYY-MM-DDTHH:mm:ss.SSSZ'
  *
- * @return {string} a string object 
+ * @return {string} a string object
  */
 exports.convertMomentToDateTimeString = function convertMomentToDateTimeString (m) {
   if (m.isValid()) {
@@ -1040,10 +1040,10 @@ exports.defaultTimeFormatWithSecond = 'LTS';
 
 /**
  * Function used to get default locate from navigator
- * 
+ *
  * @memberof module:pulseUtility
  * @function getDefaultLocale
- * 
+ *
  * @return Default locale
  */
 exports.getDefaultLocale = function () {
@@ -1054,7 +1054,7 @@ exports.getDefaultLocale = function () {
 /**
  * return true if time format for default locale use meridian(AM/PM)
  *  otherwise false
- * 
+ *
  * @memberof module:pulseUtility
  * @function is24HoursFormat
  *
@@ -1079,7 +1079,7 @@ exports.is24HoursFormat = function () {
  *
  * @param {Object} an object in key-value form which represents attribute of element to create
  *
- * @return {DOMElement} a jQuery element 
+ * @return {DOMElement} a jQuery element
  */
 var createjQueryElementWithAttribute = exports.createjQueryElementWithAttribute = function (tagName, attributes) {
   let elt = null;
@@ -1106,7 +1106,7 @@ var createjQueryElementWithAttribute = exports.createjQueryElementWithAttribute 
     elt = $(domElt);
   }
 
-  /*else 
+  /*else
     let str = '<' + tagName + ' ';
     for (let key in attributes) {
       let value = attributes[key];
@@ -1173,7 +1173,7 @@ exports.hasClass = function (element, className) {
 }
 
 /** Create a cookie
- * 
+ *
  * @memberof module:pulseUtility
  * @function createCookie
  *
@@ -1188,12 +1188,15 @@ var createCookie = exports.createCookie = function (name, value, days) {
   else {
     expires = ''; // == Expire = end of session
   }
-  document.cookie = name + '=' + value + expires + '; path=/';
+  let cookieString = name + '=' + value + expires + '; path=/';
+  console.log('[DEBUG] Creating cookie:', cookieString);
+  document.cookie = cookieString;
+  console.log('[DEBUG] document.cookie after set:', document.cookie);
   // ';path=/' == global path to share with reporting
 }
 
 /** Read a cookie
- * 
+ *
  * @memberof module:pulseUtility
  * @function readCookie
  */
@@ -1216,7 +1219,7 @@ var eraseCookie =
   }
 
 /** change page in url
- * 
+ *
  * @memberof module:pulseUtility
  * @function changePageName
  */
@@ -1230,7 +1233,10 @@ exports.changePageName = function (href, newPageName) {
   let posSlash = splitUrl[0].lastIndexOf('/');
   if ((posPt != -1) && (posSlash != -1)) { // Found both
     let crtPage = (splitUrl[0].slice(posSlash + 1, posPt));
-    splitUrl[0] = splitUrl[0].replace(crtPage, newPageName);
+    // Replace only the filename (between last / and .)
+    let beforePage = splitUrl[0].substring(0, posSlash + 1);
+    let afterHtml = splitUrl[0].substring(posPt);
+    splitUrl[0] = beforePage + newPageName + afterHtml;
 
     return splitUrl.join('?');
   }
@@ -1238,7 +1244,7 @@ exports.changePageName = function (href, newPageName) {
 }
 
 /** get current page
- * 
+ *
  * @memberof module:pulseUtility
  * @function getCurrentPageName
  */

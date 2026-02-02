@@ -18,8 +18,8 @@ var eventBus = require('eventBus');
   class PartProductionStatusPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -150,7 +150,7 @@ var eventBus = require('eventBus');
             animateTimeAndDash = false;
           }
         }
-        // Coming event 
+        // Coming event
         if (!this._activeEvent) {
           if (this._pauseWhenMachiningNotRunning && this._notRunningCanCancelAnimation) {
             console.error('PartProductionStatusPie(' + this.element.getAttribute('machine-id') + ') '
@@ -260,7 +260,7 @@ var eventBus = require('eventBus');
           if (this._activeEvent) {
             keyframeName += '-increase';
           }
-          pulseSvg.createStyleDashCircleRotation(this._dashcircle, // this, 
+          pulseSvg.createStyleDashCircleRotation(this._dashcircle, // this,
             keyframeName, secondsForDash, this._dashCircleRadius, this._activeEvent);
 
           $(this._dashcircle).css('animation-timing-function', 'linear');
@@ -281,7 +281,7 @@ var eventBus = require('eventBus');
       }
       else { // Display seconds (sometimes no dash refresh after timer)
         if (this._secondsBeforeNextChange != this._secondsBeforeMinuteChange) {
-          this._needChangeDash = false; // After next timer 
+          this._needChangeDash = false; // After next timer
         }
         else {
           this._needChangeDash = true;
@@ -325,7 +325,7 @@ var eventBus = require('eventBus');
         'transparent', this._ringStrokeClass,
         null, this._dashWidth);
       //this._dashcircle.setAttribute('stroke-linecap', "round"); // Not here
-      //this._dashcircle.setAttribute('stroke-dasharray', 
+      //this._dashcircle.setAttribute('stroke-dasharray',
       //circumference.toFixed(0) + ' ' + 0); // Filled 100% // Empty 0% = end position
       this._dashcircle.setAttribute('stroke-dasharray',
         0 + ' ' + circumference.toFixed(0)); // Filled 0% // Empty 100% = end position = default
@@ -399,7 +399,7 @@ var eventBus = require('eventBus');
 
             if (this._data.GoalNowShift > 0) {
               let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 60);
-              let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 80);
+              let thresholdtargetproduction = this.getConfigOrAttribute('thresholdtargetproduction', 80);
               // colors and efficiency
               let ratio = this._data.NbPiecesDoneDuringShift / this._data.GoalNowShift;
               let previousClass = productionDisplay[0].getAttribute('class');
@@ -411,7 +411,7 @@ var eventBus = require('eventBus');
                 //$(productionDisplay).addClass('bad-efficiency').removeClass('mid-efficiency').removeClass('good-efficiency');
               }
               else {
-                if (ratio < thresholdorangeproduction / 100) {
+                if (ratio < thresholdtargetproduction / 100) {
                   productionDisplay[0].setAttribute('class', previousClass + ' mid-efficiency');
                   //$(productionDisplay).addClass('mid-efficiency').removeClass('bad-efficiency').removeClass('good-efficiency');
                 }
@@ -460,7 +460,7 @@ var eventBus = require('eventBus');
       let bottomTextBottom = this._xyPosition + middleAvailableWidth / 5; // + middleAvailableWidth*4/5;
       let smallTextBottom = bottomTextBottom + smallTextHeight / 2 + smallTextHeight;
 
-      if (pulseUtility.isNotDefined(this._eventDateTime)) { // == no active or coming event 
+      if (pulseUtility.isNotDefined(this._eventDateTime)) { // == no active or coming event
         // BIG production (ex: 2/3)
         let bigTextGroup = document.createElementNS(pulseSvg.get_svgNS(), 'g');
         let bigRect = document.createElementNS(pulseSvg.get_svgNS(), 'rect');
@@ -716,7 +716,7 @@ var eventBus = require('eventBus');
 
       // Restore default == this._restoreDefaultValues (); DONE just before
 
-      // CREATE SVG 
+      // CREATE SVG
       let svg = pulseSvg.createBase(this._height, // == width
         this._height, // height
         'donut', 2 * this._xyPosition, 2 * this._xyPosition);
@@ -1060,8 +1060,8 @@ var eventBus = require('eventBus');
 
     /**
       * Event callback in case a config is updated: (re-)start the component
-      * 
-      * @param {*} event 
+      *
+      * @param {*} event
       */
     onConfigChange(event) {
       if (event.target.config == 'thresholdsupdated') this._fillProductionText();
@@ -1072,7 +1072,7 @@ var eventBus = require('eventBus');
         this._fillProductionText();
 
       if ((event.target.config == 'thresholdredproduction')
-        || (event.target.config == 'thresholdorangeproduction')) {
+        || (event.target.config == 'thresholdtargetproduction')) {
         this._fillProductionText();
       }
 

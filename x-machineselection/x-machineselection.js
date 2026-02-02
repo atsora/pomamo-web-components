@@ -25,14 +25,14 @@ require('x-freetext/x-freetext');
 /**
  * Build a custom tag <x-machineselection>
  * CAN BE Used by report web app OR pulse web app
- * 
+ *
  * Attributes :
  * unique-machine : bool if single machine is mandatory (rarely used)
- * 
+ *
  * // Special for reports
  * in-report = present if report version is enabled
  * groupDisplayForm = MACHINESGROUPS
- * groupName. ex = 
+ * groupName. ex =
  * pulse-machines (storage in localstorage using pulseConfig for pulsewebapp)
  * pulse-groups (storage in localstorage using pulseConfig for pulsewebapp)
  */
@@ -41,8 +41,8 @@ require('x-freetext/x-freetext');
   class MachineSelectionComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -210,7 +210,7 @@ require('x-freetext/x-freetext');
         this.initParamForReport(groupReportDiv,
           'PulseGroups', 'GROUPPOS', // name, parameterkey
           'STRING', // dataType = 'STRING'
-          'SIMPLE', '', '', // , parameterType, defaultValue, value, 
+          'SIMPLE', '', '', // , parameterType, defaultValue, value,
           'false', 'false', ''); // required, hidden, helptext
         reportDiv.append(groupReportDiv);
 
@@ -218,7 +218,7 @@ require('x-freetext/x-freetext');
         this.initParamForReport(machineReportDiv,
           'PulseMachines', 'MACHINES', // not 'MACHINEPOS', because of history compatibility // name, parameterkey
           'STRING', // dataType = 'STRING'
-          'SIMPLE', '', '', // parameterType, defaultValue, value, 
+          'SIMPLE', '', '', // parameterType, defaultValue, value,
           'false', 'false', ''); // required, hidden, helptext
         reportDiv.append(machineReportDiv);
       }
@@ -265,7 +265,7 @@ require('x-freetext/x-freetext');
       // Fill summary
       this._fillSummaryDisplay();
 
-      // Fill list of machines 
+      // Fill list of machines
       this._fillMachinesList();
     } // end refresh
 
@@ -358,7 +358,7 @@ require('x-freetext/x-freetext');
         .attr('type', 'text').attr('placeholder', this.getTranslation('searchDots', 'Search...'));
       this._machinesSearchDiv.append(this._inputSearch);
 
-      // FILL must be one AFTER dialog creation to display icons 
+      // FILL must be one AFTER dialog creation to display icons
       //this._fillMachinesList();
 
       div_container_page1.append(this._machinesSearchDiv).append(this._machinesListContainer);
@@ -498,7 +498,7 @@ require('x-freetext/x-freetext');
       pulseCustomDialog.addPage(this._dialogPage1, this._dialogPage2);
       // this._addDragAndDropEvents(); No. Not here !
 
-      // FILL must be one AFTER dialog creation to display icons 
+      // FILL must be one AFTER dialog creation to display icons
       this._fillMachinesList();
 
       // Default = useGroupSelection -> list of machines == hidden
@@ -742,7 +742,7 @@ require('x-freetext/x-freetext');
           let id = displayClass[0];
           let displayStr = displayClass[1].display;
 
-          // Button to add 
+          // Button to add
           let addButton = $('<div></div>').addClass('machineselection-add-machine-button')
             .attr('machine-id', id);
           let removeButton = $('<div></div>').addClass('machineselection-remove-machine-button')
@@ -798,15 +798,15 @@ require('x-freetext/x-freetext');
                         // ADD MACHINE
                         if (!machineselection._machineSelectionArray.includes(machid))
                           machineselection._machineSelectionArray.push(machid);
-          
+
                         // Update left panel
                         machineselection._changeSelectionInMachineList();
                         // Update right panel
                         machineselection._fillSelection();
                       }
                     }(this));
-          
-          
+
+
                     removeButton.click(function (machineselection) { // to avoid closure
                       return function () {
                         let machid = $(this).attr('machine-id');
@@ -819,7 +819,7 @@ require('x-freetext/x-freetext');
                               }
                             );
                         }
-          
+
                         // Update left panel
                         machineselection._changeSelectionInMachineList();
                         // Update right panel
@@ -909,29 +909,38 @@ require('x-freetext/x-freetext');
         let reorderButton = $('<div></div>').addClass('reorderButton');
 
         let row = $('<div></div>').addClass('selection-position');
-        row.append(highlight).append(upButton).append(downButton)
-          .append(reorderButton);
+        row.append(highlight).append(upButton).append(downButton);
 
+        // LEFT SIDE - Reorder controls, display name and machine/group label
+        let leftSide = $('<div></div>').addClass('selection-left-side');
+        leftSide.append(reorderButton);
         let spanDisplay = $('<span></span>').addClass('selection-display')
           .html(displayClass.display);
-        let removeButton = $('<div></div>').addClass('remove-button')
-          .attr('groupId', groupId);
-        row.append(spanDisplay).append(removeButton);
+        leftSide.append(spanDisplay);
         if (displayClass.singlemachine) {
           let spanMachine = $('<span></span>').addClass('machineselection-machine-label')
             .html(this.getTranslation('machineKey', 'M'));
-          row.append(spanMachine);
+          leftSide.append(spanMachine);
         }
         else {
           let spanGroup = $('<span></span>').addClass('machineselection-group-label')
             .html(this.getTranslation('groupKey', 'G'));
-          row.append(spanGroup);
+          leftSide.append(spanGroup);
         }
+        row.append(leftSide);
+
+        // RIGHT SIDE - Dynamic label and remove button
+        let rightSide = $('<div></div>').addClass('selection-right-side');
         if (displayClass.dynamic) {
           let spanDynamic = $('<span></span>').addClass('machineselection-dynamic-label')
             .html(this.getTranslation('dynamicKey', 'DYNAMIC'));
-          row.append(spanDynamic);
+          rightSide.append(spanDynamic);
         }
+        let removeButton = $('<div></div>').addClass('remove-button')
+          .attr('groupId', groupId);
+        rightSide.append(removeButton);
+        row.append(rightSide);
+
         selection.append(row);
 
         $(selection).css('order', iGroup);
@@ -979,7 +988,7 @@ require('x-freetext/x-freetext');
           }
         }(this));
 
-      } // and for 
+      } // and for
       this._addDragAndDropEvents();
       this._addMoveUpDownEvents();
 
@@ -1246,7 +1255,7 @@ require('x-freetext/x-freetext');
               .html(groups[i].TreeName);
             let nbSel = $('<span></span>').addClass('number-of-selections').html('');
             let checkbox = $('<input type="checkbox" groupid="' + groups[i].Id + '" dynamic="' + groups[i].Dynamic + '">');
-            let divRow = $('<div></div>').addClass('machineselection-category-row'); 
+            let divRow = $('<div></div>').addClass('machineselection-category-row');
             divRow.append(showHide).append(checkbox).append(spanDisplay).append(nbSel);
             if (isMain)
               divRow.addClass('is-main');
@@ -1423,7 +1432,7 @@ require('x-freetext/x-freetext');
         let group = this._groupSelectionArray[i];
         let selectedCategory = $(this._dialogPage1).find('input[groupid=' + group + ']');
         if (selectedCategory.length == 0) {
-          // Error in config ! -> 
+          // Error in config ! ->
           console.warn('Check group configuration for ' + group);
           // Remove group from selection
           this._groupSelectionArray.splice(i, 1);

@@ -16,8 +16,8 @@ var eventBus = require('eventBus');
   class ProductionTrackerTableComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -401,7 +401,7 @@ var eventBus = require('eventBus');
 
         // Prepare colors
         let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 60);
-        let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 80);
+        let thresholdtargetproduction = this.getConfigOrAttribute('thresholdtargetproduction', 80);
 
         // Add  or change rows
         for (let i = 0; i < this._data.HourlyData.length; i++) {
@@ -475,7 +475,7 @@ var eventBus = require('eventBus');
                 $(hActual).addClass('bad-efficiency');
               }
               else {
-                if (ratio < thresholdorangeproduction / 100) {
+                if (ratio < thresholdtargetproduction / 100) {
                   $(hActual).addClass('mid-efficiency');
                 }
                 else {
@@ -490,7 +490,7 @@ var eventBus = require('eventBus');
                 $(sActual).addClass('bad-efficiency');
               }
               else {
-                if (ratio < thresholdorangeproduction / 100) {
+                if (ratio < thresholdtargetproduction / 100) {
                   $(sActual).addClass('mid-efficiency');
                 }
                 else {
@@ -552,7 +552,7 @@ var eventBus = require('eventBus');
                 $(hourlyActualForThisRange).addClass('bad-efficiency');
               }
               else {
-                if (ratio < thresholdorangeproduction / 100) {
+                if (ratio < thresholdtargetproduction / 100) {
                   $(hourlyActualForThisRange).addClass('mid-efficiency');
                 }
                 else {
@@ -570,7 +570,7 @@ var eventBus = require('eventBus');
                 $(summaryActualForThisRange).addClass('bad-efficiency');
               }
               else {
-                if (ratio < thresholdorangeproduction / 100) {
+                if (ratio < thresholdtargetproduction / 100) {
                   $(summaryActualForThisRange).addClass('mid-efficiency');
                 }
                 else {
@@ -637,8 +637,8 @@ var eventBus = require('eventBus');
 
     /**
       * Event callback in case a config is updated: (re-)start the component
-      * 
-      * @param {*} event 
+      *
+      * @param {*} event
       */
     onConfigChange (event) {
       if ((event.target.config == 'machine')
@@ -653,14 +653,14 @@ var eventBus = require('eventBus');
       }
       if ((event.target.config == 'thresholdunitispart')
         || (event.target.config == 'thresholdredproduction')
-        || (event.target.config == 'thresholdorangeproduction')) {
+        || (event.target.config == 'thresholdtargetproduction')) {
 
         if (this._table == undefined) {
           return;
         }
         // Prepare color limits
         let thresholdredproduction = this.getConfigOrAttribute('thresholdredproduction', 60);
-        let thresholdorangeproduction = this.getConfigOrAttribute('thresholdorangeproduction', 80);
+        let thresholdtargetproduction = this.getConfigOrAttribute('thresholdtargetproduction', 80);
 
         // Remove colors
         let hourlyActuals = $(this._table).find('.hourly-actual');
@@ -693,7 +693,7 @@ var eventBus = require('eventBus');
               $(hourlyActuals[iAct]).addClass('bad-efficiency');
             }
             else {
-              if (ratio < thresholdorangeproduction / 100) {
+              if (ratio < thresholdtargetproduction / 100) {
                 $(hourlyActuals[iAct]).addClass('mid-efficiency');
               }
               else {
@@ -711,7 +711,7 @@ var eventBus = require('eventBus');
               $(summaryActualForThisRange).addClass('bad-efficiency');
             }
             else {
-              if (ratio < thresholdorangeproduction / 100) {
+              if (ratio < thresholdtargetproduction / 100) {
                 $(summaryActualForThisRange).addClass('mid-efficiency');
               }
               else {
