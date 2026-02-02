@@ -17,18 +17,18 @@ x-machineselection {
   // Warning ! Do not add css here because of dialog
 }
 
-////////// ////////// ////////// ////////// ////////// 
+////////// ////////// ////////// ////////// //////////
 // 1- Common (left + right pages)
-////////// ////////// ////////// ////////// ////////// 
+////////// ////////// ////////// ////////// //////////
 .machineSelectionDialogPart1 label,
 .machineSelectionDialogPart2 label {
   font-weight: 400;
   font-size: 14px;
 }
 
-////////// ////////// ////////// ////////// ////////// 
+////////// ////////// ////////// ////////// //////////
 // 2- Left Page (categories selection)
-////////// ////////// ////////// ////////// ////////// 
+////////// ////////// ////////// ////////// //////////
 
 .machineselection-page1 {
   display: flex;
@@ -151,7 +151,7 @@ x-machineselection {
 .machineselection-subcategory-visibility {
   box-sizing: border-box;
   width: 19px;
-  height: 16px; 
+  height: 16px;
 }
 
 .machineselection-category.main-category {
@@ -243,6 +243,7 @@ x-machineselection {
     font-size: 0.74em;
     border-radius: 3px;
     color: @color_window_alternate;
+    align-content: center;
   }
 
   .number-of-selections {
@@ -429,7 +430,7 @@ x-machineselection {
         width: 1em;
         margin: 0 4px;
         //cursor: pointer; In parent
-        pointer-events: none; // to allow click through 
+        pointer-events: none; // to allow click through
 
         .create_svg('machineselection-arrow-right', @color_text_alternate, @color_text);
       }
@@ -442,7 +443,7 @@ x-machineselection {
         width: 1em;
         margin: 0 4px;
         //cursor: pointer; In parent
-        pointer-events: none; // to allow click through 
+        pointer-events: none; // to allow click through
 
         .create_svg('machineselection-arrow-left', @color_highlight, @color_text_alternate);
       }
@@ -451,16 +452,16 @@ x-machineselection {
         white-space: nowrap;
         margin-left: 2px;
         //cursor: default;
-        pointer-events: none; // to allow click through 
+        pointer-events: none; // to allow click through
       }
     }
   }
 }
 
 
-////////// ////////// ////////// ////////// ////////// ////////// 
+////////// ////////// ////////// ////////// ////////// //////////
 // 3- Right Page (preview)
-////////// ////////// ////////// ////////// ////////// ////////// 
+////////// ////////// ////////// ////////// ////////// //////////
 .machineSelectionDialogPart1 {
   overflow: auto;
   width: 60% !important;
@@ -504,6 +505,8 @@ x-machineselection {
       flex-grow: 3;
       background-color: @color_background;
       color: @color_text_alternate;
+      padding-left: 28.5px;
+      padding-right: 28.5px;
 
       .no-selection {
         font-style: italic;
@@ -513,7 +516,7 @@ x-machineselection {
       .machineselection-selection-list {
         display: flex;
         flex-direction: column;
-        color: @color_highlight; 
+        color: @color_highlight;
         font-size: 1.1em;
         row-gap: 6px;
 
@@ -523,7 +526,7 @@ x-machineselection {
           background-color: @color_background_alternate;
           border-radius: @border_radius_small;
           padding: 4px 12px;
-          margin: 0 28.5px;
+          overflow: hidden;
 
           span.machineselection-dynamic-label {
             float: right;
@@ -534,6 +537,7 @@ x-machineselection {
             font-size: 0.74em;
             border-radius: 3px;
             color: @color_window_alternate;
+            align-content: center;
           }
 
           .machineselection-machine-label,
@@ -554,6 +558,7 @@ x-machineselection {
             cursor: grab;
             display: flex;
             align-items: center;
+            justify-content: space-between;
 
             .reorderHighlight {
               display: block;
@@ -620,10 +625,24 @@ x-machineselection {
               width: 1em;
 
               margin: 2px;
-              margin-left: auto;
+              margin-left: 3px;
 
               .create_svg('machineselection-times-circle', @color_text_alternate, @color_red);
               cursor: pointer;
+            }
+
+            .selection-left-side {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              flex: 0 1 auto;
+            }
+
+            .selection-right-side {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              flex: 0 1 auto;
             }
           }
 
@@ -648,8 +667,12 @@ x-machineselection {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-      margin: 3px;
+      padding-left: 28.5px;
+      padding-right: 28.5px;
+      padding-top: 3px;
+      padding-bottom: 3px;
       font-size: 1.2em;
+      align-items: center;
 
       .machineselection-preview-title {
         font-size: 0.9em;
@@ -669,6 +692,7 @@ x-machineselection {
       .machineselection-usemachines-button {
         height: 1em; // just below font-size
         width: 1em;
+        margin-right: 13px;
 
         .create_svg('machineselection-arrow-alt-circle-up-solid', @color_text, @color_highlight);
         cursor: pointer;
@@ -681,6 +705,8 @@ x-machineselection {
       min-height: 15%;
 
       box-sizing: border-box;
+      padding-left: 28.5px;
+      padding-right: 28.5px;
 
       overflow-y: auto;
       color: @color_text_alternate;
@@ -735,16 +761,16 @@ x-machineselection {
   }
 }
 
-////////// ////////// ////////// ////////// ////////// 
+////////// ////////// ////////// ////////// //////////
 // 4-Summary -> in Web App
-////////// ////////// ////////// ////////// ////////// 
+////////// ////////// ////////// ////////// //////////
 /*.machineselection-summary ul {
   li {}
 }*/
 
-////////// ////////// ////////// ////////// ////////// 
+////////// ////////// ////////// ////////// //////////
 // 5- Others - phone display
-////////// ////////// ////////// ////////// ////////// 
+////////// ////////// ////////// ////////// //////////
 
 // Phone display
 @media (max-width: 685px) {

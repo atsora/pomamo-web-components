@@ -1233,7 +1233,10 @@ exports.changePageName = function (href, newPageName) {
   let posSlash = splitUrl[0].lastIndexOf('/');
   if ((posPt != -1) && (posSlash != -1)) { // Found both
     let crtPage = (splitUrl[0].slice(posSlash + 1, posPt));
-    splitUrl[0] = splitUrl[0].replace(crtPage, newPageName);
+    // Replace only the filename (between last / and .)
+    let beforePage = splitUrl[0].substring(0, posSlash + 1);
+    let afterHtml = splitUrl[0].substring(posPt);
+    splitUrl[0] = beforePage + newPageName + afterHtml;
 
     return splitUrl.join('?');
   }
