@@ -44,7 +44,7 @@ svg {
       &.missing {
         padding-right: 10px;
         font-style: italic;
-        background-color: @color_missing_value_highlight; // pink color  
+        background-color: @color_missing_value_highlight; // pink color
         color: @color_missing_text;
 
         &:hover {
@@ -71,7 +71,7 @@ svg {
         &.missing {
           padding-right: 10px;
           font-style: italic;
-          background-color: @color_missing_value_highlight; // pink color  
+          background-color: @color_missing_value_highlight; // pink color
           color: @color_missing_text;
 
           &:hover {
@@ -328,7 +328,7 @@ svg {
 
 /*
 .detailed-main:after {
-  content: ""; // Important, sinon l'élément n'est pas généré. 
+  content: ""; // Important, sinon l'élément n'est pas généré.
   display: table;
   clear: both; // Pour empecher les suivants de s'afficher par dessus
 }*/
@@ -458,7 +458,7 @@ svg {
   // See pulse-cellbar-cell-missing
   cursor: pointer;
   padding: 3px;
-  background-color: @color_missing_value_highlight; // pink color  
+  background-color: @color_missing_value_highlight; // pink color
   color: @color_missing_text;
 
   &:hover {
@@ -637,7 +637,7 @@ svg {
     .pulse-cellbar-cell-missing {
       flex-shrink: 1; // Do not hide the end !
       cursor: pointer;
-      //background-color: @color_missing_value_highlight; // pink color  
+      //background-color: @color_missing_value_highlight; // pink color
       //color: @color_missing_text;
 
       &:hover {
@@ -692,7 +692,7 @@ svg {
 
   .pulse-maintenance-display-box {
     position: relative;
-    background-image: @background_image; // == body    
+    background-image: @background_image; // == body
     color: @color_text_alternate;
     //background-color: @color_window;
     //color: @color_text;
@@ -755,7 +755,7 @@ svg {
   left: 0;
   width: 100%;
 
-  pointer-events: none; // to allow click through 
+  pointer-events: none; // to allow click through
 
   &.force-visibility {
     display: inline-block;
@@ -797,10 +797,6 @@ svg {
 }
 
 .pulse-details {
-  .pulse-loader-div {
-    //position: absolute; // To go over
-    //width: 100%;
-  }
 
   .pulse-message-div {
     ///position: absolute; // To go over
@@ -849,7 +845,6 @@ svg {
   }
 
   .pulse-message-div {
-    position: absolute; // To go over
 
     .pulse-message {
       // Vertical and horizontal center on 1 line
@@ -993,7 +988,7 @@ svg {
   }
 }
 
-// Not Applicable - default hidden 
+// Not Applicable - default hidden
 // -> to remove, overload manageNotApplicable without calling super.*
 .pulse-component-not-applicable {
   display: none;
@@ -1006,7 +1001,7 @@ svg {
     display: inline-block;
     //background: @error_main_color; -> gray ?
     color: @warn_main_color; // @error_contrasted_color;
-    // KEEP VISIBLE : .pulse-cellbar-current-data .pulse-cellbar-past-data 
+    // KEEP VISIBLE : .pulse-cellbar-current-data .pulse-cellbar-past-data
   }
 }
 
@@ -1016,7 +1011,7 @@ svg {
     display: inline-block;
     //background: @warn_main_color; -> gray ?
     color: @warn_main_color; // @warn_contrasted_color;
-    // KEEP VISIBLE : .pulse-cellbar-current-data .pulse-cellbar-past-data 
+    // KEEP VISIBLE : .pulse-cellbar-current-data .pulse-cellbar-past-data
   }
 }
 
@@ -1026,7 +1021,7 @@ svg {
     display: inline-block;
     //background: @warn_main_color; -> gray ?
     color: @warn_main_color; // @warn_contrasted_color;
-    // KEEP VISIBLE : .pulse-cellbar-current-data .pulse-cellbar-past-data 
+    // KEEP VISIBLE : .pulse-cellbar-current-data .pulse-cellbar-past-data
   }
 }
 
@@ -1233,7 +1228,7 @@ x-machinedisplay.pulse-component-warning {
 }
 
 ////////////////////////////////////////////
-// LOADING - inspired from 
+// LOADING - inspired from
 // https://projects.lukehaas.me/css-loaders/
 
 // Global loader position
