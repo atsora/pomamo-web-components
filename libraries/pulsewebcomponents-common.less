@@ -298,7 +298,6 @@ svg {
   }
 
   .click-on-bar-details-content {
-    background-color: @color_window_alternate;
     color: @color_text_alternate;
 
     overflow-y: auto;
@@ -593,7 +592,7 @@ svg {
           color: @color_text_button;
 
           &:hover {
-            background-color: @color_background_alternate;
+            background-color: lighten(@color_background_alternate, 10%);
           }
         }
       }
@@ -629,7 +628,7 @@ svg {
         cursor: pointer;
 
         &:hover {
-          background-color: @color_background_alternate;
+          background-color: lighten(@color_background_alternate, 10%);
         }
       }
     }
