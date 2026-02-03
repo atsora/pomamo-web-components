@@ -374,19 +374,23 @@ require('x-clock/x-clock');
         // colors and efficiency
         let ratio = nbPiecesDone / goal;
         if (ratio < thresholdredproduction / 100) {
-          $(this._content).addClass('bad-efficiency').removeClass('mid-efficiency').removeClass('good-efficiency');
+          $(this._actualDisplay).addClass('bad-efficiency').removeClass('mid-efficiency').removeClass('good-efficiency');
+          $(this._percentDisplaySpan).addClass('bad-efficiency').removeClass('mid-efficiency').removeClass('good-efficiency');
         }
         else {
           if (ratio < thresholdtargetproduction / 100) {
-            $(this._content).addClass('mid-efficiency').removeClass('bad-efficiency').removeClass('good-efficiency');
+            $(this._actualDisplay).addClass('mid-efficiency').removeClass('bad-efficiency').removeClass('good-efficiency');
+            $(this._percentDisplaySpan).addClass('mid-efficiency').removeClass('bad-efficiency').removeClass('good-efficiency');
           }
           else {
-            $(this._content).addClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
+            $(this._actualDisplay).addClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
+            $(this._percentDisplaySpan).addClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
           }
         }
       }
       else {
-        $(this._content).removeClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
+        $(this._actualDisplay).removeClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
+        $(this._percentDisplaySpan).removeClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
       }
     }
 

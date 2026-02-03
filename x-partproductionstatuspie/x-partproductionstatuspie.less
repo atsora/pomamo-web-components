@@ -22,7 +22,7 @@ x-partproductionstatuspie {
     height: 100% !important;
     width: 100% !important;
   }
-  
+
   .partproductionstatuspie-invisible-bk{
     //stroke: @widget_background;
     stroke: lighten(@color_background_alternate, 15%);
@@ -32,7 +32,7 @@ x-partproductionstatuspie {
   .donut-ring-background{
     stroke: @color_alternate; //== @color_window;
   }
-  
+
   .stroke-color-as-background{ // For dash display
     stroke: @box_color;
   }
@@ -41,7 +41,7 @@ x-partproductionstatuspie {
   .completion-stroke-noinfo {
     stroke: @widget_background; // @color_text; Nearly hidden if no info
   }
-  .completion-stroke-activeevent{ // was stop 
+  .completion-stroke-activeevent{ // was stop
     stroke: @color_gray; // @color_blue;
 
     // +Severity level :
@@ -72,12 +72,6 @@ x-partproductionstatuspie {
 
   .production-in-pie{
     fill: @color_text_alternate;
-    &.bad-efficiency{
-      fill: @bad_efficiency_base;
-    }
-    &.mid-efficiency{
-      fill: @mid_efficiency_base;
-    }
   }
 
   // was stop :
