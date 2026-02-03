@@ -8,28 +8,10 @@
 @import "x-clock/x-clock.less";
 
 x-production {
-  display: block; /* To make is(':visible') works */ 
-  
+  display: block; /* To make is(':visible') works */
+
   .production-separator {
 	  content: " "; // '/' can be added OR min-width
-  }
-
-  .bad-efficiency {
-    .production-actual-value {
-      color: @bad_efficiency_base !important;
-    }
-    .production-percent-span {
-      color: @bad_efficiency_base !important;
-    }
-  }
-
-  .mid-efficiency {
-    .production-actual-value {
-      color: @mid_efficiency_base !important;
-    }
-    .production-percent-span {
-      color: @mid_efficiency_base !important;
-    }
   }
 
   .production-actual-value {
@@ -67,12 +49,5 @@ x-production {
   }
 
 
-  .good-efficiency {
-    .production-actual-value {
-      color: @good_efficiency_base !important;
-    }
-    .production-percent-span {
-      color: @good_efficiency_base !important;
-    }
-  }
 }
+

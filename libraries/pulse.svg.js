@@ -174,9 +174,9 @@ var createRect = exports.createRect = function (x, y, width, height, color, main
  * @memberof module:pulseSvg
  *
  * @function createBase
- * 
- * @param {Integer} width  
- * @param {Integer} height  
+ *
+ * @param {Integer} width
+ * @param {Integer} height
  * @param {string} mainClass  class to set
  * @param {Integer} viewBoxWidth  optional
  * @param {Integer} viewBoxHeight  optional
@@ -203,13 +203,13 @@ var createBase = exports.createBase = function (width, height, mainClass, viewBo
  * @memberof module:pulseSvg
  *
  * @function createEllipse
- * 
+ *
  * @param {Integer} xMiddle
  * @param {Integer} yMiddle
  * @param {Integer} xRadius
  * @param {Integer} yRadius
  * @param {String} mainClass  class to set
- 
+
  * @returns {Object} SVG
  */
 exports.createEllipse = function (xMiddle, yMiddle, xRadius, yRadius, mainClass) {
@@ -228,7 +228,7 @@ exports.createEllipse = function (xMiddle, yMiddle, xRadius, yRadius, mainClass)
  * @memberof module:pulseSvg
  *
  * @function createCircle
- * 
+ *
  * @param {Integer} xMiddle
  * @param {Integer} yMiddle
  * @param {Integer} radius
@@ -236,7 +236,7 @@ exports.createEllipse = function (xMiddle, yMiddle, xRadius, yRadius, mainClass)
  * @param {string} mainClass  class to set
  * @param {string} strokeColor
  * @param {Integer} strokeWidth
- 
+
  * @return {Object} SVG
  */
 exports.createCircle = function (xMiddle, yMiddle, radius, fillColor, mainClass, strokeColor, strokeWidth) {
@@ -263,12 +263,12 @@ exports.createCircle = function (xMiddle, yMiddle, radius, fillColor, mainClass,
  *
  * @function changeSegmentOnDonutEnd
  * to be called after createSegmentOnDonut to only change end position
- * 
+ *
  * @param {DOM} circleProgress
  * @param {Integer} radius
  * @param {Double} widthPercent percent for the segment length
  * @param {string} mainClass  class to set (optional)
- 
+
  * @return {Object} SVG
  */
 exports.
@@ -292,7 +292,7 @@ exports.
  * @memberof module:pulseSvg
  *
  * @function createSegmentOnDonut
- * 
+ *
  * @param {Integer} xMiddle
  * @param {Integer} yMiddle
  * @param {Integer} radius
@@ -302,7 +302,7 @@ exports.
  * @param {Integer} strokeWidth in %
  * @param {Double} beginPercent percent for the begin of the segment
  * @param {Double} widthPercent percent for the segment length
- 
+
  * @return {Object} SVG
  */
 exports.createSegmentOnDonut = function (xMiddle, yMiddle, radius, fillColor, mainClass,
@@ -345,7 +345,7 @@ exports.createSegmentOnDonut = function (xMiddle, yMiddle, radius, fillColor, ma
  * @memberof module:pulseSvg
  *
  * @function createLineOnDonut
- * 
+ *
  * @param {Integer} xMiddle
  * @param {Integer} yMiddle
  * @param {Integer} middleRadius
@@ -353,7 +353,7 @@ exports.createSegmentOnDonut = function (xMiddle, yMiddle, radius, fillColor, ma
  * @param {Double} percentPosition
  * @param {string} color
  * @param {string} strokeWidth
- 
+
  * @return {Object} SVG
  */
 exports.createLineOnDonut = function (xMiddle, yMiddle, middleRadius, externRadius,
@@ -381,7 +381,7 @@ exports.createLineOnDonut = function (xMiddle, yMiddle, middleRadius, externRadi
  * @memberof module:pulseSvg
  *
  * @function createStyleDashCircleRotation
- * 
+ *
  * @param {jQuery} caller x-tag component
  * @param {Number} circleRadius radius
  * @param {Number} beginSeconds between 0 and 60
@@ -401,7 +401,7 @@ exports.initFixedDashCircleDasharray =
  * @memberof module:pulseSvg
  *
  * @function createStyleDashCircleRotation
- * 
+ *
  * @param {jQuery} caller x-tag component
  * @param {string} keyFrameName
  * @param {Number} circleRadius radius
@@ -462,13 +462,13 @@ exports.createStyleDashCircleRotation =
  * @memberof module:pulseSvg
  *
  * @function createStyleForSegmentOnDonut
- * 
+ *
  * @param {jQuery} caller x-tag component
  * @param {string} keyFrameName
  * @param {Number} circleRadius radius in %
  * @param {Number} fromWidth segment width in %
  * @param {Number} toWidth segment width after animation
- * 
+ *
  * @return {Object} SVG style
  */
 exports.createStyleForSegmentOnDonut =
@@ -504,7 +504,7 @@ exports.createStyleForSegmentOnDonut =
  * @memberof module:pulseSvg
  *
  * @function createStyleForEndAnimationOnDonut
- * 
+ *
  * @param {jQuery} caller x-tag component
  * @param {string} keyFrameName
  * @param {Number} circleRadius radius in %
@@ -534,7 +534,7 @@ function (caller, keyFrameName, circleRadius, toWidth) {
  * @memberof module:pulseSvg
  *
  * @function createStyleForSegmentOnDonutMovingBegin
- * 
+ *
  * @param {jQuery} caller x-tag component
  * @param {string} keyFrameName
  * @param {Number} circleRadius radius
@@ -572,7 +572,7 @@ exports.createStyleForSegmentOnDonutMovingBegin =
  * @memberof module:pulseSvg
  *
  * @function createSegmentOnGauge
- * 
+ *
  * @param {Integer} xMiddle
  * @param {Integer} yMiddle
  * @param {Integer} radius
@@ -582,7 +582,7 @@ exports.createStyleForSegmentOnDonutMovingBegin =
  * @param {Integer} strokeWidth
  * @param {Double} beginPercent percent for the begin of the segment
  * @param {Double} widthPercent percent for the segment length
- 
+
  * @return {Object} SVG
  */
 exports.createSegmentOnGauge = function (xMiddle, yMiddle, radius, fillColor, mainClass,
@@ -617,7 +617,7 @@ exports.createSegmentOnGauge = function (xMiddle, yMiddle, radius, fillColor, ma
  * @memberof module:pulseSvg
  *
  * @function createLineOnGauge
- * 
+ *
  * @param {Integer} xMiddle
  * @param {Integer} yMiddle
  * @param {Integer} middleRadius
@@ -625,7 +625,7 @@ exports.createSegmentOnGauge = function (xMiddle, yMiddle, radius, fillColor, ma
  * @param {Double} percentPosition
  * @param {string} strokeColor
  * @param {string} strokeWidth
- 
+
  * @return {Object} SVG
  */
 exports.createLineOnGauge = function (xMiddle, yMiddle, middleRadius, externRadius,
@@ -649,7 +649,7 @@ exports.createLineOnGauge = function (xMiddle, yMiddle, middleRadius, externRadi
 /**
  * Inline the svg specified as background-image of a div
  * The original background-image is removed and the inline svg is inserted in the element
- * @param {string} selector 
+ * @param {string} selector
  * @param {function} callbackAfterInline (can be undefined)
  */
 var inlineBackgroundSvg = exports.inlineBackgroundSvg = function (selector, callbackAfterInline) {
@@ -705,12 +705,14 @@ exports.getMachineModeClass = function (machineModeCategory) {
       return classBegin + 'eco';
     case 6:
       return classBegin + 'stopping';
+    case 7:
+      return classBegin + 'manual';
     default:
       return null;
   }
 }
 
-/* Create an icon for colored legend. 
+/* Create an icon for colored legend.
  * The color can be defined by a color OR class.
 */
 exports.createColoredLegend = function (color, mainClass) {
@@ -723,7 +725,7 @@ exports.createColoredLegend = function (color, mainClass) {
  * @memberof module:pulseSvg
  *
  * @function showPulseMaintenance
- * 
+ *
  */
 exports.showPulseMaintenance = function () {
   // if already exists, do nothing
@@ -766,7 +768,7 @@ exports.showPulseMaintenance = function () {
  * @memberof module:pulseSvg
  *
  * @function hidePulseMaintenance
- * 
+ *
  */
 exports.hidePulseMaintenance = function () {
   //$('body').find('.pulse-maintenance').remove();
@@ -803,7 +805,7 @@ var removeBarChart = exports.removeBarChart = function (parent, svgClass) {
  * @param {string} svgClass
  * @param {Object} chartData
  * @param {Object} options
- * 
+ *
  *  chartData = [
  *    {
  *      xDisplay: 'Rust',
@@ -879,7 +881,7 @@ exports.createBarChart = function (parent, svgClass, chartData, options) {
   let svg = d3.selectAll(parent.toArray()).append('svg')
     .attr('class', svgClass);
   svg.attr('viewBox', '0 0 '
-    + (chartWidth + 2 * chartMargin) // viewBoxWidth 
+    + (chartWidth + 2 * chartMargin) // viewBoxWidth
     + ' '
     + (chartHeight + 2 * chartMargin)); // + viewBoxHeight
 
@@ -1057,7 +1059,7 @@ exports.createMissingdata = function (parent) {
   circle.setAttribute('r', radius);
   circle.setAttribute('class', 'pulse-missing-data-circle');
   //circle.setAttribute('fill', 'red');
-  //circle.setAttribute('stroke-width', '1px');      
+  //circle.setAttribute('stroke-width', '1px');
   //circle.setAttribute('stroke', strokeColor);
 
   svg.appendChild(circle);

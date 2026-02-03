@@ -28,9 +28,6 @@ x-setupmachine {
     .pulse-cellbar-past-data {
       border-left: 1px solid @widget_contrasted_separator_or_text !important;  // overload
     }
-    .good-efficiency {
-      font-weight: bold;
-    }
     .bad-efficiency {
       background: @bad_efficiency_base;
       color: @bad_efficiency_base_contrasted_color !important;
@@ -62,7 +59,7 @@ x-setupmachine {
     position: relative; // For loader + error
 
     select{
-      // Remove border for IE 
+      // Remove border for IE
       border: none;
       //Hide right arrow for Chrome and Firefox :
       overflow: hidden;
@@ -70,7 +67,7 @@ x-setupmachine {
       position: absolute;
       top: 50%; /* poussé de la moitié de hauteur du référent */
       transform: translateY(-50%);
-      
+
       width: 200px; // Hide right arrow for Chrome and Firefox > previous value
       //appearance: none;
     }

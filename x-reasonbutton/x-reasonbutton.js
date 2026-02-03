@@ -20,8 +20,8 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
   class ReasonButtonComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);

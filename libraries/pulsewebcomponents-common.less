@@ -158,6 +158,16 @@ svg {
   }
 }
 
+.pulse-mode-category-manual{
+  background-image: url('@{imagedir}/machinemode-manual.svg');
+  background-repeat: no-repeat;
+  svg {
+    filter: url(#innerShadow);
+    height: 100%;
+    width: 100%;
+  }
+}
+
 
 /* ********** ********** *********** *********** */
 /* END Mode categories * *********** *********** */
@@ -1214,17 +1224,7 @@ x-machinedisplay.pulse-component-warning {
   }
 }
 
-.pulse-component-error.pulse-bigdisplay {
-  //color: @warn_main_color; // error_main_color;
-}
 
-.pulse-component-warning.pulse-bigdisplay {
-  //color: @warn_main_color;
-}
-
-.pulsecomponent-context-Stop.pulse-bigdisplay {
-  //color: @warn_main_color;
-}
 
 ////////////////////////////////////////////
 // LOADING - inspired from
@@ -1274,10 +1274,6 @@ x-machinedisplay.pulse-component-warning {
   }
 }
 
-// LOADING - smalltext / pulse-icon => Hide
-.pulse-component-loading.pulse-smalltext {
-  //display: none; -> NEVER ! else stay in loading state
-}
 
 .pulse-component-loading.pulse-icon {
   .pulse-icon-content {
