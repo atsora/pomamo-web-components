@@ -110,7 +110,6 @@ var populateNavigationPanel = function () {
         title += ' (' + subtitle + ')';
       li = $('<li data="' + pageName + '"><div class="menuicon"></div><span class="menutext">' + title + '</span></li>');
       li.find('.menuicon').css('background-image', 'url(images/' + pageName + '-icon.svg)');
-      //pulseUtility.addToolTip(li.find('.menuicon'), title);
     }
 
     // Current selection
@@ -119,8 +118,6 @@ var populateNavigationPanel = function () {
     }
     ul.append(li);
 
-    // DO NOT load the icon
-    //pulseSvg.inlineBackgroundSvg('li[data="' + pageName + '"] .menuicon');
   }
 };
 
@@ -207,7 +204,7 @@ var populateConfigPanel = function () {
 ////////////////////
 
 var themeManager = {
-  
+
   load: function (name) {
     let oldTheme = pulseConfig.getString('theme', 'dark'); // first of ALL
 
