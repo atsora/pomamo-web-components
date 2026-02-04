@@ -1251,12 +1251,14 @@ require('x-freetext/x-freetext');
             pulseSvg.inlineBackgroundSvg(svgHide);
 
             // display / (x) / check / showHide / isSub
+            let divDisplayGroup = $('<label for="checkbox-' + groups[i].Id + '"></label>').addClass('machineselection-category-display-group');
             let spanDisplay = $('<span></span>').addClass('category-display')
               .html(groups[i].TreeName);
             let nbSel = $('<span></span>').addClass('number-of-selections').html('');
-            let checkbox = $('<input type="checkbox" groupid="' + groups[i].Id + '" dynamic="' + groups[i].Dynamic + '">');
+            let checkbox = $('<input id="checkbox-' + groups[i].Id + '" type="checkbox" groupid="' + groups[i].Id + '" dynamic="' + groups[i].Dynamic + '">');
             let divRow = $('<div></div>').addClass('machineselection-category-row');
-            divRow.append(showHide).append(checkbox).append(spanDisplay).append(nbSel);
+            divDisplayGroup.append(checkbox).append(spanDisplay).append(nbSel);
+            divRow.append(showHide).append(divDisplayGroup);
             if (isMain)
               divRow.addClass('is-main');
             if (groups[i].Dynamic) {

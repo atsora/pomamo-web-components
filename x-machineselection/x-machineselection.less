@@ -18,15 +18,6 @@ x-machineselection {
 }
 
 ////////// ////////// ////////// ////////// //////////
-// 1- Common (left + right pages)
-////////// ////////// ////////// ////////// //////////
-.machineSelectionDialogPart1 label,
-.machineSelectionDialogPart2 label {
-  font-weight: 400;
-  font-size: 14px;
-}
-
-////////// ////////// ////////// ////////// //////////
 // 2- Left Page (categories selection)
 ////////// ////////// ////////// ////////// //////////
 
@@ -152,6 +143,17 @@ x-machineselection {
   box-sizing: border-box;
   width: 19px;
   height: 16px;
+}
+
+.machineselection-category-display-group {
+  display: flex;
+  flex-direction: row;
+  column-gap: 16px;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .machineselection-category.main-category {
