@@ -692,12 +692,19 @@ exports.changeURLParameter = function (pageURL, param, value) {
  *
  * @function getURLParameterValues
  *
- * @param {string} pageURL url address
+ * @param {string|URL} pageURL url address as string or URL object
  * @param {string} param parameter name whose name must be search in url
  * @return an array with values of given parameters. if given url do not contain this parameter name, it returns an empty array
  */
 var getURLParameterValues = exports.getURLParameterValues = function (pageURL, param) {
-  let splittedString = pageURL.split('?');
+  let urlString = pageURL;
+
+  // Handle URL object - convert to string
+  if (typeof pageURL === 'object' && pageURL instanceof URL) {
+    urlString = pageURL.toString();
+  }
+
+  let splittedString = urlString.split('?');
   let values = new Array();
   if (splittedString.length <= 1) {
     return values; // If no '?' exist
