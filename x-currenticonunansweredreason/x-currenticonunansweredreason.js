@@ -18,8 +18,8 @@ var eventBus = require('eventBus');
   class CurrentIconUnansweredReasonComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -177,7 +177,7 @@ var eventBus = require('eventBus');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('missing range'); // delayed error message
+        this.setError(this.getTranslation('error.missingRange', 'Missing range')); // delayed error message
         return;
       }
       if (this._range.isEmpty()) {
@@ -190,17 +190,17 @@ var eventBus = require('eventBus');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('empty range'); // delayed error message
+        this.setError(this.getTranslation('error.emptyPeriod', 'Empty period')); // delayed error message
         return;
       }
       if (!this.element.hasAttribute('machine-id')) {
         console.log('waiting attribute machine-id in currenticonunansweredreason.element');
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         console.error('invalid attribute machine-id in currenticonunansweredreason.element');
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -219,7 +219,7 @@ var eventBus = require('eventBus');
       return false;
     }
 
-    get refreshRate() {  // refresh rate in ms. 
+    get refreshRate() {  // refresh rate in ms.
       return 1000 * (Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10)) + 1); // +1 to allow refresh from bars
     }
 
@@ -325,7 +325,7 @@ var eventBus = require('eventBus');
      * Event bus callback triggered when a reload message is received
      *
      * @param {Object} event includes :
-     * revisionid, machineid, kind, range, 
+     * revisionid, machineid, kind, range,
      * initModifications: undefined, // pending modifications the first time
      * pendingModifications: undefined // pending modifications 'now'
      */

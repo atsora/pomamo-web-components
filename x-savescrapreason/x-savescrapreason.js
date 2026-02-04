@@ -19,7 +19,7 @@ require('x-machinedisplay/x-machinedisplay');
 
 /**
  * Build a custom tag <x-savescrapreason> to display a scrap reason.
- * 
+ *
  * Attributes:
  *  machine-id : Integer (required)
  */
@@ -29,8 +29,8 @@ require('x-machinedisplay/x-machinedisplay');
     // Ajout : prise en compte de la valeur à la perte de focus
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -46,7 +46,7 @@ require('x-machinedisplay/x-machinedisplay');
 
     /**
      * Callback when an attribute changes after connection
-     * 
+     *
      * @param {string} attr - Attribute name
      * @param {string} oldVal - Old value
      * @param {string} newVal - New value
@@ -145,7 +145,7 @@ require('x-machinedisplay/x-machinedisplay');
 
     /**
     * Post the selected reason to ReasonSave/Post for the active range
-    * 
+    *
     * @param {string} [details] - Optional details/comments for the scrap reasons
     */
     _savereasons(details) {
@@ -305,7 +305,7 @@ require('x-machinedisplay/x-machinedisplay');
 
     /**
      * Handle successful save operation and record modification
-     * 
+     *
      * @param {number} ajaxToken - Token identifying the request
      * @param {Object} data - Response data containing revision information
      * @param {number} machid - Machine ID
@@ -329,7 +329,7 @@ require('x-machinedisplay/x-machinedisplay');
 
     /**
      * Handle error response from save operation
-     * 
+     *
      * @param {number} ajaxToken - Token identifying the request
      * @param {Object} data - Error response data
      */
@@ -358,7 +358,7 @@ require('x-machinedisplay/x-machinedisplay');
 
     /**
      * Handle network or transport failure from save operation
-     * 
+     *
      * @param {number} ajaxToken - Token identifying the request
      * @param {string} url - URL that was being requested
      * @param {boolean} isTimeout - Whether the failure was due to timeout
@@ -376,7 +376,7 @@ require('x-machinedisplay/x-machinedisplay');
 
     /**
      * Update the UI when parts data changes (triggered by event bus)
-     * 
+     *
      * @param {Object} event - Event containing parts count and scrap report data
      */
     _updateUI(event) {
@@ -418,12 +418,12 @@ require('x-machinedisplay/x-machinedisplay');
      */
     validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('missing machine-id');
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         return;
       }
 
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -432,7 +432,7 @@ require('x-machinedisplay/x-machinedisplay');
 
     /**
      * Get the URL for data request
-     * 
+     *
      * @returns {string} URL
      */
     getShortUrl() {
@@ -442,7 +442,7 @@ require('x-machinedisplay/x-machinedisplay');
 
     /**
      * Refresh with data from server
-     * 
+     *
      * @param {Object} data - Server response
      */
     refresh(data) {
@@ -600,7 +600,7 @@ require('x-machinedisplay/x-machinedisplay');
 
     /**
      * Update the valid parts count and dispatch event to other components
-     * 
+     *
      * @param {number} value - Amount to add/subtract from valid parts count
      * @param {string} category - Non-conformance category for event dispatching
      */
@@ -617,7 +617,7 @@ require('x-machinedisplay/x-machinedisplay');
 
     /**
      * Display error message
-     * 
+     *
      * @param {string} message - Error message
      */
     displayError(message) {

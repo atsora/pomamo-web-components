@@ -254,12 +254,12 @@ require('x-clock/x-clock');
      */
     validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         console.error('Machine Id has incorrect value in production.element');
-        this.setError('bad machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.invalidMachineId', 'Invalid machine ID')); // delayed error message
         return;
       }
 

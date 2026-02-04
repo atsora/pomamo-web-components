@@ -17,13 +17,13 @@ var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
 /**
- * Build a custom tag <x-performancebar> to display a performance bar component. This tag gets following attribute : 
+ * Build a custom tag <x-performancebar> to display a performance bar component. This tag gets following attribute :
  *  machine-id : Integer
  *  height : Integer
  *  period-context : String
  *  range : String 'begin;end'
  *  motion-context
- * 
+ *
  */
 (function () {
 
@@ -189,8 +189,8 @@ var eventBus = require('eventBus');
   class PerformanceBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -481,13 +481,13 @@ var eventBus = require('eventBus');
     validateParameters () {
       // machine-id
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         //'Machine Id has incorrect value', 'BAD_ID');
         // Immediat display :
-        this.switchToKey('Error', () => this.displayError('Machine Id has incorrect value'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -546,7 +546,7 @@ var eventBus = require('eventBus');
 
       return 1000 * 60 * Number(this.getConfigOrAttribute('refreshingRate.barSlowUpdateMinutes', 5));
     }
-    
+
     _perfSuccess (data) {
       this._targetpercentage = data.TargetPercentage;
       this._targetIsUpdated = true;

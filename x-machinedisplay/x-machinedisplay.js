@@ -17,8 +17,8 @@ var eventBus = require('eventBus');
   class MachineDisplayComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -110,7 +110,7 @@ var eventBus = require('eventBus');
             if (this.isVisible) { // To avoid displayed error in hidden duplicated part
               console.error('missing attribute machine or group in MachineDisplayComponent.element');
             }
-            //this.setError('missing machine-id'); // delayed error message
+            //this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
             this.switchToKey('Error', () => this.displayError(this.getTranslation('invalidMachineGroup','Invalid machine or group')), () => this.removeError());
             return;
           }

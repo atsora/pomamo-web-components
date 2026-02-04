@@ -18,8 +18,8 @@ var eventBus = require('eventBus');
   class DetailedMachineStateAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -153,7 +153,7 @@ var eventBus = require('eventBus');
       if ((!this.element.hasAttribute('machine-id'))
         || (!pulseUtility.isInteger(Number(this.element.getAttribute('machine-id'))))) {
         // Delayed display :
-        this.setError('missing machine-id');
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         // or
         // Immediat display :
         //this.switchToKey('Error', () => this.displayError('invalid param'), () => this.removeError());
@@ -163,7 +163,7 @@ var eventBus = require('eventBus');
       if (!this.element.hasAttribute('when')) {
         console.error('missing attribute when in detailedmachinestateat.element');
         // Delayed display :
-        this.setError('missing when');
+        this.setError(this.getTranslation('error.missingWhen', 'Missing when'));
         // or
         // Immediat display :
         //this.switchToKey('Error', () => this.displayError('invalid param'), () => this.removeError());
@@ -253,7 +253,7 @@ var eventBus = require('eventBus');
      * Event bus callback triggered when a reload message is received
      *
      * @param {Object} event includes :
-     * revisionid, machineid, kind, range, 
+     * revisionid, machineid, kind, range,
      * initModifications: undefined, // pending modifications the first time
      * pendingModifications: undefined // pending modifications 'now'
      */

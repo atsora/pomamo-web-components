@@ -39,8 +39,8 @@ require('x-revisionprogress/x-revisionprogress');
   class ReasonSlotBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -356,12 +356,12 @@ require('x-revisionprogress/x-revisionprogress');
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
         console.log('waiting attribute machine-id in ReasonSlotBarComponent.element');
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         console.error('invalid attribute machine-id in ReasonSlotBarComponent.element');
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -701,7 +701,7 @@ require('x-revisionprogress/x-revisionprogress');
      * Event bus callback triggered when a reload message is received
      *
      * @param {Object} event includes :
-     * revision-id, machineid, kind, range, 
+     * revision-id, machineid, kind, range,
      * initModifications: undefined, // pending modifications the first time
      * pendingModifications: undefined // pending modifications 'now'
      */

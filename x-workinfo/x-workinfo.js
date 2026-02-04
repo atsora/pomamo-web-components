@@ -19,8 +19,8 @@ var eventBus = require('eventBus');
   class workinfoComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -41,8 +41,8 @@ var eventBus = require('eventBus');
         case 'machine-id':
           if (this.isInitialized()) {
             eventBus.EventBus.removeEventListenerBySignal(this, 'operationChangeEvent');
-            eventBus.EventBus.addEventListener(this, 
-              'operationChangeEvent', newVal, 
+            eventBus.EventBus.addEventListener(this,
+              'operationChangeEvent', newVal,
               this.onOperationChange.bind(this));
             this.start(); // To re-validate parameters
           } break;
@@ -92,10 +92,10 @@ var eventBus = require('eventBus');
       //$(this.element).append(loaderDiv);
 
       // Create DOM - message for error -> Not here
-      // this._messageSpan 
+      // this._messageSpan
 
       // Listener
-      eventBus.EventBus.addEventListener(this, 
+      eventBus.EventBus.addEventListener(this,
         'operationChangeEvent',
         this.element.getAttribute('machine-id'),
         this.onOperationChange.bind(this));
@@ -114,7 +114,7 @@ var eventBus = require('eventBus');
 
     validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('missing machine-id');
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         return;
       }
       this.switchToNextContext();
@@ -124,10 +124,10 @@ var eventBus = require('eventBus');
       // Parameters
       // DOM
       $(this.element).empty();
-      
+
       //this._messageSpan = undefined;
       this._content = undefined;
-      
+
       super.clearInitialization();
     }
 

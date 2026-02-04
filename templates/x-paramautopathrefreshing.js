@@ -17,8 +17,8 @@ var eventBus = require('eventBus');
   class XXXComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -165,7 +165,7 @@ var eventBus = require('eventBus');
     validateParameters () {
       if (!this.element.hasAttribute('param')) {
         console.error('missing attribute param in XXX.element');
-        this.setError('missing param'); // delayed error message
+        this.setError(this.getTranslation('error.missingParam', 'Missing param')); // delayed error message
         return;
       }
       // Additional checks with attribute param
@@ -174,13 +174,13 @@ var eventBus = require('eventBus');
 
       // machine-id
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(Number(this.element.getAttribute('machine-id')))) {
         //'Machine Id has incorrect value', 'BAD_ID');
         // Immediat error display :
-        this.switchToKey('Error', () => this.displayError('Machine Id has incorrect value'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Machine Id has incorrect value')), () => this.removeError());
         return;
       }
 
@@ -198,7 +198,7 @@ var eventBus = require('eventBus');
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
         // Delayed display :
-        this.setError('missing range');
+        this.setError(this.getTranslation('error.missingRange', 'Missing range'));
         // or
         // Immediat display :
         //this.switchToKey('Error', () => this.displayError('invalid param'), () => this.removeError());
@@ -214,7 +214,7 @@ var eventBus = require('eventBus');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('empty range');
+        this.setError(this.getTranslation('error.emptyPeriod', 'Empty period'));
         return;
       }
 
@@ -223,7 +223,7 @@ var eventBus = require('eventBus');
 
     displayError (message) {
       // Code here to display the error message
-      // For example:      
+      // For example:
       //$(this._content).html(message);
       $(this._messageSpan).html(message);
       // Note that you can use the CSS class .pulse-component-error or .pulse-component-warning instead

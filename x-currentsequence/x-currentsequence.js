@@ -13,7 +13,7 @@ var pulseComponent = require('pulsecomponent');
 //var pulseRange = require('pulseRange');
 
 /**
- * Build a custom tag <x-currentsequence> to display a currentsequence component. This tag gets following attribute : 
+ * Build a custom tag <x-currentsequence> to display a currentsequence component. This tag gets following attribute :
  *  machine : Integer
  */
 (function () {
@@ -21,8 +21,8 @@ var pulseComponent = require('pulsecomponent');
   class CurrentSequenceComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -50,7 +50,7 @@ var pulseComponent = require('pulsecomponent');
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         console.error('invalid attribute machine-id in CurrentSequenceComponent.element');
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -98,7 +98,7 @@ var pulseComponent = require('pulsecomponent');
       this.displayTextAndTooltip('');
     }
 
-    get refreshRate () { // refresh rate in ms. 
+    get refreshRate () { // refresh rate in ms.
       return 1000.0 * (Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10)) + 1);
     }
 

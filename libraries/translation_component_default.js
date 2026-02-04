@@ -17,7 +17,7 @@ ATSORA_LOCALE_CATALOG.default.general = {
   title: 'Atsora Tracking',
 };
 
-/* 
+/*
  * Components translations
  */
 ATSORA_LOCALE_COMPONENT_CATALOG.default = {
@@ -26,10 +26,18 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   loadingDots: 'Loading...',
   missingconfiguration: 'Missing configuration',
   errorColon: 'Error: ',
+  waitingPath: 'Waiting for path',
   error: {
+    emptyPeriod: 'Empty period',
+    invalidMachineId: 'Invalid machine-id',
+    invalidRange: 'Invalid range',
+    missingMotionContext: 'Missing motion context',
+    missingParam: 'Missing param',
+    missingRange: 'Missing range',
+    missingWhen: 'Missing when',
+    noMachineOrGroupToDisplay: 'No machine or group to display',
     selectMachine: 'Please select a machine',
     selectMachineGroup: 'Please select a machine or a group of machines',
-    noMachineOrGroupToDisplay: 'No machine or group to display'
   },
   checkcurrenttime: {
     syncTime: 'Please synchronize date and time'
@@ -39,7 +47,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     errorServerAccess: 'Please check server access'
   },
   checkpath: {
-    errorServerAccessOrPath: 'Please check server access (or path)'
+    errorServerAccessOrPath: 'Please check server access (or path)',
+    skipWebService: 'Skip web service path'
   },
   currentcncvalue: {
     noDataTooOld: 'N/A'
@@ -170,6 +179,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     dynamicKey: 'DYNAMIC',
     errorMissingUnique: 'Please select one machine',
     errorMissing: 'Please select at least one machine',
+    errorMissingGroup: 'Please select at least one group',
     errorMissingMachineInGroup: 'Please select groups including at least one machine',
     groupKey: 'G',
     groupsButton: 'by group',
@@ -265,6 +275,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     optionIdentified: 'Show identified idle periods',
     optionRunning: 'Show running periods',
   },
+  reportdatetime: {
+    invalidGroupDisplayForm: 'Invalid groupDisplayForm',
+    invalidGroupName: 'Invalid groupName',
+    invalidDataType: 'Invalid dataType',
+  },
   runninglegends: {
     title: 'Activity state',
     textidle: 'Idle . short stop . Stop',
@@ -350,6 +365,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   toollifemachine: {
     noOperation: 'No operation'
   },
+  tr: {
+    invalidKey: 'Invalid key',
+  },
   saveworkinfo: {
     WorkInfoTitle: 'Work information'
   }
@@ -361,7 +379,7 @@ ATSORA_LOCALE_CATALOG.fr.general = {
   title: 'Atsora Tracking',
 };
 
-/* 
+/*
  * Components translations
  */
 ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
@@ -370,7 +388,15 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   loadingDots: 'En chargement...',
   missingconfiguration: 'Configuration manquante',
   errorColon: 'Erreur : ',
+  waitingPath: 'En attente du chemin',
   error: {
+    emptyPeriod: 'Période vide',
+    invalidMachineId: 'machine-id invalide',
+    invalidRange: 'Plage invalide',
+    missingMotionContext: 'Attribut motion-context manquant',
+    missingParam: 'Attribut param manquant',
+    missingRange: 'Période manquante',
+    missingWhen: 'Attribut when manquant',
     selectMachine: 'Prière de sélectionner une machine',
     selectMachineGroup: 'Prière de sélectionner une machine ou un groupe de machines',
     noMachineOrGroupToDisplay: 'Pas de machine ou de groupe de machines à afficher'
@@ -379,7 +405,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     syncTime: "Prière de synchroniser la date et l'heure"
   },
   checkpath: {
-    errorServerAccessOrPath: "Prière de vérifier l'accès au serveur (ou le chemin)"
+    errorServerAccessOrPath: "Prière de vérifier l'accès au serveur (ou le chemin)",
+    skipWebService: 'Ignorer le chemin du service web'
   },
   checkserveraccess: {
     errorDatabaseAccess: "Prière de vérifier l'accès à la base de données",
@@ -512,6 +539,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     dynamicKey: 'DYNAMIQUE',
     errorMissingUnique: 'Prière de sélectionner une machine',
     errorMissing: 'Prière de sélectionner au-moins une machine',
+    errorMissingGroup: 'Prière de sélectionner au-moins un groupe',
     errorMissingMachineInGroup: 'Prière de sélectionner des groupes qui incluent au-moins une machine',
     groupKey: 'G',
     groupsButton: 'par groupe',
@@ -600,6 +628,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     optionIdentified: 'Montrer les périodes classifiées',
     optionRunning: 'Montrer les périodes actives',
   },
+  reportdatetime: {
+    invalidGroupDisplayForm: 'Attribut groupDisplayForm invalide',
+    invalidGroupName: 'Nom de groupe invalide',
+    invalidDataType: 'Type de donnée invalide',
+  },
   runninglegends: {
     title: "État d'activité",
     textidle: 'Arrêtée',
@@ -684,6 +717,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   toollifemachine: {
     noOperation: "Pas d'opération"
+  },
+  tr: {
+    invalidKey: "Clé invalide",
   },
   saveworkinfo: {
     WorkInfoTitle: 'Ordre de fabrication / Opération'

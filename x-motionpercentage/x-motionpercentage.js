@@ -17,15 +17,15 @@ var eventBus = require('eventBus');
  *  motion-context : String (to get % directly)
  *  machine-id : complete motion-context when using x-grouparray
  *  machine-context : to change machine-id
- * 
+ *
  */
 (function () {
 
   class MotionPercentageComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -53,19 +53,19 @@ var eventBus = require('eventBus');
               let width = 120;
               let height = 20;
               let halfTextWidth = 30;
-      
+
               this._svg = pulseSvg.createBase(width, height, 'text-svg',
                 width, height);
               this._svg.setAttribute('class', 'motionpercentage-svg');
               //this._svg.setAttribute('width', '100%');
               //this._svg.setAttribute('height', '100%');
               $(this._content).append(this._svg);
-      
+
               // Show text + positions -> RECT
               let textGroup = document.createElementNS(pulseSvg.get_svgNS(), 'g');
               //textGroup.setAttribute('width', '100%');
               //textGroup.setAttribute('height', '100%');
-      
+
               // Rect
               let rect = document.createElementNS(pulseSvg.get_svgNS(), 'rect');
               rect.setAttribute('x', 0);
@@ -79,15 +79,15 @@ var eventBus = require('eventBus');
               this._textSvg.setAttribute('x', width / 2 - halfTextWidth);
               this._textSvg.setAttribute('y', 3 * height / 4); // Base of text
               this._textSvg.setAttribute('class', 'text-svg');
-              //this._textSvg.setAttribute('text-anchor', 'middle'); / Do not works as it should :/ 
+              //this._textSvg.setAttribute('text-anchor', 'middle'); / Do not works as it should :/
               this._textSvg.setAttribute('font-weight', 'bold');
               this._textSvg.setAttribute('font-size', '20px');
               this._textSvg.textContent = '%';
               textGroup.appendChild(this._textSvg);
-      
+
               this._svg.appendChild(textGroup);
             }
-      
+
             this._textSvg.textContent = display;
             */
     }
@@ -181,26 +181,26 @@ var eventBus = require('eventBus');
             let width = 120;
             let height = 20;
             let halfTextWidth = 30;
-      
+
             /*
             let svg = pulseSvg.createBase(this._height, this._height,
               'donut', 2 * this._xyPosition, 2 * this._xyPosition);
             svg.setAttribute('class', 'cycleprogresspie-svg');
             $(this._pie).append(svg); //
-      
+
             this._svg = pulseSvg.createBase(width, height, 'text-svg',
               width, height);
             this._svg.setAttribute('class', 'motionpercentage-svg');
             //this._svg.setAttribute('width', '100%');
             //this._svg.setAttribute('height', '100%');
             $(this._content).append(this._svg);
-      
+
             // Show text + positions -> RECT
             let textGroup = document.createElementNS(pulseSvg.get_svgNS(), 'g');
             //textGroup.setAttribute('width', '100%');
             //textGroup.setAttribute('height', '100%');
             this._svg.appendChild(textGroup);
-            
+
             // Rect
             let rect = document.createElementNS(pulseSvg.get_svgNS(), 'rect');
             rect.setAttribute('x', 0);
@@ -214,7 +214,7 @@ var eventBus = require('eventBus');
             this._textSvg.setAttribute('x', width/2- halfTextWidth);
             this._textSvg.setAttribute('y', 3*height/4); // Base of text
             this._textSvg.setAttribute('class', 'text-svg');
-            //this._textSvg.setAttribute('text-anchor', 'middle'); / Do not works as it should :/ 
+            //this._textSvg.setAttribute('text-anchor', 'middle'); / Do not works as it should :/
             this._textSvg.setAttribute('font-weight', 'bold');
             this._textSvg.setAttribute('font-size', '20px');
             this._textSvg.textContent = '%';
@@ -240,7 +240,7 @@ var eventBus = require('eventBus');
     validateParameters () {
       if (!this.element.hasAttribute('motion-context')) {
         console.error('missing attribute motion-context in MotionPercentage.element');
-        this.setError('missing motion-context'); // delayed error message
+        this.setError(this.getTranslation('error.missingMotionContext', 'Missing motion context')); // delayed error message
         return;
       }
       // Additional checks with attribute param

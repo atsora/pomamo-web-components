@@ -15,8 +15,8 @@ var pulseUtility = require('pulseUtility');
   class performancetargetComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -102,11 +102,11 @@ var pulseUtility = require('pulseUtility');
       if (!this.element.hasAttribute('machine-id')) {
         console.error('missing attribute param in PerformanceTarget.element');
         // Delayed display :
-        this.setError('missing machine-id');
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         return;
       }
       if (!pulseUtility.isInteger(Number(this.element.getAttribute('machine-id')))) {
-        this.setError('bad machine-id');
+        this.setError(this.getTranslation('error.invalidMachineId', 'Invalid machine ID'));
         return;
       }
       this.switchToNextContext();

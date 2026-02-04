@@ -17,8 +17,8 @@ var pulseConfig = require('pulseConfig');
   class CycleTaskComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -28,7 +28,7 @@ var pulseConfig = require('pulseConfig');
       self._messageSpan = undefined;
       self._content = undefined;
 
-      self._height = '100%'; 
+      self._height = '100%';
 
       //  Used sizes : to have better rounded values for circumference
       self._circleRadius = 79.57747;
@@ -527,11 +527,11 @@ var pulseConfig = require('pulseConfig');
      */
     validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('missing machine-id');
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
       this.switchToNextContext();

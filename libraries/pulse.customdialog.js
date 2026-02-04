@@ -221,7 +221,7 @@ var pulseCustomDialog = function () {
       let pathname = window.location.pathname;
       let pdfPath = pathname.substring(0, pathname.lastIndexOf('/') + 1) + 'help/' + helpName + '.pdf';
       // Open help file (if exists)
-      function _fileExists (url) {
+      function _fileExists(url) {
         if (url) {
           var req = new XMLHttpRequest();
           req.open('HEAD', url, false); // head is faster than GET
@@ -374,7 +374,7 @@ var pulseCustomDialog = function () {
     // Adapt the position
     $('#customDialog' + id + ' .customDialogWindow').css('top', (($('#customDialog' + id + ' .customDialogShadow').height() - $('#customDialog' + id + ' .customDialogWindow').height()) * 0.3) + 'px');
 
-    // Blur the previous dialog if not already done    
+    // Blur the previous dialog if not already done
     if ('customDialog' + id != knownDialogId) {
       if (_openIds.length > 0) {
         $('#customDialog' + _openIds[_openIds.length - 1]).css('filter', 'blur(3px)');
@@ -397,7 +397,7 @@ var pulseCustomDialog = function () {
   */
   var openInfo = function (message, title, onClose) {
     var id = _createDialog({
-      title: (title == null ? pulseConfig.pulseTranslate ('dialog.information', 'Information') : title),
+      title: (title == null ? pulseConfig.pulseTranslate('dialog.information', 'Information') : title),
       cancelButton: 'hidden',
       previousButton: 'hidden',
       autoClose: true,
@@ -418,7 +418,7 @@ var pulseCustomDialog = function () {
   */
   var openWarning = function (message, title, onClose) {
     var id = _createDialog({
-      title: (title == null ? pulseConfig.pulseTranslate ('dialog.warning', 'Warning') : title),
+      title: (title == null ? pulseConfig.pulseTranslate('dialog.warning', 'Warning') : title),
       cancelButton: 'hidden',
       previousButton: 'hidden',
       autoClose: true,
@@ -437,7 +437,7 @@ var pulseCustomDialog = function () {
   */
   var openError = function (message, title, onClose) {
     var id = _createDialog({
-      title: (title == null ? pulseConfig.pulseTranslate ('dialog.error', 'Error') : title),
+      title: (title == null ? pulseConfig.pulseTranslate('dialog.error', 'Error') : title),
       cancelButton: 'hidden',
       previousButton: 'hidden',
       autoClose: true,
@@ -457,7 +457,7 @@ var pulseCustomDialog = function () {
   */
   var openConfirm = function (message, title, onOk, onCancel) {
     var id = _createDialog({
-      title: (title == null ? pulseConfig.pulseTranslate ('dialog.confirmation', 'Confirmation') : title),
+      title: (title == null ? pulseConfig.pulseTranslate('dialog.confirmation', 'Confirmation') : title),
       autoClose: true,
       autoDelete: true,
       onOk: onOk,
@@ -493,7 +493,7 @@ var pulseCustomDialog = function () {
     // Create a new dialog with possibly a cancel button
     id = (abortFunction == null) ?
       _createDialog({
-        title: pulseConfig.pulseTranslate ('dialog.wait', 'Please wait...'),
+        title: pulseConfig.pulseTranslate('dialog.wait', 'Please wait...'),
         cancelButton: 'hidden',
         previousButton: 'hidden',
         okButton: 'hidden',
@@ -502,7 +502,7 @@ var pulseCustomDialog = function () {
         autoClose: true,
         autoDelete: true
       }) : _createDialog({
-        title: pulseConfig.pulseTranslate ('dialog.wait', 'Please wait...'),
+        title: pulseConfig.pulseTranslate('dialog.wait', 'Please wait...'),
         previousButton: 'hidden',
         okButton: 'hidden',
         nextButton: 'hidden',

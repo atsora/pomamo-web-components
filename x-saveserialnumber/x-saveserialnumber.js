@@ -22,9 +22,9 @@ var pulseRange = require('pulseRange');
 require('x-datetimerange/x-datetimerange');
 
 /*
- *This tag is used to save serial number for a given machine. It can take following attribute: 
+ *This tag is used to save serial number for a given machine. It can take following attribute:
  *  - machine-id : id of given machine
- *  - range : 
+ *  - range :
  *  - datetime : realbegin or end
  *  - is-begin : is datetime == begin
  *  - serial-number :
@@ -34,8 +34,8 @@ require('x-datetimerange/x-datetimerange');
   class SaveSerialNumberComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -129,7 +129,7 @@ require('x-datetimerange/x-datetimerange');
     _saveError (data) {
       let close = function () {
         //DO nothing because of autoclose
-        //pulseCustomDialog.close('.lastserialnumber-dialog'); 
+        //pulseCustomDialog.close('.lastserialnumber-dialog');
       };
       pulseCustomDialog.openError(data.ErrorMessage, 'Error', close);
     }
@@ -137,7 +137,7 @@ require('x-datetimerange/x-datetimerange');
     _saveFail (url) {
       let close = function () {
         //DO nothing because of autoclose
-        //pulseCustomDialog.close('.lastserialnumber-dialog'); 
+        //pulseCustomDialog.close('.lastserialnumber-dialog');
       };
       pulseCustomDialog.openError('Error while saving', 'Error', close);
     }
@@ -242,13 +242,13 @@ require('x-datetimerange/x-datetimerange');
 
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
-        //this.setError('missing machine-id'); // delayed error message
+        //this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         //'Machine Id has incorrect value', 'BAD_ID');
         // Immediat display :
-        this.switchToKey('Error', () => this.displayError('Machine Id has incorrect value'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
       if (!(this._rangeBegin) || !(this._rangeEnd)) {

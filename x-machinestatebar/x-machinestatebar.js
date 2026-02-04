@@ -20,7 +20,7 @@ var eventBus = require('eventBus');
 require('x-revisionprogress/x-revisionprogress');
 
 /**
- * Build a custom tag <x-machinestatebar> to display a machinestatebar bar component. This tag gets following attribute : 
+ * Build a custom tag <x-machinestatebar> to display a machinestatebar bar component. This tag gets following attribute :
  *  machine-id : Integer
  *  height : Integer
  *  period-context : String
@@ -39,8 +39,8 @@ require('x-revisionprogress/x-revisionprogress');
   class MachineStateBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -354,12 +354,12 @@ require('x-revisionprogress/x-revisionprogress');
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
         console.log('waiting attribute machine-id in MachineStateBarComponent.element');
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         console.error('invalid attribute machine-id in MachineStateBarComponent.element');
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -375,7 +375,7 @@ require('x-revisionprogress/x-revisionprogress');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('missing range');
+        this.setError(this.getTranslation('error.missingRange', 'Missing range'));
         return;
       }
 
@@ -388,7 +388,7 @@ require('x-revisionprogress/x-revisionprogress');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('empty range');
+        this.setError(this.getTranslation('error.emptyRange', 'Empty range'));
         return;
       }
 
@@ -402,7 +402,7 @@ require('x-revisionprogress/x-revisionprogress');
     manageSuccess (data) {
       let range = this._range;
       /*this._returnedRange = pulseRange.createDateRangeFromString(data.Range);
-      
+
       // Probably not required, but in case the range is not defined, or one of its bound is not valid, get the range from data
       if ((typeof range !== 'undefined') && (range.isEmpty() || isNaN(range.lower) || isNaN(range.upper))) {
         if (data.Range) {
@@ -662,7 +662,7 @@ require('x-revisionprogress/x-revisionprogress');
      * Event bus callback triggered when a reload message is received
      *
      * @param {Object} event includes :
-     * revision-id, machineid, kind, range, 
+     * revision-id, machineid, kind, range,
      * initModifications: undefined, // pending modifications the first time
      * pendingModifications: undefined // pending modifications 'now'
      */

@@ -7,7 +7,7 @@
  * Definition of tag x-datetimerange is used to display datetime range.
  * This tag allow <em>zoom in</em> and <em>zoom out</em> through current datetime range.
  * It is also possible to go to previous or next period.
- * 
+ *
  * @module x-datetimerange
  * @requires module:pulseComponent
  */
@@ -29,8 +29,8 @@ require('x-datetimepicker/x-datetimepicker');
   class ParamDateTimeRangeComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -259,7 +259,7 @@ require('x-datetimepicker/x-datetimepicker');
         }
         else {
           console.error('missing range in datetime range');
-          this.displayError('missing range'); // delayed error message
+          this.setError(this.getTranslation('error.missingRange', 'Missing range')); // delayed error message
           return;
         }
       }
@@ -268,7 +268,7 @@ require('x-datetimepicker/x-datetimepicker');
 
     /**
      * Set an error on the component without displaying it
-     * 
+     *
      * @param {string} message - Error message to set
      */
     setError (message) {
@@ -595,7 +595,7 @@ require('x-datetimepicker/x-datetimepicker');
       let secondsMandatory = (this._dateRange.lower.getSeconds() != 0)
         || (this._dateRange.upper.getSeconds() != 0);
 
-      // Info div, on top      
+      // Info div, on top
       this._infotext = $('<span></span>').addClass('datetimerange-dialog-span-info');
       let infodiv = $('<div></div>').addClass('datetimerange-dialog-div-info')
         .append(this._infotext);
@@ -614,7 +614,7 @@ require('x-datetimepicker/x-datetimepicker');
       }
       this._infotext.html(infoText);
 
-      // Warning message      
+      // Warning message
       this._warningtext = $('<span></span>').addClass('datetimerange-dialog-span-warning');
       let warningdiv = $('<div></div>').addClass('datetimerange-dialog-div-warning')
         .append(this._warningtext);

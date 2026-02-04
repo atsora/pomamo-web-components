@@ -18,7 +18,7 @@ var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
 /**
- * Build a custom tag <x-shiftslotbar> to display an shiftslotbar bar component. This tag gets following attribute : 
+ * Build a custom tag <x-shiftslotbar> to display an shiftslotbar bar component. This tag gets following attribute :
  *  height : Integer
  *  period-context : String
  *  range : String 'begin;end' (optional)
@@ -36,8 +36,8 @@ var eventBus = require('eventBus');
   class ShiftSlotBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -315,7 +315,7 @@ var eventBus = require('eventBus');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('missing range');
+        this.setError(this.getTranslation('error.missingRange', 'Missing range'));
         return;
       }
 
@@ -328,7 +328,7 @@ var eventBus = require('eventBus');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('empty range');
+        this.setError(this.getTranslation('error.emptyRange', 'Empty range'));
         return;
       }
 
@@ -394,7 +394,7 @@ var eventBus = require('eventBus');
 
         slot.display = block.ShiftDisplay;
         slot.bgColor = block.ShiftColor;
-        //slot.fgColor = '#000000'; ??? 
+        //slot.fgColor = '#000000'; ???
 
         this._data.push(slot);
       }

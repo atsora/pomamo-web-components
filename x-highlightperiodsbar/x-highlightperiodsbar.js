@@ -15,7 +15,7 @@ var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
 /**
- * Build a custom tag <x-highlightperiodsbar> to highlight periods in a bar component. This tag gets following attribute : 
+ * Build a custom tag <x-highlightperiodsbar> to highlight periods in a bar component. This tag gets following attribute :
  *  height : Integer
  *  range : String '[begin,end]' or 'begin;end'
  *  period-context
@@ -25,8 +25,8 @@ var eventBus = require('eventBus');
   class HighlightPeriodsBarComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -208,7 +208,7 @@ var eventBus = require('eventBus');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('undefined range');
+        this.setError(this.getTranslation('error.missingRange', 'Missing range'));
         return;
       }
       if (this.range.isEmpty()) {
@@ -220,7 +220,7 @@ var eventBus = require('eventBus');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('empty range');
+        this.setError(this.getTranslation('error.emptyRange', 'Empty range'));
         return;
       }
 

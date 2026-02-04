@@ -24,8 +24,8 @@ require('x-datetimepicker/x-datetimepicker');
   class MilestonesAddComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -74,7 +74,7 @@ require('x-datetimepicker/x-datetimepicker');
         + this.element.getAttribute('machine-id')
         + '&At=' + date
         + '&Message=' + text;
-      //+ '&Message="' + text + '"'; // " to manage ' ' in string 
+      //+ '&Message="' + text + '"'; // " to manage ' ' in string
 
       pulseService.runAjaxSimple(url,
         this._saveSuccess.bind(this),
@@ -197,8 +197,7 @@ require('x-datetimepicker/x-datetimepicker');
       if (!this.element.hasAttribute('machine-id') //&& !this.element.hasAttribute('group')
       ) {
         console.error('missing attribute machine id in Milestonesadd.element');
-        this.setError('missing machine'); // delayed error message
-        this.switchToKey('Error', () => this.displayError('missing machine'), () => this.removeError());
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
 

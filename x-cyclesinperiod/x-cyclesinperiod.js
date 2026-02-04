@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * Definition of tag x-cyclesinperiod used to build cyclesInPeriod widget. It shows datetime range 
+ * Definition of tag x-cyclesinperiod used to build cyclesInPeriod widget. It shows datetime range
  * and table with cycles which occurs during given datetime range.
  *
  * @module x-cyclesinperiod
@@ -21,7 +21,7 @@ var eventBus = require('eventBus');
 require('x-saveserialnumber/x-saveserialnumber');
 
 /*
- *This tag is used to display previous cycles with serial number and workinformations. It can take following attribute: 
+ *This tag is used to display previous cycles with serial number and workinformations. It can take following attribute:
  *  - machine-id : id of given machine
  *  - range
  */
@@ -30,8 +30,8 @@ require('x-saveserialnumber/x-saveserialnumber');
   class CyclesInPeriodComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -76,7 +76,7 @@ require('x-saveserialnumber/x-saveserialnumber');
     _setRange (newRange) {
       if (this._range != newRange) {
         this._range = newRange;
-        // force re-load or init 
+        // force re-load or init
         this.start();
       }
     }
@@ -91,10 +91,10 @@ require('x-saveserialnumber/x-saveserialnumber');
     */
     _fillTable (table, list, checked) {
       table.empty();
-      //loop through list of cycles 
+      //loop through list of cycles
       for (let i = 0; i < list.length; i++) {
         //if we have checked to only display cycles without serial number
-        //and current cycle in loop has serial number, we continue with 
+        //and current cycle in loop has serial number, we continue with
         //following cycle
         if (checked && (list[i].SerialNumber))
           continue;
@@ -204,12 +204,12 @@ require('x-saveserialnumber/x-saveserialnumber');
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
         console.log('waiting attribute machine-id in CncValueBarComponent.element');
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         console.error('invalid attribute machine-id in CncValueBarComponent.element');
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -231,7 +231,7 @@ require('x-saveserialnumber/x-saveserialnumber');
             eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
           }
           // Delayed display :
-          this.setError('missing range');
+          this.setError(this.getTranslation('error.missingRange', 'Missing range'));
           return;
         }
 
@@ -309,13 +309,13 @@ require('x-saveserialnumber/x-saveserialnumber');
       let saveDialogId = pulseCustomDialog.initialize(dialog, {
         title: this.getTranslation ('saveSerialNumber', 'Save serial number'),
         onOk: //function (xsaveinperiod, xsaveSNtag) { // to avoid closure
-          //return 
+          //return
           function () {
             $(this._saveSNtag)[0].save();
             //this.load(); -> sn-context after progress in ssn
           }.bind(this), //(this, this._saveSNtag), /* end of onOk */
         onCancel: //function (xsaveinperiod) { // to avoid closure
-          //return 
+          //return
           function () {
             pulseCustomDialog.close('.lastserialnumber-dialog');
           }.bind(this),

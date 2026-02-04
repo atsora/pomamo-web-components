@@ -18,8 +18,8 @@ var pulseUtility = require('pulseUtility');
     //PulseParamAutoPathSingleRequestComponent { Can not be used ! Only ONE call to service
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -80,7 +80,7 @@ var pulseUtility = require('pulseUtility');
       if ('' == this.getConfigOrAttribute('code')) {
         console.error('missing validation code');
         this.setError('missing code'); // delayed error message
-        this.switchToKey('Error', () => this.displayError('invalid param'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.missingParam', 'Missing param')), () => this.removeError());
         return;
       }
 
@@ -110,7 +110,7 @@ var pulseUtility = require('pulseUtility');
 
     _validateError (token, error) {
       this.displayError(error.ErrorMessage);
-      // Message + go back to login page. See manageErrorStatus   
+      // Message + go back to login page. See manageErrorStatus
       pulseConfig.setGlobal('loginError', 'Authentication Error. Please retry ('
         + error.ErrorMessage + ')');
       // Clean all cookies linked to login
@@ -121,7 +121,7 @@ var pulseUtility = require('pulseUtility');
 
     _validateFail (token, url, isTimeout, xhrStatus) {
       this.displayError('Invalid validate');
-      // Message + go back to login page. See manageErrorStatus    
+      // Message + go back to login page. See manageErrorStatus
       pulseConfig.setGlobal('loginError', 'Authentication Error. Please retry');
       // Clean all cookies linked to login
       pulseLogin.cleanLoginRole();

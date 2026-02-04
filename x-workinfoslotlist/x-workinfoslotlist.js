@@ -39,8 +39,8 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
   class ReasonSlotListComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -336,12 +336,12 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
       this.addClass('pulse-bigdisplay');
 
       if (!this.element.hasAttribute('machine-id')) {
-        this.switchToKey('Error', () => this.displayError('missing machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.selectMachine', 'Please select a machine')), () => this.removeError());
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         console.error('invalid attribute machine-id in ReasonSlotListComponent.element');
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
       this._setAutoRange(); // init _range from attribute
@@ -437,10 +437,10 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
       // Parameters
       // DOM
       $(this.element).empty();
-      
+
       //this._messageSpan = undefined;
       this._content = undefined;
-      
+
       super.clearInitialization();
     }
 
@@ -533,7 +533,7 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
      */
     onDateTimeRangeChange (event) {
       let newRange = event.target.daterange;
-      
+
       if (!pulseRange.equals(newRange, this._range, (a, b) => a.getTime() == b.getTime())) {
         this._range = newRange;
         // this.start(); NO ! No need to call intitialize again

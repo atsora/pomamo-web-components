@@ -30,8 +30,8 @@ require('x-stopclassification/x-stopclassification');
   class LastMachineStatusComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -246,13 +246,13 @@ require('x-stopclassification/x-stopclassification');
      */
     validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         //'Machine Id has incorrect value', 'BAD_ID');
         // Immediat display :
-        this.switchToKey('Error', () => this.displayError('Machine Id has incorrect value'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -356,7 +356,7 @@ require('x-stopclassification/x-stopclassification');
      * Event bus callback triggered when a reload message is received
      *
      * @param {Object} event includes :
-     * revisionid, machineid, kind, range, 
+     * revisionid, machineid, kind, range,
      * initModifications: undefined, // pending modifications the first time
      * pendingModifications: undefined // pending modifications 'now'
      */
@@ -453,10 +453,10 @@ require('x-stopclassification/x-stopclassification');
         pulseRange.createDateRangeDefaultInclusivity(
           this._lastReasonBegin, this._dateRange.upper);
       // no end == current = KO -> _dateRange.upper
-      
+
       // Check configuration to determine which dialog to open
       let lastMachineStatusMode = this.getConfigOrAttribute('lastmachinestatus', 'reasonslotlist');
-      
+
       if (lastMachineStatusMode === 'stopclassification') {
         pulseDetailsPopup.openChangeStopClassificationDialog(this, this._dateRange);
       } else {

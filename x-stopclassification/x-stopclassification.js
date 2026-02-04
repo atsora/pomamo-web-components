@@ -5,7 +5,7 @@
 
 /**
  * Standalone component to classify a stop over a single selected range
- * 
+ *
  * @module x-stopclassification
  * @requires module:pulseComponent
  * @requires module:pulseUtility
@@ -31,8 +31,8 @@ require('x-revisionprogress/x-revisionprogress');
     class StopClassificationComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
         /**
          * Constructor
-         * 
-         * @param  {...any} args 
+         *
+         * @param  {...any} args
          */
         constructor(...args) {
             const self = super(...args);
@@ -164,18 +164,18 @@ require('x-revisionprogress/x-revisionprogress');
          */
         validateParameters() {
             if (!this.element.hasAttribute('machine-id')) {
-                this.setError('no machine selected');
+                this.setError(this.getTranslation('error.selectMachine', 'No machine selected'));
                 return;
             }
             if (!this._rangeString) {
-                this.setError('no range selected');
+                this.setError(this.getTranslation('error.missingRange', 'Missing range'));
                 return;
             }
 
             // Validate the format of the internal range
             let rangeToCheck = pulseRange.createDateRangeFromString(this._rangeString);
             if (!(rangeToCheck instanceof pulseRange.DateRange)) {
-                this.switchToKey('Error', () => this.displayError('Invalid range'), () => this.removeError());
+                this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidRange', 'Invalid range')), () => this.removeError());
                 return;
             }
 
@@ -192,7 +192,7 @@ require('x-revisionprogress/x-revisionprogress');
                 url += '?MachineId=' + this.element.getAttribute('machine-id');
             }
 
-            let role = pulseLogin.getRole(); 
+            let role = pulseLogin.getRole();
 
             if (role) {
                 url += '&RoleKey=' + role;

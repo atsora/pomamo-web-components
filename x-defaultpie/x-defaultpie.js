@@ -22,8 +22,8 @@ require('x-reasonslotpie/x-reasonslotpie');
   class DefaultPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -37,7 +37,7 @@ require('x-reasonslotpie/x-reasonslotpie');
 
     /**
      * @override
-     * 
+     *
      * @param {!string} context - Context
      * @return {!string} key
      */
@@ -52,7 +52,7 @@ require('x-reasonslotpie/x-reasonslotpie');
 
     /**
      * @override
-     * 
+     *
      * @param {!string} context - Context
      * @param {!string} key - Key
      * @returns {!State} Created states
@@ -145,7 +145,7 @@ require('x-reasonslotpie/x-reasonslotpie');
       if (!this.element.hasAttribute('machine-id')
         && !this.element.hasAttribute('group')) {
         console.error('missing attribute machine or group id in DefaultPie.element');
-        this.setError('missing machine'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachineGroup', 'Please select a machine or a group of machines')); // delayed error message
         return;
       }
 

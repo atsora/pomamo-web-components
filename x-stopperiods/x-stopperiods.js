@@ -4,7 +4,7 @@
 
 /**
  * Lightweight provider that fetches ReasonOnlySlots and publishes a selected period
- * 
+ *
  * @module x-stopperiods
  * @requires module:pulsecomponent
  * @requires module:pulseService
@@ -74,18 +74,18 @@ require('x-stopclassification/x-stopclassification');
          */
         validateParameters() {
             if (!this.element.hasAttribute('machine-id')) {
-                this.setError('missing machine-id');
+                this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
                 return;
             }
             if (!this.element.hasAttribute('range')) {
-                this.setError('missing range');
+                this.setError(this.getTranslation('error.missingRange', 'Missing range'));
                 return;
             }
             // Sanity check
             let inputRange = this.element.getAttribute('range');
             let r = pulseRange.createDateRangeFromString(inputRange);
             if (!(r instanceof pulseRange.DateRange) || r.isEmpty()) {
-                this.setError('invalid range');
+                this.setError(this.getTranslation('error.invalidRange', 'Invalid range'));
                 return;
             }
             this.switchToNextContext();

@@ -22,8 +22,8 @@ var state = require('state');
   class LastWorkInformationComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -96,7 +96,7 @@ var state = require('state');
 
     /**
       * @override
-      * 
+      *
       * @param {!string} context - Context
       * @return {!string} key
       */
@@ -111,7 +111,7 @@ var state = require('state');
 
     /**
      * @override
-     * 
+     *
      * @param {!string} context - Context
      * @param {!string} key - Key
      * @returns {!State} Created states
@@ -254,13 +254,13 @@ var state = require('state');
     validateParameters () {
       // machine-id
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         //'Machine Id has incorrect value', 'BAD_ID');
         // Immediat display :
-        this.switchToKey('Error', () => this.displayError('Machine Id has incorrect value'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 

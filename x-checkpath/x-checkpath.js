@@ -15,8 +15,8 @@ var eventBus = require('eventBus');
   class CheckPathComponent extends pulseComponent.PulseParamSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -52,7 +52,7 @@ var eventBus = require('eventBus');
 
     validateParameters () {
       // Additional checks with attribute param
-     
+
       let skip = this.getConfigOrAttribute('skipWebServiceAddress', 'false');
 
       if ( skip == true || skip == 'true' ) {
@@ -70,7 +70,7 @@ var eventBus = require('eventBus');
             eventBus.EventBus.dispatchToAll('pathChangeEvent', {});
           }
         }
-        this.setError('Skip web service path');
+        this.setError(this.getTranslation('skipWebService', 'Skip web service path'));
       }
       else{
         this.switchToNextContext();

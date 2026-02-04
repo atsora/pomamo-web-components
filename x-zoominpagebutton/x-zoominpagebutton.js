@@ -16,8 +16,8 @@ var pulseSvg = require('pulseSvg');
   class ZoomInPageButtonComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -94,7 +94,7 @@ var pulseSvg = require('pulseSvg');
       if (!this.element.hasAttribute('group')) {
         // machine-id
         if (!this.element.hasAttribute('machine-id')) {
-          this.setError('missing machine-id'); // delayed error message
+          this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
           return;
         }
       }

@@ -456,7 +456,7 @@ require('x-freetext/x-freetext');
           else {
             if (this._groupSelectionArray.length == 0) {
               pulseCustomDialog.openError(
-                'Please select at least one group');
+                this.getTranslation('errorMissingGroup', 'Please select at least one group'));
               return;
             }
             // If 'no machine' in static groups

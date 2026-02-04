@@ -18,8 +18,8 @@ var eventBus = require('eventBus');
   class DetailedPartsAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -155,7 +155,7 @@ var eventBus = require('eventBus');
       if ((!this.element.hasAttribute('machine-id'))
         || (!pulseUtility.isInteger(Number(this.element.getAttribute('machine-id'))))) {
         // Delayed display :
-        this.setError('missing machine-id');
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         // or
         // Immediat display :
         //this.switchToKey('Error', () => this.displayError('invalid param'), () => this.removeError());
@@ -173,7 +173,7 @@ var eventBus = require('eventBus');
         }
 
         // Delayed display :
-        this.setError('missing range');
+        this.setError(this.getTranslation('error.missingRange', 'Missing range'));
         return;
       }
 

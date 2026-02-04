@@ -22,8 +22,8 @@ require('x-datetimerange/x-datetimerange');
   class SaveReasonComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -173,7 +173,7 @@ require('x-datetimerange/x-datetimerange');
 
     /**
      * @override
-     * 
+     *
      * @param {!string} context - Context
      * @return {!string} key
      */
@@ -265,7 +265,7 @@ require('x-datetimerange/x-datetimerange');
     validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
         // Delayed display:
-        this.setError('missing machine-id');
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         return;
       }
 
@@ -362,8 +362,8 @@ require('x-datetimerange/x-datetimerange');
       let url = 'ReasonSelection/Post'
         + '?MachineId=' + Number($(this.element).attr('machine-id'));
 
-      let role = pulseLogin.getRole(); 
-      
+      let role = pulseLogin.getRole();
+
       if (role) {
         url += '&RoleKey=' + role;
       }
@@ -562,7 +562,7 @@ require('x-datetimerange/x-datetimerange');
           machid, ranges);
       this._savedRangesList = null;
 
-      // CLOSE if needed 
+      // CLOSE if needed
       /* if (this._closeAfterSave) {
         pulseCustomDialog.close('.dialog-savereason');
         return;

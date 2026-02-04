@@ -31,8 +31,8 @@ var pulseUtility = require('pulseUtility');
   class RevisionProgressComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -55,7 +55,7 @@ var pulseUtility = require('pulseUtility');
       self._width = 10000;
       self._height = 600;
 
-      // 
+      //
       self._smallestMovingBar = 30; // Less = problem with pattern
 
       return self;
@@ -152,22 +152,22 @@ var pulseUtility = require('pulseUtility');
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
         console.error('missing attribute param in RevisionProgress.element: machine-id');
-        this.setError('missing param'); // delayed error message
+        this.setError(this.getTranslation('error.missingParam', 'Missing param')); // delayed error message
         return;
       }
       if (!this.element.hasAttribute('revision-id')) {
         console.error('missing attribute param in RevisionProgress.element: revision-id');
-        this.setError('missing param'); // delayed error message
+        this.setError(this.getTranslation('error.missingParam', 'Missing param')); // delayed error message
         return;
       }
       if (!this.element.hasAttribute('revision-range')) {
         console.error('missing attribute param in RevisionProgress.element: revision-range');
-        this.setError('missing param'); // delayed error message
+        this.setError(this.getTranslation('error.missingParam', 'Missing param')); // delayed error message
         return;
       }
       if (!this.element.hasAttribute('kind')) {
         console.error('missing attribute param in RevisionProgress.element: kind');
-        this.setError('missing param'); // delayed error message
+        this.setError(this.getTranslation('error.missingParam', 'Missing param')); // delayed error message
         return;
       }
 
@@ -443,7 +443,7 @@ var pulseUtility = require('pulseUtility');
      * Event bus callback triggered when a reload message is received
      *
      * @param {Object} event includes :
-     * revisionid, machineid, kind, range, 
+     * revisionid, machineid, kind, range,
      * initModifications: undefined, // pending modifications the first time
      * pendingModifications: undefined // pending modifications 'now'
      */

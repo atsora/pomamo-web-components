@@ -40,8 +40,8 @@ require('x-revisionprogress/x-revisionprogress');
   class ReasonSlotListComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -353,12 +353,12 @@ require('x-revisionprogress/x-revisionprogress');
       this.addClass('pulse-bigdisplay');
 
       if (!this.element.hasAttribute('machine-id')) {
-        this.switchToKey('Error', () => this.displayError('missing machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.selectMachine', 'Please select a machine')), () => this.removeError());
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         console.error('invalid attribute machine-id in ReasonSlotListComponent.element');
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
       this._setAutoRange(); // init _range from attribute
@@ -681,7 +681,7 @@ require('x-revisionprogress/x-revisionprogress');
      * Event bus callback triggered when a reload message is received
      *
      * @param {Object} event includes :
-     * revisionid, machineid, kind, range, 
+     * revisionid, machineid, kind, range,
      * initModifications: undefined, // pending modifications the first time
      * pendingModifications: undefined // pending modifications 'now'
      */

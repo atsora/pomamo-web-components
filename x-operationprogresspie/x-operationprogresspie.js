@@ -19,8 +19,8 @@ var eventBus = require('eventBus');
   class OperationProgressPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -249,7 +249,7 @@ var eventBus = require('eventBus');
             animateTimeAndDash = false;
           }
         }
-        // Coming event 
+        // Coming event
         if (!this._activeEvent) {
           if (this._pauseWhenMachiningNotRunning && this._notRunningCanCancelAnimation) {
             console.error('OperationProgressPie(' + this.element.getAttribute('machine-id') + ') '
@@ -360,7 +360,7 @@ var eventBus = require('eventBus');
           if (this._activeEvent) {
             keyframeName += '-increase';
           }
-          pulseSvg.createStyleDashCircleRotation(this._dashcircle, // this, 
+          pulseSvg.createStyleDashCircleRotation(this._dashcircle, // this,
             keyframeName, secondsForDash, this._dashCircleRadius, this._activeEvent);
 
           $(this._dashcircle).css('animation-timing-function', 'linear');
@@ -381,7 +381,7 @@ var eventBus = require('eventBus');
       }
       else { // Display seconds (sometimes no dash refresh after timer)
         if (this._secondsBeforeNextChange != this._secondsBeforeMinuteChange) {
-          this._needChangeDash = false; // After next timer 
+          this._needChangeDash = false; // After next timer
         }
         else {
           this._needChangeDash = true;
@@ -409,7 +409,7 @@ var eventBus = require('eventBus');
         let serverDataDate = new Date(this._data.DataTime);
 
         if (this._animationEndServerDateTime.getTime() <= serverDataDate.getTime()) {
-          // _animationEndServerDateTime COULD be before DataDate ! -> correct 
+          // _animationEndServerDateTime COULD be before DataDate ! -> correct
           adjustedCompletion = this._animationEndPercent; // Go to end of completion !
           console.log('OperationProgressPie(' + this.element.getAttribute('machine-id')
             + '): DataDate after animation end');
@@ -501,7 +501,7 @@ var eventBus = require('eventBus');
         && (this._animationEndServerDateTime != null)) {
         if ((completionInSegment != null)
           && (completionInSegment < realEndOfDisplay)) {
-          // Betweeen completion & end 
+          // Betweeen completion & end
           if (completionInSegment < this._animationEndPercent) {
             animationSeconds =
               (new Date(this._animationEndServerDateTime).getTime() - this._serverNow.getTime()
@@ -541,7 +541,7 @@ var eventBus = require('eventBus');
               // Animate Bk
               let keyframeNameBk = 'operationprogress-pie-bk-'
                 + this.element.getAttribute('machine-id');
-              pulseSvg.createStyleForSegmentOnDonutMovingBegin(circleBk, //this, 
+              pulseSvg.createStyleForSegmentOnDonutMovingBegin(circleBk, //this,
                 keyframeNameBk, this._circleRadius,
                 beginOfBk, // begin from
                 realEndOfAnimation, // to Begin
@@ -589,7 +589,7 @@ var eventBus = require('eventBus');
                 + ' until ' + 100 * realEndOfAnimation + '% - speed '
                 + roundedAnimSec + 'sec');
 
-              pulseSvg.createStyleForSegmentOnDonut(circleProgress, //this, 
+              pulseSvg.createStyleForSegmentOnDonut(circleProgress, //this,
                 keyframeName, this._circleRadius,
                 (endOfBlue - beginOfBlue), // fromWidth
                 realEndOfAnimation - beginOfBlue); // toWidth
@@ -621,7 +621,7 @@ var eventBus = require('eventBus');
         'transparent', this._ringStrokeClass,
         null, this._dashWidth);
       //this._dashcircle.setAttribute('stroke-linecap', "round"); // Not here
-      //this._dashcircle.setAttribute('stroke-dasharray', 
+      //this._dashcircle.setAttribute('stroke-dasharray',
       //circumference.toFixed(0) + ' ' + 0); // Filled 100% // Empty 0% = end position
       this._dashcircle.setAttribute('stroke-dasharray',
         0 + ' ' + circumference.toFixed(0)); // Filled 0% // Empty 100% = end position = default
@@ -848,7 +848,7 @@ var eventBus = require('eventBus');
         + '): start draw - compl= ' + this._data.Completion
         + ' - DataTime= ' + this._data.DataTime);
 
-      // CREATE SVG 
+      // CREATE SVG
       let svg = pulseSvg.createBase(this._height, // == width
         this._height, // height
         'donut', 2 * this._xyPosition, 2 * this._xyPosition);
@@ -1146,7 +1146,7 @@ var eventBus = require('eventBus');
 
     /**
      * @override
-     * 
+     *
      * @param {!string} context - Context
      * @return {!string} key
      */
@@ -1161,7 +1161,7 @@ var eventBus = require('eventBus');
 
     /**
      * @override
-     * 
+     *
      * @param {!string} context - Context
      * @param {!string} key - Key
      * @returns {!State} Created states
@@ -1234,7 +1234,7 @@ var eventBus = require('eventBus');
         /* Should add :
         case 'machine-context':
           eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
-          eventBus.EventBus.addEventListener(this, 
+          eventBus.EventBus.addEventListener(this,
             'machineIdChangeSignal', newVal,
             this.onMachineIdChange.bind(this));
           break;*/
@@ -1263,7 +1263,7 @@ var eventBus = require('eventBus');
       // listeners/dispatchers
       /* To add
       if (this.element.hasAttribute('machine-context')) {
-        eventBus.EventBus.addEventListener(this, 
+        eventBus.EventBus.addEventListener(this,
           'machineIdChangeSignal',
           this.element.getAttribute('machine-context'),
           this.onMachineIdChange.bind(this));
@@ -1341,13 +1341,13 @@ var eventBus = require('eventBus');
       if (!this.element.hasAttribute('group')) {
         // machine-id
         if (!this.element.hasAttribute('machine-id')) {
-          this.setError('missing machine-id'); // delayed error message
+          this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
           return;
         }
         if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
           //'Machine Id has incorrect value', 'BAD_ID');
           // Immediat display :
-          this.switchToKey('Error', () => this.displayError('Machine Id has incorrect value'), () => this.removeError());
+          this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
           return;
         }
       }

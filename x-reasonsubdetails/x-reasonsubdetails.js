@@ -17,8 +17,8 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
   class ReasonSubDetailsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -78,10 +78,10 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
       // Parameters
       // DOM
       $(this.element).empty();
-      
+
       //this._messageSpan = undefined;
       //this._content = undefined;
-      
+
       super.clearInitialization();
     }
 
@@ -92,14 +92,14 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
         return;
       }*/
       if (!this.element.hasAttribute('machine-id')) {
-        //this.setError('missing machine-id'); // delayed error message
-        this.switchToKey('Error', () => this.displayError('missing machine-id'), () => this.removeError());
+        //this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.selectMachine', 'Please select a machine')), () => this.removeError());
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         //'Machine Id has incorrect value', 'BAD_ID');
         // Immediat display :
-        this.switchToKey('Error', () => this.displayError('Machine Id has incorrect value'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -109,7 +109,7 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
         //this.setError('missing date');
         // or
         // Immediat display :
-        this.switchToKey('Error', () => this.displayError('missing date'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.missingWhen', 'Missing when')), () => this.removeError());
         return;
       }
       // Additional checks with attribute param
@@ -119,7 +119,7 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 
     displayError (message) {
       // Code here to display the error message
-      // For example:      
+      // For example:
       $(this._content).html(message);
       pulseCustomDialog.openError(message, 'Error',
         this._close.bind(this));
@@ -152,7 +152,7 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
         // Update the component with data which is returned by the web service in case of success
         for (let i = 1 /* Do not display 1st */;
           i < data.ReasonAllAtItems.length; i++) {
-            
+
           let onereason = $('<div></div>').addClass('reasonsubdetails-onereason');
 
           //For everybody

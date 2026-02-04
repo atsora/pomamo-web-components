@@ -18,7 +18,7 @@ var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
 /**
- * Build a custom tag <x-runningslotbar> to display an runningslotbar bar component. This tag gets following attribute : 
+ * Build a custom tag <x-runningslotbar> to display an runningslotbar bar component. This tag gets following attribute :
  *  machine-id : Integer
  *  height : Integer
  *  motion-context : String
@@ -38,8 +38,8 @@ var eventBus = require('eventBus');
   class RunningSlotBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -320,12 +320,12 @@ var eventBus = require('eventBus');
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
         console.log('waiting attribute machine-id in RunningSlotBarComponent.element');
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         console.error('invalid attribute machine-id in RunningSlotBarComponent.element');
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -341,7 +341,7 @@ var eventBus = require('eventBus');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('missing range');
+        this.setError(this.getTranslation('error.missingRange', 'Missing range'));
         return;
       }
 
@@ -354,7 +354,7 @@ var eventBus = require('eventBus');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('empty range');
+        this.setError(this.getTranslation('error.emptyRange', 'Empty range'));
         return;
       }
 

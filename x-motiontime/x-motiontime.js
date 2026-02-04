@@ -16,15 +16,15 @@ var eventBus = require('eventBus');
  *  motion-context : String (to get time directly)
  *  machine-id : complete motion-context when using x-grouparray
  *  machine-context : to change machine-id
- * 
+ *
  */
 (function () {
 
   class MotionTimeComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -173,7 +173,7 @@ var eventBus = require('eventBus');
     validateParameters () {
       if (!this.element.hasAttribute('motion-context')) {
         console.error('missing attribute motion-context in MotionTime.element');
-        this.setError('missing motion-context'); // delayed error message
+        this.setError(this.getTranslation('error.missingMotionContext', 'Missing motion context')); // delayed error message
         return;
       }
       // Additional checks with attribute param

@@ -20,8 +20,8 @@ var state = require('state');
   class TrComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -33,7 +33,7 @@ var state = require('state');
 
     /**
      * @override
-     * 
+     *
      * @param {!string} context - Context
      * @return {!string} key
      */
@@ -62,7 +62,7 @@ var state = require('state');
 
     /**
      * @override
-     * 
+     *
      * @param {!string} context - Context
      * @param {!string} key - Key
      * @returns {!State} Created states
@@ -147,8 +147,8 @@ var state = require('state');
           if (this.isVisible) { // To avoid displayed error in hidden duplicated part
             console.error('missing attribute machine or group in MachineDisplayComponent.element');
           }
-          //this.setError('missing machine-id'); // delayed error message
-          this.switchToKey('Error', () => this.displayError('invalid key'), () => this.removeError());
+          //this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
+          this.switchToKey('Error', () => this.displayError(this.getTranslation('invalidKey', 'Invalid key')), () => this.removeError());
           return;
         }
       }

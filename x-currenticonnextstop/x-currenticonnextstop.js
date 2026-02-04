@@ -17,8 +17,8 @@ var eventBus = require('eventBus');
   class CurrentIconNextStopComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -51,7 +51,7 @@ var eventBus = require('eventBus');
           this.start(); // Hope this reloads component 'NOW' --RR
           break;
         case 'active':
-          //if (oldValue != newVal) 
+          //if (oldValue != newVal)
           {
             if (newVal == 'true') {
               $(this._content).addClass('active');
@@ -65,7 +65,7 @@ var eventBus = require('eventBus');
         /*case 'machine-context':
           if (this._dispatchersListenersCreated) {
             eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
-            eventBus.EventBus.addEventListener(this, 
+            eventBus.EventBus.addEventListener(this,
               'machineIdChangeSignal', newVal,
                              this.onMachineIdChange.bind(this));
           }
@@ -136,7 +136,7 @@ var eventBus = require('eventBus');
     _createListenersDispatchers () {
       if (false == this._dispatchersListenersCreated) {
         /*if (this.element.hasAttribute('machine-context')) {
-          eventBus.EventBus.addEventListener(this, 
+          eventBus.EventBus.addEventListener(this,
             'machineIdChangeSignal', this.element.getAttribute('machine-context'), this.onMachineIdChange.bind(this));
         }*/
         if (this.element.hasAttribute('status-context')) {
@@ -146,8 +146,8 @@ var eventBus = require('eventBus');
             this.onNextStopStatusChange.bind(this));
         }
         /*if (this.element.hasAttribute('period-context')) {
-          eventBus.EventBus.addEventListener(this, 
-            'dateTimeRangeChangeEvent', 
+          eventBus.EventBus.addEventListener(this,
+            'dateTimeRangeChangeEvent',
           this.element.getAttribute('period-context'),
            this.onDateTime RangeChange.bind(this));
         }*/
@@ -204,12 +204,12 @@ var eventBus = require('eventBus');
       }*/
       if (!this.element.hasAttribute('machine-id')) {
         console.log('waiting attribute machine-id in currenticonnextstop.element');
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         console.error('invalid attribute machine-id in currenticonnextstop.element');
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -228,7 +228,7 @@ var eventBus = require('eventBus');
       return false;
     }
 
-    get refreshRate () {  // refresh rate in ms. 
+    get refreshRate () {  // refresh rate in ms.
       return 1000 * (Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10)) + 1); // +1 to allow refresh from bars
     }
 

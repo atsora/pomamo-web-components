@@ -19,7 +19,7 @@ var pulseLogin = require('pulseLogin');
 class State {
   /**
    * Constructor
-   * 
+   *
    * @param {string} context - State context
    * @param {string} key - State key
    * @param {PulseStateComponent} component - Associated Pulse state component
@@ -35,7 +35,7 @@ class State {
 
   /**
    * Associated context
-   * 
+   *
    * @returns {string}
    */
   get context () {
@@ -43,8 +43,8 @@ class State {
   }
 
   /**
-   * Associated key 
-   * 
+   * Associated key
+   *
    * @returns {string}
    */
   get key () {
@@ -93,7 +93,7 @@ class State {
 
   /**
    * Function that is called when the component exists this state
-   * 
+   *
    * @param {string} nextStateContext - Next state context
    * @param {string} nextStateKey - Next state key
    */
@@ -115,7 +115,7 @@ class State {
 class BeforeDestructionState extends State {
   /**
    * Constructor
-   * 
+   *
    * @param {string} context - State context
    * @param {string} key - State key
    * @param {PulseStateComponent} component - Associated Pulse state component
@@ -133,7 +133,7 @@ class BeforeDestructionState extends State {
 
   /**
    * Function that is called when the component exists this state
-   * 
+   *
    * @param {string} nextStateContext - Next state context
    * @param {string} nextStateKey - Next state key
    */
@@ -144,7 +144,7 @@ class BeforeDestructionState extends State {
 
 /**
  * Initial state. The next state is either the next context or the Error state
- * 
+ *
  * When this state is entered:
  * - if {@link module:pulseComponent~PulseInitializedComponent#isInitialized} returns true, {@link module:pulseComponent~PulseInitializedComponent#clearInitialization} is called first.
  * - then {@link module:pulseComponent~PulseInitializedComponent#initialize} is called.
@@ -154,7 +154,7 @@ class BeforeDestructionState extends State {
 class InitialState extends State {
   /**
    * Switch to the next context or to the Error  state
-   * 
+   *
    * @override
    */
   enter (previousStateContext, previousStateKey) {
@@ -177,7 +177,7 @@ class InitialState extends State {
 /**
  * Initial state for auto path components. (create listener)
  * The next state is either the next context or the Error state
- * 
+ *
  * When this state is entered:
  * - if {@link module:pulseComponent~PulseInitializedComponent#isInitialized} returns true, {@link module:pulseComponent~PulseInitializedComponent#clearInitialization} is called first.
  * - then {@link module:pulseComponent~PulseInitializedComponent#initialize} is called.
@@ -187,7 +187,7 @@ class InitialState extends State {
 class AutoPathInitialState extends State { // +/- idem Initial State
   /**
    * Switch to the next context or to the Error  state
-   * 
+   *
    * @override
    */
   enter (previousStateContext, previousStateKey) {
@@ -223,15 +223,15 @@ class AutoPathInitialState extends State { // +/- idem Initial State
 /**
  * Reset state. State when the pulse component must be reset.
  * The next state is either the next context or the Error state
- * 
+ *
  * When this state is entered {@link module:pulseComponent~PulseInitializedComponent#reset} is called.
- * 
+ *
  * @extends module:state~State
  */
 class ResetState extends State {
   /**
    * Switch to the next context or to the Error state
-   * 
+   *
    * @override
    */
   enter (previousStateContext, previousStateKey) {
@@ -258,7 +258,7 @@ class StaticState extends State {
 class NoActionState extends State { // eslint-disable-line no-unused-vars
   /**
    * Constructor
-   * 
+   *
    * @param {?string} nextContext - Context of the next state
    * @param {?string} nextKey - Key of the next state
    * @param {string} context - State context
@@ -289,7 +289,7 @@ class NoActionState extends State { // eslint-disable-line no-unused-vars
 
 /**
  * Callback that returns a number of ms to wait
- * 
+ *
  * @callback delayCallback
  * @param {PulseStateComponent} component - Pulse state component
  * @return {number} delay in ms
@@ -304,7 +304,7 @@ class NoActionState extends State { // eslint-disable-line no-unused-vars
 class WaitState extends State {
   /**
    * Constructor
-   * 
+   *
    * @param {?string} nextContext - Context of the next state
    * @param {?string} nextKey - Key of the next state
    * @param {?actionCallback} preAction - Pre-action
@@ -391,22 +391,22 @@ class WaitState extends State {
 /**
  * (Event) Parameter validation state with a timeout.
  * The event/live parameters are checked by the ValidateParameters methods of the web component.
- * 
+ *
  * In case they are ok, switch to the next context.
- * 
+ *
  * After some time, if the parameters could not be validated,
  * the web component is automatically switched to an error state
- * 
+ *
  * If the web component does not contain any ValidateParameters method, switch to the next context at once.
  *
  * When this state is entered {@link module:pulseComponent~PulseParamInitializedComponent#validateParameters} is called.
- * 
+ *
  * @extends module:state~WaitState
  */
 class ParamValidationTimeoutState extends WaitState { // eslint-disable-line no-unused-vars
   /**
    * Constructor
-   * 
+   *
    * @param {delayCallback} delayCallback - Callback to get the delay before switching to the error state
    * @param {string} context - State context
    * @param {string} key - State key
@@ -419,7 +419,7 @@ class ParamValidationTimeoutState extends WaitState { // eslint-disable-line no-
   /**
    * If validateParameters is a method of the component, run it.
    * Else switch to the next context.
-   * 
+   *
    * @override
    */
   enter (previousStateContext, previousStateKey) {
@@ -446,7 +446,7 @@ class ParamValidationTimeoutState extends WaitState { // eslint-disable-line no-
     if (this.component.updatePathFromConfigOrAttribute) { // Here this is optional, to make it mandatory use state ParamAndPathValidationTimeoutState
       if (!this.component.updatePathFromConfigOrAttribute()) {
         console.log('waiting attribute path');
-        this.component.setError('Waiting for path');
+        this.component.setError(pulseConfig.pulseTranslate('waitingPath', 'Waiting for path'));
         return;
       }
     }
@@ -463,22 +463,22 @@ class ParamValidationTimeoutState extends WaitState { // eslint-disable-line no-
 /**
  * (Event) Parameter validation state with a timeout + wait for url path
  * The event/live parameters are checked by the ValidateParameters methods of the web component.
- * 
+ *
  * In case they are ok, switch to the next context.
- * 
+ *
  * After some time, if the parameters could not be validated,
  * the web component is automatically switched to an error state
- * 
+ *
  * If the web component does not contain any ValidateParameters method, switch to the next context at once.
  *
  * When this state is entered {@link module:pulseComponent~PulseParamInitializedComponent#validateParameters} is called.
- * 
+ *
  * @extends module:state~ParamValidationTimeoutState
  */
 class ParamAndPathValidationTimeoutState extends ParamValidationTimeoutState {
   /**
    * Constructor
-   * 
+   *
    * @param {delayCallback} delayCallback - Callback to get the delay before switching to the error state
    * @param {string} context - State context
    * @param {string} key - State key
@@ -493,7 +493,7 @@ class ParamAndPathValidationTimeoutState extends ParamValidationTimeoutState {
     if (this.component.updatePathFromConfigOrAttribute) {
       if (!this.component.updatePathFromConfigOrAttribute()) {
         console.log('waiting attribute path');
-        this.component.setError('Waiting for path');
+        this.component.setError(pulseConfig.pulseTranslate('waitingPath', 'Waiting for path'));
         return;
       }
     }
@@ -514,15 +514,15 @@ class ParamAndPathValidationTimeoutState extends ParamValidationTimeoutState {
 
 /**
  * Read some data
- * 
+ *
  * When this state is entered {@link module:pulseComponent~PulseInitializedComponent#read} is called.
- * 
+ *
  * @extends module:state~State
  */
 class ReadState extends State {
   /**
    * Switch to the next context or to the Error state
-   * 
+   *
    * @override
    */
   enter (previousStateContext, previousStateKey) {
@@ -533,7 +533,7 @@ class ReadState extends State {
 
 /**
  * Request state
- * 
+ *
  * After a specified delay, an Ajax method is called to refresh the component.
  * The URL used by the Ajax request () is the property url of the pulse component.
  *
@@ -542,7 +542,7 @@ class ReadState extends State {
 class RequestState extends State {
   /**
    * Constructor
-   * 
+   *
    * @param {delayCallback} delayCallback - Callback to get the initial delay before the Ajax method is called
    * @param {string} context - State context
    * @param {string} key - State key
@@ -778,7 +778,7 @@ class LoadState extends RequestState {
 
 /**
  * Normal refreshing state.S
- * 
+ *
  * @extends module:state~RequestState
  */
 class NormalRequestState extends RequestState {
@@ -955,7 +955,7 @@ class ErrorState extends State {
 }
 
 /**
- * Not applicable state. 
+ * Not applicable state.
  *
  * @extends module:state~State
  */
@@ -963,7 +963,7 @@ class NotApplicableState extends State {
 }
 
 /**
- * Stop state. State to use when a component should stop refresh. 
+ * Stop state. State to use when a component should stop refresh.
  * For example, when web services are not available.
  *
  * @extends module:state~State

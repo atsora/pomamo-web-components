@@ -27,8 +27,8 @@ require('x-modificationmanager/x-modificationmanager');
   class SaveMachineStateTemplateComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -209,7 +209,7 @@ require('x-modificationmanager/x-modificationmanager');
     validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
         // Delayed display :
-        this.setError('missing machine-id');
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         return;
       }
       // Additional checks with attribute param

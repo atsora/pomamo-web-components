@@ -18,8 +18,8 @@ var eventBus = require('eventBus');
   class XXXComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -138,7 +138,7 @@ var eventBus = require('eventBus');
     validateParameters () {
       if (!this.element.hasAttribute('param')) {
         console.error('missing attribute param in XXX.element');
-        this.setError('missing param'); // delayed error message
+        this.setError(this.getTranslation('error.missingParam', 'Missing param')); // delayed error message
         return;
       }
       // Additional checks with attribute param

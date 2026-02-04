@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * 
+ *
  * @module x-task
  * @requires module:pulseComponent
  * @requires module:pulseUtility
@@ -16,13 +16,13 @@ var pulseUtility = require('pulseUtility');
 (function () {
 
   /**
-   * 
+   *
    */
   class TaskComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -669,12 +669,12 @@ var pulseUtility = require('pulseUtility');
 
     validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('no machine selected');
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         return;
       }
 
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 

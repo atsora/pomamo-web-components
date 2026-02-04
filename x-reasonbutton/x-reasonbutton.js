@@ -140,7 +140,7 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
      */
     validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       // Additional checks with attribute param

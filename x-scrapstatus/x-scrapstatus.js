@@ -21,8 +21,8 @@ require('x-scrapclassification/x-scrapclassification');
     class ScrapStatusComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
         /**
          * Constructor
-         * 
-         * @param  {...any} args 
+         *
+         * @param  {...any} args
          */
         constructor(...args) {
             const self = super(...args);
@@ -36,7 +36,7 @@ require('x-scrapclassification/x-scrapclassification');
 
         /**
          * Callback when an attribute changes after connection
-         * 
+         *
          * @param {string} attr - Attribute name
          * @param {string} oldVal - Old value
          * @param {string} newVal - New value
@@ -93,7 +93,7 @@ require('x-scrapclassification/x-scrapclassification');
             messageDiv.appendChild(this._messageSpan);
             this.element.appendChild(messageDiv);
 
-            // listeners 
+            // listeners
             if (this.element.hasAttribute('machine-context')) {
                 eventBus.EventBus.addEventListener(this,
                     'machineIdChangeSignal',
@@ -155,11 +155,11 @@ require('x-scrapclassification/x-scrapclassification');
          */
         validateParameters() {
             if (!this.element.hasAttribute('machine-id')) {
-                this.setError('missing machine-id');
+                this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
                 return;
             }
             if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
-                this.switchToKey('Error', () => this.displayError('Machine Id has incorrect value'), () => this.removeError());
+                this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
                 return;
             }
 
@@ -168,7 +168,7 @@ require('x-scrapclassification/x-scrapclassification');
 
         /**
          * Display error message
-         * 
+         *
          * @param {string} message - Error message
          */
         displayError(message) {
@@ -185,7 +185,7 @@ require('x-scrapclassification/x-scrapclassification');
 
         /**
          * Get the refresh rate in milliseconds
-         * 
+         *
          * @returns {number} Refresh rate in milliseconds
          */
         get refreshRate() {
@@ -194,7 +194,7 @@ require('x-scrapclassification/x-scrapclassification');
 
         /**
          * Get the URL for data request
-         * 
+         *
          * @returns {string} URL
          */
         getShortUrl() {
@@ -204,7 +204,7 @@ require('x-scrapclassification/x-scrapclassification');
 
         /**
          * Refresh with data from server
-         * 
+         *
          * @param {Object} data - Server response
          */
         refresh(data) {

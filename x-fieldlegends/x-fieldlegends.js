@@ -17,8 +17,8 @@ var eventBus = require('eventBus');
   class fieldlegendsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -103,7 +103,7 @@ var eventBus = require('eventBus');
         this.switchToNextContext();
       }
       // Delayed display :
-      this.setError('missing machine-ids');
+      this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
       return;
     }
 

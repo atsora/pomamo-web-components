@@ -23,8 +23,8 @@ require('x-reasonsubdetails/x-reasonsubdetails');
   class DetailedReasonAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -246,21 +246,21 @@ require('x-reasonsubdetails/x-reasonsubdetails');
       if ((!this.element.hasAttribute('machine-id'))
         || (!pulseUtility.isInteger(Number(this.element.getAttribute('machine-id'))))) {
         // Delayed display :
-        this.setError('missing machine-id');
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         return;
       }
 
       if (!this.element.hasAttribute('when')) {
         console.error('missing attribute when in detailedreasonat.element');
         // Delayed display :
-        this.setError('missing when');
+        this.setError(this.getTranslation('error.missingWhen', 'Missing when'));
         return;
       }
 
       if (!this.element.hasAttribute('range')) {
         console.error('missing range in detailedreasonat.element');
         // Delayed display :
-        this.setError('missing range');
+        this.setError(this.getTranslation('error.missingRange', 'Missing range'));
 
         if (this._dateRange == undefined) {
           if (this.element.hasAttribute('period-context')) {
@@ -407,7 +407,7 @@ require('x-reasonsubdetails/x-reasonsubdetails');
           });
           $(this._divReasonDisplay).append(changeButton);
         }
-        
+
         // Append
         $(this._reasonContent)
           .append(divRange).append(this._divReasonDisplay);
@@ -450,7 +450,7 @@ require('x-reasonsubdetails/x-reasonsubdetails');
      * Event bus callback triggered when a reload message is received
      *
      * @param {Object} event includes :
-     * revisionid, machineid, kind, range, 
+     * revisionid, machineid, kind, range,
      * initModifications: undefined, // pending modifications the first time
      * pendingModifications: undefined // pending modifications 'now'
      */
@@ -473,7 +473,7 @@ require('x-reasonsubdetails/x-reasonsubdetails');
       let rangeWhen = pulseRange.createDateRangeDefaultInclusivity(isoWhen, isoWhen);
 
       if (isNew) {
-        // First time -> create progress bar 
+        // First time -> create progress bar
         // Do not work for the moment 2020-02 because details is created after change
         for (let i = 0; i < modif.ranges.length; i++) {
           if (pulseRange.overlaps(modif.ranges[i], rangeWhen)) {

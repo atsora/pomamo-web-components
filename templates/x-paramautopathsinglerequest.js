@@ -14,8 +14,8 @@ var eventBus = require('eventBus');
   class XXXComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -127,7 +127,7 @@ var eventBus = require('eventBus');
       if (!this.element.hasAttribute('param')) {
         console.error('missing attribute param in XXX.element');
         // Delayed display :
-        this.setError('missing range');
+        this.setError(this.getTranslation('error.missingParam', 'Missing param'));
         // or
         // Immediat display :
         //this.switchToKey('Error', () => this.displayError('invalid param'), () => this.removeError());

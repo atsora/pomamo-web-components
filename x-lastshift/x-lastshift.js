@@ -16,8 +16,8 @@ var pulseUtility = require('pulseUtility');
   class LastShiftComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -104,7 +104,7 @@ var pulseUtility = require('pulseUtility');
      */
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
 

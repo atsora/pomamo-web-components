@@ -17,7 +17,7 @@ var eventBus = require('eventBus');
 
 /*
  * WARNING for migration : USE
- * 
+ *
 this.disableDeleteWhenDisconnect ();
 this.restoreDeleteWhenDisconnect ():
  */
@@ -27,8 +27,8 @@ this.restoreDeleteWhenDisconnect ():
   class ToolLifeMachineComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -230,7 +230,7 @@ this.restoreDeleteWhenDisconnect ():
       // Next expiration
       /*let spanNextExp = $('<span></span>').addClass('toollifemachine-next-expiration-span');
       let divNextExp = $('<div></div>')
-                        .addClass('toollifemachine-next-expiration') 
+                        .addClass('toollifemachine-next-expiration')
                         .append(spanNextExp);*/
 
       // Link to report
@@ -298,13 +298,13 @@ this.restoreDeleteWhenDisconnect ():
     validateParameters () {
       // machine-id
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         //'Machine Id has incorrect value', 'BAD_ID');
         // Immediat display :
-        this.switchToKey('Error', () => this.displayError('Machine Id has incorrect value'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -606,8 +606,8 @@ this.restoreDeleteWhenDisconnect ():
 
     /**
       * Event callback in case a config is updated: (re-)start the component
-      * 
-      * @param {*} event 
+      *
+      * @param {*} event
       */
     onConfigChange (event) {
       if (event.target.config == 'toollabelname') {

@@ -369,12 +369,12 @@ var eventBus = require('eventBus');
      */
     validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('missing machine-id');
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         console.error('Machine Id has incorrect value in productiongauge.element');
-        this.setError('bad machine-id');
+        this.setError(this.getTranslation('error.invalidMachineId', 'Invalid machine ID'));
         return;
       }
 

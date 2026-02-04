@@ -19,7 +19,7 @@ var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
 /**
- * Build a custom tag <x-cncvaluebar> to display a cncvaluebar bar component. This tag gets following attribute : 
+ * Build a custom tag <x-cncvaluebar> to display a cncvaluebar bar component. This tag gets following attribute :
  *  machine-id : Integer
  *  height : Integer
  *  period-context : String (optional)
@@ -38,8 +38,8 @@ var eventBus = require('eventBus');
   class CncValueBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -191,7 +191,7 @@ var eventBus = require('eventBus');
 
     /**
      * @override
-     * 
+     *
      * @param {!string} context - Context
      * @return {!string} key
      */
@@ -206,7 +206,7 @@ var eventBus = require('eventBus');
 
     /**
      * @override
-     * 
+     *
      * @param {!string} context - Context
      * @param {!string} key - Key
      * @returns {!State} Created states
@@ -357,12 +357,12 @@ var eventBus = require('eventBus');
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
         console.log('waiting attribute machine-id in CncValueBarComponent.element');
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(Number(this.element.getAttribute('machine-id')))) {
         console.error('invalid attribute machine-id in CncValueBarComponent.element');
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -378,7 +378,7 @@ var eventBus = require('eventBus');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('missing range');
+        this.setError(this.getTranslation('error.missingRange', 'Missing range'));
         return;
       }
 
@@ -391,7 +391,7 @@ var eventBus = require('eventBus');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('empty range');
+        this.setError(this.getTranslation('error.emptyPeriod', 'Empty period'));
         return;
       }
 

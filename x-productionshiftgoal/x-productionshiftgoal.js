@@ -8,10 +8,12 @@
  *
  * @module x-productionshiftgoal
  * @requires module:pulseComponent
+ * @requires module:pulseUtility
  * @requires module:eventBus
  */
 
 var pulseComponent = require('pulsecomponent');
+var pulseUtility = require('pulseUtility');
 var eventBus = require('eventBus');
 
 /**
@@ -23,7 +25,7 @@ var eventBus = require('eventBus');
   class ProductionShiftGoalComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
+     *
      * @param {...any} args
      */
     constructor(...args) {
@@ -83,7 +85,7 @@ var eventBus = require('eventBus');
       this._content.classList.add('productionshiftgoal-content');
 
       let textSpan = document.createElement('span');
-      textSpan.innerHTML = this.getTranslation('productionshiftgoal','Production Shift Goal: ');
+      textSpan.innerHTML = this.getTranslation('productionshiftgoal', 'Production Shift Goal: ');
       this._content.appendChild(textSpan);
 
       let valueSpan = document.createElement('span');
@@ -126,7 +128,12 @@ var eventBus = require('eventBus');
      */
     validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('no machine selected');
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
+        return;
+      }
+      else if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
+        console.error('invalid attribute machine-id in productionshiftgoal');
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
       this.switchToNextContext();

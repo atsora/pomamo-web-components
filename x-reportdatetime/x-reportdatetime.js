@@ -5,7 +5,7 @@
 /**
  * @module x-reportdatetime
  * @requires module:pulseComponent
- * 
+ *
  */
 var pulseComponent = require('pulsecomponent');
 var pulseRange = require('pulseRange');
@@ -17,10 +17,10 @@ require('x-datetimepicker/x-datetimepicker');
 /**
  * Build a custom tag <x-reportdatetime>
  * Used by report web app
- * 
+ *
  * Parameters :
  * groupDisplayForm = DATERANGE
- * groupName. ex = 
+ * groupName. ex =
  * dataType = DATE or DATETIME
  * webapp. Ex : Last_1_day IN
  * webappname IN
@@ -35,8 +35,8 @@ require('x-datetimepicker/x-datetimepicker');
   class ReportDateTimeComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -262,7 +262,7 @@ require('x-datetimepicker/x-datetimepicker');
       /*
         <input type="hidden" id="widget" value="DATEBOX" />
   <input type="hidden" id="name" value="${scalarParameter.name}" />
-  
+
   <x-datepicker id='${scalarParameter.name}_value'></x-datepicker>
       */
     }
@@ -311,7 +311,7 @@ require('x-datetimepicker/x-datetimepicker');
 
       $(this._content).append(typeMainSelDiv);
 
-      // DIV for min / max / loader / error 
+      // DIV for min / max / loader / error
       let minMaxDiv = $('<div></div>').addClass('pulse-report-datetime-min-max-div');
 
       // Create DOM - Loader
@@ -369,7 +369,7 @@ require('x-datetimepicker/x-datetimepicker');
       this.initParamForReport(minReportDiv,
         this.element.getAttribute('mindatename'), 'MINDATE', // name, parameterkey
         this.element.getAttribute('dataType'), // dataType = 'DATE':'DATETIME'
-        'SIMPLE', '', '', // , parameterType, defaultValue, value, 
+        'SIMPLE', '', '', // , parameterType, defaultValue, value,
         'false', 'false', ''); // required, hidden, helptext
       minMaxDiv.append(minReportDiv);
 
@@ -377,7 +377,7 @@ require('x-datetimepicker/x-datetimepicker');
       this.initParamForReport(maxReportDiv,
         this.element.getAttribute('maxdatename'), 'MAXDATE', // name, parameterkey
         this.element.getAttribute('dataType'), // dataType = 'DATE':'DATETIME'
-        'SIMPLE', '', '', // parameterType, defaultValue, value, 
+        'SIMPLE', '', '', // parameterType, defaultValue, value,
         'false', 'false', ''); // required, hidden, helptext
       minMaxDiv.append(maxReportDiv);
 
@@ -385,7 +385,7 @@ require('x-datetimepicker/x-datetimepicker');
       this._webAppValue = this.initParamForReport(webappReportDiv,
         this.element.getAttribute('webappname'), 'WEBAPP', // name, parameterkey
         'STRING', // dataType
-        'SIMPLE', '', '', // parameterType, defaultValue, value, 
+        'SIMPLE', '', '', // parameterType, defaultValue, value,
         'false', 'true', ''); // required, hidden, helptext
       minMaxDiv.append(webappReportDiv);
 
@@ -424,7 +424,7 @@ require('x-datetimepicker/x-datetimepicker');
         //this.setError('missing display form');
         // or
         // Immediat display :
-        this.switchToKey('Error', () => this.displayError('invalid groupDisplayForm'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('invalidGroupDisplayForm', 'Invalid groupDisplayForm')), () => this.removeError());
         return;
       }
       if (!this.element.hasAttribute('groupName')) {
@@ -433,7 +433,7 @@ require('x-datetimepicker/x-datetimepicker');
         //this.setError('missing groupName');
         // or
         // Immediat display :
-        this.switchToKey('Error', () => this.displayError('invalid groupName'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('invalidGroupName', 'Invalid groupName')), () => this.removeError());
         return;
       }
       if (!this.element.hasAttribute('dataType')) {
@@ -442,7 +442,7 @@ require('x-datetimepicker/x-datetimepicker');
         //this.setError('missing dataType');
         // or
         // Immediat display :
-        this.switchToKey('Error', () => this.displayError('invalid dataType'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('invalidDataType', 'Invalid dataType')), () => this.removeError());
         return;
       }
 
@@ -665,11 +665,11 @@ require('x-datetimepicker/x-datetimepicker');
       return '';
     }
 
-    getMinValueAsIs () { //'YYYY-MM-DD HH:mm:ss 
+    getMinValueAsIs () { //'YYYY-MM-DD HH:mm:ss
       return this._minDTP[0].getValueAsIs();
     }
 
-    getMaxValueAsIs () { //'YYYY-MM-DD HH:mm:ss 
+    getMaxValueAsIs () { //'YYYY-MM-DD HH:mm:ss
       return this._maxDTP[0].getValueAsIs();
     }
 
@@ -701,7 +701,7 @@ require('x-datetimepicker/x-datetimepicker');
     //_storeWebAppValue
     // Get "WebAppParamsDate" from "PulseMinDate", "PulseMaxDate"
     /*
-    static getWebAppRangeFromMinMax(min, max) {      
+    static getWebAppRangeFromMinMax(min, max) {
       let retVal = 'explicit_' + min + '_' + max;
       return retVal;
     }

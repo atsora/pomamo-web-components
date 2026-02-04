@@ -19,7 +19,7 @@ require('x-savescrapreason/x-savescrapreason');
 
 /**
  * Build a custom tag <x-scrapclassification> to display scrap classification information
- * 
+ *
  * Attributes:
  *  machine-id : Integer (required)
  */
@@ -28,8 +28,8 @@ require('x-savescrapreason/x-savescrapreason');
   class ScrapClassificationComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -54,7 +54,7 @@ require('x-savescrapreason/x-savescrapreason');
 
     /**
      * Callback when an attribute changes after connection
-     * 
+     *
      * @param {string} attr - Attribute name
      * @param {string} oldVal - Old value
      * @param {string} newVal - New value
@@ -241,7 +241,7 @@ require('x-savescrapreason/x-savescrapreason');
 
     /**
      * Change the displayed period (previous or next)
-     * 
+     *
      * @param {number} nextPeriod - Direction: -1 for previous, 1 for next
      * @param {Object} range - Current date range object
      */
@@ -278,12 +278,12 @@ require('x-savescrapreason/x-savescrapreason');
      */
     validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('missing machine-id');
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         return;
       }
 
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -292,7 +292,7 @@ require('x-savescrapreason/x-savescrapreason');
 
     /**
      * Get the URL for data request
-     * 
+     *
      * @returns {string} URL
      */
     getShortUrl() {
@@ -305,7 +305,7 @@ require('x-savescrapreason/x-savescrapreason');
 
     /**
      * Refresh with data from server
-     * 
+     *
      * @param {Object} data - Server response
      */
     refresh(data) {
@@ -386,7 +386,7 @@ require('x-savescrapreason/x-savescrapreason');
 
     /**
      * Display error message
-     * 
+     *
      * @param {string} message - Error message
      */
     displayError(message) {

@@ -17,8 +17,8 @@ var eventBus = require('eventBus');
   class CurrentIconCNCAlarmComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -116,7 +116,7 @@ var eventBus = require('eventBus');
     _createListenersDispatchers () {
       if (false == this._dispatchersListenersCreated) {
         /*if (this.element.hasAttribute('machine-context')) {
-          eventBus.EventBus.addEventListener(this, 
+          eventBus.EventBus.addEventListener(this,
             'machineIdChangeSignal',
             this.element.getAttribute('machine-context'),
             this.onMachineIdChange.bind(this));
@@ -138,12 +138,12 @@ var eventBus = require('eventBus');
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
         console.log('waiting attribute machine-id in currenticoncncalarm.element');
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         console.error('invalid attribute machine-id in currenticoncncalarm.element');
-        this.switchToKey('Error', () => this.displayError('invalid machine-id'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -162,7 +162,7 @@ var eventBus = require('eventBus');
       return false;
     }
 
-    get refreshRate () {  // refresh rate in ms. 
+    get refreshRate () {  // refresh rate in ms.
       return 1000.0 * (Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10)) + 1); // +1 to allow refresh from bars
     }
 
@@ -302,8 +302,8 @@ var eventBus = require('eventBus');
 
     /**
      * Event callback in case a config is updated: (re-)start the component
-     * 
-     * @param {*} event 
+     *
+     * @param {*} event
     */
     onConfigChange (event) {
       if (event.target.config == 'showAlarmBelowIcon') {

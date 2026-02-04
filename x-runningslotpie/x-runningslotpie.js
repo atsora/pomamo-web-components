@@ -16,7 +16,7 @@ var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
 /**
- * Build a custom tag <x-runningslotpie> to display an runningslot pie component. This tag gets following attribute : 
+ * Build a custom tag <x-runningslotpie> to display an runningslot pie component. This tag gets following attribute :
  *  machine-id : Integer
  *  height : Integer
  *  machine-context : String
@@ -30,8 +30,8 @@ var eventBus = require('eventBus');
   class RunningSlotPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -333,13 +333,13 @@ var eventBus = require('eventBus');
     validateParameters () {
       // machine-id
       if (!this.element.hasAttribute('machine-id')) {
-        this.setError('missing machine-id'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         //'Machine Id has incorrect value', 'BAD_ID');
         // Immediat display :
-        this.switchToKey('Error', () => this.displayError('Machine Id has incorrect value'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
 
@@ -357,7 +357,7 @@ var eventBus = require('eventBus');
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
         // Delayed display :
-        this.setError('missing range');
+        this.setError(this.getTranslation('error.missingRange', 'Missing range'));
         // or
         // Immediat display :
         //this.switchToKey('Error', () => this.displayError('invalid param'), () => this.removeError());
@@ -373,7 +373,7 @@ var eventBus = require('eventBus');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('empty range');
+        this.setError(this.getTranslation('error.emptyRange', 'Empty range'));
         return;
       }
 

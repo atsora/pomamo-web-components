@@ -31,8 +31,8 @@ var eventBus = require('eventBus');
   class GroupComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -204,7 +204,7 @@ var eventBus = require('eventBus');
         $(this._content).append(li);
 
         /*if (machineRow.length != 0) { // if exists
-          // restoreDeleteWhenDisconnect 
+          // restoreDeleteWhenDisconnect
           machineRow[0].find ('*').removeClass('disableDeleteWhenDisconnect');
         }*/
       }
@@ -320,7 +320,7 @@ var eventBus = require('eventBus');
 
     /**
      * @override
-     * 
+     *
      * @param {!string} context - Context
      * @return {!string} key
      */
@@ -335,7 +335,7 @@ var eventBus = require('eventBus');
 
     /**
      * @override
-     * 
+     *
      * @param {!string} context - Context
      * @param {!string} key - Key
      * @returns {!State} Created states
@@ -449,7 +449,7 @@ var eventBus = require('eventBus');
         // Delayed display :
         //this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         // Immediat display :
-        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.selectMachine', 'Please select a machine')), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.selectMachineGroup', 'Please select a machine or a group of machines')), () => this.removeError());
         return;
       }
 

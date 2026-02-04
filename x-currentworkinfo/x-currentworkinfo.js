@@ -16,8 +16,8 @@ var pulseComponent = require('pulsecomponent');
   class CurrentWorkInfoComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -98,7 +98,7 @@ var pulseComponent = require('pulsecomponent');
       if (!this.element.hasAttribute('machine-id')
         && !this.element.hasAttribute('group')) {
         console.error('missing attribute machine or group id in CurrentWorkInfo');
-        this.setError('missing machine or group'); // delayed error message
+        this.setError(this.getTranslation('error.selectMachineGroup', 'Please select a machine or a group of machines')); // delayed error message
         return;
       }
 

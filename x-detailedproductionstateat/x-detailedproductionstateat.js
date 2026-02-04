@@ -17,8 +17,8 @@ var eventBus = require('eventBus');
   class DetailedProductionStateAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -48,7 +48,7 @@ var eventBus = require('eventBus');
         case 'datetime-context':
           if (this.isInitialized()) {
             eventBus.EventBus.removeEventListenerBySignal(this, 'dateTimeChangeEvent');
-            eventBus.EventBus.addEventListener(this, 
+            eventBus.EventBus.addEventListener(this,
               'dateTimeChangeEvent',
               newVal,
               this.onDateTimeChange.bind(this));
@@ -57,7 +57,7 @@ var eventBus = require('eventBus');
         case 'machine-context':
           if (this.isInitialized()) {
             eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
-            eventBus.EventBus.addEventListener(this, 
+            eventBus.EventBus.addEventListener(this,
               'machineIdChangeSignal',
               newVal,
               this.onMachineIdChange.bind(this));
@@ -76,13 +76,13 @@ var eventBus = require('eventBus');
 
       // Listener and dispatchers
       if (this.element.hasAttribute('datetime-context')) {
-        eventBus.EventBus.addEventListener(this, 
+        eventBus.EventBus.addEventListener(this,
           'dateTimeChangeEvent',
           this.element.getAttribute('datetime-context'),
           this.onDateTimeChange.bind(this));
       }
       if (this.element.hasAttribute('machine-context')) {
-        eventBus.EventBus.addEventListener(this, 
+        eventBus.EventBus.addEventListener(this,
           'machineIdChangeSignal',
           this.element.getAttribute('machine-context'),
           this.onMachineIdChange.bind(this));
@@ -149,7 +149,7 @@ var eventBus = require('eventBus');
       if ((!this.element.hasAttribute('machine-id'))
         || (!pulseUtility.isInteger(Number(this.element.getAttribute('machine-id'))))) {
         // Delayed display :
-        this.setError('missing machine-id');
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         // or
         // Immediat display :
         //this.switchToKey('Error', () => this.displayError('invalid param'), () => this.removeError());
@@ -159,7 +159,7 @@ var eventBus = require('eventBus');
       if (!this.element.hasAttribute('when')) {
         console.error('missing attribute when in detailedproductionstateat.element');
         // Delayed display :
-        this.setError('missing when');
+        this.setError(this.getTranslation('error.missingWhen', 'Missing when'));
         // or
         // Immediat display :
         //this.switchToKey('Error', () => this.displayError('invalid param'), () => this.removeError());

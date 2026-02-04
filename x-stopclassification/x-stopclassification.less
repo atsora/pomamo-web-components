@@ -12,113 +12,114 @@
 @import "x-revisionprogress/x-revisionprogress.less";
 
 x-stopclassification {
-    .stopclassification-content {
-        width: 100%;
-        min-height: 31.25vw;
-        background-color: @box_color;
-        display: flex;
-        flex-direction: column;
-        border-radius: 4px;
+  .stopclassification-content {
+    width: 100%;
+    min-height: 31.25vw;
+    background-color: @box_color;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
 
-        .stopclassification-title {
-            font-size: 2vw;
-            font-weight: 500;
-            margin-top: 0.5em;
-            padding-bottom: 0.3em;
-            width: 100%;
-            text-align: center;
-            //border-bottom: 1px solid var(--box_border_color);
-        }
-
-        .stopclassification-panel {
-            width: 100%;
-            //border-top: 1px solid #5F5F5F;
-
-            .stopclassification-cells-list {
-
-                display: grid;
-                grid-template-columns: auto auto auto auto;
-                padding-right: 2.1vw;
-                padding-left: 2.1vw;
-                margin-bottom: 1.6vw;
-                margin-top: 1.6vw;
-                row-gap: 3vw;
-                column-gap: 4.85vw;
-
-                max-height: 50vh; // Limit height to 50% of viewport height
-                overflow-y: auto; // Enable vertical scrolling
-                overflow-x: hidden; // Hide horizontal scrollbar
-
-                .stopclassification-cell-item {
-                    list-style-type: none;
-
-                    .stopclassification-cell-box {
-                        height: 6vw;
-                        display: flex;
-                        align-items: center;
-                        border-radius: @border_radius_small;
-                        position: relative;
-                        border: 1px solid @color_window_border;
-
-                        .stopclassification-cell-box-color {
-                            width: 1.5vw;
-                            height: 100%;
-                            border-top-left-radius: @border_radius_small;
-                            border-bottom-left-radius: @border_radius_small;
-                            position: absolute;
-                        }
-
-                        .stopclassification-cell-box-text {
-                            position: absolute;
-                            width: 100%;
-                            height: 100%;
-                            align-items: center;
-                            justify-content: center;
-                            display: flex;
-                            gap: 1vw;
-
-
-                            .stopclassification-cell-text {
-                                font-size: 1.4vw;
-                            }
-
-                            i {
-                                font-size: 2vw;
-                                color: #dfdfdf;
-                            }
-                        }
-
-                        .stopclassification-cell-box-arrow {
-                            position: absolute;
-                            right: 0;
-                            bottom: 0;
-
-                            i {
-                                font-size: 1.3vw;
-                                margin: 0.4em;
-                            }
-                        }
-
-                        .triangle {
-                            position: absolute;
-                            right: 0;
-                            bottom: 0;
-                            display: inline-block;
-                            height: 0;
-                            width: 0;
-                            border-bottom: 3.65vw solid @color_window_hover;
-                            border-left: 4.2vw solid transparent;
-                            border-bottom-right-radius: 4px;
-                        }
-                    }
-                }
-
-                .stopclassification-cell-box:hover {
-                    cursor: pointer;
-                    background-color: @color_background_alternate;
-                    border-color: @color_window_border_light;
-                }
-            }
-        }
+    .stopclassification-title {
+      font-size: 2vw;
+      font-weight: 500;
+      margin-top: 0.5em;
+      padding-bottom: 0.3em;
+      width: 100%;
+      text-align: center;
+      //border-bottom: 1px solid var(--box_border_color);
     }
+
+    .stopclassification-panel {
+      width: 100%;
+      //border-top: 1px solid #5F5F5F;
+
+      .stopclassification-cells-list {
+
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        padding-right: 2.1vw;
+        padding-left: 2.1vw;
+        margin-bottom: 1.6vw;
+        margin-top: 1.6vw;
+        row-gap: 3vw;
+        column-gap: 4.85vw;
+
+        max-height: 50vh; // Limit height to 50% of viewport height
+        overflow-y: auto; // Enable vertical scrolling
+        overflow-x: hidden; // Hide horizontal scrollbar
+
+        .stopclassification-cell-item {
+          list-style-type: none;
+
+          .stopclassification-cell-box {
+            height: 6vw;
+            display: flex;
+            align-items: center;
+            border-radius: @border_radius_small;
+            position: relative;
+            border: 1px solid @color_window_border;
+
+            .stopclassification-cell-box-color {
+              width: 1.5vw;
+              height: 100%;
+              border-top-left-radius: @border_radius_small;
+              border-bottom-left-radius: @border_radius_small;
+              position: absolute;
+            }
+
+            .stopclassification-cell-box-text {
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              align-items: center;
+              justify-content: center;
+              display: flex;
+              gap: 1vw;
+
+
+              .stopclassification-cell-text {
+                font-size: 1.4vw;
+              }
+
+              i {
+                font-size: 2vw;
+                color: @color_text_button;
+              }
+            }
+
+            .stopclassification-cell-box-arrow {
+              position: absolute;
+              right: 0;
+              bottom: 0;
+
+              i {
+                font-size: 1.3vw;
+                margin: 0.4em;
+                color: @color_text_button;
+              }
+            }
+
+            .triangle {
+              position: absolute;
+              right: 0;
+              bottom: 0;
+              display: inline-block;
+              height: 0;
+              width: 0;
+              border-bottom: 3.65vw solid @color_window_hover;
+              border-left: 4.2vw solid transparent;
+              border-bottom-right-radius: 4px;
+            }
+          }
+        }
+
+        .stopclassification-cell-box:hover {
+          cursor: pointer;
+          background-color: @color_background_alternate;
+          border-color: @color_window_border_light;
+        }
+      }
+    }
+  }
 }
