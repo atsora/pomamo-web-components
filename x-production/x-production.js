@@ -170,29 +170,32 @@ require('x-clock/x-clock');
       this._targetDisplay.append(contentTargetDisplay);
 
 
-      this._2on3Display = $('<div></div>').addClass('production-2-on-3')
-        .append(this._actualDisplay).append(this._separator).append(this._targetDisplay);
-
       this._percentDisplaySpan = $('<span></span>').addClass('production-percent-span').hide();
       this._percentDisplay = $('<div></div>').addClass('production-percent').append(this._percentDisplaySpan);
 
-      this._content.append(this._2on3Display).append(this._percentDisplay);
+      this._content
+        .append(this._actualDisplay)
+        .append(this._separator)
+        .append(this._targetDisplay)
+        .append(this._percentDisplay);
       $(this.element).append(this._content);
 
       if ('true' == this.getConfigOrAttribute('productionpercent')) {
         $(this._percentDisplay).show();
         $(this._percentDisplaySpan).show();
-        $(this._2on3Display).hide();
+        $(this._actualDisplay).hide();
+        this._separator.hide();
+        this._targetDisplay.hide();
       }
       else if ('actualonly' == this.getConfigOrAttribute('productionpercent')) {
         $(this._percentDisplay).hide();
-        $(this._2on3Display).show();
+        $(this._actualDisplay).show();
         this._separator.hide();
         this._targetDisplay.hide();
       }
       else { // actual + target (default)
         $(this._percentDisplay).hide();
-        $(this._2on3Display).show();
+        $(this._actualDisplay).show();
         this._separator.show();
         this._targetDisplay.show();
       }
@@ -224,7 +227,6 @@ require('x-clock/x-clock');
       this._targetDisplay = undefined;
       this._percentDisplaySpan = undefined;
       this._percentDisplay = undefined;
-      this._2on3Display = undefined;
       this._messageSpan = undefined;
       this._content = undefined;
 
@@ -409,17 +411,19 @@ require('x-clock/x-clock');
         if ('true' == this.getConfigOrAttribute('productionpercent')) {
           $(this._percentDisplay).show();
           $(this._percentDisplaySpan).show();
-          $(this._2on3Display).hide();
+          $(this._actualDisplay).hide();
+          this._separator.hide();
+          this._targetDisplay.hide();
         }
         else if ('actualonly' == this.getConfigOrAttribute('productionpercent')) {
           $(this._percentDisplay).hide();
-          $(this._2on3Display).show();
+          $(this._actualDisplay).show();
           this._separator.hide();
           this._targetDisplay.hide();
         }
         else {
           $(this._percentDisplay).hide();
-          $(this._2on3Display).show();
+          $(this._actualDisplay).show();
           this._separator.show();
           this._targetDisplay.show();
         }
