@@ -269,12 +269,16 @@ require('x-revisionprogress/x-revisionprogress');
             if (this._data.length <= 12) {
 
                 for (const reason of this._data) {
-                    let reasonId;
+                    let classificationId;
 
-                    if (reason.ClassificationId) reasonId = reason.ClassificationId;
-                    else reasonId = reason.Id;
+                    if (reason.ClassificationId) {
+                      classificationId = reason.ClassificationId;
+                    }
+                    else {
+                      classificationId = reason.Id;
+                    }
 
-                    this._drawCell(reason.Display, reason.Color, false, reasonId, reason.DetailsRequired, reason.Data);
+                    this._drawCell(reason.Display, reason.Color, false, classificationId, reason.DetailsRequired, reason.Data);
                 }
                 this._drawAdancedButton(this._data.length);
             }
@@ -303,11 +307,11 @@ require('x-revisionprogress/x-revisionprogress');
          * @param {string} text
          * @param {string} color
          * @param {boolean} isGroup
-         * @param {number} [reasonId]
+         * @param {number} [classificationId]
          * @param {boolean} [detailsRequired]
          * @param {Object} [reasonData]
          */
-        _drawCell(text, color, isGroup, reasonId, detailsRequired, reasonData) {
+        _drawCell(text, color, isGroup, classificationId, detailsRequired, reasonData) {
             let cellsList = this._content.querySelector('.stopclassification-cells-list');
 
             let cellItem = document.createElement('li');
@@ -350,7 +354,7 @@ require('x-revisionprogress/x-revisionprogress');
                 });
             }
             else {
-                box.setAttribute('reason-id', reasonId);
+                box.setAttribute('reason-id', classificationId);
                 box.setAttribute('reason-text', text);
                 box.setAttribute('details-required', detailsRequired);
                 box.reasondata = reasonData;
@@ -459,23 +463,23 @@ require('x-revisionprogress/x-revisionprogress');
          */
         _selectReason(e) {
             let elmt = e.currentTarget;
-            let reasonId = Number(elmt.getAttribute('reason-id'));
+            let classificationId = Number(elmt.getAttribute('reason-id'));
             let reasonName = elmt.getAttribute('reason-text');
             let detailsRequired = ('true' == elmt.getAttribute('details-required'));
             let reasonData = elmt.reasondata;
             if (detailsRequired)
-                this._getDetailsAndSave(reasonId, reasonName, detailsRequired, reasonData);
+                this._getDetailsAndSave(classificationId, reasonName, detailsRequired, reasonData);
             else
-                this._saveReason(reasonId, undefined, reasonData);
+                this._saveReason(classificationId, undefined, reasonData);
         }
 
         /**
          * Post the selected reason to ReasonSave/Post for the active range
-         * @param {number} reasonId
+         * @param {number} classificationId
          * @param {string} [details]
          * @param {Object} [reasonData]
          */
-        _saveReason(reasonId, details, reasonData) {
+        _saveReason(classificationId, details, reasonData) {
             let machineId = Number(this.element.getAttribute('machine-id'));
 
             let effectiveRange = this._rangeString || this.element.getAttribute('range');
@@ -483,8 +487,8 @@ require('x-revisionprogress/x-revisionprogress');
 
             let url = this.getConfigOrAttribute('path', '') + 'ReasonSave/Post'
                 + '?MachineId=' + machineId;
-            if (reasonId != null) {
-                url = url + '&ReasonId=' + reasonId;
+            if (classificationId != null) {
+                url = url + '&ReasonId=' + classificationId;
             }
 
             if (details) {
@@ -517,12 +521,12 @@ require('x-revisionprogress/x-revisionprogress');
 
         /**
          * Open a dialog to collect details if required then save the reason
-         * @param {number} reasonId
+         * @param {number} classificationId
          * @param {string} reasonName
          * @param {boolean} detailsRequired
          * @param {Object} [reasonData]
          */
-        _getDetailsAndSave(reasonId, reasonName, detailsRequired, reasonData) {
+        _getDetailsAndSave(classificationId, reasonName, detailsRequired, reasonData) {
             // Machine
             let machineDisplay = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
                 'machine-id': this.element.getAttribute('machine-id')
@@ -574,7 +578,7 @@ require('x-revisionprogress/x-revisionprogress');
                             x_save._detailsDialogId = null;
                         }
                     }
-                }(this, reasonId, reasonData, input), /* end of validate*/
+                }(this, classificationId, reasonData, input), /* end of validate*/
                 onCancel: function () {
                     pulseCustomDialog.close('#' + this._detailsDialogId);
                     this._detailsDialogId = null;
