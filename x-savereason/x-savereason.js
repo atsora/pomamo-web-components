@@ -498,7 +498,7 @@ require('x-datetimerange/x-datetimerange');
     }
 
     /* CLICK - Save reason */
-    _saveReason(reasonId, details, reasonData) {
+    _saveReason(classificationId, details, reasonData) {
       let machineId = Number($(this.element).attr('machine-id'));
       let rangesList = [];
       for (let i = 0; i < this._reasonsSelected.length; i++) {
@@ -512,8 +512,8 @@ require('x-datetimerange/x-datetimerange');
 
       let url = this.getConfigOrAttribute('path', '') + 'ReasonSave/Post' // was 'SaveReasonV2'
         + '?MachineId=' + machineId;
-      if (reasonId != null) {
-        url = url + '&ReasonId=' + reasonId;
+      if (classificationId != null) {
+        url = url + '&ReasonId=' + classificationId;
       }
 
       if (details) {
@@ -605,7 +605,7 @@ require('x-datetimerange/x-datetimerange');
     }
 
     /* CLICK - Get details */
-    _getDetailsAndSave(reasonId, reasonName, detailsRequired, reasonData) {
+    _getDetailsAndSave(classificationId, reasonName, detailsRequired, reasonData) {
       // Machine
       let machineDisplay = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
         'machine-id': this.element.getAttribute('machine-id')
@@ -656,7 +656,7 @@ require('x-datetimerange/x-datetimerange');
 
       this._detailsDialogId = pulseCustomDialog.initialize(dialogbox, {
         title: reasonDetailsTitle,
-        onOk: function (x_save, reasId, reasData, inputParam) { // to avoid closure
+        onOk: function (x_save, classifId, reasData, inputParam) { // to avoid closure
           return function () {
             let details = inputParam.val();
             if ((details == '') && (detailsRequired)) {
@@ -665,12 +665,12 @@ require('x-datetimerange/x-datetimerange');
               pulseCustomDialog.openError(pleaseAddComment);
             }
             else {
-              x_save._saveReason(reasId, details, reasData);
+              x_save._saveReason(classifId, details, reasData);
               pulseCustomDialog.close('#' + x_save._detailsDialogId);
               x_save._detailsDialogId = null;
             }
           }
-        }(this, reasonId, reasonData, input), /* end of validate*/
+        }(this, classificationId, reasonData, input), /* end of validate*/
         onCancel: function () {
           pulseCustomDialog.close('#' + this._detailsDialogId);
           this._detailsDialogId = null;
@@ -710,7 +710,7 @@ require('x-datetimerange/x-datetimerange');
     clickOnReason(e) {
       let td = e.target;
       let row = $(td).parent();
-      let reasonId = Number(row[0].getAttribute('reason-id'));
+      let reasonId = row[0].getAttribute('reason-id');
       let reasonName = row[0].getAttribute('reason-text');
       let detailsRequired = ('true' == row[0].getAttribute('details-required'));
       let reasonData = row[0].reasondata;
@@ -729,7 +729,7 @@ require('x-datetimerange/x-datetimerange');
       let td = e.target;
       let row = $(td).parent();
 
-      let reasonId = Number(row[0].getAttribute('reason-id'));
+      let reasonId = row[0].getAttribute('reason-id');
       let reasonName = row[0].getAttribute('reason-text');
       let detailsRequired = ('true' == row[0].getAttribute('details-required'));
       let reasonData = row[0].reasondata;

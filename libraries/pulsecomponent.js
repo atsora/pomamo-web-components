@@ -18,13 +18,13 @@ var state = require('state');
 var eventBus = require('eventBus');
 
 /**
- * Base class for any web component 
+ * Base class for any web component
  */
 class WebComponent { // extends HTMLElement if customElements.define is used directly
   /**
    * Constructor
    *
-   * @param  {Element} element - DOM element 
+   * @param  {Element} element - DOM element
    */
   constructor(element) {
     this.methods = {};
@@ -42,7 +42,7 @@ class WebComponent { // extends HTMLElement if customElements.define is used dir
 
   /**
    * Associated DOM document
-   * 
+   *
    * @return {Document} document
    */
   get document () {
@@ -76,14 +76,14 @@ class WebComponent { // extends HTMLElement if customElements.define is used dir
 
 /**
  * This class represents a super-class of all Pulse components.
- * 
+ *
  * @extends module:pulseComponent~WebComponent
  */
 class PulseComponent extends WebComponent {
   /**
    * Constructor
    *
-   * @param  {...any} args 
+   * @param  {...any} args
    */
   constructor(...args) {
     const self = super(...args);
@@ -241,7 +241,6 @@ class PulseComponent extends WebComponent {
 
     if (pulseUtility.isNotDefined(translation)) {
       console.warn('getTranslation: ' + key + ' not found => use ' + defaultValue);
-      //debugger;
       return defaultValue;
     }
     else {
@@ -266,7 +265,7 @@ class PulseComponent extends WebComponent {
     let lastKey = listOfKeys[listOfKeys.length - 1];
 
     if (!pulseUtility.isNotDefined(this.element)) { // To avoid erreur when deleted
-      // 1- ATTRIBUTE : Get LAST key or ONLY 
+      // 1- ATTRIBUTE : Get LAST key or ONLY
       if (this.element.hasAttribute(lastKey)) {
         return this.element.getAttribute(lastKey);
       }
@@ -335,7 +334,7 @@ class PulseStateComponent extends PulseComponent {
   /**
    * Constructor
    *
-   * @param  {...any} args 
+   * @param  {...any} args
    */
   constructor(...args) {
     const self = super(...args);
@@ -358,11 +357,11 @@ class PulseStateComponent extends PulseComponent {
     let classes = Array.from(this.element.classList);
     for (let c of classes) {
       if (0 == c.indexOf('pulse-component-')) {
-        // -loading -not-applicable -warning -error 
+        // -loading -not-applicable -warning -error
         this.element.classList.remove(c);
       }
       else if (0 == c.indexOf('pulsecomponent-')) {
-        // pulsecomponent-context-Initialized -ParamValidation -Loaded ... 
+        // pulsecomponent-context-Initialized -ParamValidation -Loaded ...
         // pulsecomponent-key-Loading -Validating -Error ...
         this.element.classList.remove(c);
       }
@@ -371,7 +370,7 @@ class PulseStateComponent extends PulseComponent {
 
   /**
    * To be overridden if necessary
-   * 
+   *
    * @returns {boolean} is the component visible ?
    */
   get isVisible () {
@@ -470,8 +469,8 @@ class PulseStateComponent extends PulseComponent {
    */
   get stateContext () {
     if (null == this._stateContext) {
-     console.error('stateContext.get: no state context is defined');
-     debugger; // eslint-disable-line no-debugger
+      console.error('stateContext.get: no state context is defined');
+      debugger; // eslint-disable-line no-debugger
       throw 'No defined state context';
     }
     return this._stateContext;
@@ -489,9 +488,9 @@ class PulseStateComponent extends PulseComponent {
     return this._stateKey;
   }
 
-  /** 
+  /**
    * Define the states
-   * 
+   *
    * @param {!string} context - Context
    * @param {!string} key - Key
    * @returns {!State} Created states
@@ -509,31 +508,31 @@ class PulseStateComponent extends PulseComponent {
 
   /**
    * Define for each context the start key
-   * 
+   *
    * @param {!string} context - Context
    * @returns {string} Start key
-   * 
+   *
    * @function getStartKey
    */
 
   /**
    * Define which context should be considered once a context is completed
-   * 
+   *
    * @param {!string} context - Context
    * @returns {string} Next context
-   * 
+   *
    * @function getNextContext
    */
 
   /**
    * Action callback
-   * 
+   *
    * @callback actionCallback
    */
 
   /**
   * Method to execute when you enter a context
-  * 
+  *
   * @param {!string} context - Context
   * @returns {actionCallback}
   */
@@ -543,7 +542,7 @@ class PulseStateComponent extends PulseComponent {
 
   /**
    * Method to execute when you exit a context
-   * 
+   *
    * @param {!string} context - Context
    * @returns {actionCallback}
    */
@@ -553,8 +552,8 @@ class PulseStateComponent extends PulseComponent {
 
   /**
    * Has a state been already initialized to this component ?
-   * 
-   * @returns {boolean} 
+   *
+   * @returns {boolean}
    */
   get isStarted () {
     return (null != this._stateContext) && (null != this._stateKey);
@@ -562,8 +561,8 @@ class PulseStateComponent extends PulseComponent {
 
   /**
    * Get a state (initialize it if necessary)
-   * 
-   * @param {!string} context - context 
+   *
+   * @param {!string} context - context
    * @param {!string} key - key
    * @returns {State} state
    */
@@ -595,9 +594,9 @@ class PulseStateComponent extends PulseComponent {
     return this.getState(this.stateContext, this.stateKey);
   }
 
-  /** 
+  /**
    * Switch to state method, where the context and the key cannot be null
-   * 
+   *
    * @param {!string} c - State context
    * @param {!string} k - State key
    * @param {!actionCallback} preAction - Pre-action
@@ -649,7 +648,7 @@ class PulseStateComponent extends PulseComponent {
   }
 
   /** Remain in the same context, but switch to the state with the specified key
-   * 
+   *
    * @param {!string} k - New state key
    * @param {!actionCallback} preAction - Pre-action
    * @param {!actionCallback} postAction - Post-action
@@ -705,7 +704,7 @@ class PulseStateComponent extends PulseComponent {
 
   /**
    * Switch to the specified context
-   * 
+   *
    * @param {!string} context - New context to switch to
    * @param {?actionCallback} preActionParam - Pre-action
    * @param {?actionCallback} postActionParam - Post-action
@@ -716,7 +715,7 @@ class PulseStateComponent extends PulseComponent {
 
   /**
    * Switch to the state of the specified key while remaining in the same context
-   * 
+   *
    * @param {!string} key - New state key
    * @param {?actionCallback} preActionParam - Pre-action
    * @param {?actionCallback} postActionParam - Post-action
@@ -727,7 +726,7 @@ class PulseStateComponent extends PulseComponent {
 
   /**
    * Consider the current context is completed, switch to the next one
-   * 
+   *
    * @param {?actionCallback} preActionParam - Pre-action
    * @param {?actionCallback} postActionParam - Post-action
    */
@@ -759,13 +758,13 @@ class PulseStateComponent extends PulseComponent {
  * - Reset:Initializing - {@link module:state~ResetState}
  * - Initialized:Standard - {@link module:state~StaticState}
  * - *:Error - {@link module:state~ErrorState}
- * 
+ *
  * @extends module:pulseComponent~PulseStateComponent
- * 
+ *
 * @graph Initialized_ContextFlow
-@g 
+@g
 @g      Initialized component: context flow
-@g 
+@g
 @g         +----------------+     +-------------+
 @g     ==> | Initialization | ==> | Initialized |
 @g         +----------------+     +-------------+
@@ -776,9 +775,9 @@ class PulseStateComponent extends PulseComponent {
 @g     ..> |     Reset      | ======#
 @g         +----------------+
 * @graph Initialization_StateFlow
-@g 
+@g
 @g  Initialization context: state flow
-@g 
+@g
 @g           +--------------+
 @g       ==> | Initializing | ==>
 @g           +--------------+
@@ -792,8 +791,8 @@ class PulseStateComponent extends PulseComponent {
 class PulseInitializedComponent extends PulseStateComponent {
   /**
    * Constructor
-   * 
-   * @param  {...any} args 
+   *
+   * @param  {...any} args
    */
   constructor(...args) {
     const self = super(...args);
@@ -811,7 +810,7 @@ class PulseInitializedComponent extends PulseStateComponent {
 
   /**
    * @override
-   * 
+   *
    * @param {!string} context - Context
    * @return {!string} key
    */
@@ -885,7 +884,7 @@ class PulseInitializedComponent extends PulseStateComponent {
    * Please note that no state switch is done here
    */
   clearInitialization () {
-    // Remove all the listeners 
+    // Remove all the listeners
     eventBus.EventBus.removeEventListenerByScope(this);
   }
 
@@ -962,7 +961,7 @@ class PulseInitializedComponent extends PulseStateComponent {
 
   /**
    * Error message that is set by the setError method
-   * 
+   *
    * @return {string} error message
    */
   get errorMessage () {
@@ -971,7 +970,7 @@ class PulseInitializedComponent extends PulseStateComponent {
 
   /**
   * Set an error on the component without displaying it
-  * 
+  *
   * @param {string} message - Error message to set
   */
   setError (message) {
@@ -1019,8 +1018,8 @@ class PulseInitializedComponent extends PulseStateComponent {
 
   /**
    * Default event callback in case a config is updated: (re-)start the component
-   * 
-   * @param {*} event 
+   *
+   * @param {*} event
    */
   onConfigChange (event) {
     // Default = do nothing
@@ -1034,12 +1033,12 @@ class PulseInitializedComponent extends PulseStateComponent {
  * Abstract pulse component for components that potentially run Ajax requests
  *
  * @extends module:pulseComponent~PulseInitializedComponent
- * 
+ *
 * @graph Request_StateFlow
-@g 
+@g
 @g        Request (Load, Normal, Reload, NotAvailable...) context: state flow
-@g 
-@g 
+@g
+@g
 @g           +---------------------------------------------------+
 @g           |                                                   |
 @g           |                                                   |
@@ -1064,8 +1063,8 @@ class PulseInitializedComponent extends PulseStateComponent {
 class PulseRequestComponent extends PulseInitializedComponent {
   /**
    * Constructor
-   * 
-   * @param  {...any} args 
+   *
+   * @param  {...any} args
    */
   constructor(...args) {
     const self = super(...args);
@@ -1157,8 +1156,8 @@ class PulseRequestComponent extends PulseInitializedComponent {
 
   /**
    * Method that is called in case of Ajax request success.
-   * 
-   * @param {Object} data 
+   *
+   * @param {Object} data
    */
   manageSuccess (data) {
     this.switchToNextContext(() => this.refresh(data));
@@ -1201,7 +1200,7 @@ class PulseRequestComponent extends PulseInitializedComponent {
 
   /**
    * Retry immediately the Ajax request.
-   * 
+   *
    * @param {string} message - Error message
    */
   retryImmediately (message) {
@@ -1215,7 +1214,7 @@ class PulseRequestComponent extends PulseInitializedComponent {
 
   /**
    * Retry with a delay the Ajax request.
-   * 
+   *
    * @param {string} message - Error message
    */
   retryWithDelay (message) {
@@ -1367,7 +1366,7 @@ class PulseRequestComponent extends PulseInitializedComponent {
    * By default, run the retryWithDelay method, but override this method in case one the following services is used:
    * GetListOfShiftSlotService, GetMachineStatusByIWP, GetShiftAround/After/Before, GetFieldLegendsForMachine,
    * GetMachinePerformanceDay(V2), GetModeColor, GetMachineStatus, GetReasonSlots(V3)
-   * 
+   *
    * @param {string} message - Error message
    */
   manageOldNoData (message) {
@@ -1424,8 +1423,8 @@ class PulseRequestComponent extends PulseInitializedComponent {
 
   /**
    * Default event callback in case server is off : STOP the component
-   * 
-   * @param {*} event 
+   *
+   * @param {*} event
    */
   onServerOffStopRefresh (event) {
     if (!this.element.tagName.toUpperCase().includes('X-CHECK')) {// if (this.element.tagName != 'X-CHECKSERVERACCESS') {
@@ -1439,11 +1438,11 @@ class PulseRequestComponent extends PulseInitializedComponent {
 
   /**
    * Default event callback in case server is available: (re-)start the component
-   * 
-   * @param {*} event 
+   *
+   * @param {*} event
    */
   onServerAvailableChange (event) {
-    // NOT NEEDED because of _serverIsOff 
+    // NOT NEEDED because of _serverIsOff
     //if (!this.element.tagName.toUpperCase().includes('X-CHECK')) { // if (this.element.tagName != 'X-CHECKSERVERACCESS') {
     if (true == this._serverIsOff) {
       this._serverIsOff = false;
@@ -1478,13 +1477,13 @@ class PulseRequestComponent extends PulseInitializedComponent {
  * - *:TransientError - {@link module:state~TransientErrorState}
  * - NotApplicable:Standard - {@link module:state~NotApplicableState}
  * - *:Error - {@link module:state~ErrorState}
- * 
+ *
  * @extends module:pulseComponent~PulseRequestComponent
- * 
+ *
 * @graph SingleRequest_ContextFlow
-@g 
+@g
 @g             Single request component: context flow
-@g 
+@g
 @g                                +---------------+
 @g                                | NotApplicable |
 @g                                +---------------+
@@ -1507,9 +1506,9 @@ class PulseRequestComponent extends PulseInitializedComponent {
 @g                                  :
 @g                                  :
 * @graph Initialization_StateFlow
-@g 
+@g
 @g  Initialization context: state flow
-@g 
+@g
 @g           +--------------+
 @g       ==> | Initializing | ==>
 @g           +--------------+
@@ -1520,10 +1519,10 @@ class PulseRequestComponent extends PulseInitializedComponent {
 @g           |    Error     |
 @g           +--------------+
 * @graph Request_StateFlow
-@g 
+@g
 @g        Request (Load, Normal, Reload, NotAvailable...) context: state flow
-@g 
-@g 
+@g
+@g
 @g           +---------------------------------------------------+
 @g           |                                                   |
 @g           |                                                   |
@@ -1549,7 +1548,7 @@ class PulseSingleRequestComponent extends PulseRequestComponent {
   /**
    * Constructor
    *
-   * @param  {...any} args 
+   * @param  {...any} args
    */
   constructor(...args) {
     const self = super(...args);
@@ -1558,7 +1557,7 @@ class PulseSingleRequestComponent extends PulseRequestComponent {
 
   /**
    * @override
-   * 
+   *
    * @param {!string} context - Context
    * @return {!string} key
    */
@@ -1700,14 +1699,14 @@ class PulseSingleRequestComponent extends PulseRequestComponent {
  * - *:TransientError - {@link module:state~TransientErrorState}
  * - NotApplicable:Standard - {@link module:state~NotApplicableState}
  * - *:Error - {@link module:state~ErrorState}
- * 
+ *
  * @extends module:pulseComponent~PulseRequestComponent
- * 
+ *
 * @graph Refreshing_ContextFlow
-@g 
+@g
 @g                                   Refreshing component: context flow
-@g 
-@g 
+@g
+@g
 @g                                       +--------------------------------------------------+
 @g                                       |                                                  |
 @g                                       |                                                  |
@@ -1737,9 +1736,9 @@ class PulseSingleRequestComponent extends PulseRequestComponent {
 @g   |                                                                 |
 @g   +-----------------------------------------------------------------+
 * @graph Initialization_StateFlow
-@g 
+@g
 @g  Initialization context: state flow
-@g 
+@g
 @g           +--------------+
 @g       ==> | Initializing | ==>
 @g           +--------------+
@@ -1750,10 +1749,10 @@ class PulseSingleRequestComponent extends PulseRequestComponent {
 @g           |    Error     |
 @g           +--------------+
 * @graph Request_StateFlow
-@g 
+@g
 @g        Request (Load, Normal, Reload, NotAvailable...) context: state flow
-@g 
-@g 
+@g
+@g
 @g           +---------------------------------------------------+
 @g           |                                                   |
 @g           |                                                   |
@@ -1778,8 +1777,8 @@ class PulseSingleRequestComponent extends PulseRequestComponent {
 class PulseRefreshingComponent extends PulseRequestComponent {
   /**
    * Constructor
-   * 
-   * @param  {...any} args 
+   *
+   * @param  {...any} args
    */
   constructor(...args) {
     const self = super(...args);
@@ -1789,7 +1788,7 @@ class PulseRefreshingComponent extends PulseRequestComponent {
 
   /**
    * @override
-   * 
+   *
    * @param {!string} context - Context
    * @return {!string} key
    */
@@ -1943,13 +1942,13 @@ class PulseRefreshingComponent extends PulseRequestComponent {
  * - ParamValidation:Validating - {@link module:state~ParamValidationTimeoutState}
  * - Initialized:Standard - {@link module:state~StaticState}
  * - *:Error - {@link module:state~ErrorState}
- * 
+ *
  * @extends module:pulseComponent~PulseInitializedComponent
- * 
+ *
 * @graph ParamInitialized_ContextFlow
-@g 
+@g
 @g                  Initialized component: context flow
-@g 
+@g
 @g         +----------------+     +-----------------+     +-------------+
 @g     ==> | Initialization | ==> | ParamValidation | ==> | Initialized |
 @g         +----------------+     +-----------------+     +-------------+
@@ -1960,9 +1959,9 @@ class PulseRefreshingComponent extends PulseRequestComponent {
 @g     ..> |     Reset      | ======#
 @g         +----------------+
 * @graph Initialization_StateFlow
-@g 
+@g
 @g  Initialization context: state flow
-@g 
+@g
 @g           +--------------+
 @g       ==> | Initializing | ==>
 @g           +--------------+
@@ -1973,9 +1972,9 @@ class PulseRefreshingComponent extends PulseRequestComponent {
 @g           |    Error     |
 @g           +--------------+
 * @graph ParamValidation_StateFlow
-@g 
+@g
 @g  ParamValidation context: state flow
-@g 
+@g
 @g             +------------+
 @g         ==> | Validating | ==>
 @g             +------------+
@@ -1990,7 +1989,7 @@ class PulseParamInitializedComponent extends PulseInitializedComponent {
   /**
    * Constructor
    *
-   * @param  {...any} args 
+   * @param  {...any} args
    */
   constructor(...args) {
     const self = super(...args);
@@ -1999,7 +1998,7 @@ class PulseParamInitializedComponent extends PulseInitializedComponent {
 
   /**
    * @override
-   * 
+   *
    * @param {!string} context - Context
    * @return {!string} key
    */
@@ -2088,13 +2087,13 @@ class PulseParamInitializedComponent extends PulseInitializedComponent {
  * - *:TransientError - {@link module:state~TransientErrorState}
  * - NotApplicable:Standard - {@link module:state~NotApplicableState}
  * - *:Error - {@link module:state~ErrorState}
- * 
+ *
  * @extends module:pulseComponent~PulseSingleRequestComponent
- * 
+ *
 * @graph ParamSingleRequest_ContextFlow
-@g 
+@g
 @g        Single request and param autoPath single request component: context flow
-@g 
+@g
 @g         +----------------+     +-----------------+     +---------------+     +--------+
 @g     ==> | Initialization | ==> | ParamValidation | ==> |     Load      | ==> | Loaded |
 @g         +----------------+     +-----------------+     +---------------+     +--------+
@@ -2111,9 +2110,9 @@ class PulseParamInitializedComponent extends PulseInitializedComponent {
 @g                                  :
 @g                                  :
 * @graph Initialization_StateFlow
-@g 
+@g
 @g  Initialization context: state flow
-@g 
+@g
 @g           +--------------+
 @g       ==> | Initializing | ==>
 @g           +--------------+
@@ -2124,9 +2123,9 @@ class PulseParamInitializedComponent extends PulseInitializedComponent {
 @g           |    Error     |
 @g           +--------------+
 * @graph ParamValidation_StateFlow
-@g 
+@g
 @g  ParamValidation context: state flow
-@g 
+@g
 @g             +------------+
 @g         ==> | Validating | ==>
 @g             +------------+
@@ -2137,10 +2136,10 @@ class PulseParamInitializedComponent extends PulseInitializedComponent {
 @g             |   Error    |
 @g             +------------+
 * @graph Request_StateFlow
-@g 
+@g
 @g        Request (Load, Normal, Reload, NotAvailable...) context: state flow
-@g 
-@g 
+@g
+@g
 @g           +---------------------------------------------------+
 @g           |                                                   |
 @g           |                                                   |
@@ -2166,7 +2165,7 @@ class PulseParamSingleRequestComponent extends PulseSingleRequestComponent {
   /**
    * Constructor
    *
-   * @param  {...any} args 
+   * @param  {...any} args
    */
   constructor(...args) {
     const self = super(...args);
@@ -2175,7 +2174,7 @@ class PulseParamSingleRequestComponent extends PulseSingleRequestComponent {
 
   /**
    * @override
-   * 
+   *
    * @param {!string} context - Context
    * @return {!string} key
    */
@@ -2205,7 +2204,7 @@ class PulseParamSingleRequestComponent extends PulseSingleRequestComponent {
 
   /**
    * @override
-   * 
+   *
    * @param {!string} context - Context
    * @param {!string} key - Key
    * @returns {!State} Created states
@@ -2269,13 +2268,13 @@ class PulseParamSingleRequestComponent extends PulseSingleRequestComponent {
  * - *:TransientError - {@link module:state~TransientErrorState}
  * - NotApplicable:Standard - {@link module:state~NotApplicableState}
  * - *:Error - {@link module:state~ErrorState}
- * 
+ *
  * @extends module:pulseComponent~PulseParamSingleRequestComponent
- * 
+ *
 * @graph ParamSingleRequest_ContextFlow
-@g 
+@g
 @g        Single request and param autoPath single request component: context flow
-@g 
+@g
 @g         +----------------+     +-----------------+     +---------------+     +--------+
 @g     ==> | Initialization | ==> | ParamValidation | ==> |     Load      | ==> | Loaded |
 @g         +----------------+     +-----------------+     +---------------+     +--------+
@@ -2292,9 +2291,9 @@ class PulseParamSingleRequestComponent extends PulseSingleRequestComponent {
 @g                                  :
 @g                                  :
 * @graph Initialization_StateFlow
-@g 
+@g
 @g  Initialization context: state flow
-@g 
+@g
 @g           +--------------+
 @g       ==> | Initializing | ==>
 @g           +--------------+
@@ -2305,9 +2304,9 @@ class PulseParamSingleRequestComponent extends PulseSingleRequestComponent {
 @g           |    Error     |
 @g           +--------------+
 * @graph ParamValidation_StateFlow
-@g 
+@g
 @g  ParamValidation context: state flow
-@g 
+@g
 @g             +------------+
 @g         ==> | Validating | ==>
 @g             +------------+
@@ -2318,10 +2317,10 @@ class PulseParamSingleRequestComponent extends PulseSingleRequestComponent {
 @g             |   Error    |
 @g             +------------+
 * @graph Request_StateFlow
-@g 
+@g
 @g        Request (Load, Normal, Reload, NotAvailable...) context: state flow
-@g 
-@g 
+@g
+@g
 @g           +---------------------------------------------------+
 @g           |                                                   |
 @g           |                                                   |
@@ -2346,8 +2345,8 @@ class PulseParamSingleRequestComponent extends PulseSingleRequestComponent {
 class PulseParamAutoPathSingleRequestComponent extends PulseParamSingleRequestComponent {
   /**
    * Constructor
-   * 
-   * @param  {...any} args 
+   *
+   * @param  {...any} args
    */
   constructor(...args) {
     const self = super(...args);
@@ -2357,7 +2356,7 @@ class PulseParamAutoPathSingleRequestComponent extends PulseParamSingleRequestCo
 
   /**
    * Associated path
-   * 
+   *
    * @returns {!string} path
    */
   get path () {
@@ -2366,7 +2365,7 @@ class PulseParamAutoPathSingleRequestComponent extends PulseParamSingleRequestCo
 
   /**
    * Update the path from the configuration or the attribute
-   * 
+   *
    * @returns {boolean} the path is defined (not empty and not null)
    */
   updatePathFromConfigOrAttribute () {
@@ -2376,7 +2375,7 @@ class PulseParamAutoPathSingleRequestComponent extends PulseParamSingleRequestCo
 
   /**
    * @override
-   * 
+   *
    * @param {!string} context - Context
    * @param {!string} key - Key
    * @returns {!State} Created states
@@ -2431,8 +2430,8 @@ class PulseParamAutoPathSingleRequestComponent extends PulseParamSingleRequestCo
   /**
    * Default event callback in case a path is updated: (re-)start the component
    * (to go through the param validation state again)
-   * 
-   * @param {*} event 
+   *
+   * @param {*} event
    */
   onPathChange (event) {
     this.start();
@@ -2444,7 +2443,7 @@ class PulseParamAutoPathSingleRequestComponent extends PulseParamSingleRequestCo
  * Abstract class for Pulse components with a (event) parameter validation phase
  * that run an ajax request regularly, each time it needs to be refreshed
  *
- * Available contexts: Initialization, ParamValidation, Reset, Load, Normal, Reload, Stop, NotAvailable, 
+ * Available contexts: Initialization, ParamValidation, Reset, Load, Normal, Reload, Stop, NotAvailable,
  *
  * Available states: Initializing, Error, Validating, Loading, Standard, Temporary, Delay, TransientError, Error
  *
@@ -2471,12 +2470,12 @@ class PulseParamAutoPathSingleRequestComponent extends PulseParamSingleRequestCo
  * - *:Error - {@link module:state~ErrorState}
  *
  * @extends module:pulseComponent~PulseRefreshingComponent
- * 
+ *
 * @graph ParamRefreshing_ContextFlow
-@g 
+@g
 @g                             Refreshing and param autoPath refreshing component: context flow
-@g 
-@g 
+@g
+@g
 @g                                                          +------------------------------------------------+
 @g                                                          |                                                |
 @g                                                          |                                                |
@@ -2501,9 +2500,9 @@ class PulseParamAutoPathSingleRequestComponent extends PulseParamSingleRequestCo
 @g                                  :                       +---------------------------+
 @g                                  :
 * @graph Initialization_StateFlow
-@g 
+@g
 @g  Initialization context: state flow
-@g 
+@g
 @g           +--------------+
 @g       ==> | Initializing | ==>
 @g           +--------------+
@@ -2514,9 +2513,9 @@ class PulseParamAutoPathSingleRequestComponent extends PulseParamSingleRequestCo
 @g           |    Error     |
 @g           +--------------+
 * @graph ParamValidation_StateFlow
-@g 
+@g
 @g  ParamValidation context: state flow
-@g 
+@g
 @g             +------------+
 @g         ==> | Validating | ==>
 @g             +------------+
@@ -2527,10 +2526,10 @@ class PulseParamAutoPathSingleRequestComponent extends PulseParamSingleRequestCo
 @g             |   Error    |
 @g             +------------+
 * @graph Request_StateFlow
-@g 
+@g
 @g        Request (Load, Normal, Reload, NotAvailable...) context: state flow
-@g 
-@g 
+@g
+@g
 @g           +---------------------------------------------------+
 @g           |                                                   |
 @g           |                                                   |
@@ -2556,7 +2555,7 @@ class PulseParamRefreshingComponent extends PulseRefreshingComponent {
   /**
    * Constructor
    *
-   * @param  {...any} args 
+   * @param  {...any} args
    */
   constructor(...args) {
     const self = super(...args);
@@ -2565,7 +2564,7 @@ class PulseParamRefreshingComponent extends PulseRefreshingComponent {
 
   /**
    * @override
-   * 
+   *
    * @param {!string} context - Context
    * @return {!string} key
    */
@@ -2595,7 +2594,7 @@ class PulseParamRefreshingComponent extends PulseRefreshingComponent {
 
   /**
    * @override
-   * 
+   *
    * @param {!string} context - Context
    * @param {!string} key - Key
    * @returns {!State} Created states
@@ -2668,12 +2667,12 @@ class PulseParamRefreshingComponent extends PulseRefreshingComponent {
  * - *:Error - {@link module:state~ErrorState}
  *
  * @extends module:pulseComponent~PulseRefreshingComponent
- * 
+ *
 * @graph ParamRefreshing_ContextFlow
-@g 
+@g
 @g                             Refreshing and param autoPath refreshing component: context flow
-@g 
-@g 
+@g
+@g
 @g                                                          +------------------------------------------------+
 @g                                                          |                                                |
 @g                                                          |                                                |
@@ -2698,9 +2697,9 @@ class PulseParamRefreshingComponent extends PulseRefreshingComponent {
 @g                                  :                       +---------------------------+
 @g                                  :
 * @graph Initialization_StateFlow
-@g 
+@g
 @g  Initialization context: state flow
-@g 
+@g
 @g           +--------------+
 @g       ==> | Initializing | ==>
 @g           +--------------+
@@ -2711,9 +2710,9 @@ class PulseParamRefreshingComponent extends PulseRefreshingComponent {
 @g           |    Error     |
 @g           +--------------+
 * @graph ParamValidation_StateFlow
-@g 
+@g
 @g  ParamValidation context: state flow
-@g 
+@g
 @g             +------------+
 @g         ==> | Validating | ==>
 @g             +------------+
@@ -2724,10 +2723,10 @@ class PulseParamRefreshingComponent extends PulseRefreshingComponent {
 @g             |   Error    |
 @g             +------------+
 * @graph Request_StateFlow
-@g 
+@g
 @g        Request (Load, Normal, Reload, NotAvailable...) context: state flow
-@g 
-@g 
+@g
+@g
 @g           +---------------------------------------------------+
 @g           |                                                   |
 @g           |                                                   |
@@ -2752,8 +2751,8 @@ class PulseParamRefreshingComponent extends PulseRefreshingComponent {
 class PulseParamAutoPathRefreshingComponent extends PulseParamRefreshingComponent {
   /**
    * Constructor
-   * 
-   * @param  {...any} args 
+   *
+   * @param  {...any} args
    */
   constructor(...args) {
     const self = super(...args);
@@ -2763,7 +2762,7 @@ class PulseParamAutoPathRefreshingComponent extends PulseParamRefreshingComponen
 
   /**
    * Associated path
-   * 
+   *
    * @returns {!string} path
    */
   get path () {
@@ -2772,7 +2771,7 @@ class PulseParamAutoPathRefreshingComponent extends PulseParamRefreshingComponen
 
   /**
    * Update the path from the configuration or the attribute
-   * 
+   *
    * @returns {boolean} the path is defined (not empty and not null)
    */
   updatePathFromConfigOrAttribute () {
@@ -2782,7 +2781,7 @@ class PulseParamAutoPathRefreshingComponent extends PulseParamRefreshingComponen
 
   /**
    * @override
-   * 
+   *
    * @param {!string} context - Context
    * @param {!string} key - Key
    * @returns {!State} Created states
@@ -2837,8 +2836,8 @@ class PulseParamAutoPathRefreshingComponent extends PulseParamRefreshingComponen
   /**
    * Default event callback in case a path is updated: (re-)start the component
    * (to go through the param validation state again)
-   * 
-   * @param {*} event 
+   *
+   * @param {*} event
    */
   onPathChange (event) {
     this.start();
