@@ -66,19 +66,11 @@ var pulseComponent = require('pulsecomponent');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this.element).append(loaderDiv);*/
 
-      let nbLines = this.getConfigOrAttribute('nblines', 1);
-      if (nbLines > 1) {
-        $(this._element).css('height', (1.5 * nbLines + 'em')); // Hack for Remmele
-        $(this._element).css('word-wrap', 'break-word');
-      }
-      else { // in CSS ?
-        $(this._element).css('white-space', 'nowrap'); // to allow '...'
-      }
-
       // Initialization OK => switch to the next context
       this.switchToNextContext();
       return;
     }
+
 
     clearInitialization () {
       // Parameters
