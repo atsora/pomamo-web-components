@@ -254,6 +254,17 @@ require('x-revisionprogress/x-revisionprogress');
             this.start();
         }
 
+        _isAlwaysSecondLevel(reason) {
+            if (!reason) return false;
+            const direct = reason.alwayssecondlevel ?? reason.AlwaysSecondLevel;
+            if (direct !== undefined) {
+                return direct === true || direct === 'true' || direct === 1 || direct === '1';
+            }
+            const data = reason.Data || {};
+            const nested = data.alwayssecondlevel ?? data.AlwaysSecondLevel;
+            return nested === true || nested === 'true' || nested === 1 || nested === '1';
+        }
+
         /**
          * Configure whether dialog should auto-close after a save action
          * @param {boolean} closeAfterSave
@@ -267,20 +278,45 @@ require('x-revisionprogress/x-revisionprogress');
          */
         _drawReasons() {
             if (this._data.length <= 12) {
+                this._groups = new Object();
+                let groupNames = [];
+                let nonAlwaysReasons = [];
+                let tileCount = 0;
 
                 for (const reason of this._data) {
+                    if (this._isAlwaysSecondLevel(reason)) {
+                        let currentGroupName = reason.ReasonGroupDisplay || reason.ReasonGroupLongDisplay || '';
+                        if (groupNames.indexOf(currentGroupName) == -1) {
+                            this._groups[currentGroupName] = [];
+                            groupNames.push(currentGroupName);
+                        }
+                        this._groups[currentGroupName].push(reason);
+                        continue;
+                    }
+
+                    nonAlwaysReasons.push(reason);
+                }
+
+                for (const reason of nonAlwaysReasons) {
                     let classificationId;
 
                     if (reason.ClassificationId) {
-                      classificationId = reason.ClassificationId;
+                        classificationId = reason.ClassificationId;
                     }
                     else {
-                      classificationId = reason.Id;
+                        classificationId = reason.Id;
                     }
 
                     this._drawCell(reason.Display, reason.Color, false, classificationId, reason.DetailsRequired, reason.Data);
+                    tileCount += 1;
                 }
-                this._drawAdancedButton(this._data.length);
+
+                for (const groupName of groupNames) {
+                    this._drawCell(groupName, this._groups[groupName][0].Color, true);
+                    tileCount += 1;
+                }
+
+                this._drawAdancedButton(tileCount);
             }
             else {
                 this._groups = new Object();
