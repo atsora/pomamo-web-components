@@ -482,8 +482,8 @@ require('x-revisionprogress/x-revisionprogress');
       let maindiv = $('<div></div>')
         .addClass('reasonslotlist')
         .append(fixedHeaderDiv)
-        .append(topDiv)
         .append(divScrollable)
+        .append(topDiv)
         .append(warningDiv);
 
       // Create DOM - Loader
