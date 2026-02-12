@@ -1,0 +1,17 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Machine18</label>
+  <div class='forceHeight'>
+    <x-reasonslotlistoperator id="default" machine-id=18 path='http://localhost:8082/' range='[2017-01-16T00:00:00Z,2017-01-16T12:00:00Z)' demo></x-reasonslotlistoperator>
+  </div>
+
+  <label>Error: invalid machine-id</label>
+  <div class='forceHeight'>
+    <x-reasonslotlistoperator id="error_machineid" machine-id=155 path='http://localhost:8082/' range='[2017-01-16T00:00:00Z,2017-01-16T12:00:00Z)' demo></x-reasonslotlistoperator>
+  </div>
+</div>

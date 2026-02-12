@@ -40,11 +40,14 @@ require('x-revisionprogress/x-revisionprogress');
             self._content = undefined;
             // Internal single range string (normalized like pulseRange.createStringRangeFromString)
             self._rangeString = null;
+            self._rangesList = null;
             self._onStopPeriodsRange = null;
+            self._savedRangesList = null;
 
             // Expose public methods similar to x-savereason (single-range flavor)
             self.methods = {
                 'addRange': self.addRange,          // set range
+                'addRanges': self.addRanges,        // set multiple ranges
                 'removeRange': self.removeRange,    // unset if matches
                 'cleanRanges': self.cleanRanges,    // clear range
                 'setRange': self.addRange,          // alias
@@ -68,6 +71,13 @@ require('x-revisionprogress/x-revisionprogress');
                     if (typeof newVal === 'string') {
                         // Pass string directly; addRange expects a string
                         this.addRange(newVal);
+                        this.start();
+                    }
+                    break;
+                case 'ranges':
+                    if (typeof newVal === 'string') {
+                        let ranges = newVal.split('&');
+                        this.addRanges(ranges);
                         this.start();
                     }
                     break;
@@ -124,8 +134,12 @@ require('x-revisionprogress/x-revisionprogress');
             // Initialize parameters
             this._closeAfterSave = true;
 
-            // Initialize range from attribute if present (like x-savereason does for 'ranges')
-            if (this.element.hasAttribute('range')) {
+            // Initialize range(s) from attributes (like x-savereason does for 'ranges')
+            if (this.element.hasAttribute('ranges')) {
+                let ranges = this.element.getAttribute('ranges').split('&');
+                this.addRanges(ranges);
+            }
+            else if (this.element.hasAttribute('range')) {
                 let attr = this.element.getAttribute('range');
                 // Pass raw string to addRange; it expects a string
                 this.addRange(attr);
@@ -167,7 +181,7 @@ require('x-revisionprogress/x-revisionprogress');
                 this.setError(this.getTranslation('error.selectMachine', 'No machine selected'));
                 return;
             }
-            if (!this._rangeString) {
+            if (!this._rangeString && !(this._rangesList && this._rangesList.length)) {
                 this.setError(this.getTranslation('error.missingRange', 'Missing range'));
                 return;
             }
@@ -206,7 +220,10 @@ require('x-revisionprogress/x-revisionprogress');
          * @returns {{Ranges: string[]}}
          */
         postData() {
-            let webServiceRangesList = [this._rangeString];
+            let webServiceRangesList = this._rangesList && this._rangesList.length
+                ? this._rangesList
+                : [this._rangeString];
+            webServiceRangesList = webServiceRangesList.filter(range => typeof range === 'string' && range.length > 0);
             return {
                 'Ranges': webServiceRangesList
             };
@@ -232,8 +249,20 @@ require('x-revisionprogress/x-revisionprogress');
             // Normalize already expected; still set directly
             if (this._rangeString !== range) {
                 this._rangeString = range;
+                this._rangesList = null;
                 this.start();
             }
+        }
+
+        /**
+         * Set multiple ranges and restart
+         * @param {string[]} ranges
+         */
+        addRanges(ranges) {
+            if (!Array.isArray(ranges)) return;
+            this._rangesList = ranges.filter(r => typeof r === 'string' && r.length > 0);
+            this._rangeString = this._rangesList.length ? this._rangesList[0] : null;
+            this.start();
         }
 
         /**
@@ -251,6 +280,7 @@ require('x-revisionprogress/x-revisionprogress');
         /** Clear internal range and restart */
         cleanRanges() {
             this._rangeString = null;
+            this._rangesList = null;
             this.start();
         }
 
@@ -518,8 +548,10 @@ require('x-revisionprogress/x-revisionprogress');
         _saveReason(classificationId, details, reasonData) {
             let machineId = Number(this.element.getAttribute('machine-id'));
 
-            let effectiveRange = this._rangeString || this.element.getAttribute('range');
-            let rangesList = [effectiveRange];
+            let rangesList = this._rangesList && this._rangesList.length
+                ? this._rangesList
+                : [this._rangeString || this.element.getAttribute('range')];
+            rangesList = rangesList.filter(range => typeof range === 'string' && range.length > 0);
 
             let url = this.getConfigOrAttribute('path', '') + 'ReasonSave/Post'
                 + '?MachineId=' + machineId;
@@ -547,7 +579,7 @@ require('x-revisionprogress/x-revisionprogress');
                 this._saveError.bind(this),
                 this._saveFail.bind(this));
 
-            this._savedRangeString = effectiveRange;
+            this._savedRangesList = rangesList;
 
             if (this._closeAfterSave) {
                 pulseCustomDialog.close('.dialog-stopclassification');
@@ -650,15 +682,15 @@ require('x-revisionprogress/x-revisionprogress');
             console.info('Reason revision id=' + data.Revision.Id);
 
             // Store modification (align with x-savereason)
-            if (this._savedRangeString) {
-                let rangeObj = pulseRange.createDateRangeFromString(this._savedRangeString);
+            if (this._savedRangesList && this._savedRangesList.length) {
                 try {
+                    let rangeObjs = this._savedRangesList.map(rangeString => pulseRange.createDateRangeFromString(rangeString));
                     pulseUtility.getOrCreateSingleton('x-modificationmanager')
-                        .addModification(data.Revision.Id, 'reason', machid, [rangeObj]);
+                        .addModification(data.Revision.Id, 'reason', machid, rangeObjs);
                 } catch (e) {
                     console.warn('x-stopclassification: unable to push modification', e);
                 }
-                this._savedRangeString = null;
+                this._savedRangesList = null;
             }
         }
 
@@ -722,5 +754,5 @@ require('x-revisionprogress/x-revisionprogress');
         }
     }
 
-    pulseComponent.registerElement('x-stopclassification', StopClassificationComponent, ['machine-id', 'range']);
+    pulseComponent.registerElement('x-stopclassification', StopClassificationComponent, ['machine-id', 'range', 'ranges']);
 })();
