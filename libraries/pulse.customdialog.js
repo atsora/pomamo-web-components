@@ -182,9 +182,9 @@ var pulseCustomDialog = function () {
       "<div class='customDialogWindow" + (fullScreenOnSmartphone ? ' customDialogWindowFullScreenOnSmartphone' : '') +
       (fullSize ? ' fullSize' : (bigSize ? ' bigSize' : (smallSize ? ' smallSize' : ''))) + "'>" +
       "<div class='customDialogHeader'>" +
-      (closeButton ? "<div class='customDialogCloseBox' title='Close dialog'></div>" : '') +
-      (helpName ? "<div class='customDialogHelpBox' title='Help file' helpname='" + helpName + "'></div>" : '') +
       "<div class='customDialogTitle'>" + attributes['title'] + '</div>' +
+      (helpName ? "<div class='customDialogHelpBox' title='Help file' helpname='" + helpName + "'></div>" : '') +
+      (closeButton ? "<div class='customDialogCloseBox' title='Close dialog'></div>" : '') +
       '</div>' +
       "<div class='customDialogContent'></div>" +
       "<div class='customDialogButtons'>" +

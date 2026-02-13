@@ -455,13 +455,12 @@ require('x-stopclassification/x-stopclassification');
       // no end == current = KO -> _dateRange.upper
 
       // Check configuration to determine which dialog to open
-      let lastMachineStatusMode = this.getConfigOrAttribute('lastmachinestatus', 'reasonslotlist');
-
-      if (lastMachineStatusMode === 'stopclassification') {
-        pulseDetailsPopup.openChangeStopClassificationDialog(this, this._dateRange);
-      } else {
-        // Default behavior: 'reasonslotlist' or any other value
+      let lastMachineStatusMode = this.getConfigOrAttribute('lastmachinestatus');
+      if (lastMachineStatusMode === 'reasonslotlist') {
         pulseDetailsPopup.openChangeReasonDialog(this, applicableRange, true);
+      } else {
+        // Default behavior: 'stopclassification' or any other value
+        pulseDetailsPopup.openChangeStopClassificationDialog(this, this._dateRange);
       }
     }
 

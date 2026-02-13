@@ -5,7 +5,7 @@
  */
 
 /***********
- Buttons 
+ Buttons
 ***********/
 
 .buttonDialog {
@@ -121,23 +121,28 @@
 .customDialogHeader {
   position: relative;
   border-bottom: 1px solid @color_window_border;
+  height: 6vh;
+  display: flex;
+  align-items: center;
+  min-height: fit-content;
 }
 
 .customDialogTitle {
-  padding: 12px 10px;
+  padding: 12px 0px;
   font-weight: bold;
   text-transform: uppercase;
   color: fade(@color_text, 90%);
-  margin-right: 60px;
-  font-size: 1.5em;
+  width: 100%;
+  font-size: 2vw;
+  text-align: center;
 }
 
 .customDialogCloseBox {
+  display: flex;
   right: 0;
   height: 100%;
-  width: 32px;
+  width: auto;
   padding: 0px 5px;
-  position: absolute;
   background-size: 50%;
   background-repeat: no-repeat;
   background-position: center;
@@ -146,11 +151,8 @@
 }
 
 .customDialogHelpBox {
-  right: 46px;
-  height: 50%;
-  width: 20px;
-  padding-top: 12px;
-  position: absolute;
+  height: 70%;
+  width: auto;
   cursor: pointer;
   pointer-events: initial; // restore click
   .create_svg('dialog-question-solid', @color_text, @color_text);
@@ -211,7 +213,7 @@
 }
 
 /***********
- Navigation 
+ Navigation
 ***********/
 
 .customDialogCancel {

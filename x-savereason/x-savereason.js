@@ -487,6 +487,12 @@ require('x-datetimerange/x-datetimerange');
         .attr('reason-text', reason.Display)
         .attr('details-required', reason.DetailsRequired);
       elt[0].reasondata = reason.Data;
+
+      // Add border-left color if color is provided by API
+      if (reason.Color) {
+        elt.css('border-left', '2px solid ' + reason.Color);
+      }
+
       let spanReason = $('<span></span>').html(reason.Display);
       if (reason.Description != undefined) {
         $(spanReason).attr('title', reason.Description);
