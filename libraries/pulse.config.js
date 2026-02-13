@@ -21,7 +21,7 @@ var pulseLogin = require('pulseLogin');
 
 /**
  * function called to find a translation
- * @param {String} key Key linked to a translation 
+ * @param {String} key Key linked to a translation
  * @param {String} defaultTranslation Translation returned if the key is not found
  * @return {String} string to display
  */
@@ -49,8 +49,8 @@ exports.pulseTranslate = function (key, defaultTranslation) {
 ////////// ////////// //////////
 
 var getAppName = function () {
-  /* This could be found in URL - BUT can not, because of hardcoded script in template.html (case sensitive, other app...) 
-  More : in we read app name in URL, it will be more difficult to share data between app, for exemple machines 
+  /* This could be found in URL - BUT can not, because of hardcoded script in template.html (case sensitive, other app...)
+  More : in we read app name in URL, it will be more difficult to share data between app, for exemple machines
   */
   return LEM_CONFIG_DEFAULT.appName;
 }
@@ -72,7 +72,7 @@ var getPageName = exports.getPageName = function () {
 };
 
 
-//var isCurrentApp = 
+//var isCurrentApp =
 exports.isCurrentApp = function (appName) {
   // Find app name
   let app = getAppName();
@@ -367,7 +367,7 @@ var getAppConfig = function (key, role, pageName) {
 }
 
 /** Get configuration using all paramaters
- * 
+ *
  * @memberof module:pulseConfig
  * @function getComponentDefaultConfig
  * @param key key to check
@@ -400,7 +400,7 @@ var getComponentDefaultConfig = function (key) {
 
 
 /** Get configuration using all paramaters
- * 
+ *
  * @memberof module:pulseConfig
  * @function getFullConfig
  * @param key key to check
@@ -506,9 +506,9 @@ var getFullConfig = function (key, defaultValue, onlyDefault, pageName, role) {
  * - in page configuration
  * - global default value - tagConfig
  * - value specified in the argument "defaultValue"
- * 
+ *
  *  /!\ Use it only for complex objects /!\
- * 
+ *
  * @memberof module:pulseConfig
  * @function get
  * @param {!String} key - key to check
@@ -534,7 +534,7 @@ var get = exports.get = function (key, defaultValue, page) {
 };
 
 /** Get a configuration returned as a BOOLEAN
- * 
+ *
  * @memberof module:pulseConfig
  * @function getBool
  * @param {!String} key - key to check
@@ -547,7 +547,7 @@ exports.getBool = function (key, defaultValue, page) {
 };
 
 /** Get a configuration returned as an INTEGER
- * 
+ *
  * @memberof module:pulseConfig
  * @function getInt
  * @param {!String} key - key to check
@@ -560,7 +560,7 @@ exports.getInt = function (key, defaultValue, page) {
 }
 
 /** Get a configuration returned as an FLOAT
- * 
+ *
  * @memberof module:pulseConfig
  * @function getFloat
  * @param {!String} key - key to check
@@ -573,7 +573,7 @@ exports.getFloat = function (key, defaultValue, page) {
 }
 
 /** Get a configuration returned as a STRING
- * 
+ *
  * @memberof module:pulseConfig
  * @function getString
  * @param {!String} key - key to check
@@ -588,7 +588,7 @@ var getString = exports.getString = function (key, defaultValue, page) {
 }
 
 /** Get a configuration returned as an ARRAY
- * 
+ *
  * @memberof module:pulseConfig
  * @function getArray
  * @param {!String} key - key to check
@@ -617,14 +617,16 @@ var getArray =
  * - default value for the current page
  * - global default value
  * - value specified in the argument "defaultValue"
- * 
+ *
  *  /!\ Use it only for complex objects /!\
- * 
+ *
  * @memberof module:pulseConfig
  * @function getDefault
  * @param {!String} key - key to check
  * @param {String} defaultValue - default Value
  */
+var missingDefaultKeys = {};
+
 var getDefault = exports.getDefault = function (key, defaultValue) {
   // Get config
   let listOfKeys = key.split('.'); // Ex: 'ANY_tagName.realKey'
@@ -640,11 +642,15 @@ var getDefault = exports.getDefault = function (key, defaultValue) {
   if (config.found) {
     return config.value;
   }
+  if (!missingDefaultKeys[key]) {
+    missingDefaultKeys[key] = true;
+    console.error('Config default missing for key=' + key);
+  }
   return defaultValue;
 };
 
 /** Get a default configuration returned as a BOOLEAN
- * 
+ *
  * @memberof module:pulseConfig
  * @function getDefaultBool
  * @param {!String} key - key to check
@@ -656,7 +662,7 @@ exports.getDefaultBool = function (key, defaultValue) {
 };
 
 /** Get a default configuration returned as an INTEGER
- * 
+ *
  * @memberof module:pulseConfig
  * @function getDefaultInt
  * @param {!String} key - key to check
@@ -668,7 +674,7 @@ exports.getDefaultInt = function (key, defaultValue) {
 }
 
 /** Get a default configuration returned as an FLOAT
- * 
+ *
  * @memberof module:pulseConfig
  * @function getDefaultFloat
  * @param {!String} key - key to check
@@ -680,7 +686,7 @@ exports.getDefaultFloat = function getDefaultFloat (key, defaultValue) {
 }
 
 /** Get a default configuration returned as a STRING
- * 
+ *
  * @memberof module:pulseConfig
  * @function getDefaultString
  * @param {!String} key - key to check
@@ -694,7 +700,7 @@ exports.getDefaultString = function (key, defaultValue) {
 }
 
 /** Get a default configuration returned as an ARRAY
- * 
+ *
  * @memberof module:pulseConfig
  * @function getDefaultArray
  * @param {!String} key - key to check
@@ -713,7 +719,7 @@ exports.getDefaultArray = function (key, defaultValue) {
 /** Set GLOBAL configuration for the WHOLE app
  * For example : role, theme, machine...
  * Special session storage for path
- * 
+ *
  * @memberof module:pulseConfig
  * @function setGlobal (no role, no page)
  * @param key - key to fill
@@ -758,7 +764,7 @@ var setGlobal = exports.setGlobal = function (key, value) {
 }
 
 /** Set configuration (in local storage)
- * 
+ *
  * @memberof module:pulseConfig
  * @function set
  * @param key - key to fill
@@ -811,7 +817,7 @@ var set = exports.set = function (key, value, ignorePageName) {
 }
 
 /** Clear local configuration
- * 
+ *
  * @memberof module:pulseConfig
  * @function reset
  * @param key - key to clear
@@ -840,7 +846,7 @@ exports.isLoginPage = function () {
 }
 
 /** Clear local configuration
- * 
+ *
  * @memberof module:pulseConfig
  * @function goToPageLogin
  */
@@ -873,7 +879,7 @@ exports.goToPageLogin = function () {
 }
 
 /** Clear local configuration
- * 
+ *
  * @memberof module:pulseConfig
  * @function goToPageLogin
  */
@@ -930,7 +936,7 @@ exports.goToFirstPage = function (role) {
 // login / user / context     //
 ////////// ////////// //////////
 
-//var currentRoleOrAppContextIsDefined = 
+//var currentRoleOrAppContextIsDefined =
 exports.currentRoleOrAppContextIsDefined = function () {
   let roles = getArray('roles');
   let currentRole = getAppContextOrRole(); // WAS getRole();
@@ -943,7 +949,7 @@ exports.currentRoleOrAppContextIsDefined = function () {
 }
 
 // get login / role or appContext display according to what is available
-//var getCurrentUserDisplay = 
+//var getCurrentUserDisplay =
 exports.getCurrentUserDisplay = function () {
   let roles = getArray('roles');
 

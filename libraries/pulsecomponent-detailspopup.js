@@ -33,6 +33,7 @@ require('x-datetimegraduation/x-datetimegraduation');
 require('x-bartimeselection/x-bartimeselection');
 // reason change
 require('x-reasonslotbar/x-reasonslotbar');
+require('x-reasonslotlistoperator/x-reasonslotlistoperator');
 // workinfo display
 require('x-operationcyclebar/x-operationcyclebar');
 require('x-operationslotbar/x-operationslotbar');
@@ -423,7 +424,9 @@ var openChangeReasonDialog = exports.openChangeReasonDialog = function (componen
   });
   let machid = $(component.element).attr('machine-id');
   let rangeString = dtRange.toString(d => d.toISOString());
-  let xreasonslotlist = pulseUtility.createjQueryElementWithAttribute('x-reasonslotlist', {
+  let role = pulseConfig.getAppContextOrRole && pulseConfig.getAppContextOrRole();
+  let reasonslotlistTag = (role === 'operator') ? 'x-reasonslotlistoperator' : 'x-reasonslotlist';
+  let xreasonslotlist = pulseUtility.createjQueryElementWithAttribute(reasonslotlistTag, {
     'machine-id': machid,
     'only-overwrite-required': true, //component.requiredReason,
     'range': rangeString,
@@ -492,10 +495,12 @@ var openChangeScrapClassificationDialog = exports.openChangeScrapClassificationD
  * @param {Range} dtRange - date range
  *
  */
-var openChangeStopClassificationDialog = exports.openChangeStopClassificationDialog = function (component, dtRange) {
+var openChangeStopClassificationDialog = exports.openChangeStopClassificationDialog = function (component, dtRange, options) {
   if ($('.dialog-stopclassification').length > 0) {
     return;
   }
+
+  const useClickedRange = options && options.useClickedRange === true;
 
   // PAGE 1
   let dialog = $('<div></div>').addClass('dialog-stopclassification');
@@ -516,13 +521,27 @@ var openChangeStopClassificationDialog = exports.openChangeStopClassificationDia
   });
   let machid = $(component.element).attr('machine-id');
   let rangeString = dtRange.toString(d => d.toISOString());
-  // Use a provider that fetches ReasonOnlySlots and builds the classifier
-  let xstopperiods = pulseUtility.createjQueryElementWithAttribute('x-stopperiods', {
-    'machine-id': machid,
-    'range': rangeString,
-    'autocreate-stopclassification': true
-  });
-  dialog.append(xstopperiods);
+  if (useClickedRange) {
+    let fullRangeString = rangeString;
+    if (options && options.fullRange) {
+      fullRangeString = options.fullRange.toString(d => d.toISOString());
+    }
+    let xstopclassification = pulseUtility.createjQueryElementWithAttribute('x-stopclassification', {
+      'machine-id': machid,
+      'range': rangeString,
+      'fullRange': fullRangeString
+    });
+    dialog.append(xstopclassification);
+  }
+  else {
+    // Use a provider that fetches ReasonOnlySlots and builds the classifier
+    let xstopperiods = pulseUtility.createjQueryElementWithAttribute('x-stopperiods', {
+      'machine-id': machid,
+      'range': rangeString,
+      'autocreate-stopclassification': true
+    });
+    dialog.append(xstopperiods);
+  }
 
   pulseCustomDialog.open('#' + stopClassificationDialogId);
 }
@@ -556,6 +575,11 @@ exports.clickOnBar = function (component, fullRange, cellRange, event, callerNam
         ('reason' == callerName) ||
         ('redstacklight' == callerName))
         openChangeReasonDialog(component, cellRange, true);
+      break;
+    case 'stopclassification':
+      if ('reason' == callerName) {
+        openChangeStopClassificationDialog(component, cellRange, { useClickedRange: true, fullRange: fullRange });
+      }
       break;
     default:
       break;

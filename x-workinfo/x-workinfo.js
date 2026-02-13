@@ -77,15 +77,6 @@ var eventBus = require('eventBus');
       this._content = $('<div></div>').addClass('workinfo-content');
       $(this.element).append(this._content);
 
-      let nbLines = this.getConfigOrAttribute('nblines', 1);
-      if (nbLines > 1) {
-        $(this._element).css('height', (1.5 * nbLines + 'em')); // Hack for Remmele
-        $(this._element).css('word-wrap', 'break-word');
-      }
-      else { // To restore in CSS ASAP !!!
-        $(this._element).css('white-space', 'nowrap'); // to allow '...'
-      }
-
       // Create DOM - Loader -> Not needed here
       //let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
       //let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);

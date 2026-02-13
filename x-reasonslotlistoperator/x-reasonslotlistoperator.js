@@ -5,7 +5,7 @@
 
 /**
  * Code Review : 2014 nov
- * @module x-reasonslotlist
+ * @module x-reasonslotlistoperator
  * @requires module:pulseComponent
  * @requires module:pulseUtility
  * @requires module:pulseRange
@@ -22,13 +22,15 @@ var pulseCustomDialog = require('pulseCustomDialog');
 var pulseComponent = require('pulsecomponent');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
+var pulseConfig = require('pulseConfig');
 
 require('x-reasonslotbar/x-reasonslotbar');
 
 require('x-savereason/x-savereason');
-require('x-datetimerange/x-datetimerange');
 require('x-highlightperiodsbar/x-highlightperiodsbar');
 require('x-revisionprogress/x-revisionprogress');
+require('x-stopclassification/x-stopclassification');
+require('x-tr/x-tr');
 
 
 (function () {
@@ -54,6 +56,7 @@ require('x-revisionprogress/x-revisionprogress');
       self._skipList = false; // If there is a unique period, skip the list and update the reason
       self._firstLoad = true;
       self._xsaveReason = null;
+      self._defineReasonButton = null;
 
       // Map [revisionid] = {revisionid,range,kind,machineid,initModifications,pendingModifications}
       // How to use map : https://www.zendevs.xyz/les-nouveaux-objets-set-et-map-en-javascript-es6/
@@ -131,8 +134,8 @@ require('x-revisionprogress/x-revisionprogress');
         return;
       }
 
-      let showAllIdle = $(this._allIdleCheckbox).is(':checked');
-      let showMotion = $(this._motionCheckbox).is(':checked');
+      let showAllIdle = false; // Only unanswered idle periods
+      let showMotion = false;  // Hide running periods
 
       this._numberOfDisplayedItems = 0;
       this._numberOfSelectableItems = 0;
@@ -186,7 +189,7 @@ require('x-revisionprogress/x-revisionprogress');
           (machineModeDisplay.substr(len - 1, 1) == ',')) {
           machineModeDisplay = machineModeDisplay.substring(0, len - 1);
         }
-        let tr = $('<div></div>').addClass('selectable').addClass('reasonslotlist-tr');
+        let tr = $('<div></div>').addClass('selectable').addClass('reasonslotlistoperator-tr');
 
         let attributeTr = {
           'range': rangeString,
@@ -207,7 +210,7 @@ require('x-revisionprogress/x-revisionprogress');
         //if (item.Current == true) { // range.upper should be null
         let displayedRange = pulseUtility.displayDateRange(range);
 
-        let tdCheck = $('<div></div>').addClass('reasonslotlist-td-check');
+        let tdCheck = $('<div></div>').addClass('reasonslotlistoperator-td-check');
         if (item.IsSelectable == undefined || item.IsSelectable) {
           tdCheck.append($("<input type='checkbox'></input>").addClass('table-check'));
         }
@@ -217,10 +220,10 @@ require('x-revisionprogress/x-revisionprogress');
           }.bind(this)
         );
 
-        let tdReasonButton = $('<div></div>').addClass('reasonslotlist-td-icon');
+        let tdReasonButton = $('<div></div>').addClass('reasonslotlistoperator-td-icon');
         if (catId > 0) {
           // New div for svg
-          let svgDiv = $('<div></div>').addClass('reasonslotlist-reason-svg');
+          let svgDiv = $('<div></div>').addClass('reasonslotlistoperator-reason-svg');
           let modeClass = pulseSvg.getMachineModeClass(catId);
           svgDiv.addClass(modeClass);
           svgDiv.css('color', item.BgColor);
@@ -228,12 +231,12 @@ require('x-revisionprogress/x-revisionprogress');
           pulseSvg.inlineBackgroundSvg(svgDiv);
         }
         let tdRange = $('<div></div>').html(displayedRange)
-          .addClass('reasonslotlist-td-range')
-          .addClass('reasonslotlist-td-click-change');
-        let textbox = $('<div></div>').html(display).addClass('reasonslotlist-td-reason')
-          .addClass('reasonslotlist-td-click-change')
+          .addClass('reasonslotlistoperator-td-range')
+          .addClass('reasonslotlistoperator-td-click-change');
+        let textbox = $('<div></div>').html(display).addClass('reasonslotlistoperator-td-reason')
+          .addClass('reasonslotlistoperator-td-click-change')
           .attr('title', machineModeDisplay);
-        let desc = $('<div></div>').addClass('reasonslotlist-td-desc').append(tdRange).append(textbox);
+        let desc = $('<div></div>').addClass('reasonslotlistoperator-td-desc').append(tdRange).append(textbox);
         if (item.OverwriteRequired) {
           textbox.addClass('overwrite-required missing');
         }
@@ -292,6 +295,7 @@ require('x-revisionprogress/x-revisionprogress');
         this._xsaveReason[0].closeAfterSave(this._skipList);
       }
       this._firstLoad = false;
+      this._updateDefineReasonButtonState();
     }
 
     _getXSaveReason() {
@@ -302,9 +306,14 @@ require('x-revisionprogress/x-revisionprogress');
       if (this.element.hasAttribute('demo'))
         return;
 
+      let role = pulseConfig.getAppContextOrRole && pulseConfig.getAppContextOrRole();
+      if (role === 'operator') {
+        return;
+      }
+
       // create PAGE 2 -> done before for good display
       let dialogbox2 = $('<div></div>').addClass('dialog-savereason-page2')
-        .append(`<div class="reasonslotlist-header-label">3. ${this.getTranslation('sectionReasonTitle', 'Apply a reason on the selected period(s)')}</div>`);
+        .append(`<div class="reasonslotlistoperator-header-label">3. ${this.getTranslation('sectionReasonTitle', 'Apply a reason on the selected period(s)')}</div>`);
       let xsaveReason = pulseUtility.createjQueryElementWithAttribute('x-savereason', {
         'machine-id': $(this.element).attr('machine-id')
       });
@@ -314,6 +323,77 @@ require('x-revisionprogress/x-revisionprogress');
 
       pulseCustomDialog.addPage('.dialog-savereason', dialogbox2);
       return this._xsaveReason;
+    }
+
+    _updateDefineReasonButtonState() {
+      if (pulseUtility.isNotDefined(this._defineReasonButton)) {
+        return;
+      }
+
+      let selectedCount = $(this.element).find('.reasonslotlistoperator-tr.row-selected').length;
+      this._defineReasonButton.prop('disabled', selectedCount === 0);
+    }
+
+    _getSelectedRanges() {
+      let ranges = [];
+      let rows = $(this.element).find('.reasonslotlistoperator-tr.row-selected');
+      for (let i = 0; i < rows.length; i++) {
+        let range = this._getRangeFromRowWithCurrent(rows[i]);
+        if (range && typeof range.isEmpty === 'function' && !range.isEmpty()) {
+          ranges.push(range);
+        }
+      }
+      return ranges;
+    }
+
+    _openStopClassificationForSelection() {
+      let ranges = this._getSelectedRanges();
+      if (ranges.length === 0) {
+        return;
+      }
+      if ($('.dialog-stopclassification').length > 0) {
+        return;
+      }
+
+      let rangeStrings = ranges.map(range => range.toString(d => d.toISOString()));
+      let rangeString = rangeStrings[0];
+      let dialog = $('<div></div>').addClass('dialog-stopclassification');
+      let stopClassificationDialogId = pulseCustomDialog.initialize(dialog, {
+        title: this.getTranslation('stopclassification.title', 'Unplanned stops'),
+        onClose: function () {
+          $('.popup-block').fadeOut();
+          this.removeAllSelections();
+          let highlightBar = $(this.element).find('x-highlightperiodsbar');
+          if (highlightBar.length) {
+            highlightBar.get(0).cleanRanges();
+          }
+        }.bind(this),
+        autoClose: false,
+        autoDelete: true,
+        okButton: 'hidden',
+        cancelButton: 'hidden',
+        fullScreenOnSmartphone: true,
+        fixedHeight: true,
+        bigSize: true,
+        helpName: 'savereason',
+        className: 'stopclassification'
+      });
+
+      let machid = $(this.element).attr('machine-id');
+      let fullRangeString = this.range ? this.range.toString(d => d.toISOString()) : rangeString;
+      let xstopclassification = pulseUtility.createjQueryElementWithAttribute('x-stopclassification', {
+        'machine-id': machid,
+        'range': rangeString,
+        'ranges': rangeStrings.join('&'),
+        'fullRange': fullRangeString
+      });
+      dialog.append(xstopclassification);
+
+      if (xstopclassification[0] && xstopclassification[0].closeAfterSave) {
+        xstopclassification[0].closeAfterSave(true);
+      }
+
+      pulseCustomDialog.open('#' + stopClassificationDialogId);
     }
 
     _reloadOrClose() {
@@ -363,58 +443,18 @@ require('x-revisionprogress/x-revisionprogress');
       }
       this._setAutoRange(); // init _range from attribute
 
-      // Check the range is valid
-      if (this.range == undefined) {
-        console.error('undefined range');
-        if (this.element.hasAttribute('period-context')) {
-          eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent',
-            this.element.getAttribute('period-context'));
-        }
-        else {
-          eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
-        }
-        this.switchToKey('Error', () => this.displayError('undefined range'), () => this.removeError());
-        return;
-      }
-      if (this.range.isEmpty()) {
-        console.error('empty range');
-        if (this.element.hasAttribute('period-context')) {
-          eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent',
-            this.element.getAttribute('period-context'));
-        }
-        else {
-          eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
-        }
-
-        this.switchToKey('Error', () => this.displayError('empty range'), () => this.removeError());
-        return;
-      }
-
       // In case of clone, need to be empty :
       $(this.element).empty();
 
       // Create DOM - Content
 
-      // - x-datetimerange: to leave before all the others (why ?)
-      let datetimerangeDiv = $('<div></div>').addClass('reasonslotlist-datetimerange');
-      let xdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
-        'range': this.range.toString(d => d.toISOString()),
-        'period-context': 'RSL' + this.element.getAttribute('machine-id')
-        //,'not-editable' : 'true', ???
-        //'hide-buttons' :'true' ???
-      });
-      datetimerangeDiv.append(xdatetimerange);
-
-      let fixedHeaderDiv = $('<div></div>').addClass('fixed-header')
-        .append(`<div class="reasonslotlist-header-label">1. ${this.getTranslation('sectionTimeRangeTitle', 'Select a time range')}</div>`)
-        .append(datetimerangeDiv)
-        .append(`<div class="reasonslotlist-header-label">2. ${this.getTranslation('sectionPeriodTitle', 'Select one or more periods')}</div>`);
+      let fixedHeaderDiv = $('<div></div>').addClass('fixed-header');
 
       // - x-reasonslotbar + x-highlightperiodsbar
       let reasonBar = pulseUtility.createjQueryElementWithAttribute('x-reasonslotbar', {
         'machine-id': this.element.getAttribute('machine-id'),
         'period-context': 'RSL' + this.element.getAttribute('machine-id'),
-        'height': 15,
+        'height': 80,
         'range': this.range.toString(d => d.toISOString()),
         'showoverwriterequired': false,
         'click-to-change-reason': false
@@ -425,16 +465,16 @@ require('x-revisionprogress/x-revisionprogress');
         'height': 6,
         'range': this.range.toString(d => d.toISOString())
       });
-      let barDiv = $('<div></div>').addClass('reasonslotlist-bar')
+      let barDiv = $('<div></div>').addClass('reasonslotlistoperator-bar')
         .append(reasonBorder).append(highlightBar);
       fixedHeaderDiv.append(barDiv);
 
       // - filter
-      this._allIdleCheckbox = $("<input type='checkbox' id='reasonslotlist-allidle-checkbox' name='idle' value='AllIdle'>");
-      let allIdlelabel = $("<label for='reasonslotlist-allidle-checkbox'></label>")
+      this._allIdleCheckbox = $("<input type='checkbox' id='reasonslotlistoperator-allidle-checkbox' name='idle' value='AllIdle'>");
+      let allIdlelabel = $("<label for='reasonslotlistoperator-allidle-checkbox'></label>")
         .append(this.getTranslation('optionIdentified', 'Show identified idle periods'));
-      this._motionCheckbox = $("<input type='checkbox' id='reasonslotlist-motion-checkbox' name='motion' value='AllMotion'>");
-      let motionlabel = $("<label for='reasonslotlist-motion-checkbox'></label>")
+      this._motionCheckbox = $("<input type='checkbox' id='reasonslotlistoperator-motion-checkbox' name='motion' value='AllMotion'>");
+      let motionlabel = $("<label for='reasonslotlistoperator-motion-checkbox'></label>")
         .append(this.getTranslation('optionRunning', 'Show running periods'));
       // Change check -> Call Fill Table
       this._allIdleCheckbox.change(function () {
@@ -460,30 +500,45 @@ require('x-revisionprogress/x-revisionprogress');
       }.bind(this));
 
       let divfilter = $('<div></div>')
-        .addClass('reasonslotlist-filter')
+        .addClass('reasonslotlistoperator-filter')
         .append(this._allIdleCheckbox).append(allIdlelabel)
         .append(this._motionCheckbox).append(motionlabel);
 
       let topDiv = $('<div></div>')
-        .addClass('reasonslotlist-top-div')
+        .addClass('reasonslotlistoperator-top-div')
         .append(divfilter);
 
       // - table
       let divdata = $('<div></div>')
-        .addClass('reasonslotlist-data');
+        .addClass('reasonslotlistoperator-data');
       // Scrollable-content
       let divScrollable = $('<div></div>').addClass('scrollable-content')
         .append(divdata);
 
+      let defineReasonButton = $('<button type="button"></button>')
+        .addClass('reasonslotlistoperator-define-button')
+        .prop('disabled', true);
+      let defineReasonLabel = $('<x-tr></x-tr>')
+        .attr('key', 'defineReason')
+        .attr('default', 'Define reason');
+      defineReasonButton.append(defineReasonLabel);
+      defineReasonButton.on('click', function () {
+        this._openStopClassificationForSelection();
+      }.bind(this));
+      let defineReasonContainer = $('<div></div>')
+        .addClass('reasonslotlistoperator-define-container')
+        .append(defineReasonButton);
+      this._defineReasonButton = defineReasonButton;
+
       // Warning "No selectable periods in the specified range"
-      let warningDiv = $('<div></div>').addClass('reasonslotlist-warning').html('No selectable periods on the specified range');
+      let warningDiv = $('<div></div>').addClass('reasonslotlistoperator-warning').html('No selectable periods on the specified range');
 
       // - main
       let maindiv = $('<div></div>')
-        .addClass('reasonslotlist')
+        .addClass('reasonslotlistoperator')
         .append(fixedHeaderDiv)
         .append(divScrollable)
-        .append(topDiv)
+        .append(defineReasonContainer)
         .append(warningDiv);
 
       // Create DOM - Loader
@@ -494,11 +549,6 @@ require('x-revisionprogress/x-revisionprogress');
       $(this.element).append(maindiv);
 
       // listeners / dispatchers
-      eventBus.EventBus.addEventListener(this,
-        'dateTimeRangeChangeEvent',
-        'RSL' + this.element.getAttribute('machine-id'),
-        this.onDateTimeRangeChange.bind(this));
-
       // Get modifications and create listener
       let modifMgr = $('body').find('x-modificationmanager');
       if (modifMgr.length == 1) {
@@ -520,8 +570,8 @@ require('x-revisionprogress/x-revisionprogress');
 
       this._allIdleCheckbox = undefined;
       this._motionCheckbox = undefined;
-      this._allIdleCheckbox = undefined;
       this._xsaveReason = null;
+      this._defineReasonButton = null;
       //this._messageSpan = undefined;
 
       super.clearInitialization();
@@ -539,52 +589,32 @@ require('x-revisionprogress/x-revisionprogress');
      * @override
      */
     refresh(data) {
-      let divfilter = $(this.element).find('.reasonslotlist div.reasonslotlist-filter').first();
+      let divfilter = $(this.element).find('.reasonslotlistoperator div.reasonslotlistoperator-filter').first();
       divfilter.show();
 
-      this._table = $(this.element).find('.reasonslotlist div.reasonslotlist-data').first();
+      this._table = $(this.element).find('.reasonslotlistoperator div.reasonslotlistoperator-data').first();
       this._table.empty()
-        .removeClass('reasonslotlist-error')
-        .addClass('reasonslotlist-table  pulse-selection-table-container');
+        .removeClass('reasonslotlistoperator-error')
+        .addClass('reasonslotlistoperator-table  pulse-selection-table-container');
       this._dataReasonsList = data.ReasonOnlySlots
 
       // Prepare the visibility of elements
-      let hasSelectableNonIdentified = false;
-      let hasSelectableIdentified = false;
-      let hasSelectableMotion = false;
+      let hasSelectableUnanswered = false;
       for (let item of this._dataReasonsList) {
         if (item.IsSelectable == undefined || item.IsSelectable) {
-          hasSelectableNonIdentified |= (!item.Running && item.OverwriteRequired);
-          hasSelectableIdentified |= (!item.Running && !item.OverwriteRequired);
-          hasSelectableMotion |= item.Running;
+          hasSelectableUnanswered |= (!item.Running && item.OverwriteRequired);
         }
       }
 
-      if (!hasSelectableNonIdentified) {
-        $(this._allIdleCheckbox)[0].checked = true;
-        if (!hasSelectableIdentified)
-          $(this._motionCheckbox)[0].checked = true;
-      }
-
-      // Warning "No selectable periods in the specified range"
-      if (!hasSelectableNonIdentified && !hasSelectableIdentified && !hasSelectableMotion) {
-        $(this.element).find('.reasonslotlist-warning').show();
+      if (!hasSelectableUnanswered) {
+        $(this.element).find('.reasonslotlistoperator-warning').show();
       }
       else {
-        $(this.element).find('.reasonslotlist-warning').hide();
+        $(this.element).find('.reasonslotlistoperator-warning').hide();
       }
 
       // Fill the table
       this.fillTable();
-
-      let datetimerangeDiv = $(this.element).find('.reasonslotlist-datetimerange');
-      datetimerangeDiv.empty();
-      let xdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange',
-        {
-          'range': this.range.toString(d => d.toISOString()),
-          'period-context': 'RSL' + this.element.getAttribute('machine-id')
-        });
-      datetimerangeDiv.append(xdatetimerange);
 
       // Prepare page 2 if not done
       this._getXSaveReason();
@@ -594,13 +624,10 @@ require('x-revisionprogress/x-revisionprogress');
      * @override
      */
     displayError(text) {
-      let divfilter = $(this.element).find('.reasonslotlist div.reasonslotlist-filter').first();
-      divfilter.hide();
-
-      this._table = $(this.element).find('.reasonslotlist div.reasonslotlist-data').first();
+      this._table = $(this.element).find('.reasonslotlistoperator div.reasonslotlistoperator-data').first();
       this._table.empty()
-        .removeClass('reasonslotlist-table pulse-selection-table-container')
-        .addClass('reasonslotlist-error');
+        .removeClass('reasonslotlistoperator-table pulse-selection-table-container')
+        .addClass('reasonslotlistoperator-error');
       this._table.append('<div>' + text + '</div>');
     }
 
@@ -615,7 +642,10 @@ require('x-revisionprogress/x-revisionprogress');
      * @override
      */
     startLoading() {
-      $(this.element).find('.reasonslotlist').hide();
+      let container = this.element.querySelector('.reasonslotlistoperator');
+      if (container) {
+        container.style.display = 'none';
+      }
       super.startLoading();
       //pulseCustomDialogs.showLoadingDialog($(this.component));
     }
@@ -625,7 +655,10 @@ require('x-revisionprogress/x-revisionprogress');
      */
     endLoading() {
       //pulseCustomDialogs.hideLoadingDialog($(this.component));
-      $(this.element).find('.reasonslotlist').show();
+      let container = this.element.querySelector('.reasonslotlistoperator');
+      if (container) {
+        container.style.display = 'flex';
+      }
       super.endLoading();
     }
 
@@ -658,26 +691,6 @@ require('x-revisionprogress/x-revisionprogress');
     // Event bus callbacks
 
     /**
-     * Event bus callback triggered when the date/time range changes
-     *
-     * @param {Object} event
-     */
-    onDateTimeRangeChange(event) {
-      let newRange = event.target.daterange;
-      // TODO use event.target.range
-      if (!pulseRange.equals(newRange, this._range, (a, b) => a.getTime() == b.getTime())) {
-        this._range = newRange;
-
-        this.element.setAttribute('skip1periodlist', 'false');
-        if (this._xsaveReason != null) {
-          this._xsaveReason[0].closeAfterSave(false);
-        }
-
-        this.start();
-      }
-    }
-
-    /**
      * Event bus callback triggered when a reload message is received
      *
      * @param {Object} event includes :
@@ -704,7 +717,7 @@ require('x-revisionprogress/x-revisionprogress');
         for (let iModif = 0; iModif < modif.ranges.length; iModif++) {
 
           // Find associated range.s
-          let rows = $(this.element).find('.reasonslotlist-tr');
+          let rows = $(this.element).find('.reasonslotlistoperator-tr');
           for (let iRow = 0; iRow < rows.length; iRow++) {
             let rangeRowStr = $(rows[iRow]).attr('range');
             let rangeRow = pulseRange.createDateRangeFromString(rangeRowStr);
@@ -716,7 +729,7 @@ require('x-revisionprogress/x-revisionprogress');
                   'kind': modif.kind,
                   'revision-range': pulseUtility.convertDateRangeForWebService(modif.ranges[iModif])
                 });
-              $(rows[iRow]).find('.reasonslotlist-td-desc').append(newRevisionProgress);
+              $(rows[iRow]).find('.reasonslotlistoperator-td-desc').append(newRevisionProgress);
             }
           }
         }
@@ -766,7 +779,7 @@ require('x-revisionprogress/x-revisionprogress');
     }
 
     removeAllSelections() {
-      let rows = $(this.element).find('.reasonslotlist-tr');
+      let rows = $(this.element).find('.reasonslotlistoperator-tr');
 
       for (let i = 0; i < rows.length; i++) {
         let tdCheck = $(rows[i]).find('input[type=checkbox]').first();
@@ -787,6 +800,7 @@ require('x-revisionprogress/x-revisionprogress');
       }
       let highlightBar = $(this.element).find('x-highlightperiodsbar');
       highlightBar.get(0).cleanRanges();
+      this._updateDefineReasonButtonState();
     }
 
     // DOM Events
@@ -797,7 +811,7 @@ require('x-revisionprogress/x-revisionprogress');
      * @param {event} e - DOM event
      */
     checkBoxClick(e) {
-      let row = $(e.target).closest('.reasonslotlist-tr');
+      let row = $(e.target).closest('.reasonslotlistoperator-tr');
       let tdCheck = row.find('input[type=checkbox]');//.first();
       if (this._firstLoad) {
         if ($(tdCheck).length > 0)
@@ -840,6 +854,8 @@ require('x-revisionprogress/x-revisionprogress');
           }
         }
       }
+
+      this._updateDefineReasonButtonState();
     }
 
     /**
@@ -848,7 +864,7 @@ require('x-revisionprogress/x-revisionprogress');
      * @param {event} e - DOM event
      */
     rowClick(e) {
-      let row = $(e.target).closest('.reasonslotlist-tr');
+      let row = $(e.target).closest('.reasonslotlistoperator-tr');
       let isSelectable = $(row).attr('is-selectable');
       if (isSelectable == 'false') {
         return;
@@ -860,5 +876,5 @@ require('x-revisionprogress/x-revisionprogress');
 
   }
 
-  pulseComponent.registerElement('x-reasonslotlist', ReasonSlotListComponent, ['machine-id', 'range']);
+  pulseComponent.registerElement('x-reasonslotlistoperator', ReasonSlotListComponent, ['machine-id', 'range']);
 })();

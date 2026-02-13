@@ -15,13 +15,13 @@
 // @import "x-reasonslotbar/x-reasonslotbar.less";*/
 @import "x-revisionprogress/x-revisionprogress.less";
 
-x-reasonslotlist {
+x-reasonslotlistoperator {
   display: flex;
   flex-direction: column;
   /* To make isVisible work. Chrome: always inline */
   position: relative;
 
-  .reasonslotlist {
+  .reasonslotlistoperator {
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
@@ -30,16 +30,9 @@ x-reasonslotlist {
 
 
 
-  .reasonslotlist-reason-svg {
+  .reasonslotlistoperator-reason-svg {
     height: 28px;
     width: 28px;
-  }
-
-  .reasonslotlist-filter {
-    display: flex;
-    margin-left: 6px;
-    align-items: center;
-    font-size: 1em;
   }
 
 
@@ -53,7 +46,7 @@ x-reasonslotlist {
     }
   }
 
-  .reasonslotlist-bar {
+  .reasonslotlistoperator-bar {
     x-reasonslotbar {
       //border: none; // SAME as below for right/left
       pointer-events: none; // To disable click
@@ -67,11 +60,6 @@ x-reasonslotlist {
 
   .fixed-header {
     padding: 10px;
-
-    x-datetimerange {
-      margin-bottom: 5px;
-      display: block;
-    }
   }
 
   .scrollable-content {
@@ -86,13 +74,31 @@ x-reasonslotlist {
     border-radius: @border_radius_small;
   }
 
-  .reasonslotlist-tr {
+  .reasonslotlistoperator-define-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex: 0 0 20%;
+    padding: 10px;
+  }
+
+  .reasonslotlistoperator-define-button {
+    width: 30%;
+    height: 100%;
+    cursor: pointer;
+    font-size: 2em;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  .reasonslotlistoperator-tr {
     display: flex;
     justify-content: space-between;
 
     padding: 5px 15px 5px 5px;
-
-
 
     .overwrite-required {
       color: @color_missing_value_highlight;
@@ -100,7 +106,7 @@ x-reasonslotlist {
     }
   }
 
-  .reasonslotlist-td-check {
+  .reasonslotlistoperator-td-check {
     order: 9;
     flex-grow: 1;
     width: 20px;
@@ -141,14 +147,14 @@ x-reasonslotlist {
     }
   }
 
-  .reasonslotlist-td-icon {
+  .reasonslotlistoperator-td-icon {
     order: 1;
     flex-grow: 1;
 
     margin-top: 1px;
   }
 
-  .reasonslotlist-td-desc {
+  .reasonslotlistoperator-td-desc {
     order: 1;
     flex-grow: 99;
     flex-shrink: 99;
@@ -168,7 +174,7 @@ x-reasonslotlist {
     }
   }
 
-  .reasonslotlist-td-range {
+  .reasonslotlistoperator-td-range {
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     /* for Opera*/
@@ -176,7 +182,7 @@ x-reasonslotlist {
     overflow: hidden;
   }
 
-  .reasonslotlist-td-reason {
+  .reasonslotlistoperator-td-reason {
     /*...*/
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
@@ -191,7 +197,7 @@ x-reasonslotlist {
     height: 20px !important; -> done in code !!!
   }*/
 
-  .reasonslotlist-warning {
+  .reasonslotlistoperator-warning {
     margin: 6px 10px 10px;
     position: relative;
     padding: 5px;
@@ -200,9 +206,9 @@ x-reasonslotlist {
   }
 }
 
-// end reasonslotlist
+// end reasonslotlistoperator
 
-.dialog-savereason x-reasonslotlist {
+.dialog-savereason x-reasonslotlistoperator {
   height: 100%;
 }
 
@@ -218,25 +224,18 @@ x-reasonslotlist {
   left: 10px;
 }
 
-.reasonslotlist-header-label {
+.reasonslotlistoperator-header-label {
   margin-bottom: 10px;
   font-weight: bold;
 }
 
-.reasonslotlist-top-div { //its a botom div btw
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  margin: 6px 10px;
-}
-
 
 @media (max-width: 920px) {
-  .reasonslotlist .datetimerange-rangedisplay {
+  .reasonslotlistoperator .datetimerange-rangedisplay {
     display: block;
   }
 
-  x-reasonslotlist .scrollable-content {
+  x-reasonslotlistoperator .scrollable-content {
     margin-top: 0;
   }
 }

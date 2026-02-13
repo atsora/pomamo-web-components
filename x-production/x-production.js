@@ -87,16 +87,18 @@ require('x-clock/x-clock');
 
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.innerHTML = '';
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('production-content');
+      this._content = document.createElement('div');
+      this._content.classList.add('production-content');
       // No Work info -> remote
       // No global -> for the moment
       // Shift info : Actual 2 Target 3
 
       // Actual production
-      this._actualDisplay = $('<div></div>').addClass('production-actual-value');
+      this._actualDisplay = document.createElement('div');
+      this._actualDisplay.classList.add('production-actual-value');
 
       let contentTextActualDisplay = document.createElement('div');
       contentTextActualDisplay.classList.add('production-content-text-actual');
@@ -131,10 +133,12 @@ require('x-clock/x-clock');
       this._actualDisplay.append(contentActualDisplay);
 
       // Separator
-      this._separator = $('<span></span>').addClass('production-separator');
+      this._separator = document.createElement('span');
+      this._separator.classList.add('production-separator');
 
       // Target production
-      this._targetDisplay = $('<div></div>').addClass('production-target-value');
+      this._targetDisplay = document.createElement('div');
+      this._targetDisplay.classList.add('production-target-value');
 
       let contentTextTargetDisplay = document.createElement('div');
       contentTextTargetDisplay.classList.add('production-content-text-target');
@@ -170,48 +174,38 @@ require('x-clock/x-clock');
       this._targetDisplay.append(contentTargetDisplay);
 
 
-      this._percentDisplaySpan = $('<span></span>').addClass('production-percent-span').hide();
-      this._percentDisplay = $('<div></div>').addClass('production-percent').append(this._percentDisplaySpan);
+      this._percentDisplaySpan = document.createElement('span');
+      this._percentDisplaySpan.classList.add('production-percent-span');
+      this._percentDisplaySpan.style.display = 'none';
+      this._percentDisplay = document.createElement('div');
+      this._percentDisplay.classList.add('production-percent');
+      this._percentDisplay.append(this._percentDisplaySpan);
 
-      this._content
-        .append(this._actualDisplay)
-        .append(this._separator)
-        .append(this._targetDisplay)
-        .append(this._percentDisplay);
-      $(this.element).append(this._content);
+      this._content.append(this._actualDisplay, this._separator, this._targetDisplay, this._percentDisplay);
+      this.element.append(this._content);
 
-      if ('true' == this.getConfigOrAttribute('productionpercent')) {
-        $(this._percentDisplay).show();
-        $(this._percentDisplaySpan).show();
-        $(this._actualDisplay).hide();
-        this._separator.hide();
-        this._targetDisplay.hide();
-      }
-      else if ('actualonly' == this.getConfigOrAttribute('productionpercent')) {
-        $(this._percentDisplay).hide();
-        $(this._actualDisplay).show();
-        this._separator.hide();
-        this._targetDisplay.hide();
-      }
-      else { // actual + target (default)
-        $(this._percentDisplay).hide();
-        $(this._actualDisplay).show();
-        this._separator.show();
-        this._targetDisplay.show();
+      if (!this._isDisplayManagedExternally()) {
+        this._applyProductionDisplayFromConfig();
       }
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.append(loader);
+      this._content.append(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.classList.add('pulse-message');
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.classList.add('pulse-message-div');
+      messageDiv.append(this._messageSpan);
+      this._content.append(messageDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -221,7 +215,7 @@ require('x-clock/x-clock');
     clearInitialization() {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.innerHTML = '';
 
       this._actualDisplay = undefined;
       this._targetDisplay = undefined;
@@ -269,13 +263,17 @@ require('x-clock/x-clock');
     }
 
     displayError(message) {
-      $(this._content).hide();
+      if (this._content) {
+        this._content.style.display = 'none';
+      }
       eventBus.EventBus.dispatchToContext('operationChangeEvent',
         this.element.getAttribute('machine-id'), {});
     }
 
     removeError() {
-      $(this._content).hide();
+      if (this._content) {
+        this._content.style.display = 'none';
+      }
       eventBus.EventBus.dispatchToContext('operationChangeEvent',
         this.element.getAttribute('machine-id'), {});
     }
@@ -301,7 +299,7 @@ require('x-clock/x-clock');
 
     refresh(data) {
       this._data = data;
-      $(this._content).show();
+      this._content.style.display = '';
       let nbPiecesDone = undefined;
       let goal = undefined;
       if (this._range != undefined) {
@@ -312,41 +310,45 @@ require('x-clock/x-clock');
         if (data.NbPiecesDoneDuringShift != undefined) nbPiecesDone = data.NbPiecesDoneDuringShift;
         if (data.GoalNowShift != undefined) goal = data.GoalNowShift;
       }
-      if (nbPiecesDone != undefined) {
-        $(this._actualDisplay).show();
+      this._hasActualData = (nbPiecesDone != undefined);
+      this._hasTargetData = (goal && Number(goal) > 0);
+      this._hasPercentData = this._hasActualData && this._hasTargetData;
+
+      if (this._hasActualData) {
         // Trunk with 2 decimal if needed
         let done = Math.floor(nbPiecesDone * 100) / 100;
-        this._actualDisplay.find('.production-number-actual').text(done);
+        this._actualDisplay.querySelector('.production-number-actual').textContent = done;
       }
       else {
-        $(this._actualDisplay).hide();
+        this._actualDisplay.querySelector('.production-number-actual').textContent = '';
       }
 
-      if (goal && Number(goal) > 0) {
+      if (this._hasTargetData) {
         // Trunk with 2 decimal if needed
         let goalValue = Math.floor(goal * 100) / 100;
-        this._targetDisplay.find('.production-number-target').text(goalValue);
-        this.element.querySelector('.production-target-value').style.display = 'flex';
+        this._targetDisplay.querySelector('.production-number-target').textContent = goalValue;
       }
       else {
-        this.element.querySelector('.production-target-value').style.display = 'none';
+        this._targetDisplay.querySelector('.production-number-target').textContent = '';
       }
 
-      if ((nbPiecesDone != undefined)
-        && (goal != undefined)
-        && (Number(goal) > 0)) {
+      if (this._hasPercentData) {
         let percent = 100.0 * nbPiecesDone / goal;
         // Trunk
         percent = Math.floor(percent);
-        $(this._percentDisplaySpan).text(percent + '%');
+        this._percentDisplaySpan.textContent = percent + '%';
         //$(this._percentDisplaySpan).show();
       }
       else {
-        $(this._percentDisplaySpan).text('');
+        this._percentDisplaySpan.textContent = '';
         //$(this._percentDisplaySpan).hide();
       }
 
       this._updateColorEfficiency();
+
+      if (!this._isDisplayManagedExternally()) {
+        this._applyProductionDisplayFromConfig();
+      }
 
       // Forward workinfo data to external display
       //if (this.element.hasAttribute('machine-id')) { Always
@@ -376,23 +378,29 @@ require('x-clock/x-clock');
         // colors and efficiency
         let ratio = nbPiecesDone / goal;
         if (ratio < thresholdredproduction / 100) {
-          $(this._actualDisplay).addClass('bad-efficiency').removeClass('mid-efficiency').removeClass('good-efficiency');
-          $(this._percentDisplaySpan).addClass('bad-efficiency').removeClass('mid-efficiency').removeClass('good-efficiency');
+          this._actualDisplay.classList.add('bad-efficiency');
+          this._actualDisplay.classList.remove('mid-efficiency', 'good-efficiency');
+          this._percentDisplaySpan.classList.add('bad-efficiency');
+          this._percentDisplaySpan.classList.remove('mid-efficiency', 'good-efficiency');
         }
         else {
           if (ratio < thresholdtargetproduction / 100) {
-            $(this._actualDisplay).addClass('mid-efficiency').removeClass('bad-efficiency').removeClass('good-efficiency');
-            $(this._percentDisplaySpan).addClass('mid-efficiency').removeClass('bad-efficiency').removeClass('good-efficiency');
+            this._actualDisplay.classList.add('mid-efficiency');
+            this._actualDisplay.classList.remove('bad-efficiency', 'good-efficiency');
+            this._percentDisplaySpan.classList.add('mid-efficiency');
+            this._percentDisplaySpan.classList.remove('bad-efficiency', 'good-efficiency');
           }
           else {
-            $(this._actualDisplay).addClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
-            $(this._percentDisplaySpan).addClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
+            this._actualDisplay.classList.add('good-efficiency');
+            this._actualDisplay.classList.remove('mid-efficiency', 'bad-efficiency');
+            this._percentDisplaySpan.classList.add('good-efficiency');
+            this._percentDisplaySpan.classList.remove('mid-efficiency', 'bad-efficiency');
           }
         }
       }
       else {
-        $(this._actualDisplay).removeClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
-        $(this._percentDisplaySpan).removeClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
+        this._actualDisplay.classList.remove('good-efficiency', 'mid-efficiency', 'bad-efficiency');
+        this._percentDisplaySpan.classList.remove('good-efficiency', 'mid-efficiency', 'bad-efficiency');
       }
     }
 
@@ -407,27 +415,49 @@ require('x-clock/x-clock');
       if (event.target.config === 'thresholdsupdated') {
         if (this._data) this._updateColorEfficiency();
       }
-      if (event.target.config == 'productionpercent') {
-        if ('true' == this.getConfigOrAttribute('productionpercent')) {
-          $(this._percentDisplay).show();
-          $(this._percentDisplaySpan).show();
-          $(this._actualDisplay).hide();
-          this._separator.hide();
-          this._targetDisplay.hide();
-        }
-        else if ('actualonly' == this.getConfigOrAttribute('productionpercent')) {
-          $(this._percentDisplay).hide();
-          $(this._actualDisplay).show();
-          this._separator.hide();
-          this._targetDisplay.hide();
-        }
-        else {
-          $(this._percentDisplay).hide();
-          $(this._actualDisplay).show();
-          this._separator.show();
-          this._targetDisplay.show();
-        }
+      if (event.target.config == 'productionpercent' && !this._isDisplayManagedExternally()) {
+        this._applyProductionDisplayFromConfig();
       }
+    }
+
+    _isDisplayManagedExternally() {
+      return this.element.hasAttribute('manual-display');
+    }
+
+    _applyProductionDisplayFromConfig() {
+      const mode = this.getConfigOrAttribute('productionpercent');
+      const hasActual = !!this._hasActualData;
+      const hasTarget = !!this._hasTargetData;
+      const hasPercent = !!this._hasPercentData;
+
+      if ('true' == mode) {
+        this._setVisible(this._percentDisplay, hasPercent);
+        this._setVisible(this._percentDisplaySpan, hasPercent);
+        this._setVisible(this._actualDisplay, false);
+        this._setVisible(this._separator, false);
+        this._setVisible(this._targetDisplay, false);
+      }
+      else if ('actualonly' == mode) {
+        this._setVisible(this._percentDisplay, false);
+        this._setVisible(this._percentDisplaySpan, false);
+        this._setVisible(this._actualDisplay, hasActual);
+        this._setVisible(this._separator, false);
+        this._setVisible(this._targetDisplay, false);
+      }
+      else { // actual + target (default)
+        this._setVisible(this._percentDisplay, false);
+        this._setVisible(this._percentDisplaySpan, false);
+        this._setVisible(this._actualDisplay, hasActual);
+        this._setVisible(this._targetDisplay, hasTarget);
+        this._setVisible(this._separator, hasActual && hasTarget);
+      }
+    }
+
+    _setVisible(element, visible) {
+      if (!element) {
+        return;
+      }
+      element.style.display = visible ? '' : 'none';
     }
 
     onMachineIdChange(event) {

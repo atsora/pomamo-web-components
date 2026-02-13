@@ -96,9 +96,7 @@ require('x-datetimerange/x-datetimerange');
       this._tagdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
         'hide-buttons': 'true',
         'period-context': 'savereason' + this.element.getAttribute('machine-id'),
-        //'min-begin':, // To add for split
-        //'max-end'; // To add for split
-        /*,'not-editable': 'true'*/ // Must be editable otherwise the button 'split' doesn't work
+        // Must be editable otherwise the button 'split' doesn't work
       });
       periodInfo.append(this._tagdatetimerange);
 
@@ -134,7 +132,7 @@ require('x-datetimerange/x-datetimerange');
       // Create DOM - Loader
       let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loading', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(list).append(loaderDiv); // -> //TODO : move IN _content
+      $(list).append(loaderDiv);
 
       $(this.element).append(list);
 
@@ -165,8 +163,6 @@ require('x-datetimerange/x-datetimerange');
 
       this._tagdatetimerange = undefined;
       this._table = undefined;
-      //this._messageSpan = undefined;
-      //this._content = undefined;
 
       super.clearInitialization();
     }
@@ -195,7 +191,7 @@ require('x-datetimerange/x-datetimerange');
       }
     }
 
-    displayNoPeriod() { //  if _rangesList = empty
+    displayNoPeriod() {
       // Hide the period
       $('.savereason-infoperiod .savereason-periodlabel').html(this.getTranslation('noSelectedPeriod', 'No period is selected'));
       this._tagdatetimerange.hide();
@@ -210,7 +206,7 @@ require('x-datetimerange/x-datetimerange');
       this._emptyTable();
     }
 
-    hideNoPeriod() { // if _rangesList = NOT empty
+    hideNoPeriod() {
       // Prepare infos (will be updated later)
       $(this.element).find('.savereason-info-reason').html(`${this.getTranslation('currentReasonColon: ', 'Current reason')}`);
       $(this.element).find('.savereason-info-modes').html(`${this.getTranslation('modesColon', 'Modes: ')}`);
@@ -376,22 +372,54 @@ require('x-datetimerange/x-datetimerange');
       // Fill the table
       this._emptyTable();
 
-      // Sort reasons by groups
+      const hasAlwaysSecondLevel = data.some((reason) => this._isAlwaysSecondLevel(reason));
+
+      let nonAlwaysCount = 0;
+      for (let i = 0; i < data.length; i++) {
+        if (!this._isAlwaysSecondLevel(data[i])) {
+          nonAlwaysCount += 1;
+        }
+      }
+
+      const nonAlwaysThreshold = 7;
+      let allGroupNames = new Set();
+      for (let i = 0; i < data.length; i++) {
+        let groupName = data[i].ReasonGroupDisplay || data[i].ReasonGroupLongDisplay || '';
+        allGroupNames.add(groupName);
+      }
+      let shouldGroupAll = nonAlwaysCount > nonAlwaysThreshold || allGroupNames.size > 2;
+
+      // Sort reasons by groups (group all if too many reasons, else only AlwaysSecondLevel)
       let groups = new Object();
       let groupNames = [];
+      let nonAlwaysReasons = [];
       for (let i = 0; i < data.length; i++) {
-        let currentGroupName = data[i].ReasonGroupDisplay;
-        if (groupNames.indexOf(currentGroupName) == -1) {
-          groups[currentGroupName] = [];
-          groupNames.push(currentGroupName);
+        let currentGroupName = data[i].ReasonGroupDisplay || data[i].ReasonGroupLongDisplay || '';
+        if (shouldGroupAll || this._isAlwaysSecondLevel(data[i])) {
+          if (groupNames.indexOf(currentGroupName) == -1) {
+            groups[currentGroupName] = [];
+            groupNames.push(currentGroupName);
+          }
+          groups[currentGroupName].push(data[i]);
         }
-        groups[currentGroupName].push(data[i]);
+        else {
+          nonAlwaysReasons.push(data[i]);
+        }
       }
 
       // Order groups
       groupNames.sort();
 
-      // Build the accordion
+      if (!shouldGroupAll && nonAlwaysReasons.length > 0) {
+        let flatGroup = this._getReasonGroup('');
+        flatGroup.attr('data-flat', 'true');
+        nonAlwaysReasons.sort(function (x, y) { return x.Display > y.Display; });
+        for (let j = 0; j < nonAlwaysReasons.length; j++) {
+          this._addReasonInGroup(flatGroup, nonAlwaysReasons[j]);
+        }
+      }
+
+      // Build the accordion after flat reasons so subgroups appear at the bottom
       for (let i = 0; i < groupNames.length; i++) {
         let group = this._getReasonGroup(groupNames[i]);
         let reasons = groups[groupNames[i]];
@@ -405,15 +433,31 @@ require('x-datetimerange/x-datetimerange');
       $('.savereason-table > li > span').click(function () {
         $(this).parent().find('ul').toggle();
       });
+      let groupCount = groupNames.length + (!shouldGroupAll && nonAlwaysReasons.length > 0 ? 1 : 0);
 
       // Hide the group names if there is only one group
-      if (groupNames.length == 1) {
+      if (groupCount == 1 && !hasAlwaysSecondLevel) {
         $('.savereason-table > li > span').hide();
       }
-      else if (groupNames.length > 1 && data.length > 8) {
-        // Collapse all groups if there are too many groups
-        $('.savereason-table > li > ul').hide();
+
+      // Always hide the flat group header
+      $('.savereason-table > li[data-flat="true"] > span').hide();
+
+      if (groupCount > 2 || nonAlwaysCount > nonAlwaysThreshold) {
+        // Collapse all groups if there are too many groups or effective reasons
+        $('.savereason-table > li:not([data-flat="true"]) > ul').hide();
       }
+    }
+
+    _isAlwaysSecondLevel(reason) {
+      if (!reason) return false;
+      const direct = reason.alwayssecondlevel ?? reason.AlwaysSecondLevel;
+      if (direct !== undefined) {
+        return direct === true || direct === 'true' || direct === 1 || direct === '1';
+      }
+      const data = reason.Data || {};
+      const nested = data.alwayssecondlevel ?? data.AlwaysSecondLevel;
+      return nested === true || nested === 'true' || nested === 1 || nested === '1';
     }
 
     // Empty table with reasons OR reasongroups
@@ -443,6 +487,17 @@ require('x-datetimerange/x-datetimerange');
         .attr('reason-text', reason.Display)
         .attr('details-required', reason.DetailsRequired);
       elt[0].reasondata = reason.Data;
+
+      // Add border-left color if color is provided by API
+      if (reason.Color) {
+        elt.css('border-left', '2px solid ' + reason.Color);
+      }
+
+      let spanReason = $('<span></span>').html(reason.Display);
+      if (reason.Description != undefined) {
+        $(spanReason).attr('title', reason.Description);
+      }
+      elt.append(spanReason);
       if (reason.DetailsRequired) {
         let applyWithComment = $('<div></div>')
           .addClass('applyreasonwithcomment').addClass('pushButton')
@@ -456,14 +511,20 @@ require('x-datetimerange/x-datetimerange');
         );
       }
       else if (!reasonNoDetails) {
-        let applyWithComment = $('<div></div>')
-          .addClass('applyreasonwithcomment').addClass('pushButton')
-          .html(this.getTranslation('withComment', 'with comment'));
+        let buttonsDiv = $('<div></div>').addClass('savereason-buttons');
+
         let apply = $('<div></div>')
-          .addClass('applyreason').addClass('pushButton')
+          .addClass('applyreason')
+          .addClass('pushButton')
           .html(this.getTranslation('apply', 'Apply'));
-        elt.append(applyWithComment)
-          .append(apply);
+
+        let applyWithComment = $('<div></div>')
+          .addClass('applyreasonwithcomment')
+          .addClass('pushButton')
+          .html(this.getTranslation('withComment', 'with comment'));
+
+        buttonsDiv.append(applyWithComment, apply);
+        elt.append(buttonsDiv);
 
         applyWithComment.click(
           function (e) {
@@ -488,11 +549,6 @@ require('x-datetimerange/x-datetimerange');
           }.bind(this)
         );
       }
-      let spanReason = $('<span></span>').html(reason.Display);
-      if (reason.Description != undefined) {
-        $(spanReason).attr('title', reason.Description);
-      }
-      elt.append(spanReason);
       group.find('ul').append(elt);
     }
 
@@ -536,7 +592,10 @@ require('x-datetimerange/x-datetimerange');
 
       this._savedRangesList = this._reasonsSelected; // To avoid clean when removeAllSelections
       // Remove selection in RSL
-      $('.dialog-savereason').find('x-reasonslotlist')[0].removeAllSelections();
+      let rsl = $('.dialog-savereason').find('x-reasonslotlist, x-reasonslotlistoperator')[0];
+      if (rsl) {
+        rsl.removeAllSelections();
+      }
 
       // CLOSE if needed - NOW - To avoid creating unwanted revision progress
       if (this._closeAfterSave) {

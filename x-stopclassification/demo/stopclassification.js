@@ -8,7 +8,6 @@ var pulseConfig = require('pulseConfig');
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonSelection');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/SaveReason');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision')
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetMachine');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonOnlySlots');
 

@@ -112,12 +112,21 @@ x-savereason {
 
         ul {
           margin: 0;
-          padding: 5px 0 0 0;
+          padding: 0;
 
           li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             list-style-type: none;
-            padding: 0 5px 5px 5px;
+            padding: 3px 5px 3px 5px;
             height: 27px;
+
+            .savereason-buttons {
+              display: flex;
+              align-items: center;
+              gap: 5px;
+            }
 
             span {
               line-height: 27px;
@@ -129,10 +138,8 @@ x-savereason {
 
             .applyreason,
             .applyreasonwithcomment {
-              float: right;
               height: 24px;
               line-height: 24px;
-              margin-left: 5px;
             }
 
             .applyreason {
@@ -147,6 +154,19 @@ x-savereason {
           li[details-required='true'] {
             .applyreasonwithcomment {
               width: 240px;
+            }
+          }
+        }
+
+        &:not([data-flat='true']) {
+          ul {
+            li {
+              padding-left: 6px;
+              border-left: 2px solid @color_highlight;
+
+              span {
+                line-height: 20px;
+              }
             }
           }
         }
