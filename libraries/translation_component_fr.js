@@ -266,6 +266,18 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     optionIdentified: 'Montrer les périodes classifiées',
     optionRunning: 'Montrer les périodes actives',
   },
+    reasonslotlistoperator: {
+    idle: 'Arrêtée',
+    loading: 'En chargement...',
+    motion: 'En mouvement',
+    noPeriod: 'Pas de période possible sur la place spécifiée',
+      defineReason: 'Définir la raison',
+    sectionTimeRangeTitle: 'Selectionner une période de temps',
+    sectionPeriodTitle: 'Selectionner une ou plusieurs périodes',
+    sectionReasonTitle: 'Classifier la/les période(s) sélectionnée(s)',
+    optionIdentified: 'Montrer les périodes classifiées',
+    optionRunning: 'Montrer les périodes actives',
+  },
   reportdatetime: {
     invalidGroupDisplayForm: 'Attribut groupDisplayForm invalide',
     invalidGroupName: 'Nom de groupe invalide',

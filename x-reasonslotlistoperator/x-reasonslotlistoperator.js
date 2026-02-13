@@ -30,6 +30,7 @@ require('x-savereason/x-savereason');
 require('x-highlightperiodsbar/x-highlightperiodsbar');
 require('x-revisionprogress/x-revisionprogress');
 require('x-stopclassification/x-stopclassification');
+require('x-tr/x-tr');
 
 
 (function () {
@@ -516,8 +517,11 @@ require('x-stopclassification/x-stopclassification');
 
       let defineReasonButton = $('<button type="button"></button>')
         .addClass('reasonslotlistoperator-define-button')
-        .text(this.getTranslation('defineReason', 'Define reason'))
         .prop('disabled', true);
+      let defineReasonLabel = $('<x-tr></x-tr>')
+        .attr('key', 'defineReason')
+        .attr('default', 'Define reason');
+      defineReasonButton.append(defineReasonLabel);
       defineReasonButton.on('click', function () {
         this._openStopClassificationForSelection();
       }.bind(this));
