@@ -488,7 +488,7 @@ require('x-revisionprogress/x-revisionprogress');
             let url = this.getConfigOrAttribute('path', '') + 'ReasonSave/Post'
                 + '?MachineId=' + machineId;
             if (classificationId != null) {
-                url = url + '&ReasonId=' + classificationId;
+                url = url + '&ClassificationId=' + classificationId;
             }
 
             if (details) {

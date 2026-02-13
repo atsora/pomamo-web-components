@@ -430,16 +430,16 @@ require('x-datetimerange/x-datetimerange');
     }
 
     _addReasonInGroup(group, reason) {
-      let reasonId;
+      let classificationId;
       let reasonNoDetails = false;
 
-      if (reason.ClassificationId) reasonId = reason.ClassificationId;
-      else reasonId = reason.Id;
+      if (reason.ClassificationId) classificationId = reason.ClassificationId;
+      else classificationId = reason.Id;
 
       if (reason.NoDetails) reasonNoDetails = reason.NoDetails;
 
       let elt = $('<li></li>')
-        .attr('reason-id', reasonId)
+        .attr('reason-id', classificationId)
         .attr('reason-text', reason.Display)
         .attr('details-required', reason.DetailsRequired);
       elt[0].reasondata = reason.Data;
@@ -480,8 +480,7 @@ require('x-datetimerange/x-datetimerange');
         let apply = $('<div></div>')
           .addClass('applyreason').addClass('pushButton')
           .html(this.getTranslation('apply', 'Apply'));
-        elt.append(applyWithComment)
-          .append(apply);
+        elt.append(apply);
 
         apply.click(
           function (e) {
@@ -513,7 +512,7 @@ require('x-datetimerange/x-datetimerange');
       let url = this.getConfigOrAttribute('path', '') + 'ReasonSave/Post' // was 'SaveReasonV2'
         + '?MachineId=' + machineId;
       if (classificationId != null) {
-        url = url + '&ReasonId=' + classificationId;
+        url = url + '&ClassificationId=' + classificationId;
       }
 
       if (details) {
