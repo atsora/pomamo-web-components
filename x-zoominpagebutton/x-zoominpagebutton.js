@@ -62,10 +62,14 @@ var pulseSvg = require('pulseSvg');
       // Click
       $(this._content).click(
         function (e) {
+          console.log('--- [DEBUG] CLICK sur ZoomIn ---');
           // Go to same page with new groupid
           let url = window.location.href;
+          console.log('[DEBUG] Click URL base:', url);
           let newgroupid = $(this.element).attr('group');
+          console.log('[DEBUG] Target Group ID:', newgroupid);
           let currentgroupids = pulseConfig.getArray('group')//pulseUtility.getURLParameterValues(url, 'group'); == not enough
+          console.log('[DEBUG] Current Groups from Config:', currentgroupids);
           // Remove current group
           url = pulseUtility.removeURLParameter(url, 'group');
           // Remove machine, because not known
