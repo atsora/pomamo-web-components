@@ -275,7 +275,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     optionIdentified: 'Show identified idle periods',
     optionRunning: 'Show running periods',
   },
-    reasonslotlistoperator: {
+    unansweredreasonslotlist: {
     idle: 'Idle',
     loading: 'Loading...',
     motion: 'Motion',
@@ -640,7 +640,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     optionIdentified: 'Montrer les périodes classifiées',
     optionRunning: 'Montrer les périodes actives',
   },
-    reasonslotlistoperator: {
+    unansweredreasonslotlist: {
     idle: 'Arrêtée',
     loading: 'En chargement...',
     motion: 'En mouvement',

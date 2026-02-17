@@ -33,7 +33,7 @@ require('x-datetimegraduation/x-datetimegraduation');
 require('x-bartimeselection/x-bartimeselection');
 // reason change
 require('x-reasonslotbar/x-reasonslotbar');
-require('x-reasonslotlistoperator/x-reasonslotlistoperator');
+require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
 // workinfo display
 require('x-operationcyclebar/x-operationcyclebar');
 require('x-operationslotbar/x-operationslotbar');
@@ -425,7 +425,7 @@ var openChangeReasonDialog = exports.openChangeReasonDialog = function (componen
   let machid = $(component.element).attr('machine-id');
   let rangeString = dtRange.toString(d => d.toISOString());
   let role = pulseConfig.getAppContextOrRole && pulseConfig.getAppContextOrRole();
-  let reasonslotlistTag = (role === 'operator') ? 'x-reasonslotlistoperator' : 'x-reasonslotlist';
+  let reasonslotlistTag = (role === 'operator') ? 'x-unansweredreasonslotlist' : 'x-reasonslotlist';
   let xreasonslotlist = pulseUtility.createjQueryElementWithAttribute(reasonslotlistTag, {
     'machine-id': machid,
     'only-overwrite-required': true, //component.requiredReason,

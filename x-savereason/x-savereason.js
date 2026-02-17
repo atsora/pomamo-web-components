@@ -592,7 +592,7 @@ require('x-datetimerange/x-datetimerange');
 
       this._savedRangesList = this._reasonsSelected; // To avoid clean when removeAllSelections
       // Remove selection in RSL
-      let rsl = $('.dialog-savereason').find('x-reasonslotlist, x-reasonslotlistoperator')[0];
+      let rsl = $('.dialog-savereason').find('x-reasonslotlist, x-unansweredreasonslotlist')[0];
       if (rsl) {
         rsl.removeAllSelections();
       }

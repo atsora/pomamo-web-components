@@ -266,7 +266,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     optionIdentified: 'Montrer les périodes classifiées',
     optionRunning: 'Montrer les périodes actives',
   },
-    reasonslotlistoperator: {
+    unansweredreasonslotlist: {
     idle: 'Arrêtée',
     loading: 'En chargement...',
     motion: 'En mouvement',
