@@ -2,6 +2,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+review la construction de cette page : le dialog savereason
+devrait pas avoir à etre initialisé ici : il devrait seulement etre appelé
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+*/
+
+
 /**
  * @file Various functions.
  */
@@ -204,7 +211,6 @@ var openDetails = exports.openDetails = function (component, fullRange, cellRang
     autoClose: true,
     autoDelete: true,
     bigSize: true,
-    fixedHeight: true,
     helpName: 'details'
   });
   pulseCustomDialog.open('#' + dialogId);
@@ -363,7 +369,6 @@ exports.openChangeWorkInfoDialog = function (component, dtRange) {
     okButton: 'hidden',
     cancelButton: 'hidden',
     fullScreenOnSmartphone: true,
-    fixedHeight: true,
     bigSize: true
   });
 
@@ -418,7 +423,6 @@ var openChangeReasonDialog = exports.openChangeReasonDialog = function (componen
     okButton: 'hidden',
     cancelButton: 'hidden',
     fullScreenOnSmartphone: true,
-    fixedHeight: true,
     bigSize: true,
     helpName: 'savereason'
   });
@@ -470,7 +474,6 @@ var openChangeScrapClassificationDialog = exports.openChangeScrapClassificationD
     okButton: 'hidden',
     cancelButton: 'hidden',
     fullScreenOnSmartphone: true,
-    fixedHeight: true,
     fullSize: true,
     helpName: 'savereason',
     className: 'scrapclassification'
@@ -514,7 +517,6 @@ var openChangeStopClassificationDialog = exports.openChangeStopClassificationDia
     okButton: 'hidden',
     cancelButton: 'hidden',
     fullScreenOnSmartphone: true,
-    fixedHeight: true,
     bigSize: true,
     helpName: 'savereason',
     className: 'stopclassification'
@@ -609,7 +611,6 @@ exports.openRunningDialog = function (groupId) {
     okButton: 'hidden',
     cancelButton: 'hidden',
     fullScreenOnSmartphone: true,
-    fixedHeight: true,
     fullSize: true
   });
 

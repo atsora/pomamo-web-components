@@ -13,8 +13,6 @@
 
 x-machineselection {
   display: block;
-  /* To make isVisible work. Chrome: always inline */
-  // Warning ! Do not add css here because of dialog
 }
 
 ////////// ////////// ////////// ////////// //////////
@@ -26,6 +24,8 @@ x-machineselection {
   flex-direction: column;
   align-items: stretch;
   font-size: 1.5em;
+  flex: 1 1 auto;
+  min-height: 0;
 
   .machineselection-switch-group-machines {
     display: flex;
@@ -80,9 +80,11 @@ x-machineselection {
 .machineselection-container-page1 {
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+
   border-radius: @border_radius;
   border: 1px solid @color_window_border;
-  row-gap: 32px;
   margin-top: 33px;
   margin-left: auto;
   margin-right: auto;
@@ -93,7 +95,6 @@ x-machineselection {
 }
 
 // Header with buttons
-// @button-icon-size : 24px; // Could be common
 .machineselection-buttons {
   display: flex;
   flex-direction: row;
@@ -125,8 +126,9 @@ x-machineselection {
 
 // Group list
 .machineselection-categorylist {
-  height: 100%;
-  overflow: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
 
   color: @color_text_alternate;
   font-size: 1.1em;
@@ -164,7 +166,6 @@ x-machineselection {
 .machineselection-category.expandable {
   .machineselection-subcategory-visibility {
     .show-sub {
-      //.create_svg('machineselection-sort-down-solid'); // outside to managed COLOR -> is-main or not
       cursor: pointer;
       height: 19px;
       width: 19px;
@@ -172,7 +173,6 @@ x-machineselection {
     }
 
     .hide-sub {
-      //.create_svg('machineselection-sort-up-solid'); // outside to managed COLOR -> is-main or not
       cursor: pointer;
       height: 19px;
       width: 19px;
@@ -192,10 +192,6 @@ x-machineselection {
     }
 
     &.opened {
-      /*.show-sub {
-        display: none;
-      }*/
-
       .hide-sub {
         display: block;
       }
@@ -205,17 +201,12 @@ x-machineselection {
       .show-sub {
         display: block;
       }
-
-      /*.hide-sub {
-        display: none;
-      }*/
     }
   }
 
   .machineselection-category-content {
     display: flex;
     flex-direction: column;
-
     border-left: 1px dashed @color_text_alternate;
     margin-left: 11px;
     padding-left: 9px;
@@ -228,7 +219,6 @@ x-machineselection {
   }
 
   span.category-display {
-    // '...'
     display: inline-block;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -289,7 +279,6 @@ x-machineselection {
   }
 }
 
-//
 .machineselection-category-row.is-main {
   color: @color_text;
   font-weight: bold;
@@ -313,14 +302,13 @@ x-machineselection {
   column-gap: 16px;
 
   .show-sub {
-    .create_svg('machineselection-sort-down-solid', @color_text_alternate); // machineselection-categorylist - TEXT COLOR
+    .create_svg('machineselection-sort-down-solid', @color_text_alternate);
   }
 
   .hide-sub {
-    .create_svg('machineselection-sort-up-solid', @color_text_alternate); // machineselection-categorylist - TEXT COLOR
+    .create_svg('machineselection-sort-up-solid', @color_text_alternate);
   }
 }
-
 
 // MACHINES
 .machineselection-machines-search-div {
@@ -328,6 +316,7 @@ x-machineselection {
   flex-direction: row;
   justify-content: start;
   align-items: center;
+  margin: 8px 0;
 
   .machineselection-machines-title {
     font-weight: bold;
@@ -356,7 +345,6 @@ x-machineselection {
 
   .machineselection-clear-search {
     margin-left: 5px;
-
     height: 16px !important;
     width: 16px !important;
     .create_svg('machineselection-cancel', @color_text, @color_highlight);
@@ -364,19 +352,18 @@ x-machineselection {
 }
 
 .machineselection-machines-list-container {
-  flex-shrink: 50;
-  flex-grow: 3;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: block;
 
-  overflow: auto;
   background-color: @color_background;
   color: @color_text_alternate;
-
 
   .machineselection-machines-list {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-
     background-color: @color_background;
     color: @color_text_alternate;
     font-size: 1.1em;
@@ -428,54 +415,57 @@ x-machineselection {
 
       .machineselection-add-machine-button {
         float: right;
-        height: 1em; // just below font-size
+        height: 1em;
         width: 1em;
         margin: 0 4px;
-        //cursor: pointer; In parent
-        pointer-events: none; // to allow click through
-
+        pointer-events: none;
         .create_svg('machineselection-arrow-right', @color_text_alternate, @color_text);
       }
 
       .machineselection-remove-machine-button {
-        //display: none; // Default - excepted selected (see parent css)
-
         float: right;
-        height: 1em; // just below font-size
+        height: 1em;
         width: 1em;
         margin: 0 4px;
-        //cursor: pointer; In parent
-        pointer-events: none; // to allow click through
-
+        pointer-events: none;
         .create_svg('machineselection-arrow-left', @color_highlight, @color_text_alternate);
       }
 
       .machines-display {
         white-space: nowrap;
         margin-left: 2px;
-        //cursor: default;
-        pointer-events: none; // to allow click through
+        pointer-events: none;
       }
     }
   }
 }
 
+////////// ////////// ////////// ////////// ////////// //////////
+// 3- PAGES ET LAYOUT
+////////// ////////// ////////// ////////// ////////// //////////
 
-////////// ////////// ////////// ////////// ////////// //////////
-// 3- Right Page (preview)
-////////// ////////// ////////// ////////// ////////// //////////
 .machineSelectionDialogPart1 {
-  overflow: auto;
-  width: 60% !important;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
 }
 
 .machineSelectionDialogPart2 {
-  width: 40% !important;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
 
   .machineselection-page2 {
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    flex: 1 1 auto;
+    min-height: 0;
+
     border-radius: @border_radius;
     border: 1px solid @color_window_border;
     padding: 12px 0px;
@@ -484,6 +474,7 @@ x-machineselection {
     margin-left: auto;
     margin-right: auto;
     row-gap: 15px;
+
     font-size: 1.5em;
 
     // SELECTION
@@ -494,7 +485,6 @@ x-machineselection {
     .machineselection-selection-header {
       font-weight: bold;
       margin: 3px 28.5px;
-      //color: @color_highlight; // Too much ?
 
       .machineselection-title {
         font-size: 1.2em;
@@ -503,8 +493,10 @@ x-machineselection {
     }
 
     .machineselection-selection-list-container {
-      flex-shrink: 50;
-      flex-grow: 3;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+
       background-color: @color_background;
       color: @color_text_alternate;
       padding-left: 28.5px;
@@ -571,7 +563,6 @@ x-machineselection {
               opacity: 0;
             }
 
-            // Begin smartphone ?
             .reorderUpButton,
             .reorderDownButton,
             .reorderButton {
@@ -585,7 +576,6 @@ x-machineselection {
               display: inline-block;
               width: 20px;
               height: 20px;
-              //margin: 5px;
               z-index: 1;
               cursor: pointer;
             }
@@ -595,40 +585,32 @@ x-machineselection {
               display: inline-block;
               width: 20px;
               height: 20px;
-              //margin: 5px;
               z-index: 1;
               cursor: pointer;
             }
 
-            // End smartphone ?
-
             .reorderButton {
-              //display: inline-block; = conflict with none below
               background-image: url('@{imagedir}/machineselection-reorder.png');
-              display: inline-block; // Default
+              display: inline-block;
               width: 4px;
               height: 14px;
               cursor: grab;
-              //margin: 8px 8px 8px 5px;
               margin: 2px 8px 2px 5px;
             }
 
             .selection-display {
               display: inline-block;
               vertical-align: super;
-
               overflow: hidden;
               text-overflow: ellipsis;
             }
 
             .remove-button {
               float: right;
-              height: 1em; // just below font-size
+              height: 1em;
               width: 1em;
-
               margin: 2px;
               margin-left: 3px;
-
               .create_svg('machineselection-times-circle', @color_text_alternate, @color_red);
               cursor: pointer;
             }
@@ -679,38 +661,35 @@ x-machineselection {
       .machineselection-preview-title {
         font-size: 0.9em;
         font-style: italic;
-
-        opacity: 0.7; // == simulate disabled
+        opacity: 0.7;
         color: @color_text;
       }
 
       x-freetext {
         font-size: 0.6em;
         font-style: italic;
-        font-weight: normal; // not bold
-        color: @color_highlight; // == dynamic
+        font-weight: normal;
+        color: @color_highlight;
       }
 
       .machineselection-usemachines-button {
-        height: 1em; // just below font-size
+        height: 1em;
         width: 1em;
         margin-right: 13px;
-
         .create_svg('machineselection-arrow-alt-circle-up-solid', @color_text, @color_highlight);
         cursor: pointer;
       }
     }
 
     .machineselection-preview-list-container {
-      flex-shrink: 50;
-      flex-grow: 3;
-      min-height: 15%;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
 
       box-sizing: border-box;
       padding-left: 28.5px;
       padding-right: 28.5px;
 
-      overflow-y: auto;
       color: @color_text_alternate;
 
       .machineselection-preview-list {
@@ -724,7 +703,6 @@ x-machineselection {
         x-grouparray {
           .group-main {
             margin: 0;
-
             display: flex;
             flex-wrap: wrap;
 
@@ -736,14 +714,12 @@ x-machineselection {
 
             >.pulse-message-div {
               padding: 0;
-              //position: relative; ... Grrr ! TODO : Trouver une solution !
             }
 
             x-machinedisplay {
-              font-weight: normal; // not bold
+              font-weight: normal;
               .bar-rounded-shadow;
-
-              opacity: 0.6; // == simulate disabled
+              opacity: 0.6;
               margin: 3px;
               padding: 1px 3px;
 
@@ -764,34 +740,41 @@ x-machineselection {
 }
 
 ////////// ////////// ////////// ////////// //////////
-// 4-Summary -> in Web App
-////////// ////////// ////////// ////////// //////////
-/*.machineselection-summary ul {
-  li {}
-}*/
-
-////////// ////////// ////////// ////////// //////////
-// 5- Others - phone display
+// OVERRIDES RESPONSIVE BUREAU / TELEPHONE
 ////////// ////////// ////////// ////////// //////////
 
-// Phone display
-@media (max-width: 685px) {
-  .reorderButton {
-    display: none !important;
-  }
-}
-
-// Not phone display
 @media (min-width: 686px) {
+
+  .machineSelectionDialogPart1 {
+    width: 60% !important;
+    flex: 0 0 60% !important;
+    border-right: 1px solid @color_window_border;
+  }
+
+  .machineSelectionDialogPart2 {
+    width: 40% !important;
+    flex: 0 0 40% !important;
+  }
 
   .reorderUpButton,
   .reorderDownButton {
     display: none !important;
   }
 
-
   .machineselection-machine-label,
   .machineselection-group-label {
     display: none;
+  }
+}
+
+@media (max-width: 685px) {
+
+  .reorderButton {
+    display: none !important;
+  }
+
+  .machineselection-page1 .machineselection-switch-group-machines button {
+    font-size: 1em !important;
+    padding: 10px !important;
   }
 }

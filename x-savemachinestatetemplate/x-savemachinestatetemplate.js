@@ -159,7 +159,6 @@ require('x-modificationmanager/x-modificationmanager');
         title: title,
         autoClose: true,
         autoDelete: true,
-        fixedHeight: true,
         bigSize: true,
         okButton: 'hidden',
         helpName: 'savemachinestatetemplate',

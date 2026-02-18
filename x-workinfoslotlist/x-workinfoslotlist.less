@@ -26,25 +26,8 @@ x-workinfoslotlist {
     display: inline-block;
     width: 100%;
   }
-  
- /* .workinfoslotlist-filter {
-    display: inline-block;
-    margin-left: 6px;
-    font-size: 0.8em;
-  }
-  
-  .workinfoslotlist-filter input {
-    margin-right: 5px;
-  }
 
-  .row-selected {
-    font-weight: bold;
-    color: @color_highlight;
-    .overwrite-required {
-      color: @color_highlight;
-    }
-  }
-  */
+
   .workinfoslotlist-bar {
     x-operationslotbar {
       //border: none; // SAME as below for right/left
@@ -55,7 +38,7 @@ x-workinfoslotlist {
       border-top: 1px solid transparent;
     }
   }
-  
+
   .fixed-header {
     padding: 10px;
 
@@ -99,11 +82,11 @@ x-workinfoslotlist {
     float: left;
     margin-top: 1px;
   }*/
-  
+
   .workinfoslotlist-td-desc {
     padding-right: 30px;
     padding-left: 20px;
-    
+
     width: 100%;
     box-sizing: border-box;
   }
@@ -132,7 +115,7 @@ x-workinfoslotlist {
     &.missing {
       font-style: italic;
       color: @color_missing_value_highlight;
-      /*background-color: @color_missing_value_highlight; // pink color  
+      /*background-color: @color_missing_value_highlight; // pink color
       color: @color_missing_text;
       &:hover {
         background-color: @color_missing_value_fade !important; // pink color with tranparency
@@ -150,67 +133,16 @@ x-workinfoslotlist {
 
     //&.hasdata{ ? }
     &.nodata{
-      background-color: @color_missing_value_highlight; // pink color  
+      background-color: @color_missing_value_highlight; // pink color
       color: @color_missing_text;
       &:hover {
         background-color: @color_missing_value_fade !important; // pink color with tranparency
       }
     }
   }
-/*
-  .workinfoslotlist-warning {
-    position: absolute;
-    left: 11px;
-    right: 11px;
-    bottom: 26px;
-    padding: 5px;
-    text-align: center;
-    background-color: fade(@color_red, 70%);
-  }*/
+
 } // end workinfoslotlist
 
-/*
-.dialog-savereason x-workinfoslotlist {
-  height: 100%;
-}
-
-.dialog-savereason-page2 {
-  padding: 10px;
-}
-
-.dialog-savereason-page2 x-savereason {
-  position: absolute;
-  top: 30px;
-  right: 10px;
-  bottom: 10px;
-  left: 10px;
-}
-
-.workinfoslotlist-header-label {
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.workinfoslotlist-top-div {
-  height: 20px;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 5px;
-}
-.workinfoslotlist-filter {
-  font-size: 1em;
-}
-
-@media (max-width: 920px) {
-  .workinfoslotlist .datetimerange-rangedisplay {
-    display: block;
-  }
-  x-workinfoslotlist .scrollable-content {
-    top: 170px !important;
-  }
-}
-*/
 
 .dialog-saveworkinfo x-workinfoslotlist {
   height: 100%;

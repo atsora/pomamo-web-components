@@ -56,7 +56,6 @@ require('x-revisionprogress/x-revisionprogress');
       self._xsaveReason = null;
 
       // Map [revisionid] = {revisionid,range,kind,machineid,initModifications,pendingModifications}
-      // How to use map : https://www.zendevs.xyz/les-nouveaux-objets-set-et-map-en-javascript-es6/
       self._mapOfModifications = new Map();
 
       self.methods = {
@@ -66,12 +65,8 @@ require('x-revisionprogress/x-revisionprogress');
       return self;
     }
 
-    /**
-     * Associated range in native Javascript Date
-     *
-     * @return {pulseRange:DateRange} Current range in native Javascript Date
-     */
     get range() { return this._range; }
+
     _setAutoRange() {
       if (this.element.hasAttribute('range')) {
         let attr = this.element.getAttribute('range');
@@ -97,13 +92,10 @@ require('x-revisionprogress/x-revisionprogress');
               this.onDateTimeRangeChange.bind(this));
           }
 
-          // For progress : update _mapOfModifications
           let modifMgr = $('body').find('x-modificationmanager');
           if (modifMgr.length == 1) {
             this._mapOfModifications = modifMgr[0].getModifications('reason',
               this.element.getAttribute('machine-id'));
-
-            // + REMOVE others with old machineid ? + create progress ? -> TODO later !
           }
 
           this.start();
@@ -137,29 +129,27 @@ require('x-revisionprogress/x-revisionprogress');
       this._numberOfDisplayedItems = 0;
       this._numberOfSelectableItems = 0;
 
-      let evt; // for selection
+      let evt;
       this._dataReasonsList.sort(function (a, b) {
         let aRange = pulseRange.createDateRangeFromString(a.Range);
         let bRange = pulseRange.createDateRangeFromString(b.Range);
-        return bRange.lower.getTime() - aRange.lower.getTime(); // Du plus récent au plus ancien
+        return bRange.lower.getTime() - aRange.lower.getTime();
       });
-      for (let item of this._dataReasonsList) { // WAS this._dataReasonsList.reverse()) {
-        // Filter
+      for (let item of this._dataReasonsList) {
         if (item.Running) {
           if (!showMotion) {
-            continue; // Hide Motion if asked
+            continue;
           }
         }
-        else { // Not running
+        else {
           if (!item.OverwriteRequired && !showAllIdle) {
-            continue; // Hide others idle
+            continue;
           }
         }
         ++this._numberOfDisplayedItems;
-        //lastItem = item;
         let rangeString = item.Range;
 
-        if (item.Current == true) { // Bug in webservice? -> remove end
+        if (item.Current == true) {
           let tmpRange = pulseRange.createDateRangeFromString(rangeString);
           rangeString = pulseUtility.createDateRangeForWebService(tmpRange.lower);
         }
@@ -171,15 +161,14 @@ require('x-revisionprogress/x-revisionprogress');
           display += ' (' + details + ')';
         }
 
-        // fill machineModeDisplay
         let machineModeDisplay = '';
-        let catId = -2; // Not defined
+        let catId = -2;
         for (let mode of item.MachineModes) {
           machineModeDisplay += mode.Display + ',';
           if (catId == -2)
             catId = mode.Category.Id;
           else if (catId != -1 && catId != mode.Category.Id)
-            catId = -1; // multiple values
+            catId = -1;
         }
         let len = machineModeDisplay.length;
         if ((machineModeDisplay.length > 0) &&
@@ -204,7 +193,6 @@ require('x-revisionprogress/x-revisionprogress');
 
         tr.attr(attributeTr);
 
-        //if (item.Current == true) { // range.upper should be null
         let displayedRange = pulseUtility.displayDateRange(range);
 
         let tdCheck = $('<div></div>').addClass('reasonslotlist-td-check');
@@ -219,7 +207,6 @@ require('x-revisionprogress/x-revisionprogress');
 
         let tdReasonButton = $('<div></div>').addClass('reasonslotlist-td-icon');
         if (catId > 0) {
-          // New div for svg
           let svgDiv = $('<div></div>').addClass('reasonslotlist-reason-svg');
           let modeClass = pulseSvg.getMachineModeClass(catId);
           svgDiv.addClass(modeClass);
@@ -258,7 +245,6 @@ require('x-revisionprogress/x-revisionprogress');
           }
         }
 
-        // Manage progress
         let rangeRow = pulseRange.createDateRangeFromString(rangeString);
         let modif = this._getRangeInModifications(rangeRow);
         if (null != modif) {
@@ -278,12 +264,10 @@ require('x-revisionprogress/x-revisionprogress');
       this._skipList = false;
 
       if (1 == this._numberOfSelectableItems) {
-        if (//this._firstLoad&&
-          this.element.hasAttribute('skip1periodlist')
+        if (this.element.hasAttribute('skip1periodlist')
           && this.element.getAttribute('skip1periodlist')) {
           this._skipList = true;
         }
-        // select the only possibility + simulate CLICK
         if (!pulseUtility.isNotDefined(evt)) {
           this.checkBoxClick(evt);
         }
@@ -302,7 +286,6 @@ require('x-revisionprogress/x-revisionprogress');
       if (this.element.hasAttribute('demo'))
         return;
 
-      // create PAGE 2 -> done before for good display
       let dialogbox2 = $('<div></div>').addClass('dialog-savereason-page2')
         .append(`<div class="reasonslotlist-header-label">3. ${this.getTranslation('sectionReasonTitle', 'Apply a reason on the selected period(s)')}</div>`);
       let xsaveReason = pulseUtility.createjQueryElementWithAttribute('x-savereason', {
@@ -312,30 +295,28 @@ require('x-revisionprogress/x-revisionprogress');
       this._xsaveReason = xsaveReason;
       this._xsaveReason[0].closeAfterSave(this._skipList);
 
-      pulseCustomDialog.addPage('.dialog-savereason', dialogbox2);
+      if ($('.dialog-savereason').length > 0) {
+        // LE COMPOSANT NATIF S'OCCUPE DE CREER LA PAGE 2
+        pulseCustomDialog.addPage('.dialog-savereason', dialogbox2);
+      }
+
       return this._xsaveReason;
     }
 
     _reloadOrClose() {
       if ($('.dialog-savereason').length == 0)
-        return; // dialog has been closed. Stop refreshing !
+        return;
 
       if (this._skipList) {
-        // Close main dialog
         pulseCustomDialog.close('.dialog-savereason');
       }
       else {
-        // Go back to first page
         pulseCustomDialog.goToPage('.dialog-savereason', 0);
-
         $(this.element).find('x-highlightperiodsbar').get(0).cleanRanges();
         this.switchToContext('Reload');
       }
     }
 
-    /**
-     * @override
-     */
     getShortUrl() {
       let url = 'ReasonOnlySlots?MachineId=' + this.element.getAttribute('machine-id');
       url += '&Range=' + pulseUtility.convertDateRangeForWebService(this._range);
@@ -346,9 +327,6 @@ require('x-revisionprogress/x-revisionprogress');
       return url;
     }
 
-    /**
-     * Initialize the component
-     */
     initialize() {
       this.addClass('pulse-bigdisplay');
 
@@ -361,9 +339,8 @@ require('x-revisionprogress/x-revisionprogress');
         this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
-      this._setAutoRange(); // init _range from attribute
+      this._setAutoRange();
 
-      // Check the range is valid
       if (this.range == undefined) {
         console.error('undefined range');
         if (this.element.hasAttribute('period-context')) {
@@ -390,18 +367,12 @@ require('x-revisionprogress/x-revisionprogress');
         return;
       }
 
-      // In case of clone, need to be empty :
       $(this.element).empty();
 
-      // Create DOM - Content
-
-      // - x-datetimerange: to leave before all the others (why ?)
       let datetimerangeDiv = $('<div></div>').addClass('reasonslotlist-datetimerange');
       let xdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
         'range': this.range.toString(d => d.toISOString()),
         'period-context': 'RSL' + this.element.getAttribute('machine-id')
-        //,'not-editable' : 'true', ???
-        //'hide-buttons' :'true' ???
       });
       datetimerangeDiv.append(xdatetimerange);
 
@@ -410,7 +381,6 @@ require('x-revisionprogress/x-revisionprogress');
         .append(datetimerangeDiv)
         .append(`<div class="reasonslotlist-header-label">2. ${this.getTranslation('sectionPeriodTitle', 'Select one or more periods')}</div>`);
 
-      // - x-reasonslotbar + x-highlightperiodsbar
       let reasonBar = pulseUtility.createjQueryElementWithAttribute('x-reasonslotbar', {
         'machine-id': this.element.getAttribute('machine-id'),
         'period-context': 'RSL' + this.element.getAttribute('machine-id'),
@@ -429,33 +399,26 @@ require('x-revisionprogress/x-revisionprogress');
         .append(reasonBorder).append(highlightBar);
       fixedHeaderDiv.append(barDiv);
 
-      // - filter
       this._allIdleCheckbox = $("<input type='checkbox' id='reasonslotlist-allidle-checkbox' name='idle' value='AllIdle'>");
       let allIdlelabel = $("<label for='reasonslotlist-allidle-checkbox'></label>")
         .append(this.getTranslation('optionIdentified', 'Show identified idle periods'));
       this._motionCheckbox = $("<input type='checkbox' id='reasonslotlist-motion-checkbox' name='motion' value='AllMotion'>");
       let motionlabel = $("<label for='reasonslotlist-motion-checkbox'></label>")
         .append(this.getTranslation('optionRunning', 'Show running periods'));
-      // Change check -> Call Fill Table
+
       this._allIdleCheckbox.change(function () {
-        //let checked = $(this.element).is(':checked');
-        //this._onlyOverwriteRequired = !checked;
-        // Remove selection in bar
         $(this.element).find('x-highlightperiodsbar').get(0).cleanRanges();
         if (this._xsaveReason != null) {
           this._xsaveReason[0].cleanReasons();
         }
-        // Fill table (no-load needed)
         this.fillTable();
       }.bind(this));
 
       this._motionCheckbox.change(function () {
-        // Remove selection in bar
         $(this.element).find('x-highlightperiodsbar').get(0).cleanRanges();
         if (this._xsaveReason != null) {
           this._xsaveReason[0].cleanReasons();
         }
-        // Fill table (no-load needed)
         this.fillTable();
       }.bind(this));
 
@@ -468,17 +431,13 @@ require('x-revisionprogress/x-revisionprogress');
         .addClass('reasonslotlist-top-div')
         .append(divfilter);
 
-      // - table
       let divdata = $('<div></div>')
         .addClass('reasonslotlist-data');
-      // Scrollable-content
       let divScrollable = $('<div></div>').addClass('scrollable-content')
         .append(divdata);
 
-      // Warning "No selectable periods in the specified range"
       let warningDiv = $('<div></div>').addClass('reasonslotlist-warning').html('No selectable periods on the specified range');
 
-      // - main
       let maindiv = $('<div></div>')
         .addClass('reasonslotlist')
         .append(fixedHeaderDiv)
@@ -486,26 +445,21 @@ require('x-revisionprogress/x-revisionprogress');
         .append(topDiv)
         .append(warningDiv);
 
-      // Create DOM - Loader
       let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loading', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this.element).append(loaderDiv);
 
       $(this.element).append(maindiv);
 
-      // listeners / dispatchers
       eventBus.EventBus.addEventListener(this,
         'dateTimeRangeChangeEvent',
         'RSL' + this.element.getAttribute('machine-id'),
         this.onDateTimeRangeChange.bind(this));
 
-      // Get modifications and create listener
       let modifMgr = $('body').find('x-modificationmanager');
       if (modifMgr.length == 1) {
         this._mapOfModifications = modifMgr[0].getModifications('reason',
           this.element.getAttribute('machine-id'));
-
-        // TODO Later + create progress ?
       }
       eventBus.EventBus.addGlobalEventListener(this,
         'modificationEvent', this.onModificationEvent.bind(this));
@@ -514,30 +468,20 @@ require('x-revisionprogress/x-revisionprogress');
     }
 
     clearInitialization() {
-      // Parameters
-      // DOM
       $(this.element).empty();
 
       this._allIdleCheckbox = undefined;
       this._motionCheckbox = undefined;
-      this._allIdleCheckbox = undefined;
       this._xsaveReason = null;
-      //this._messageSpan = undefined;
 
       super.clearInitialization();
     }
 
-    reset() { // Optional implementation
-      // Code here to clean the component when the component has been initialized for example after a parameter change
+    reset() {
       this.removeError();
-      // Empty this.?
-
       this.switchToNextContext();
     }
 
-    /**
-     * @override
-     */
     refresh(data) {
       let divfilter = $(this.element).find('.reasonslotlist div.reasonslotlist-filter').first();
       divfilter.show();
@@ -548,7 +492,6 @@ require('x-revisionprogress/x-revisionprogress');
         .addClass('reasonslotlist-table  pulse-selection-table-container');
       this._dataReasonsList = data.ReasonOnlySlots
 
-      // Prepare the visibility of elements
       let hasSelectableNonIdentified = false;
       let hasSelectableIdentified = false;
       let hasSelectableMotion = false;
@@ -566,7 +509,6 @@ require('x-revisionprogress/x-revisionprogress');
           $(this._motionCheckbox)[0].checked = true;
       }
 
-      // Warning "No selectable periods in the specified range"
       if (!hasSelectableNonIdentified && !hasSelectableIdentified && !hasSelectableMotion) {
         $(this.element).find('.reasonslotlist-warning').show();
       }
@@ -574,7 +516,6 @@ require('x-revisionprogress/x-revisionprogress');
         $(this.element).find('.reasonslotlist-warning').hide();
       }
 
-      // Fill the table
       this.fillTable();
 
       let datetimerangeDiv = $(this.element).find('.reasonslotlist-datetimerange');
@@ -586,13 +527,9 @@ require('x-revisionprogress/x-revisionprogress');
         });
       datetimerangeDiv.append(xdatetimerange);
 
-      // Prepare page 2 if not done
       this._getXSaveReason();
     }
 
-    /**
-     * @override
-     */
     displayError(text) {
       let divfilter = $(this.element).find('.reasonslotlist div.reasonslotlist-filter').first();
       divfilter.hide();
@@ -604,47 +541,22 @@ require('x-revisionprogress/x-revisionprogress');
       this._table.append('<div>' + text + '</div>');
     }
 
-    /**
-     * @override
-     */
     removeError() {
       this.displayError('');
     }
 
-    /**
-     * @override
-     */
     startLoading() {
-      $(this.element).find('.reasonslotlist').hide();
+      $(this.element).find('.reasonslotlist').css('display', 'none');
       super.startLoading();
-      //pulseCustomDialogs.showLoadingDialog($(this.component));
     }
 
-    /**
-     * @override
-     */
     endLoading() {
-      //pulseCustomDialogs.hideLoadingDialog($(this.component));
-      $(this.element).find('.reasonslotlist').show();
+      $(this.element).find('.reasonslotlist').css('display', 'flex'); // Modification ici pour Flex
       super.endLoading();
     }
 
-    /** Check if range is in modification list */
-    /*_isRangeInModifications (range) {
-      for (let modif of this._mapOfModifications) { // kind, machineid == ok
-        for (let i = 0; i < modif[1].ranges.length; i++) {
-          if (pulseRange.overlaps(modif[1].ranges[i], range)) {
-            if (modif[1].pendingModifications != 0)
-              return true;
-          }
-        }
-      }
-      return false;
-    }*/
-
-    /** Check if range is in modification list AND get it ! */
     _getRangeInModifications(range) {
-      for (let modif of this._mapOfModifications) { // kind, machineid == ok
+      for (let modif of this._mapOfModifications) {
         for (let i = 0; i < modif[1].ranges.length; i++) {
           if (pulseRange.overlaps(modif[1].ranges[i], range)) {
             if (modif[1].pendingModifications != 0)
@@ -655,16 +567,8 @@ require('x-revisionprogress/x-revisionprogress');
       return null;
     }
 
-    // Event bus callbacks
-
-    /**
-     * Event bus callback triggered when the date/time range changes
-     *
-     * @param {Object} event
-     */
     onDateTimeRangeChange(event) {
       let newRange = event.target.daterange;
-      // TODO use event.target.range
       if (!pulseRange.equals(newRange, this._range, (a, b) => a.getTime() == b.getTime())) {
         this._range = newRange;
 
@@ -677,14 +581,6 @@ require('x-revisionprogress/x-revisionprogress');
       }
     }
 
-    /**
-     * Event bus callback triggered when a reload message is received
-     *
-     * @param {Object} event includes :
-     * revisionid, machineid, kind, range,
-     * initModifications: undefined, // pending modifications the first time
-     * pendingModifications: undefined // pending modifications 'now'
-     */
     onModificationEvent(event) {
       let modif = event.target;
       if (event.target.kind != 'reason') {
@@ -700,10 +596,7 @@ require('x-revisionprogress/x-revisionprogress');
       this._mapOfModifications.set(modif.revisionid, modif);
 
       if (isNew) {
-        // First time -> create progress barS
         for (let iModif = 0; iModif < modif.ranges.length; iModif++) {
-
-          // Find associated range.s
           let rows = $(this.element).find('.reasonslotlist-tr');
           for (let iRow = 0; iRow < rows.length; iRow++) {
             let rangeRowStr = $(rows[iRow]).attr('range');
@@ -731,17 +624,7 @@ require('x-revisionprogress/x-revisionprogress');
           }
         }
       }
-      // else = do nothing (progress en cours)
     }
-
-    /**
-     * Event bus callback triggered when a reload message is received
-     *
-     * @param {Object} event
-     */
-    /*    onReload (event) {
-          this._reloadOrClose();
-        }*/
 
     _getRangeWithCurrent(range, current) {
       let r;
@@ -782,27 +665,19 @@ require('x-revisionprogress/x-revisionprogress');
 
       }
       let xSR = this._getXSaveReason();
-      if (xSR != null) { // No dialog in a testing environment
+      if (xSR != null) {
         xSR[0].cleanReasons();
       }
       let highlightBar = $(this.element).find('x-highlightperiodsbar');
       highlightBar.get(0).cleanRanges();
     }
 
-    // DOM Events
-
-    /**
-     * DOM event callback triggered on check box click
-     *
-     * @param {event} e - DOM event
-     */
     checkBoxClick(e) {
       let row = $(e.target).closest('.reasonslotlist-tr');
-      let tdCheck = row.find('input[type=checkbox]');//.first();
+      let tdCheck = row.find('input[type=checkbox]');
       if (this._firstLoad) {
         if ($(tdCheck).length > 0)
-          $(tdCheck)[0].checked = true; // pour afficher le check
-        //checked = true; // fait ci-dessous
+          $(tdCheck)[0].checked = true;
       }
       let checked = $(tdCheck).is(':checked');
       let highlightBar = $(this.element).find('x-highlightperiodsbar');
@@ -822,7 +697,7 @@ require('x-revisionprogress/x-revisionprogress');
         row.addClass('row-selected');
         highlightBar.get(0).addRange(range);
         let xSR = this._getXSaveReason();
-        if (xSR != null) { // No dialog in a testing environment
+        if (xSR != null) {
           xSR[0].addReason(reasonSelected);
           if (isDefault == 'false') {
             row.addClass('row-notdefault-selected');
@@ -833,7 +708,7 @@ require('x-revisionprogress/x-revisionprogress');
         row.removeClass('row-selected');
         highlightBar.get(0).removeRange(range);
         let xSR = this._getXSaveReason();
-        if (xSR != null) { // No dialog in a testing environment
+        if (xSR != null) {
           xSR[0].removeReason(reasonSelected);
           if (isDefault == 'false') {
             row.removeClass('row-notdefault-selected');
@@ -842,18 +717,12 @@ require('x-revisionprogress/x-revisionprogress');
       }
     }
 
-    /**
-     * DOM event callback triggered on a row click
-     *
-     * @param {event} e - DOM event
-     */
     rowClick(e) {
       let row = $(e.target).closest('.reasonslotlist-tr');
       let isSelectable = $(row).attr('is-selectable');
       if (isSelectable == 'false') {
         return;
       }
-      // toggle == click on check
       let tdCheck = row.find('input[type=checkbox]').first();
       $(tdCheck).click();
     }

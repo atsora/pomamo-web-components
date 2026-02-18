@@ -251,7 +251,7 @@ require('x-tr/x-tr');
           }.bind(this)
         );
 
-        tr.append(tdReasonButton).append(tdCheck).append(desc);
+        tr.append(tdReasonButton).append(desc).append(tdCheck);
         this._table.append(tr);
 
         if (item.IsSelectable) {
@@ -296,33 +296,6 @@ require('x-tr/x-tr');
       }
       this._firstLoad = false;
       this._updateDefineReasonButtonState();
-    }
-
-    _getXSaveReason() {
-      if (!pulseUtility.isNotDefined(this._xsaveReason)) {
-        return this._xsaveReason;
-      }
-
-      if (this.element.hasAttribute('demo'))
-        return;
-
-      let role = pulseConfig.getAppContextOrRole && pulseConfig.getAppContextOrRole();
-      if (role === 'operator') {
-        return;
-      }
-
-      // create PAGE 2 -> done before for good display
-      let dialogbox2 = $('<div></div>').addClass('dialog-savereason-page2')
-        .append(`<div class="unansweredreasonslotlist-header-label">3. ${this.getTranslation('sectionReasonTitle', 'Apply a reason on the selected period(s)')}</div>`);
-      let xsaveReason = pulseUtility.createjQueryElementWithAttribute('x-savereason', {
-        'machine-id': $(this.element).attr('machine-id')
-      });
-      dialogbox2.append(xsaveReason);
-      this._xsaveReason = xsaveReason;
-      this._xsaveReason[0].closeAfterSave(this._skipList);
-
-      pulseCustomDialog.addPage('.dialog-savereason', dialogbox2);
-      return this._xsaveReason;
     }
 
     _updateDefineReasonButtonState() {
@@ -373,7 +346,6 @@ require('x-tr/x-tr');
         okButton: 'hidden',
         cancelButton: 'hidden',
         fullScreenOnSmartphone: true,
-        fixedHeight: true,
         bigSize: true,
         helpName: 'savereason',
         className: 'stopclassification'
@@ -394,23 +366,6 @@ require('x-tr/x-tr');
       }
 
       pulseCustomDialog.open('#' + stopClassificationDialogId);
-    }
-
-    _reloadOrClose() {
-      if ($('.dialog-savereason').length == 0)
-        return; // dialog has been closed. Stop refreshing !
-
-      if (this._skipList) {
-        // Close main dialog
-        pulseCustomDialog.close('.dialog-savereason');
-      }
-      else {
-        // Go back to first page
-        pulseCustomDialog.goToPage('.dialog-savereason', 0);
-
-        $(this.element).find('x-highlightperiodsbar').get(0).cleanRanges();
-        this.switchToContext('Reload');
-      }
     }
 
     /**
@@ -448,13 +403,22 @@ require('x-tr/x-tr');
 
       // Create DOM - Content
 
+
       let fixedHeaderDiv = $('<div></div>').addClass('fixed-header');
+
+      // Add x-datetimegraduation above reasonbar
+      let datetimeGraduation = pulseUtility.createjQueryElementWithAttribute('x-datetimegraduation', {
+        'range': this.range.toString(d => d.toISOString()),
+
+        'period-context': 'RSL' + this.element.getAttribute('machine-id')
+      });
+      fixedHeaderDiv.append(datetimeGraduation);
 
       // - x-reasonslotbar + x-highlightperiodsbar
       let reasonBar = pulseUtility.createjQueryElementWithAttribute('x-reasonslotbar', {
         'machine-id': this.element.getAttribute('machine-id'),
         'period-context': 'RSL' + this.element.getAttribute('machine-id'),
-        'height': 80,
+        'height': 50,
         'range': this.range.toString(d => d.toISOString()),
         'showoverwriterequired': false,
         'click-to-change-reason': false

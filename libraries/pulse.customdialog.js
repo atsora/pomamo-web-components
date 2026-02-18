@@ -240,22 +240,6 @@ var pulseCustomDialog = function () {
       }
     });
 
-    // Max height or height of the dialog
-    if (attributes['fixedHeight'] == true) {
-      $(window).on('resize', function () {
-        $('#' + dialogId + ' .customDialogContent > div').css('height', (($(this).height() - 70) * (fullSize ? 0.97 : (bigSize ? 0.75 : 0.6))) + 'px');
-      });
-    }
-    else {
-      $(window).on('resize', function () {
-        $('#' + dialogId + ' .customDialogContent > div').css('max-height', (($(this).height() - 70) * (fullSize ? 0.97 : (bigSize ? 0.75 : 0.6))) + 'px');
-      });
-    }
-
-    // Vertical position of the dialog
-    $(window).on('resize', function () {
-      $('#' + dialogId + ' .customDialogWindow').css('top', (($(this).height() - $('#' + dialogId + ' .customDialogWindow').height()) * 0.3) + 'px');
-    });
 
     return id;
   };
@@ -278,18 +262,6 @@ var pulseCustomDialog = function () {
     // Update data
     _dataManager.set(id, 'pageCount', pageCount + 1);
 
-    // Dimensions of a page
-    $('#customDialog' + id + ' .customDialogContent > div').css('width', (100 / (pageCount + 1)) + '%');
-    var attributes = _dataManager.get(id)['attributes'];
-    var bigSize = (attributes['bigSize'] == true);
-    var fullSize = (attributes['fullSize'] == true);
-    if (attributes['fixedHeight'] == true)
-      $('#customDialog' + id + ' .customDialogContent > div')
-        .css('height', (($(window).height() - 70) * (fullSize ? 0.97 : (bigSize ? 0.75 : 0.6))) + 'px');
-    else
-      $('#customDialog' + id + ' .customDialogContent > div')
-        .css('max-height', (($(window).height() - 70) * (fullSize ? 0.97 : (bigSize ? 0.75 : 0.6))) + 'px');
-
     // Adapte the navigation buttons
     _displayNavigation(selector);
   };
@@ -302,7 +274,7 @@ var pulseCustomDialog = function () {
    * - onOpen, onOk, onCancel, onClose: functions that can be triggered
    * - autoClose: true / false (default), close automatically the dialog
    * - autoDelete: true / false (default), remove automatically the html associated to the dialog
-   * - fixedHeight: true / false (default), force "full" height otherwise can be smaller
+   * - fixedHeight: true / false (default), force "full" height otherwise can be smaller deleted
    * - bigSize: true / false (default), width 90% on big screen
    * - fullSize: true / false (default), width 99% on big screen
    * - fullScreenOnSmartphone: true / false (default), activate the full screen on smartphone
@@ -370,9 +342,6 @@ var pulseCustomDialog = function () {
     if (attributes['onOpen'] != null)
       attributes['onOpen']();
     $('#customDialog' + id).addClass('customDialogEnabled');
-
-    // Adapt the position
-    $('#customDialog' + id + ' .customDialogWindow').css('top', (($('#customDialog' + id + ' .customDialogShadow').height() - $('#customDialog' + id + ' .customDialogWindow').height()) * 0.3) + 'px');
 
     // Blur the previous dialog if not already done
     if ('customDialog' + id != knownDialogId) {

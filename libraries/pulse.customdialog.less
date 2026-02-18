@@ -54,13 +54,16 @@
 
 .customDialogWindow {
   position: relative;
+  z-index: 1;
   background-color: @color_background;
   color: @color_text;
   min-width: 700px;
-  margin: auto;
+  margin: 5vh auto;
   border-radius: @border_radius;
   border: 1px solid @color_window_border;
-
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
   width: 50%;
 
   &.bigSize {
@@ -77,64 +80,50 @@
   }
 }
 
+/* --- AFFICHAGE TELEPHONE (PLEIN ECRAN 100vw / 100vh) --- */
 @media (max-width: 685px) {
   .customDialogWindow {
     min-width: 0;
     border: none;
     margin: 0;
+    border-radius: 0; /* Retire les bords arrondis pour le plein écran */
+    width: 100vw !important; /* Force la largeur totale */
+    height: 100vh !important; /* Force la hauteur totale */
+    max-height: 100vh !important;
 
-    width: 100%;
-
-    &.bigSize {
-      width: 100%;
+    &.bigSize, &.fullSize, &.smallSize {
+      width: 100vw !important;
+      height: 100vh !important;
     }
   }
 
   .customDialogWindowFullScreenOnSmartphone {
     transform: none;
-    height: 100%;
     top: 0;
     left: 0;
     right: 0;
-
-    .customDialogContent {
-      position: absolute;
-      top: 31px;
-      bottom: 0;
-      width: 100%;
-      margin-bottom: 40px;
-    }
-
-    .customDialogContent>div {
-      max-height: none !important;
-      height: 100% !important;
-    }
-
-    .customDialogButtons {
-      position: absolute;
-      bottom: 0;
-      height: 39px;
-    }
   }
 }
 
 .customDialogHeader {
   position: relative;
   border-bottom: 1px solid @color_window_border;
-  height: 6vh;
+  height: 8vh;
   display: flex;
   align-items: center;
   min-height: fit-content;
 }
 
 .customDialogTitle {
-  padding: 12px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: bold;
   text-transform: uppercase;
   color: fade(@color_text, 90%);
   width: 100%;
-  font-size: 2vw;
-  text-align: center;
+  height: 100%;
+  font-size: 6vh;
 }
 
 .customDialogCloseBox {
@@ -158,23 +147,32 @@
   .create_svg('dialog-question-solid', @color_text, @color_text);
 }
 
-.customDialogContent>div {
-  display: inline-block;
-  position: relative;
-  vertical-align: top;
+.customDialogContent {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  flex: 1 1 auto;
+  min-height: 0;
+}
 
-  //padding: 10px; NOT here because some components can touch the border
-  box-sizing: border-box;
+.customDialogContent > div {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
 }
 
 .customDialogButtons {
   width: 100%;
-  text-align: center;
-}
+  display: flex;
+  justify-content: space-evenly;
+  min-height: fit-content;
 
-.customDialogButtons>button {
-  width: 50%;
-  margin: 5px 0;
+  >button {
+    width: 50%;
+    height: 7vh;
+  }
 }
 
 .customDialogIcon {
@@ -191,10 +189,8 @@
   min-height: 80px;
   padding-top: 5px;
   font-size: 14px;
-
   word-break: break-all;
 }
-
 
 .customDialogIconInformation {
   .create_svg('dialog-information');
@@ -233,122 +229,83 @@
 }
 
 @media (max-width: 685px) {
-
   /* multipage on */
   .customDialogCancel {
     display: none;
   }
-
   .customDialogPrevious {
     display: inline-block;
   }
-
   .customDialogFirstPage .customDialogCancel {
     display: inline-block;
   }
-
   .customDialogFirstPage .customDialogPrevious {
     display: none;
   }
-
   .customDialogNext {
     display: inline-block;
   }
-
   .customDialogOk {
     display: none;
   }
-
   .customDialogLastPage .customDialogNext {
     display: none;
   }
-
   .customDialogLastPage .customDialogOk {
     display: inline-block;
   }
 
-  .customDialogContent>div {
-    display: none;
-    width: 100% !important;
+
+  .customDialogTitle {
+    font-size: 2vh !important;
   }
 
+  .customDialogContent > div {
+    display: none !important;
+    width: 100% !important;
+  }
   div.customDialogCurrentPage {
-    display: block;
+    display: flex !important;
   }
 }
 
 @media (min-width: 686px) {
-
   /* multipage off */
   .customDialogPrevious,
   .customDialogNext {
     display: none;
   }
-
   .customDialogCancel,
   .customDialogOk {
-    display: inline-block;
-  }
-
-  .customDialogContent>div {
     display: inline-block;
   }
 }
 
 /* force multipage on */
-.customDialogMultiPageOn .customDialogCancel {
-  display: none;
-}
-
-.customDialogMultiPageOn .customDialogPrevious {
-  display: inline-block;
-}
-
-.customDialogMultiPageOn.customDialogFirstPage .customDialogCancel {
-  display: inline-block;
-}
-
-.customDialogMultiPageOn.customDialogFirstPage .customDialogPrevious {
-  display: none;
-}
-
-.customDialogMultiPageOn .customDialogNext {
-  display: inline-block;
-}
-
-.customDialogMultiPageOn .customDialogOk {
-  display: none;
-}
-
-.customDialogMultiPageOn.customDialogLastPage .customDialogNext {
-  display: none;
-}
-
-.customDialogMultiPageOn.customDialogLastPage .customDialogOk {
-  display: inline-block;
-}
+.customDialogMultiPageOn .customDialogCancel { display: none; }
+.customDialogMultiPageOn .customDialogPrevious { display: inline-block; }
+.customDialogMultiPageOn.customDialogFirstPage .customDialogCancel { display: inline-block; }
+.customDialogMultiPageOn.customDialogFirstPage .customDialogPrevious { display: none; }
+.customDialogMultiPageOn .customDialogNext { display: inline-block; }
+.customDialogMultiPageOn .customDialogOk { display: none; }
+.customDialogMultiPageOn.customDialogLastPage .customDialogNext { display: none; }
+.customDialogMultiPageOn.customDialogLastPage .customDialogOk { display: inline-block; }
 
 .customDialogMultiPageOn .customDialogContent>div {
-  display: none;
+  display: none !important;
 }
-
 .customDialogMultiPageOn div.customDialogCurrentPage {
-  display: block;
+  display: flex !important;
 }
 
 /* force multipage off */
 .customDialogMultiPageOff .customDialogPrevious,
-.customDialogMultiPageOff .customDialogNext {
-  display: none;
-}
-
+.customDialogMultiPageOff .customDialogNext { display: none; }
 .customDialogMultiPageOff .customDialogCancel,
-.customDialogMultiPageOff .customDialogOk {
-  display: inline-block;
-}
+.customDialogMultiPageOff .customDialogOk { display: inline-block; }
 
 .customDialogMultiPageOff .customDialogContent>div {
-  display: block;
+  display: flex !important;
 }
 
 /* hide buttons */
@@ -367,29 +324,6 @@
   margin-bottom: 0;
 }
 
-/*###########################
-## RIGHT BUTTON FOR LOADER ##
-###########################*/
-
-.customDialogButtonRight .customDialogContent {
-  margin-bottom: 0;
-  margin-right: 60px;
-}
-
-.customDialogButtonRight.customDialogNoCancel .customDialogContent {
-  margin-right: 0;
-}
-
-.customDialogButtonRight .customDialogButtons {
-  width: 50px;
-  border-top: none;
-  right: 15px;
-}
-
-.customDialogButtonRight .customDialogButtons>button {
-  margin: 0;
-}
-
 /*#########################
 ## PRECONFIGURED DIALOGS ##
 #########################*/
@@ -401,7 +335,6 @@
 .customDialogMessage {
   margin-right: 15px;
 }
-
 
 /*#################
 ## PROGRESS BARS ##
@@ -432,23 +365,13 @@
 }
 
 @-webkit-keyframes progress-bar-stripes {
-  from {
-    background-position: 40px 0;
-  }
-
-  to {
-    background-position: 0 0;
-  }
+  from { background-position: 40px 0; }
+  to { background-position: 0 0; }
 }
 
 @keyframes progress-bar-stripes {
-  from {
-    background-position: 40px 0;
-  }
-
-  to {
-    background-position: 0 0;
-  }
+  from { background-position: 40px 0; }
+  to { background-position: 0 0; }
 }
 
 /*####################################
