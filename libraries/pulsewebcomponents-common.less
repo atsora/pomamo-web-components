@@ -303,21 +303,14 @@ svg {
     border-radius: 2px;
 
     // align with graduation
-    margin-right: @margin_graduation;
-    margin-left: @margin_graduation;
+    margin: 0 @margin_graduation;
   }
 
   .click-on-bar-details-content {
     color: @color_text_alternate;
-
+    margin: 0 @margin_graduation;
     overflow-y: auto;
-    position: absolute;
-    top: 180px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-
-    max-height: 600px;
+    /* max-height: 600px; */
     padding: 5px;
   }
 }
