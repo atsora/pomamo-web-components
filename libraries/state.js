@@ -960,6 +960,19 @@ class ErrorState extends State {
  * @extends module:state~State
  */
 class NotApplicableState extends State {
+    /**
+   * Manage the case when the component data does not apply
+   * Switch by default to the state 'NotApplicable' and add the class pulse-component-not-applicable
+   */
+  enter (previousStateContext, previousStateKey) {
+    super.enter(previousStateContext, previousStateKey);
+    this.component.addClass('pulse-component-not-applicable');
+  }
+  exit (nextStateContext, nextStateKey) {
+    this.component.removeClass('pulse-component-not-applicable');
+    super.exit(nextStateContext, nextStateKey);
+  }
+
 }
 
 /**

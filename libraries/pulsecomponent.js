@@ -1293,7 +1293,7 @@ class PulseRequestComponent extends PulseInitializedComponent {
         return true;
       }
       case 'NotApplicable':
-        this.manageNotApplicable();
+        this.switchToContext('NotApplicable');
         return true;
       case 'ProcessingDelay':
         this.retryWithDelay(message);
@@ -1352,14 +1352,7 @@ class PulseRequestComponent extends PulseInitializedComponent {
     }
   }
 
-  /**
-   * Manage the case when the component data does not apply
-   * Switch by default to the state 'NotApplicable' and add the class pulse-component-not-applicable
-   */
-  manageNotApplicable () {
-    this.addClass('pulse-component-not-applicable');
-    this.switchToContext('NotApplicable');
-  }
+
 
   /**
    * Manage an Old NO_DATA error status.
