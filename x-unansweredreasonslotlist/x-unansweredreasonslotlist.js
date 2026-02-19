@@ -55,7 +55,6 @@ require('x-tr/x-tr');
       self._numberOfSelectableItems = 0;
       self._skipList = false; // If there is a unique period, skip the list and update the reason
       self._firstLoad = true;
-      self._xsaveReason = null;
       self._defineReasonButton = null;
 
       // Map [revisionid] = {revisionid,range,kind,machineid,initModifications,pendingModifications}
@@ -122,9 +121,6 @@ require('x-tr/x-tr');
 
     cleanTable(table) {
       this._table.empty();
-      if (this._xsaveReason != null) {
-        this._xsaveReason[0].cleanReasons();
-      }
     }
 
     fillTable() {
@@ -291,9 +287,6 @@ require('x-tr/x-tr');
           this.checkBoxClick(evt);
         }
       }
-      if (this._xsaveReason != null) {
-        this._xsaveReason[0].closeAfterSave(this._skipList);
-      }
       this._firstLoad = false;
       this._updateDefineReasonButtonState();
     }
@@ -446,9 +439,6 @@ require('x-tr/x-tr');
         //this._onlyOverwriteRequired = !checked;
         // Remove selection in bar
         $(this.element).find('x-highlightperiodsbar').get(0).cleanRanges();
-        if (this._xsaveReason != null) {
-          this._xsaveReason[0].cleanReasons();
-        }
         // Fill table (no-load needed)
         this.fillTable();
       }.bind(this));
@@ -456,9 +446,6 @@ require('x-tr/x-tr');
       this._motionCheckbox.change(function () {
         // Remove selection in bar
         $(this.element).find('x-highlightperiodsbar').get(0).cleanRanges();
-        if (this._xsaveReason != null) {
-          this._xsaveReason[0].cleanReasons();
-        }
         // Fill table (no-load needed)
         this.fillTable();
       }.bind(this));
@@ -534,7 +521,6 @@ require('x-tr/x-tr');
 
       this._allIdleCheckbox = undefined;
       this._motionCheckbox = undefined;
-      this._xsaveReason = null;
       this._defineReasonButton = null;
       //this._messageSpan = undefined;
 
@@ -579,9 +565,6 @@ require('x-tr/x-tr');
 
       // Fill the table
       this.fillTable();
-
-      // Prepare page 2 if not done
-      this._getXSaveReason();
     }
 
     /**
@@ -758,10 +741,6 @@ require('x-tr/x-tr');
         }
 
       }
-      let xSR = this._getXSaveReason();
-      if (xSR != null) { // No dialog in a testing environment
-        xSR[0].cleanReasons();
-      }
       let highlightBar = $(this.element).find('x-highlightperiodsbar');
       highlightBar.get(0).cleanRanges();
       this._updateDefineReasonButtonState();
@@ -799,24 +778,10 @@ require('x-tr/x-tr');
       if (checked) {
         row.addClass('row-selected');
         highlightBar.get(0).addRange(range);
-        let xSR = this._getXSaveReason();
-        if (xSR != null) { // No dialog in a testing environment
-          xSR[0].addReason(reasonSelected);
-          if (isDefault == 'false') {
-            row.addClass('row-notdefault-selected');
-          }
-        }
       }
       else {
         row.removeClass('row-selected');
         highlightBar.get(0).removeRange(range);
-        let xSR = this._getXSaveReason();
-        if (xSR != null) { // No dialog in a testing environment
-          xSR[0].removeReason(reasonSelected);
-          if (isDefault == 'false') {
-            row.removeClass('row-notdefault-selected');
-          }
-        }
       }
 
       this._updateDefineReasonButtonState();
