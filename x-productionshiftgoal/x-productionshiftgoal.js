@@ -58,6 +58,14 @@ var eventBus = require('eventBus');
         case 'machine-id':
           this.start();
           break;
+        case 'period-context':
+          if (this.isInitialized()) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'dateTimeRangeChangeEvent');
+            eventBus.EventBus.addEventListener(this,
+              'dateTimeRangeChangeEvent',
+              newVal,
+              this._onDateTimeRangeChange.bind(this));
+          }
         default:
           break;
       }
@@ -78,6 +86,13 @@ var eventBus = require('eventBus');
           'machineIdChangeSignal',
           this.element.getAttribute('machine-context'),
           this.onMachineIdChange.bind(this));
+      }
+
+      if (this.element.hasAttribute('period-context')) {
+        eventBus.EventBus.addEventListener(this,
+          'dateTimeRangeChangeEvent',
+          this.element.getAttribute('period-context'),
+          this._onDateTimeRangeChange.bind(this));
       }
 
       // create DOM - Content
@@ -225,6 +240,22 @@ var eventBus = require('eventBus');
     onMachineIdChange(event) {
       this.element.setAttribute('machine-id', event.target.newMachineId);
     }
+
+    _onDateTimeRangeChange(event) {
+      let newRange = event.target.daterange;
+      if (!newRange._lower || !newRange._upper) return false;
+
+      const now = new Date();
+
+      const isIncluded = now >= newRange._lower && now < newRange._upper;
+
+      if (isIncluded) {
+        this._content.style.display = 'flex';
+      } else {
+        this._content.style.display = 'none';
+      }
+    }
+
   }
 
   pulseComponent.registerElement('x-productionshiftgoal', ProductionShiftGoalComponent, ['machine-context', 'machine-id']);
