@@ -52,7 +52,6 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
       //self._numberOfSelectableItems = 0;
       //self._skipList = false; // If there is a unique period, skip the list and update the reason
       self._firstLoad = true;
-      //self._xsaveReason = null;
 
       return self;
     }
@@ -101,9 +100,6 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
 
     cleanTable (table) {
       this._table.empty();
-      if (this._xsaveReason != null) {
-        this._xsaveReason[0].cleanRanges();
-      }
     }
 
     fillTable () {
