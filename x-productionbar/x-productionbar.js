@@ -356,9 +356,6 @@ var eventBus = require('eventBus');
             eventBus.EventBus.addEventListener(this,
               'dateTimeRangeChangeEvent', newVal,
               this.onDateTimeRangeChange.bind(this));
-
-            eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent',
-              this.element.getAttribute('period-context'));
           }
           this.start(); // To re-validate parameters
           break;
@@ -401,11 +398,6 @@ var eventBus = require('eventBus');
         eventBus.EventBus.addEventListener(this,
           'dateTimeRangeChangeEvent',
           this.element.getAttribute('period-context'),
-          this.onDateTimeRangeChange.bind(this));
-      }
-      else {
-        eventBus.EventBus.addGlobalEventListener(this,
-          'dateTimeRangeChangeEvent',
           this.onDateTimeRangeChange.bind(this));
       }
 
@@ -688,11 +680,17 @@ var eventBus = require('eventBus');
      */
     onDateTimeRangeChange(event) {
       let newRange = event.target.daterange;
-      if ((this._range == undefined) ||
-        (!pulseRange.equals(newRange, this._range, (a, b) => (a >= b) && (a <= b)))) {
-        this._range = newRange;
-        this.start();
-      }
+
+      if (!newRange._lower || !newRange._upper) return false;
+
+      const now = new Date();
+
+      const isIncluded = now >= newRange._lower && now < newRange._upper;
+
+      if (!isIncluded) this._range = newRange;
+      else this._range = undefined;
+
+      this.start();
     }
   }
 
