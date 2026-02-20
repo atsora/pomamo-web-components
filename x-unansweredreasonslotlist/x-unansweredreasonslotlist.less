@@ -12,8 +12,6 @@
 @import "x-datetimerange/x-datetimerange.less";
 @import "x-highlightperiodsbar/x-highlightperiodsbar.less";
 @import "x-datetimegraduation/x-datetimegraduation.less";
-/* TO IMPORT BEFORE this file (else loop while grunt)
-// @import "x-reasonslotbar/x-reasonslotbar.less";*/
 @import "x-revisionprogress/x-revisionprogress.less";
 
 x-unansweredreasonslotlist {
@@ -44,20 +42,22 @@ x-unansweredreasonslotlist {
   }
 
   .unansweredreasonslotlist-bar {
-    padding: 0 @margin_graduation; // SAME as above for right/left
+    padding: 0 @margin_graduation;
+    // SAME as above for right/left
 
     x-reasonslotbar {
-      //border: none; // SAME as below for right/left
-      pointer-events: none; // To disable click
+      //border: none;
+      // SAME as below for right/left
+      pointer-events: none;
+      // To disable click
     }
 
     x-highlightperiodsbar {
-      //border: none; // SAME as above for right/left
+      //border: none;
+      // SAME as above for right/left
       border-top: 1px solid transparent;
     }
   }
-
-
 
   .scrollable-content {
     overflow-y: auto; // Scrollbar
@@ -71,12 +71,12 @@ x-unansweredreasonslotlist {
     border-radius: @border_radius_small;
   }
 
+  /* --- RESTAURATION DU BOUTON STANDARD --- */
   .unansweredreasonslotlist-define-container {
     display: flex;
     justify-content: flex-end;
-    align-items: flex-end;
     flex: 0 0 15%;
-    margin: 10px;
+    padding: 10px;
   }
 
   .unansweredreasonslotlist-define-button {
@@ -86,10 +86,17 @@ x-unansweredreasonslotlist {
     font-size: 2em;
 
     &:disabled {
+      background-color: @color_window_border;
+      color: @color_text_alternate;
       cursor: not-allowed;
-      opacity: 0.6;
+      opacity: 1;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: lighten(@color_highlight, 10%);
     }
   }
+  /* --------------------------------------- */
 
   .unansweredreasonslotlist-tr {
     display: flex;
@@ -103,14 +110,6 @@ x-unansweredreasonslotlist {
     }
   }
 
-
-
-
-  .unansweredreasonslotlist-td-icon {
-    margin-top: 1px;
-    height: fit-content;
-    width: fit-content;
-  }
   .unansweredreasonslotlist-reason-svg {
     height: 3em;
   }
@@ -122,7 +121,6 @@ x-unansweredreasonslotlist {
 
     x-revisionprogress {
       top: 0;
-
       .pulse-revisionprogress-content {
         background: gray;
         opacity: 0.8;
@@ -130,6 +128,7 @@ x-unansweredreasonslotlist {
     }
   }
 
+  /* --- RESTAURATION DES TAILLES DE TEXTE --- */
   .unansweredreasonslotlist-td-range {
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
@@ -140,7 +139,6 @@ x-unansweredreasonslotlist {
   }
 
   .unansweredreasonslotlist-td-reason {
-    /*...*/
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     /* for Opera*/
@@ -149,13 +147,14 @@ x-unansweredreasonslotlist {
     max-width: 500px;
     font-size: 1.5em;
   }
+  /* ----------------------------------------- */
 
   .unansweredreasonslotlist-td-check {
     min-width: fit-content;
     min-height: fit-content;
   }
 
-    input {
+  input {
     appearance: none;
     width: 3em;
     height: 3em;
@@ -164,7 +163,6 @@ x-unansweredreasonslotlist {
     background-color: @color_window;
     cursor: pointer;
     transition: all 0.3s ease;
-
 
     &:checked {
       background-color: @color_highlight;
