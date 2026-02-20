@@ -113,16 +113,12 @@ require('x-tr/x-tr');
         let range = pulseRange.createDateRangeFromString(rangeString);
         let displayedRange = pulseUtility.displayDateRange(range);
 
-        // Texte par défaut puisqu'il n'est pas fourni par ReasonColorSlots
-        let display = this.getTranslation('unanswered', 'Unanswered');
-
         let tr = $('<div></div>')
           .addClass('selectable unansweredreasonslotlist-tr')
           .css('border-left', '5px solid ' + item.Color);
 
         let attributeTr = {
           'range': rangeString,
-          'reason-text': display,
           'is-default': 'false',
           'is-selectable': 'true',
           'mode': '' // Pas de mode avec ReasonColorSlots, mais on crée l'attribut pour la forme
@@ -138,11 +134,6 @@ require('x-tr/x-tr');
         let tdRange = $('<div></div>').html(displayedRange)
           .addClass('unansweredreasonslotlist-td-range')
           .addClass('unansweredreasonslotlist-td-click-change');
-
-        let textbox = $('<div></div>').html(display)
-          .addClass('unansweredreasonslotlist-td-reason')
-          .addClass('unansweredreasonslotlist-td-click-change')
-          .addClass('overwrite-required missing'); // Toujours missing puisque filtré sur OverwriteRequired
 
         let desc = $('<div></div>').addClass('unansweredreasonslotlist-td-desc').append(tdRange).append(textbox);
 

@@ -271,7 +271,6 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     loading: 'En chargement...',
     motion: 'En mouvement',
     noPeriod: 'Pas de période possible sur la place spécifiée',
-    unanswered: 'Non renseigné',
     defineReason: 'Définir la raison',
     sectionTimeRangeTitle: 'Selectionner une période de temps',
     sectionPeriodTitle: 'Selectionner une ou plusieurs périodes',
