@@ -98,13 +98,32 @@ require('x-tr/x-tr');
     fillTable(unansweredBlocks) {
       this.cleanTable();
 
-      if (!unansweredBlocks || unansweredBlocks.length == 0) {
-        return;
-      }
-
       this._numberOfDisplayedItems = 0;
       this._numberOfSelectableItems = 0;
       let evt;
+
+      if (!unansweredBlocks || unansweredBlocks.length == 0) {
+        let emptyTr = $('<div></div>')
+          .addClass('unansweredreasonslotlist-tr')
+          .css({
+            'justify-content': 'center',
+            'padding': '20px',
+            'font-style': 'italic',
+            'opacity': '0.7',
+            'cursor': 'default'
+          });
+
+        let message = $('<div></div>')
+          .text(this.getTranslation('allPeriodsClassified', 'All stop periods are classified'));
+
+        emptyTr.append(message);
+        this._table.append(emptyTr);
+
+        this._skipList = false;
+        this._firstLoad = false;
+        this._updateDefineReasonButtonState();
+        return; // On s'arrête ici puisqu'il n'y a rien d'autre à afficher
+      }
 
       for (let item of unansweredBlocks) {
         this._numberOfDisplayedItems++;
@@ -346,14 +365,11 @@ require('x-tr/x-tr');
         .append(defineReasonButton);
       this._defineReasonButton = defineReasonButton;
 
-      let warningDiv = $('<div></div>').addClass('unansweredreasonslotlist-warning').html('No selectable periods on the specified range');
-
       let maindiv = $('<div></div>')
         .addClass('unansweredreasonslotlist')
         .append(fixedHeaderDiv)
         .append(divScrollable)
-        .append(defineReasonContainer)
-        .append(warningDiv);
+        .append(defineReasonContainer);
 
       let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loading', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
@@ -410,12 +426,18 @@ require('x-tr/x-tr');
         return bRange.lower.getTime() - aRange.lower.getTime();
       });
 
-      if (unansweredBlocks.length === 0) {
-        $(this.element).find('.unansweredreasonslotlist-warning').show();
+      if (unansweredBlocks.length === 0 && !this._firstLoad) {
+        // Appelle ici la fonction qui ferme ta page/modale.
+        // Par exemple (à adapter selon le conteneur exact de ce composant) :
+        if ($('.dialog-savereason').length > 0) {
+           pulseCustomDialog.close('.dialog-savereason');
+        } else {
+           $('.popup-block').fadeOut();
+        }
+        return; // On arrête l'exécution ici, pas besoin de remplir la table
       }
-      else {
-        $(this.element).find('.unansweredreasonslotlist-warning').hide();
-      }
+
+
 
       this.fillTable(unansweredBlocks);
     }

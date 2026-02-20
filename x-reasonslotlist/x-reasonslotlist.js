@@ -119,10 +119,6 @@ require('x-revisionprogress/x-revisionprogress');
     fillTable() {
       this.cleanTable();
 
-      if (this._dataReasonsList.length == 0) {
-        return;
-      }
-
       let showAllIdle = $(this._allIdleCheckbox).is(':checked');
       let showMotion = $(this._motionCheckbox).is(':checked');
 
@@ -259,6 +255,23 @@ require('x-revisionprogress/x-revisionprogress');
             });
           $(desc).append(newRevisionProgress);
         }
+      }
+      if (this._numberOfDisplayedItems === 0) {
+        let emptyTr = $('<div></div>')
+          .addClass('reasonslotlist-tr')
+          .css({
+            'justify-content': 'center',
+            'padding': '20px',
+            'font-style': 'italic',
+            'opacity': '0.7',
+            'cursor': 'default' // Pour ne pas donner l'impression que c'est cliquable
+          });
+
+        let message = $('<div></div>')
+          .text(this.getTranslation('allPeriodsClassified', 'All stop periods are classified'));
+
+        emptyTr.append(message);
+        this._table.append(emptyTr);
       }
 
       this._skipList = false;
@@ -501,12 +514,6 @@ require('x-revisionprogress/x-revisionprogress');
           hasSelectableIdentified |= (!item.Running && !item.OverwriteRequired);
           hasSelectableMotion |= item.Running;
         }
-      }
-
-      if (!hasSelectableNonIdentified) {
-        $(this._allIdleCheckbox)[0].checked = true;
-        if (!hasSelectableIdentified)
-          $(this._motionCheckbox)[0].checked = true;
       }
 
       if (!hasSelectableNonIdentified && !hasSelectableIdentified && !hasSelectableMotion) {

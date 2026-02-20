@@ -259,6 +259,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     idle: 'Arrêtée',
     loading: 'En chargement...',
     motion: 'En mouvement',
+    allPeriodsClassified: 'Toutes les périodes sont classifiées',
     noPeriod: 'Pas de période possible sur la place spécifiée',
     sectionTimeRangeTitle: 'Selectionner une période de temps',
     sectionPeriodTitle: 'Selectionner une ou plusieurs périodes',
