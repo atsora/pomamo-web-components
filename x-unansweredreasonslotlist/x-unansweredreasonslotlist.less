@@ -12,6 +12,8 @@
 @import "x-datetimerange/x-datetimerange.less";
 @import "x-highlightperiodsbar/x-highlightperiodsbar.less";
 @import "x-datetimegraduation/x-datetimegraduation.less";
+/* TO IMPORT BEFORE this file (else loop while grunt)
+// @import "x-reasonslotbar/x-reasonslotbar.less";*/
 @import "x-revisionprogress/x-revisionprogress.less";
 
 x-unansweredreasonslotlist {
@@ -43,18 +45,12 @@ x-unansweredreasonslotlist {
 
   .unansweredreasonslotlist-bar {
     padding: 0 @margin_graduation;
-    // SAME as above for right/left
 
     x-reasonslotbar {
-      //border: none;
-      // SAME as below for right/left
       pointer-events: none;
-      // To disable click
     }
 
     x-highlightperiodsbar {
-      //border: none;
-      // SAME as above for right/left
       border-top: 1px solid transparent;
     }
   }
@@ -71,19 +67,25 @@ x-unansweredreasonslotlist {
     border-radius: @border_radius_small;
   }
 
-  /* --- RESTAURATION DU BOUTON STANDARD --- */
+  /* --- BOUTON GLOBAL DU BAS (Large) --- */
   .unansweredreasonslotlist-define-container {
     display: flex;
     justify-content: flex-end;
-    flex: 0 0 15%;
+    flex-grow: 0.15;
     padding: 10px;
   }
 
   .unansweredreasonslotlist-define-button {
-    width: 30%;
-    height: 100%;
-    cursor: pointer;
+    background-color: @color_highlight;
+    color: @color_window;
+    border: none;
+    border-radius: @border_radius_small;
+    padding: 8px 16px;
     font-size: 2em;
+    width: 30%;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
 
     &:disabled {
       background-color: @color_window_border;
@@ -96,10 +98,10 @@ x-unansweredreasonslotlist {
       background-color: lighten(@color_highlight, 10%);
     }
   }
-  /* --------------------------------------- */
 
   .unansweredreasonslotlist-tr {
     display: flex;
+    align-items: center; /* Aligne tout au centre verticalement */
     justify-content: space-between;
     gap: 15px;
     padding: 5px 15px;
@@ -110,14 +112,10 @@ x-unansweredreasonslotlist {
     }
   }
 
-  .unansweredreasonslotlist-reason-svg {
-    height: 3em;
-  }
-
   .unansweredreasonslotlist-td-desc {
     flex: 1 1 auto;
     cursor: pointer;
-    position: relative; // to position progress
+    position: relative;
 
     x-revisionprogress {
       top: 0;
@@ -128,19 +126,43 @@ x-unansweredreasonslotlist {
     }
   }
 
-  /* --- RESTAURATION DES TAILLES DE TEXTE --- */
   .unansweredreasonslotlist-td-range {
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
-    /* for Opera*/
     white-space: nowrap;
     overflow: hidden;
     font-size: 1.9em;
   }
 
-  /* ----------------------------------------- */
+  /* --- NOUVEAU BOUTON PAR LIGNE --- */
+  .unansweredreasonslotlist-td-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    order: 5;
+    margin-right: 10px;
+  }
+
+  .unansweredreasonslotlist-row-button {
+    background-color: @color_highlight;
+    color: @color_window;
+    border: none;
+    border-radius: @border_radius_small;
+    padding: 6px 12px;
+    font-size: 1.2em; /* Plus discret que le gros bouton */
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: lighten(@color_highlight, 10%);
+    }
+  }
+  /* -------------------------------- */
 
   .unansweredreasonslotlist-td-check {
+    order: 9;
     min-width: fit-content;
     min-height: fit-content;
   }
@@ -192,8 +214,6 @@ x-unansweredreasonslotlist {
   }
 }
 
-// end unansweredreasonslotlist
-
 .dialog-savereason x-unansweredreasonslotlist {
   height: 100%;
 }
@@ -206,7 +226,6 @@ x-unansweredreasonslotlist {
   margin-bottom: 10px;
   font-weight: bold;
 }
-
 
 @media (max-width: 920px) {
   .unansweredreasonslotlist .datetimerange-rangedisplay {

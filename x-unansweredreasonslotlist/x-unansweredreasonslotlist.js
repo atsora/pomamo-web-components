@@ -124,8 +124,7 @@ require('x-tr/x-tr');
           'mode': '' // Pas de mode avec ReasonColorSlots, mais on crée l'attribut pour la forme
         };
         tr.attr(attributeTr);
-
-        // Checkbox
+// Checkbox
         let tdCheck = $('<div></div>').addClass('unansweredreasonslotlist-td-check');
         tdCheck.append($("<input type='checkbox'></input>").addClass('table-check'));
         tdCheck.click(function (e) { this.checkBoxClick(e); }.bind(this));
@@ -135,12 +134,30 @@ require('x-tr/x-tr');
           .addClass('unansweredreasonslotlist-td-range')
           .addClass('unansweredreasonslotlist-td-click-change');
 
-        let desc = $('<div></div>').addClass('unansweredreasonslotlist-td-desc').append(tdRange).append(textbox);
+        let desc = $('<div></div>').addClass('unansweredreasonslotlist-td-desc').append(tdRange)
 
         tdRange.click(function (e) { this.rowClick(e); }.bind(this));
-        textbox.click(function (e) { this.rowClick(e); }.bind(this));
 
-        tr.append(desc).append(tdCheck);
+        // --- NOUVEAU : Création du bouton individuel "Define reason" ---
+        let tdAction = $('<div></div>').addClass('unansweredreasonslotlist-td-action');
+        let rowBtn = $('<button type="button"></button>')
+          .addClass('unansweredreasonslotlist-row-button');
+        let rowBtnLabel = $('<x-tr></x-tr>')
+          .attr('key', 'defineReason')
+          .attr('default', 'Define reason');
+
+        rowBtn.append(rowBtnLabel);
+        tdAction.append(rowBtn);
+
+        // Événement pour ouvrir directement la modale sans cocher la ligne
+        rowBtn.click(function(e) {
+          e.stopPropagation();
+          this._openStopClassificationForSingleRange(rangeString);
+        }.bind(this));
+        // ---------------------------------------------------------------
+
+        // Ajout des colonnes au TR (desc, action, puis check)
+        tr.append(desc).append(tdAction).append(tdCheck);
         this._table.append(tr);
 
         this._numberOfSelectableItems++;
@@ -482,6 +499,48 @@ require('x-tr/x-tr');
           }
         }
       }
+    }
+
+    _openStopClassificationForSingleRange(rangeString) {
+      if ($('.dialog-stopclassification').length > 0) { return; }
+
+      let dialog = $('<div></div>').addClass('dialog-stopclassification');
+      let stopClassificationDialogId = pulseCustomDialog.initialize(dialog, {
+        title: this.getTranslation('stopclassification.title', 'Unplanned stops'),
+        onClose: function () {
+          $('.popup-block').fadeOut();
+          this.removeAllSelections();
+          let highlightBar = $(this.element).find('x-highlightperiodsbar');
+          if (highlightBar.length) {
+            highlightBar.get(0).cleanRanges();
+          }
+        }.bind(this),
+        autoClose: false,
+        autoDelete: true,
+        okButton: 'hidden',
+        cancelButton: 'hidden',
+        fullScreenOnSmartphone: true,
+        bigSize: true,
+        helpName: 'savereason',
+        className: 'stopclassification'
+      });
+
+      let machid = $(this.element).attr('machine-id');
+      let fullRangeString = this.range ? this.range.toString(d => d.toISOString()) : rangeString;
+
+      let xstopclassification = pulseUtility.createjQueryElementWithAttribute('x-stopclassification', {
+        'machine-id': machid,
+        'range': rangeString,
+        'ranges': rangeString, // On ne passe que la range spécifique à la ligne
+        'fullRange': fullRangeString
+      });
+      dialog.append(xstopclassification);
+
+      if (xstopclassification[0] && xstopclassification[0].closeAfterSave) {
+        xstopclassification[0].closeAfterSave(true);
+      }
+
+      pulseCustomDialog.open('#' + stopClassificationDialogId);
     }
 
     _getRangeWithCurrent(range, current) {
