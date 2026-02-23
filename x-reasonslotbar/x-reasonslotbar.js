@@ -766,9 +766,17 @@ require('x-revisionprogress/x-revisionprogress');
     onClick (event, range) {
       //console.log(`onClick: range=${range.toString(d => d.toISOString())}`);
       let applicableRange = pulseRange.intersects(this._range, range);
+
+      if (this.element.getAttribute('click') == 'dispatch') {
+        eventBus.EventBus.dispatchToContext('clickOnBarEvent',
+          this.element.getAttribute('period-context'),
+          { range: applicableRange });
+        return;
+      }
+
       pulseDetailsPopup.clickOnBar(this, this._range, applicableRange, event, 'reason');
     }
   }
 
-  pulseComponent.registerElement('x-reasonslotbar', ReasonSlotBarComponent, ['machine-id', 'height', 'range', 'period-context', 'machine-context', 'showoverwriterequired']);
+  pulseComponent.registerElement('x-reasonslotbar', ReasonSlotBarComponent, ['machine-id', 'height', 'range', 'period-context', 'machine-context', 'showoverwriterequired', 'click']);
 })();

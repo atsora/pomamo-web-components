@@ -70,6 +70,12 @@ require('x-machinedisplay/x-machinedisplay');
               'dateTimeRangeChangeEvent',
               'RSL' + newVal,
               this.onDateTimeRangeChange.bind(this));
+
+            // Update children contexts
+            let contextId = 'RSL' + newVal;
+            $(this.element).find('x-reasonslotbar').attr('machine-id', newVal).attr('period-context', contextId);
+            $(this.element).find('x-highlightperiodsbar').attr('period-context', contextId);
+            $(this.element).find('x-datetimegraduation').attr('period-context', contextId);
           }
 
           let modifMgr = $('body').find('x-modificationmanager');
@@ -149,7 +155,7 @@ require('x-machinedisplay/x-machinedisplay');
         let chkInput = $("<input type='checkbox'></input>").addClass('table-check');
 
         // Empêcher le clic direct sur la checkbox de propager l'event au TR
-        chkInput.click(function(e) {
+        chkInput.click(function (e) {
           e.stopPropagation();
           this.checkBoxClick(e);
         }.bind(this));
@@ -198,7 +204,7 @@ require('x-machinedisplay/x-machinedisplay');
         if (!pulseUtility.isNotDefined(evt)) {
           // Si on auto-sélectionne le seul item, on va entrer en selection-mode
           let checkbox = $(evt.target).find('input.table-check');
-          if(checkbox.length > 0) {
+          if (checkbox.length > 0) {
             checkbox.prop('checked', true);
             this.checkBoxClick({ target: checkbox[0] });
           }
@@ -265,7 +271,7 @@ require('x-machinedisplay/x-machinedisplay');
     }
 
     _exitSelectionMode() {
-      if(this._table) {
+      if (this._table) {
         this._table.removeClass('selection-mode');
       }
       this.removeAllSelections();
@@ -394,8 +400,13 @@ require('x-machinedisplay/x-machinedisplay');
         'height': 50,
         'range': this.range.toString(d => d.toISOString()),
         'showoverwriterequired': false,
-        'click-to-change-reason': false
+        'click': 'dispatch'
       });
+      reasonBar.css('cursor', 'pointer');
+
+      // Écoute de l'événement natif envoyé par x-reasonslotbar
+      eventBus.EventBus.addEventListener(this, 'clickOnBarEvent', contextId, this.onBarClickEvent.bind(this));
+
       let reasonBorder = $('<div></div>').addClass('pulse-bar-div').append(reasonBar);
       let highlightBar = pulseUtility.createjQueryElementWithAttribute('x-highlightperiodsbar', {
         'period-context': 'RSL' + this.element.getAttribute('machine-id'),
@@ -420,7 +431,7 @@ require('x-machinedisplay/x-machinedisplay');
         this._openStopClassificationForSelection();
       }.bind(this));
 
-let showAllButton = $('<button type="button"></button>')
+      let showAllButton = $('<button type="button"></button>')
         .addClass('unansweredreasonslotlist-showall-button');
       let showAllLabel = $('<x-tr></x-tr>')
         .attr('key', 'showAllPeriods')
@@ -498,11 +509,11 @@ let showAllButton = $('<button type="button"></button>')
 
       if (unansweredBlocks.length === 0 && !this._firstLoad) {
         if ($('.dialog-stopclassification').length > 0) {
-           pulseCustomDialog.close('.dialog-stopclassification');
+          pulseCustomDialog.close('.dialog-stopclassification');
         } else if ($('.dialog-savereason').length > 0) {
-           pulseCustomDialog.close('.dialog-savereason');
+          pulseCustomDialog.close('.dialog-savereason');
         } else {
-           $('.popup-block').fadeOut();
+          $('.popup-block').fadeOut();
         }
         return;
       }
@@ -679,7 +690,7 @@ let showAllButton = $('<button type="button"></button>')
       }
       this._updateDefineReasonButtonState();
 
-      if(this._table) {
+      if (this._table) {
         this._table.removeClass('selection-mode');
       }
     }
@@ -687,7 +698,7 @@ let showAllButton = $('<button type="button"></button>')
     checkBoxClick(e) {
       let target = $(e.target);
       if (!target.is('input')) {
-         target = target.closest('.unansweredreasonslotlist-tr').find('input.table-check');
+        target = target.closest('.unansweredreasonslotlist-tr').find('input.table-check');
       }
 
       let row = target.closest('.unansweredreasonslotlist-tr');
@@ -701,7 +712,7 @@ let showAllButton = $('<button type="button"></button>')
         if (highlightBar.length > 0) highlightBar.get(0).addRange(range);
 
         if (!this._table.hasClass('selection-mode')) {
-           this._table.addClass('selection-mode');
+          this._table.addClass('selection-mode');
         }
       }
       else {
@@ -725,6 +736,39 @@ let showAllButton = $('<button type="button"></button>')
       }
 
       this._handleRowSimpleClick(row, $(row).attr('range'));
+    }
+
+    onBarClickEvent(event) {
+      if (event.target && event.target.range) {
+        this._onBarClick(event.target.range);
+      }
+    }
+
+    _onBarClick(clickedRange) {
+      let rows = $(this.element).find('.unansweredreasonslotlist-tr');
+      for (let i = 0; i < rows.length; i++) {
+        let row = $(rows[i]);
+        let rangeString = row.attr('range');
+        let rowRange = pulseRange.createDateRangeFromString(rangeString);
+
+        if (pulseRange.overlaps(clickedRange, rowRange)) {
+          // 1. Scroll automatique vers la ligne correspondante
+          row.get(0).scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          // 2. Feedback visuel rapide (clignotement)
+          let originalBg = row.css('background-color');
+          row.css('transition', 'background-color 0.3s');
+          row.css('background-color', '#fff3cd'); // Surlignage jaune clair
+
+          setTimeout(() => {
+            row.css('background-color', originalBg);
+          }, 600);
+
+          // 3. Appel de ton action (sélection ou ouverture modale)
+          this._handleRowSimpleClick(row, rangeString);
+          return;
+        }
+      }
     }
 
     onDateTimeRangeChange(event) {
