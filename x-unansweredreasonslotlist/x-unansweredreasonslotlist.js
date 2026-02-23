@@ -9,13 +9,16 @@ var pulseCustomDialog = require('pulseCustomDialog');
 var pulseComponent = require('pulsecomponent');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
+var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 
 require('x-reasonslotbar/x-reasonslotbar');
 require('x-savereason/x-savereason');
+require('x-reasonslotlist/x-reasonslotlist');
 require('x-highlightperiodsbar/x-highlightperiodsbar');
 require('x-revisionprogress/x-revisionprogress');
 require('x-stopclassification/x-stopclassification');
 require('x-tr/x-tr');
+require('x-machinedisplay/x-machinedisplay');
 
 
 (function () {
@@ -34,7 +37,6 @@ require('x-tr/x-tr');
       self._numberOfSelectableItems = 0;
       self._skipList = false;
       self._firstLoad = true;
-      self._xsaveReason = null;
       self._defineReasonButton = null;
 
       self._mapOfModifications = new Map();
@@ -89,14 +91,12 @@ require('x-tr/x-tr');
 
     cleanTable() {
       if (this._table) this._table.empty();
-      if (this._xsaveReason != null) {
-        this._xsaveReason[0].cleanReasons();
-      }
     }
 
     // === GESTION DES DONNÉES ReasonColorSlots ===
     fillTable(unansweredBlocks) {
       this.cleanTable();
+      this._exitSelectionMode(); // S'assure de quitter le mode sélection au rechargement
 
       this._numberOfDisplayedItems = 0;
       this._numberOfSelectableItems = 0;
@@ -122,7 +122,7 @@ require('x-tr/x-tr');
         this._skipList = false;
         this._firstLoad = false;
         this._updateDefineReasonButtonState();
-        return; // On s'arrête ici puisqu'il n'y a rien d'autre à afficher
+        return;
       }
 
       for (let item of unansweredBlocks) {
@@ -134,49 +134,39 @@ require('x-tr/x-tr');
 
         let tr = $('<div></div>')
           .addClass('selectable unansweredreasonslotlist-tr')
-          .css('border-left', '5px solid ' + item.Color);
+          .css('border-left', '8px solid ' + item.Color);
 
         let attributeTr = {
           'range': rangeString,
           'is-default': 'false',
           'is-selectable': 'true',
-          'mode': '' // Pas de mode avec ReasonColorSlots, mais on crée l'attribut pour la forme
+          'mode': ''
         };
         tr.attr(attributeTr);
-// Checkbox
+
+        // Checkbox (Cachée par le CSS par défaut)
         let tdCheck = $('<div></div>').addClass('unansweredreasonslotlist-td-check');
-        tdCheck.append($("<input type='checkbox'></input>").addClass('table-check'));
-        tdCheck.click(function (e) { this.checkBoxClick(e); }.bind(this));
+        let chkInput = $("<input type='checkbox'></input>").addClass('table-check');
+
+        // Empêcher le clic direct sur la checkbox de propager l'event au TR
+        chkInput.click(function(e) {
+          e.stopPropagation();
+          this.checkBoxClick(e);
+        }.bind(this));
+
+        tdCheck.append(chkInput);
 
         // Text & Range
         let tdRange = $('<div></div>').html(displayedRange)
-          .addClass('unansweredreasonslotlist-td-range')
-          .addClass('unansweredreasonslotlist-td-click-change');
+          .addClass('unansweredreasonslotlist-td-range');
 
-        let desc = $('<div></div>').addClass('unansweredreasonslotlist-td-desc').append(tdRange)
+        let desc = $('<div></div>').addClass('unansweredreasonslotlist-td-desc').append(tdRange);
 
-        tdRange.click(function (e) { this.rowClick(e); }.bind(this));
+        // --- GESTION DES ÉVÉNEMENTS (CLIC vs LONG PRESS) ---
+        this._bindRowEvents(tr, rangeString);
 
-        // --- NOUVEAU : Création du bouton individuel "Define reason" ---
-        let tdAction = $('<div></div>').addClass('unansweredreasonslotlist-td-action');
-        let rowBtn = $('<button type="button"></button>')
-          .addClass('unansweredreasonslotlist-row-button');
-        let rowBtnLabel = $('<x-tr></x-tr>')
-          .attr('key', 'defineReason')
-          .attr('default', 'Define reason');
-
-        rowBtn.append(rowBtnLabel);
-        tdAction.append(rowBtn);
-
-        // Événement pour ouvrir directement la modale sans cocher la ligne
-        rowBtn.click(function(e) {
-          e.stopPropagation();
-          this._openStopClassificationForSingleRange(rangeString);
-        }.bind(this));
-        // ---------------------------------------------------------------
-
-        // Ajout des colonnes au TR (desc, action, puis check)
-        tr.append(desc).append(tdAction).append(tdCheck);
+        // Ajout des colonnes au TR
+        tr.append(desc).append(tdCheck);
         this._table.append(tr);
 
         this._numberOfSelectableItems++;
@@ -206,13 +196,81 @@ require('x-tr/x-tr');
           this._skipList = true;
         }
         if (!pulseUtility.isNotDefined(evt)) {
-          this.checkBoxClick(evt);
+          // Si on auto-sélectionne le seul item, on va entrer en selection-mode
+          let checkbox = $(evt.target).find('input.table-check');
+          if(checkbox.length > 0) {
+            checkbox.prop('checked', true);
+            this.checkBoxClick({ target: checkbox[0] });
+          }
         }
       }
 
       this._firstLoad = false;
       this._updateDefineReasonButtonState();
     }
+
+    // --- NOUVELLES MÉTHODES POUR GESTION CLIC / LONG PRESS ---
+    _bindRowEvents(tr, rangeString) {
+      let pressTimer;
+      let isLongPress = false;
+      const LONG_PRESS_DURATION = 500; // ms
+
+      // 1. DÉMARRAGE DU TIMER
+      tr.on('mousedown touchstart', (e) => {
+        if (e.type === 'mousedown' && e.which !== 1) return; // Ignore clic droit
+        isLongPress = false;
+
+        pressTimer = setTimeout(() => {
+          isLongPress = true;
+          this._handleLongPress(tr);
+        }, LONG_PRESS_DURATION);
+      });
+
+      // 2. ANNULATION DU TIMER
+      tr.on('mouseup mouseleave touchend touchcancel', (e) => {
+        clearTimeout(pressTimer);
+      });
+
+      // 3. GESTION DU CLIC
+      tr.on('click', (e) => {
+        if (isLongPress) return;
+        if ($(e.target).is('input[type=checkbox]')) return; // Géré par l'event propre à l'input
+
+        this._handleRowSimpleClick(tr, rangeString);
+      });
+    }
+
+    _handleLongPress(tr) {
+      if (!this._table.hasClass('selection-mode')) {
+        this._table.addClass('selection-mode');
+        if (navigator.vibrate) navigator.vibrate(50); // Feedback tactile
+      }
+
+      let checkbox = tr.find('input.table-check');
+      if (!checkbox.is(':checked')) {
+        checkbox.prop('checked', true);
+        this.checkBoxClick({ target: checkbox[0] });
+      }
+    }
+
+    _handleRowSimpleClick(tr, rangeString) {
+      if (this._table.hasClass('selection-mode')) {
+        let checkbox = tr.find('input.table-check');
+        checkbox.prop('checked', !checkbox.prop('checked'));
+        this.checkBoxClick({ target: checkbox[0] });
+        return;
+      }
+
+      this._openStopClassificationForSingleRange(rangeString);
+    }
+
+    _exitSelectionMode() {
+      if(this._table) {
+        this._table.removeClass('selection-mode');
+      }
+      this.removeAllSelections();
+    }
+    // ---------------------------------------------------------
 
     _updateDefineReasonButtonState() {
       if (pulseUtility.isNotDefined(this._defineReasonButton)) { return; }
@@ -273,12 +331,13 @@ require('x-tr/x-tr');
       if (xstopclassification[0] && xstopclassification[0].closeAfterSave) {
         xstopclassification[0].closeAfterSave(true);
       }
+      if (xstopclassification[0] && xstopclassification[0].hideAdvancedOptions) {
+        xstopclassification[0].hideAdvancedOptions(true);
+      }
 
       pulseCustomDialog.open('#' + stopClassificationDialogId);
     }
 
-    // === NOUVEAU GETSHORTURL POUR CIBLER REASONCOLORSLOTS ===
-    // URL identique à la barre pour mutualiser le cache du navigateur
     getShortUrl() {
       let url = 'ReasonColorSlots?MachineId=' + this.element.getAttribute('machine-id');
       url += '&Range=' + pulseUtility.convertDateRangeForWebService(this._range);
@@ -360,8 +419,22 @@ require('x-tr/x-tr');
       defineReasonButton.on('click', function () {
         this._openStopClassificationForSelection();
       }.bind(this));
+
+let showAllButton = $('<button type="button"></button>')
+        .addClass('unansweredreasonslotlist-showall-button');
+      let showAllLabel = $('<x-tr></x-tr>')
+        .attr('key', 'showAllPeriods')
+        .attr('default', 'Show all periods');
+      showAllButton.append(showAllLabel);
+
+      showAllButton.on('click', function () {
+        this._openAllReasonsDialog();
+      }.bind(this));
+
+
       let defineReasonContainer = $('<div></div>')
         .addClass('unansweredreasonslotlist-define-container')
+        .append(showAllButton)
         .append(defineReasonButton);
       this._defineReasonButton = defineReasonButton;
 
@@ -389,7 +462,6 @@ require('x-tr/x-tr');
 
     clearInitialization() {
       $(this.element).empty();
-      this._xsaveReason = null;
       this._defineReasonButton = null;
       super.clearInitialization();
     }
@@ -399,20 +471,18 @@ require('x-tr/x-tr');
       this.switchToNextContext();
     }
 
-    // === GESTION DU REFRESH (API ReasonColorSlots) ===
     refresh(data) {
       this._table = $(this.element).find('.unansweredreasonslotlist div.unansweredreasonslotlist-data').first();
       this._table.empty()
         .removeClass('unansweredreasonslotlist-error')
         .addClass('unansweredreasonslotlist-table  pulse-selection-table-container');
 
-      this._dataReasonsList = data.Blocks; // Extraction des blocs de ReasonColorSlots
+      this._dataReasonsList = data.Blocks;
 
       if (!this._dataReasonsList || !Array.isArray(this._dataReasonsList)) {
         return;
       }
 
-      // Filtrer les blocs OverwriteRequired == true
       let unansweredBlocks = [];
       for (let item of this._dataReasonsList) {
         if (item.OverwriteRequired === true) {
@@ -427,17 +497,15 @@ require('x-tr/x-tr');
       });
 
       if (unansweredBlocks.length === 0 && !this._firstLoad) {
-        // Appelle ici la fonction qui ferme ta page/modale.
-        // Par exemple (à adapter selon le conteneur exact de ce composant) :
-        if ($('.dialog-savereason').length > 0) {
+        if ($('.dialog-stopclassification').length > 0) {
+           pulseCustomDialog.close('.dialog-stopclassification');
+        } else if ($('.dialog-savereason').length > 0) {
            pulseCustomDialog.close('.dialog-savereason');
         } else {
            $('.popup-block').fadeOut();
         }
-        return; // On arrête l'exécution ici, pas besoin de remplir la table
+        return;
       }
-
-
 
       this.fillTable(unansweredBlocks);
     }
@@ -553,7 +621,7 @@ require('x-tr/x-tr');
       let xstopclassification = pulseUtility.createjQueryElementWithAttribute('x-stopclassification', {
         'machine-id': machid,
         'range': rangeString,
-        'ranges': rangeString, // On ne passe que la range spécifique à la ligne
+        'ranges': rangeString,
         'fullRange': fullRangeString
       });
       dialog.append(xstopclassification);
@@ -561,8 +629,28 @@ require('x-tr/x-tr');
       if (xstopclassification[0] && xstopclassification[0].closeAfterSave) {
         xstopclassification[0].closeAfterSave(true);
       }
+      if (xstopclassification[0] && xstopclassification[0].hideAdvancedOptions) {
+        xstopclassification[0].hideAdvancedOptions(true);
+      }
 
       pulseCustomDialog.open('#' + stopClassificationDialogId);
+    }
+    _openAllReasonsDialog() {
+      let machid = $(this.element).attr('machine-id');
+
+      let parentDialog = $(this.element).closest('.customDialog');
+      if (parentDialog.length > 0) {
+        pulseCustomDialog.close('#' + parentDialog.attr('id'));
+      }
+
+      let proxyElement = document.createElement('x-unansweredreasonslotlist');
+      proxyElement.setAttribute('machine-id', machid);
+      let proxyComponent = {
+        element: proxyElement,
+        getTranslation: this.getTranslation
+      };
+
+      pulseDetailsPopup.openChangeReasonDialog(proxyComponent, this.range, true, true);
     }
 
     _getRangeWithCurrent(range, current) {
@@ -581,7 +669,7 @@ require('x-tr/x-tr');
       for (let i = 0; i < rows.length; i++) {
         let tdCheck = $(rows[i]).find('input[type=checkbox]').first();
         if ($(tdCheck).length > 0)
-          $(tdCheck)[0].checked = false;
+          $(tdCheck).prop('checked', false);
         $(rows[i]).removeClass('row-selected');
       }
 
@@ -590,25 +678,31 @@ require('x-tr/x-tr');
         highlightBar.get(0).cleanRanges();
       }
       this._updateDefineReasonButtonState();
+
+      if(this._table) {
+        this._table.removeClass('selection-mode');
+      }
     }
 
     checkBoxClick(e) {
-      let row = $(e.target).closest('.unansweredreasonslotlist-tr');
-      let tdCheck = row.find('input[type=checkbox]');
-
-      if (this._firstLoad) {
-        if ($(tdCheck).length > 0)
-          $(tdCheck)[0].checked = true;
+      let target = $(e.target);
+      if (!target.is('input')) {
+         target = target.closest('.unansweredreasonslotlist-tr').find('input.table-check');
       }
 
-      let checked = $(tdCheck).is(':checked');
+      let row = target.closest('.unansweredreasonslotlist-tr');
+      let checked = target.is(':checked');
       let highlightBar = $(this.element).find('x-highlightperiodsbar');
-      let rangeString = $(row).attr('range');
+      let rangeString = row.attr('range');
       let range = pulseRange.createDateRangeFromString(rangeString);
 
       if (checked) {
         row.addClass('row-selected');
         if (highlightBar.length > 0) highlightBar.get(0).addRange(range);
+
+        if (!this._table.hasClass('selection-mode')) {
+           this._table.addClass('selection-mode');
+        }
       }
       else {
         row.removeClass('row-selected');
@@ -616,6 +710,11 @@ require('x-tr/x-tr');
       }
 
       this._updateDefineReasonButtonState();
+
+      let selectedCount = $(this.element).find('.unansweredreasonslotlist-tr.row-selected').length;
+      if (selectedCount === 0) {
+        this._table.removeClass('selection-mode');
+      }
     }
 
     rowClick(e) {
@@ -624,8 +723,8 @@ require('x-tr/x-tr');
       if (isSelectable == 'false') {
         return;
       }
-      let tdCheck = row.find('input[type=checkbox]').first();
-      $(tdCheck).click();
+
+      this._handleRowSimpleClick(row, $(row).attr('range'));
     }
 
     onDateTimeRangeChange(event) {

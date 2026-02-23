@@ -278,6 +278,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     sectionReasonTitle: 'Classifier la/les période(s) sélectionnée(s)',
     optionIdentified: 'Montrer les périodes classifiées',
     optionRunning: 'Montrer les périodes actives',
+    showallperiods: 'Montrer les détails',
   },
   reportdatetime: {
     invalidGroupDisplayForm: 'Attribut groupDisplayForm invalide',

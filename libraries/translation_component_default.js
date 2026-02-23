@@ -287,6 +287,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     sectionReasonTitle: 'Apply a reason on the selected period(s)',
     optionIdentified: 'Show identified idle periods',
     optionRunning: 'Show running periods',
+    showallperiods: 'Show details',
   },
   reportdatetime: {
     invalidGroupDisplayForm: 'Invalid groupDisplayForm',
@@ -653,6 +654,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     sectionReasonTitle: 'Classifier la/les période(s) sélectionnée(s)',
     optionIdentified: 'Montrer les périodes classifiées',
     optionRunning: 'Montrer les périodes actives',
+    showallperiods: 'Montrer les détails',
   },
   reportdatetime: {
     invalidGroupDisplayForm: 'Attribut groupDisplayForm invalide',

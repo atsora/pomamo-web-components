@@ -33,6 +33,8 @@ x-unansweredreasonslotlist {
   .row-selected {
     font-weight: bold;
     color: @color_highlight;
+    border-color: @color_highlight !important; /* Met en valeur la bordure si sélectionné */
+    background-color: fade(@color_highlight, 5%); /* Léger fond pour marquer la sélection */
 
     .overwrite-required {
       color: @color_highlight;
@@ -60,9 +62,12 @@ x-unansweredreasonslotlist {
     flex: 1 1 auto;
     min-height: 0;
     margin: 0 10px;
+    padding: 10px; /* Un peu d'espace pour les ombres/bordures intérieures */
     position: relative;
     background-color: @color_background;
     color: @color_text;
+    /* On peut retirer la bordure globale si les lignes ont déjà leurs propres bordures,
+       mais je la laisse pour conserver ton design d'origine de la box */
     border: 1px solid @color_window_border;
     border-radius: @border_radius_small;
   }
@@ -70,16 +75,18 @@ x-unansweredreasonslotlist {
   /* --- BOUTON GLOBAL DU BAS (Large) --- */
   .unansweredreasonslotlist-define-container {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     flex-grow: 0.15;
     padding: 10px;
   }
 
-  .unansweredreasonslotlist-define-button {
-    background-color: @color_highlight;
-    color: @color_window;
+  .unansweredreasonslotlist-define-button,
+  .unansweredreasonslotlist-showall-button {
+    background-color: @box_color;
+    color: @color_text_button;
     border: none;
     border-radius: @border_radius_small;
+    border: 1px solid @color_window_border;
     padding: 8px 16px;
     font-size: 2em;
     width: 30%;
@@ -95,16 +102,37 @@ x-unansweredreasonslotlist {
     }
 
     &:hover:not(:disabled) {
-      background-color: lighten(@color_highlight, 10%);
+      background-color: lighten(@box_color, 10%);
+      border-color: @color_window_border_light;
     }
   }
 
+  /* --- STYLE BOUTON DE CHAQUE LIGNE (TR) --- */
   .unansweredreasonslotlist-tr {
     display: flex;
-    align-items: center; /* Aligne tout au centre verticalement */
+    align-items: center;
     justify-content: space-between;
-    gap: 15px;
-    padding: 5px 15px;
+
+    /* Hauteur fixe et padding (verticalement centré grâce à align-items: center) */
+    box-sizing: border-box; /* S'assure que la bordure ne modifie pas les 54px */
+    height: 54px;
+    padding: 0 15px;
+    margin-bottom: 8px; /* Écarte les lignes pour qu'elles aient l'air de vrais boutons cliquables */
+
+    /* Bordures grises tout autour + Bordure gauche couleur + Arrondis */
+    border: 1px solid @color_window_border;
+    border-radius: @border_radius_small;
+
+    background-color: @color_window;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+
+    &:hover {
+      background-color: fade(@color_highlight, 2%);
+      border-color: @color_window_border_light;
+    }
 
     .overwrite-required {
       color: @color_missing_value_highlight;
@@ -116,6 +144,8 @@ x-unansweredreasonslotlist {
     flex: 1 1 auto;
     cursor: pointer;
     position: relative;
+    /* Empêche le texte de casser la ligne de 54px si c'est trop long */
+    overflow: hidden;
 
     x-revisionprogress {
       top: 0;
@@ -134,38 +164,27 @@ x-unansweredreasonslotlist {
     font-size: 1.9em;
   }
 
-  /* --- NOUVEAU BOUTON PAR LIGNE --- */
-  .unansweredreasonslotlist-td-action {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    order: 5;
-    margin-right: 10px;
-  }
-
-  .unansweredreasonslotlist-row-button {
-    background-color: @color_highlight;
-    color: @color_window;
-    border: none;
-    border-radius: @border_radius_small;
-    padding: 6px 12px;
-    font-size: 1.2em; /* Plus discret que le gros bouton */
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-
-    &:hover {
-      background-color: lighten(@color_highlight, 10%);
-    }
-  }
-  /* -------------------------------- */
-
+  /* --- GESTION DES CHECKBOXES ET DU MODE SELECTION --- */
   .unansweredreasonslotlist-td-check {
     order: 9;
     min-width: fit-content;
     min-height: fit-content;
+    display: none; /* Caché par défaut */
+    transition: opacity 0.3s ease;
   }
+
+  .unansweredreasonslotlist-table.selection-mode {
+    .unansweredreasonslotlist-td-check {
+      display: flex; /* Apparaît en mode sélection */
+      animation: fadeIn 0.3s;
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  /* --------------------------------------------------- */
 
   input {
     appearance: none;
@@ -236,3 +255,4 @@ x-unansweredreasonslotlist {
     margin-top: 0;
   }
 }
+
