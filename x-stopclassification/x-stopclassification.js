@@ -51,7 +51,8 @@ require('x-revisionprogress/x-revisionprogress');
                 'removeRange': self.removeRange,    // unset if matches
                 'cleanRanges': self.cleanRanges,    // clear range
                 'setRange': self.addRange,          // alias
-                'closeAfterSave': self.closeAfterSave
+                'closeAfterSave': self.closeAfterSave,
+                'hideAdvancedOptions': self.hideAdvancedOptions
             };
 
             return self;
@@ -133,6 +134,7 @@ require('x-revisionprogress/x-revisionprogress');
 
             // Initialize parameters
             this._closeAfterSave = true;
+            this._hideAdvancedOptions = false;
 
             // Initialize range(s) from attributes (like x-savereason does for 'ranges')
             if (this.element.hasAttribute('ranges')) {
@@ -304,6 +306,14 @@ require('x-revisionprogress/x-revisionprogress');
         }
 
         /**
+         * Configure whether to hide the advanced options button
+         * @param {boolean} hide
+         */
+        hideAdvancedOptions(hide) {
+            this._hideAdvancedOptions = !!hide;
+        }
+
+        /**
          * Render reason tiles (flat if <=12 reasons else grouped by ReasonGroupDisplay)
          */
         _drawReasons() {
@@ -346,7 +356,9 @@ require('x-revisionprogress/x-revisionprogress');
                     tileCount += 1;
                 }
 
-                this._drawAdancedButton(tileCount);
+                if (!this._hideAdvancedOptions) {
+                    this._drawAdancedButton(tileCount);
+                }
             }
             else {
                 this._groups = new Object();
@@ -364,7 +376,9 @@ require('x-revisionprogress/x-revisionprogress');
                 for (const group of groupNames) {
                     this._drawCell(group, this._groups[group][0].Color, true);
                 }
-                this._drawAdancedButton(groupNames.length);
+                if (!this._hideAdvancedOptions) {
+                    this._drawAdancedButton(groupNames.length);
+                }
             }
         }
 

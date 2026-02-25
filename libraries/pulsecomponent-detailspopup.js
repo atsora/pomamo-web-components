@@ -400,9 +400,10 @@ exports.openChangeWorkInfoDialog = function (component, dtRange) {
  * @param {Object} component - component calling openChangeReasonDialog -> must define following attributes : machine-id
  * @param {Range} dtRange - date range
  * @param {Bool} skip1periodlist - true if 1 item list should display 2nd page
+ * @param {Bool} forceDetails - true to force x-reasonslotlist even for operator
  *
  */
-var openChangeReasonDialog = exports.openChangeReasonDialog = function (component, dtRange, skip1periodlist) {
+var openChangeReasonDialog = exports.openChangeReasonDialog = function (component, dtRange, skip1periodlist, forceDetails) {
   if ($('.dialog-savereason').length > 0) {
     return;
   }
@@ -429,7 +430,7 @@ var openChangeReasonDialog = exports.openChangeReasonDialog = function (componen
   let machid = $(component.element).attr('machine-id');
   let rangeString = dtRange.toString(d => d.toISOString());
   let role = pulseConfig.getAppContextOrRole && pulseConfig.getAppContextOrRole();
-  let reasonslotlistTag = (role === 'operator') ? 'x-unansweredreasonslotlist' : 'x-reasonslotlist';
+  let reasonslotlistTag = (role === 'operator' && !forceDetails) ? 'x-unansweredreasonslotlist' : 'x-reasonslotlist';
   let xreasonslotlist = pulseUtility.createjQueryElementWithAttribute(reasonslotlistTag, {
     'machine-id': machid,
     'only-overwrite-required': true, //component.requiredReason,
