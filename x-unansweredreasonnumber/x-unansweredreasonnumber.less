@@ -1,0 +1,45 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+@import "x-datetimerange/x-datetimerange.less";
+@import "x-reasonslotbar/x-reasonslotbar.less"; // because it can not be included in reasonslotlist
+@import "x-reasonslotlist/x-reasonslotlist.less";
+@import "x-stopclassification/x-stopclassification.less";
+@import "x-savereason/x-savereason.less";
+@import "x-revisionprogress/x-revisionprogress.less";
+
+x-lastmachinestatus {
+  display: block;
+  color: @color_text;
+
+  /* To make is(':visible') works */
+}
+
+.lastmachinestatus-reasontooold {
+  color: @warn_main_color;
+
+  position: relative;
+  //padding: 5px 10px;
+  display: inline;
+}
+
+.pulse-cellbar-past-data {
+  column-gap: 8px;
+  display: flex;
+  align-items: center;
+  
+}
+
+.pulse-cellbar-current-data{
+  column-gap: 8px;
+  display: flex;
+  align-items: center;
+}
+
+i {
+  color: #bd4d81;
+}

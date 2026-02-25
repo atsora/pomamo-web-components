@@ -1,9 +1,9 @@
-// Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2026 Atsora Solutions
 //
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * @module x-lastmachinestatus
+ * @module x-unansweredreasonnumber
  * @requires module:pulseUtility
  * @requires module:pulseRange
  * @requires module:pulseComponent
@@ -23,11 +23,9 @@ require('x-reasonslotlist/x-reasonslotlist');
 require('x-revisionprogress/x-revisionprogress');
 require('x-stopclassification/x-stopclassification');
 
-
-
 (function () {
 
-  class LastMachineStatusComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
+  class UnansweredReasonNumberComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
      *
@@ -51,10 +49,6 @@ require('x-stopclassification/x-stopclassification');
     }
 
     // Accessors
-    //get reasonText () { return this._reasonText; }
-    //get reasonColor () { return this._reasonColor; }
-    //get reasonBegin () { return this._lastReasonBegin; }
-    //get reasonOverwriteRequired () { return this._reasonOverwriteRequired; }
     //get requiredReason () { return this._requiredReason; }
 
     attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
@@ -147,10 +141,10 @@ require('x-stopclassification/x-stopclassification');
       interrogationCurrentMark.setAttribute('class', 'fa-solid fa-circle-question');
       interrogationCurrentMark.setAttribute('id', 'questionmarkcurrentcell');
 
-      let reasonlabel = $('<span></span>').addClass('lastmachinestatus-reason-label');
+      let reasonlabel = $('<span></span>').addClass('unansweredreasonumber-reason-label');
       reasonlabel.html(this.getTranslation('currentReasonColon', 'Current reason:'));
       // display reason OR error message :
-      let spanreasondata = $('<span></span>').addClass('lastmachinestatus-reason-data');
+      let spanreasondata = $('<span></span>').addClass('unansweredreasonumber-reason-data');
       this._currentCell = $('<div></div>').addClass('pulse-cellbar-first')
         .addClass('pulse-cellbar-current-data')
         .addClass('clickable') // To change display when hover
@@ -166,7 +160,6 @@ require('x-stopclassification/x-stopclassification');
       // Past reason
       let pastreasonlabel = $('<span></span>');
       pastreasonlabel.append(this.getTranslation('pastReasonData', 'Past motion status details'));
-
 
       let interrogationPastMark = document.createElement('i');
       interrogationPastMark.setAttribute('class', 'fa-solid fa-circle-question');
@@ -236,7 +229,7 @@ require('x-stopclassification/x-stopclassification');
       // Clean content
       $(this.element).find('.pulse-cellbar-past-data')
         .removeClass('pulse-cellbar-cell-missing');
-      $(this.element).find('.lastmachinestatus-reason-data').html('');
+      $(this.element).find('.unansweredreasonumber-reason-data').html('');
 
       this.switchToNextContext();
     }
@@ -263,10 +256,6 @@ require('x-stopclassification/x-stopclassification');
       $(this._messageSpan).html(message);
 
       this._requiredReason = null;
-      this._reasonText = null;
-      this._reasonColor = null;
-      this._lastReasonBegin = null;
-      this._reasonOverwriteRequired = null;
       eventBus.EventBus.dispatchToContext('reasonStatusChange',
         this.element.getAttribute('status-context'),
         { status: false })
@@ -281,9 +270,14 @@ require('x-stopclassification/x-stopclassification');
     }
 
     getShortUrl() {
-      let url = 'GetLastMachineStatusV2?RequiredNumber=False&Id=' + this.element.getAttribute('machine-id');
+      // TODO: use ReasonUnanswered with the Number parameter instead of LastMachineStatusV2 with Begin/End parameters to optimize the request
+      // when this is available in the web service
+      let url = 'GetLastMachineStatusV2?RequiredNumber=True&Id=' + this.element.getAttribute('machine-id');
       if (!pulseUtility.isNotDefined(this._beginDate)) {
         url += '&Begin=' + this._beginDate;
+      }
+      if (!pulseUtility.isNotDefined(this._endDate)) {
+        url += '&End=' + this._endDate;
       }
       if (this._forceReload) {
         url += '&Cache=No';
@@ -293,34 +287,13 @@ require('x-stopclassification/x-stopclassification');
     }
 
     refresh(data) {
-      this._reasonText = data.MachineStatus.ReasonSlot.Reason.Text;
-      this._reasonColor = data.MachineStatus.ReasonSlot.Reason.Color;
-      this._lastReasonBegin = data.MachineStatus.ReasonSlot.Begin;
-      this._reasonOverwriteRequired = data.MachineStatus.ReasonSlot.OverwriteRequired;
-      this._reasonTooOld = data.ReasonTooOld;
       let status = false;
       $(this.element).find('.pulse-cellbar-current-data')
         .removeClass('pulse-cellbar-cell-missing')
       $(this.element).find('#questionmarkcurrentcell').hide();
 
-      $(this.element).find('.lastmachinestatus-reason-data')
-        .removeClass('lastmachinestatus-reasontooold');
-
-      if (data.ReasonTooOld == true) {
-        $(this.element).find('.lastmachinestatus-reason-data').addClass('lastmachinestatus-reasontooold');
-        $(this.element).find('.lastmachinestatus-reason-data').html(this.getTranslation('tooOld', 'Reason is too old'));
-      }
-      else {
-        if (data.MachineStatus.ReasonSlot.OverwriteRequired == true) {
-          $(this.element).find('.pulse-cellbar-current-data').addClass('pulse-cellbar-cell-missing');
-          $(this.element).find('#questionmarkcurrentcell').show();
-          status = true;
-          eventBus.EventBus.dispatchToContext('reasonStatusCurrentChange',
-            this.element.getAttribute('status-context'),
-            { status: status });
-        }
-        $(this.element).find('.lastmachinestatus-reason-data').html(this._reasonText);
-      }
+      $(this.element).find('.unansweredreasonumber-reason-data')
+        .removeClass('unansweredreasonumber-reasontooold');
 
       //Set state of "past data" part in widget
       this._requiredReason = data.RequiredReason;
@@ -328,6 +301,12 @@ require('x-stopclassification/x-stopclassification');
         $(this.element).find('.pulse-cellbar-past-data')
           .addClass('pulse-cellbar-cell-missing')
         $(this.element).find('#questionmarkpastcell').show();
+        let stopNumber = "";
+        if (data.RequiredNumber) {
+          stopNumber = data.RequiredNumber.toString();
+        }
+        if (data.RequiredNumber <= 1) this.element.querySelector('.pulse-cellbar-past-data span').textContent = stopNumber + " " + this.getTranslation('dataToClassified', 'STOP to be classified');
+        else this.element.querySelector('.pulse-cellbar-past-data span').textContent = stopNumber + " " + this.getTranslation('dataToClassifiedPlural', 'STOPS to be classified');
         status = true;
       }
       else {
@@ -339,7 +318,6 @@ require('x-stopclassification/x-stopclassification');
       eventBus.EventBus.dispatchToContext('reasonStatusChange',
         this.element.getAttribute('status-context'),
         { status: status });
-
     }
 
     // Callback events
@@ -392,7 +370,7 @@ require('x-stopclassification/x-stopclassification');
           if ((modif.ranges[i].lower < now)
             && (modif.ranges[i].upper == null || modif.ranges[i].upper > now)) {
             this._forceReload = true;
-            $(this.element).find('.lastmachinestatus-reason-data').html('');
+            $(this.element).find('.unansweredreasonumber-reason-data').html('');
             $(this.element).find('#questionmarkcurrentcell').hide();
             this.switchToContext('Reload');
             return;
@@ -429,6 +407,7 @@ require('x-stopclassification/x-stopclassification');
         (!pulseRange.equals(newRange, this._dateRange, (a, b) => (a >= b) && (a <= b)))) {
         this._dateRange = newRange;
         this._beginDate = pulseUtility.convertDateForWebService(event.target.daterange._lower);
+        this._endDate = pulseUtility.convertDateForWebService(event.target.daterange._upper);
         this.start();
       }
     }
@@ -464,5 +443,5 @@ require('x-stopclassification/x-stopclassification');
     }
   }
 
-  pulseComponent.registerElement('x-lastmachinestatus', LastMachineStatusComponent, ['machine-id', 'period-context', 'machine-context', 'status-context']);
+  pulseComponent.registerElement('x-unansweredreasonnumber', UnansweredReasonNumberComponent, ['machine-id', 'period-context', 'machine-context', 'status-context']);
 })();
