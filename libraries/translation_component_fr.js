@@ -259,7 +259,6 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   reasonslotlist: {
     idle: 'Arrêtée',
-    loading: 'En chargement...',
     motion: 'En mouvement',
     allPeriodsClassified: 'Toutes les périodes sont classifiées',
     noPeriod: 'Pas de période possible sur la place spécifiée',
@@ -270,18 +269,13 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     optionRunning: 'Montrer les périodes actives',
   },
   unansweredreasonnumber: {
-    currentReasonColon: "Raison d'arrêt courante : ",
-    pastReasonData: "Raisons d'arrêt passées",
     dataToClassified: 'arrêt à classifier',
     dataToClassifiedPlural: 'arrêts à classifier',
-    currentTooltip: "Changer la raison d'arrêt courante",
-    loading: 'En chargement...',
+    pastReasonData: "Raisons d'arrêt passées",
     pastTooltip: "Consulter ou changer une raison passée",
-    tooOld: 'Donnée trop vieille'
   },
     unansweredreasonslotlist: {
     idle: 'Arrêtée',
-    loading: 'En chargement...',
     motion: 'En mouvement',
     noPeriod: 'Pas de période possible sur la place spécifiée',
     defineReason: 'Définir la raison',
