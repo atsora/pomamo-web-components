@@ -253,7 +253,7 @@ var pulseConfig = require('pulseConfig');
         || pulseUtility.isNotDefined(this._taskEndDateTime)) {
         // No task => show Loading, no timer
         if (!this._hasTaskInstance) {
-          this._setTextContent('.time-in-pie', this.getTranslation('loading', 'Loading'));
+          this._setTextContent('.time-in-pie', this.getTranslation('loadingDots', 'Loading'));
         }
         else {
           this._setTextContent('.time-in-pie', '');

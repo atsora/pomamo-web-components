@@ -240,7 +240,7 @@ class PulseComponent extends WebComponent {
     }
 
     if (pulseUtility.isNotDefined(translation)) {
-      console.warn('getTranslation: ' + key + ' not found => use ' + defaultValue);
+      console.warn('getTranslation: ' + key + ' not found in element ' + this.getInfo() + ' => use ' + defaultValue);
       return defaultValue;
     }
     else {

@@ -76,7 +76,6 @@ x-unansweredreasonslotlist {
   .unansweredreasonslotlist-define-container {
     display: flex;
     justify-content: space-between;
-    flex-grow: 0.15;
     padding: 10px;
   }
 
@@ -105,6 +104,9 @@ x-unansweredreasonslotlist {
       background-color: lighten(@box_color, 10%);
       border-color: @color_window_border_light;
     }
+  }
+  .unansweredreasonslotlist-define-button{
+    display: none;
   }
 
   /* --- STYLE BOUTON DE CHAQUE LIGNE (TR) --- */

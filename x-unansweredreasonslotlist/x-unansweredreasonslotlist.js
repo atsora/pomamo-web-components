@@ -197,20 +197,6 @@ require('x-machinedisplay/x-machinedisplay');
 
       this._skipList = false;
 
-      if (1 == this._numberOfSelectableItems) {
-        if (this.element.hasAttribute('skip1periodlist') && this.element.getAttribute('skip1periodlist')) {
-          this._skipList = true;
-        }
-        if (!pulseUtility.isNotDefined(evt)) {
-          // Si on auto-sélectionne le seul item, on va entrer en selection-mode
-          let checkbox = $(evt.target).find('input.table-check');
-          if (checkbox.length > 0) {
-            checkbox.prop('checked', true);
-            this.checkBoxClick({ target: checkbox[0] });
-          }
-        }
-      }
-
       this._firstLoad = false;
       this._updateDefineReasonButtonState();
     }
@@ -280,8 +266,19 @@ require('x-machinedisplay/x-machinedisplay');
 
     _updateDefineReasonButtonState() {
       if (pulseUtility.isNotDefined(this._defineReasonButton)) { return; }
+
+      // Compte le nombre de lignes sélectionnées
       let selectedCount = $(this.element).find('.unansweredreasonslotlist-tr.row-selected').length;
+
+      // 1. Gestion de l'état (Grisé ou Actif) - Code existant
       this._defineReasonButton.prop('disabled', selectedCount === 0);
+
+      // 2. Gestion de la visibilité (Caché ou Visible) - AJOUT
+      if (selectedCount > 0) {
+        this._defineReasonButton.show(); // Affiche si au moins 1 item sélectionné
+      } else {
+        this._defineReasonButton.hide(); // Cache s'il n'y a pas de sélection
+      }
     }
 
     _getSelectedRanges() {
@@ -434,8 +431,8 @@ require('x-machinedisplay/x-machinedisplay');
       let showAllButton = $('<button type="button"></button>')
         .addClass('unansweredreasonslotlist-showall-button');
       let showAllLabel = $('<x-tr></x-tr>')
-        .attr('key', 'showAllPeriods')
-        .attr('default', 'Show all periods');
+        .attr('key', 'advanced')
+        .attr('default', 'Advanced');
       showAllButton.append(showAllLabel);
 
       showAllButton.on('click', function () {
@@ -455,7 +452,7 @@ require('x-machinedisplay/x-machinedisplay');
         .append(divScrollable)
         .append(defineReasonContainer);
 
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loading', 'Loading...')).css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this.element).append(loaderDiv);
 

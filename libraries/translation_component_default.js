@@ -21,6 +21,7 @@ ATSORA_LOCALE_CATALOG.default.general = {
  * Components translations
  */
 ATSORA_LOCALE_COMPONENT_CATALOG.default = {
+  homeBtn: 'Home',
   changebutton: 'Change',
   contactsupport: 'Please contact the support team',
   loadingDots: 'Loading...',
@@ -54,12 +55,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     noDataTooOld: 'N/A'
   },
   currenticoncncalarm: {
-    iconTooltip: '' // Never used because specific alarm tooltip
+    iconTooltip: ' ' // Never used because specific alarm tooltip
   },
   currenticonnextstop: {
     iconTooltip: 'next stop'
   },
-  currenticonunanserweredreason: {
+  currenticonunansweredreason: {
     iconTooltip: 'unanswered machine status'
   },
   currenticonworkinformation: {
@@ -119,16 +120,6 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   },
   lastmachinestatetemplate: {
     scheduledStatus: 'Scheduled status:'
-  },
-  lastmachinestatus: {
-    currentReasonColon: 'Currrent reason: ',
-    dataToClassified: 'stop to be classified',
-    dataToClassifiedPlural: 'stops to be classified',
-    currentTooltip: 'Change current reason',
-    loading: 'Loading...',
-    pastReasonData: 'Past reason details',
-    pastTooltip: 'Look or change past reason details',
-    tooOld: 'Reason is too old'
   },
   lastserialnumber: {
     currentserialnumber: 'Serial Number: ',
@@ -214,10 +205,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   },
   periodtoolbar: {
     dialogTitle: 'Setting date/time range',
-    homeBtn: 'home',
     dayBtn: 'day',
     shiftBtn: 'shift',
     weekBtn: 'week',
+    monthBtn: 'month',
+    quarterBtn: 'quarter',
     semesterBtn: 'semester',
     yearBtn: 'year',
     emptyPeriodError: 'Empty period',
@@ -266,7 +258,6 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   },
   reasonslotlist: {
     idle: 'Idle',
-    loading: 'Loading...',
     motion: 'Motion',
     allPeriodsClassified: 'All periods are classified',
     noPeriod: 'No selectable period on the specified range',
@@ -276,18 +267,26 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     optionIdentified: 'Show identified idle periods',
     optionRunning: 'Show running periods',
   },
-    unansweredreasonslotlist: {
+  unansweredreasonnumber: {
+    currentReasonColon: 'Currrent reason: ',
+    dataToClassified: 'stop to be classified',
+    dataToClassifiedPlural: 'stops to be classified',
+    currentTooltip: 'Change current reason',
+    pastReasonData: 'Past reason details',
+    pastTooltip: 'Look or change past reason details',
+    tooOld: 'Reason is too old'
+  },
+  unansweredreasonslotlist: {
     idle: 'Idle',
-    loading: 'Loading...',
     motion: 'Motion',
     noPeriod: 'No selectable period on the specified range',
-    defineReason: 'Define reason',
+    defineReason: 'Set reason',
     sectionTimeRangeTitle: 'Select a time range',
     sectionPeriodTitle: 'Select one or more idle periods',
     sectionReasonTitle: 'Apply a reason on the selected period(s)',
     optionIdentified: 'Show identified idle periods',
     optionRunning: 'Show running periods',
-    showallperiods: 'Show details',
+    advanced: 'Advanced',
   },
   reportdatetime: {
     invalidGroupDisplayForm: 'Invalid groupDisplayForm',
@@ -311,7 +310,6 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     comment: 'comment',
     currentReasonColon: 'Current reason:  ',
     errorNoDetails: 'Please add a comment',
-    loading: 'Loading...',
     machineColon: 'Machine: ',
     modesColon: 'Modes: ',
     multiple: 'multiple',
@@ -403,6 +401,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   missingconfiguration: 'Configuration manquante',
   errorColon: 'Erreur : ',
   waitingPath: 'En attente du chemin',
+  homeBtn: 'accueil',
   error: {
     emptyPeriod: 'Période vide',
     invalidMachineId: 'machine-id invalide',
@@ -430,12 +429,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     noDataTooOld: 'N/D'
   },
   currenticoncncalarm: {
-    iconTooltip: '' // Never used because specific alarm tooltip
+    iconTooltip: ' ' // Never used because specific alarm tooltip
   },
   currenticonnextstop: {
     iconTooltip: 'prochain arrêt'
   },
-  currenticonunanserweredreason: {
+  currenticonunansweredreason: {
     iconTooltip: 'état machine non renseigné'
   },
   currenticonworkinformation: {
@@ -495,16 +494,6 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   lastmachinestatetemplate: {
     scheduledStatus: 'État planifié : '
-  },
-  lastmachinestatus: {
-    currentReasonColon: "Raison d'arrêt courante : ",
-    pastReasonData: "Raisons d'arrêt passées",
-    dataToClassified: 'arrêt à classifier',
-    dataToClassifiedPlural: 'arrêts à classifier',
-    currentTooltip: "Changer la raison d'arrêt courante",
-    loading: 'En chargement...',
-    pastTooltip: "Consulter ou changer une raison passée",
-    tooOld: 'Donnée trop vieille'
   },
   lastserialnumber: {
     currentserialnumber: 'Numéro de série : ',
@@ -587,8 +576,6 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     today: 'Aujourd\'hui'
   },
   periodtoolbar: {
-    dialogTitle: "Entrer l'intervalle de temps",
-    homeBtn: 'accueil',
     dayBtn: 'journée',
     shiftBtn: 'équipe',
     weekBtn: 'semaine',
@@ -596,6 +583,15 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     quarterBtn: 'trimestre',
     semesterBtn: 'semestre',
     yearBtn: 'année',
+    dialogTitle: "Entrer l'intervalle de temps",
+    emptyPeriodError: 'Période vide',
+    endAfterMaxError: 'La date de fin est postérieure à la date maximum autorisée',
+    endBeforeMinError: 'La date de fin est antérieure à la date minimum autorisée',
+    endBeforeStartError: 'La date de fin est antérieure à la date de début',
+    endNotValidError: 'La date de fin n’est pas valide',
+    startAfterMaxError: 'La date de début est postérieure à la date maximum autorisée',
+    startBeforeMinError: 'La date de début est antérieure à la date minimum autorisée',
+    startNotValidError: 'La date de début n’est pas valide'
   },
   production: {
     actual: 'Production',
@@ -633,7 +629,6 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   reasonslotlist: {
     idle: 'Arrêtée',
-    loading: 'En chargement...',
     motion: 'En mouvement',
     allPeriodsClassified: 'Toutes les périodes sont classifiées',
     noPeriod: 'Pas de période possible sur la place spécifiée',
@@ -643,9 +638,17 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     optionIdentified: 'Montrer les périodes classifiées',
     optionRunning: 'Montrer les périodes actives',
   },
-    unansweredreasonslotlist: {
+  unansweredreasonnumber: {
+    currentReasonColon: "Raison d'arrêt courante : ",
+    pastReasonData: "Raisons d'arrêt passées",
+    dataToClassified: 'arrêt à classifier',
+    dataToClassifiedPlural: 'arrêts à classifier',
+    currentTooltip: "Changer la raison d'arrêt courante",
+    pastTooltip: "Consulter ou changer une raison passée",
+    tooOld: 'Donnée trop vieille'
+  },
+  unansweredreasonslotlist: {
     idle: 'Arrêtée',
-    loading: 'En chargement...',
     motion: 'En mouvement',
     noPeriod: 'Pas de période possible sur la place spécifiée',
     defineReason: 'Définir la raison',
@@ -654,7 +657,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     sectionReasonTitle: 'Classifier la/les période(s) sélectionnée(s)',
     optionIdentified: 'Montrer les périodes classifiées',
     optionRunning: 'Montrer les périodes actives',
-    showallperiods: 'Montrer les détails',
+    advanced: 'Gestion avancé',
   },
   reportdatetime: {
     invalidGroupDisplayForm: 'Attribut groupDisplayForm invalide',
@@ -678,7 +681,6 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     comment: 'commentaire',
     currentReasonColon: 'Raison courante : ',
     errorNoDetails: "Prière d'ajouter un commentaire",
-    loading: 'en chargement...',
     machineColon: 'Machine : ',
     modesColon: 'Modes : ',
     multiple: 'multiple',
@@ -756,4 +758,4 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
 
 // Set the 'default' locale by default
 ATSORA_CATALOG = ATSORA_LOCALE_CATALOG.default;
-ATSORA_COMPONENT_CATALOG = ATSORA_COMPONENT_CATALOG.default;
+ATSORA_COMPONENT_CATALOG = ATSORA_LOCALE_COMPONENT_CATALOG.default;

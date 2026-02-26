@@ -160,9 +160,9 @@ var state = require('state');
      */
     read() {
       let key = this.element.getAttribute('key');
-      let v = this.getTranslation(key, undefined);
+      let v = pulseConfig.pulseTranslate(key, undefined);
       if ((v == undefined) || (v == null)) {
-        v = pulseConfig.pulseTranslate(key, undefined);
+        v = this.getTranslation(key, undefined);
         if ((v == undefined) || (v == null)) {
           this.switchToNextContext();
         }

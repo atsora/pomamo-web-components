@@ -130,7 +130,7 @@ require('x-datetimerange/x-datetimerange');
         .append(divtable);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loading', 'Loading...')).css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(list).append(loaderDiv);
 

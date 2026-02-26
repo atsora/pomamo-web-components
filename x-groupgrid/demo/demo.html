@@ -1,0 +1,36 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class='hidden-content'>
+  <div class='machines_cell' id='boxtoclone'>
+    <div class='tile-title'>
+      <x-reasonbutton></x-reasonbutton>
+      <div class='machinedisplay-position'>
+        <x-machinedisplay></x-machinedisplay>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="static-tests">
+  <label>Fixed list of 4 machines for the test (instead of dynamic group) column=3</label>
+  <div id="machine" class='group-div'>
+    <x-grouparray templateid='boxtoclone' machine='18,19,20,21' column=3></x-grouparray>
+  </div>
+
+  <label>Fixed group (Ca1) 2 rows (+ adapt), 2 columns</label>
+  <div id="group" class='group-div'>
+    <!-- group='Ca1'-->
+    <x-grouparray templateid='boxtoclone' machine='18,19,20,21' column=2 row=2 canUseRowsToSetHeight='true'></x-grouparray>
+  </div>
+
+  <label>Dynamic group (ET) 4 columns</label>
+  <div id="dyn-group" class='group-div'>
+    <!--group='ET'-->
+    <x-grouparray templateid='boxtoclone' machine='18,19,20,21' column=4></x-grouparray>
+  </div>
+
+</div>

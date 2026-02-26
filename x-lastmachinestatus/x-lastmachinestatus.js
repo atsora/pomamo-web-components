@@ -157,8 +157,6 @@ require('x-stopclassification/x-stopclassification');
         // + class error if needed
         .append(interrogationCurrentMark)
         .append(reasonlabel).append(spanreasondata);
-      pulseUtility.addToolTip(this._currentCell,
-        this.getTranslation('currentTooltip', 'Change current motion status'));
 
       // Red dot = missing data
       pulseSvg.createMissingdata(this._currentCell);
@@ -211,7 +209,7 @@ require('x-stopclassification/x-stopclassification');
       $(this.element).append(messageDiv);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('Loading', 'Loading...')).css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this.element).append(loaderDiv);
 

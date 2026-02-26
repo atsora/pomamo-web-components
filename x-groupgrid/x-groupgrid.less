@@ -1,0 +1,64 @@
+/* Copyright (C) 2025 Atsora Solutions */
+
+@import "pulsewebcomponents-common.less";
+
+x-groupgrid {
+  display: block;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+
+  .groupgrid-main {
+    display: grid;
+    gap: 15px;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    /* Les lignes s'étirent toujours pour remplir la hauteur */
+    grid-auto-rows: 1fr;
+
+    /* --- LOGIQUE DE MATRICE INTELLIGENTE (grid personnélisée non native au fonctionnement des grids) --- */
+    /* Cette logique est maintenant native au composant */
+
+    /* Par défaut (sécurité) */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+    /* 1 élément : Plein écran */
+    &[data-count="1"] { grid-template-columns: 1fr; }
+
+    /* 2 éléments : 2 colonnes (1x2) */
+    &[data-count="2"] { grid-template-columns: 1fr 1fr; }
+
+    /* 3 éléments : 3 colonnes (1x3) */
+    &[data-count="3"] { grid-template-columns: repeat(3, 1fr); }
+
+    /* 4 éléments : 2 colonnes (2x2) - Carré parfait */
+    &[data-count="4"] { grid-template-columns: repeat(2, 1fr); }
+
+    /* 5 et 6 éléments : 3 colonnes (2x3) */
+    &[data-count="5"],
+    &[data-count="6"] { grid-template-columns: repeat(3, 1fr); }
+
+    /* 7 et 8 éléments : 4 colonnes (2x4) */
+    &[data-count="7"],
+    &[data-count="8"] { grid-template-columns: repeat(4, 1fr); }
+
+    /* 9 éléments : 3 colonnes (3x3) - Carré parfait */
+    &[data-count="9"] { grid-template-columns: repeat(3, 1fr); }
+
+    /* 10, 11, 12 éléments : 4 colonnes (3x4) */
+    &[data-count="10"],
+    &[data-count="11"],
+    &[data-count="12"] { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .groupgrid-item {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    display: flex; /* Sera écrasé par le JS (display:none) si caché */
+    flex-direction: column;
+  }
+}

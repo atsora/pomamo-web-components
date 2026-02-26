@@ -458,7 +458,7 @@ require('x-revisionprogress/x-revisionprogress');
         .append(topDiv)
         .append(warningDiv);
 
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loading', 'Loading...')).css('display', 'none');
+      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       $(this.element).append(loaderDiv);
 

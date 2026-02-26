@@ -1,0 +1,38 @@
+x-rotationprogress {
+  display: block;
+  width: 100%;
+
+  /* --- MODE BARRE --- */
+  &[display-mode="bar"] {
+    height: 4px;
+
+    .rotation-progress-track {
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .rotation-progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: #007bff; /* Ou @color_primary */
+    }
+  }
+
+  /* --- MODE TEXTE --- */
+  &[display-mode="text"] {
+    height: auto;
+    margin-top: 5px; /* Espace au-dessus du texte */
+    display: flex;
+    justify-content: flex-end; /* Aligner à droite */
+
+    .rotation-progress-text {
+      font-size: 11px;
+      color: #666;
+      font-weight: bold;
+      padding-right: 5px;
+    }
+  }
+}

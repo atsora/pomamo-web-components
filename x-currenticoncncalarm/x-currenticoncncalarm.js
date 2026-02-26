@@ -249,11 +249,6 @@ var eventBus = require('eventBus');
         $(this._content).append(this._image);
         pulseSvg.inlineBackgroundSvg(this._image);
 
-        // NO Tooltips here - specific alarm tooltip !!!!
-        /*let tooltip = this.getTranslation('iconTooltip', '');
-        if (tooltip != '') {
-          pulseUtility.addToolTip(this._image, tooltip);
-        }*/
 
         let showAlarmBelowIcon = this.getConfigOrAttribute('showAlarmBelowIcon', false);
         if (showAlarmBelowIcon == 'true') {

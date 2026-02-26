@@ -19,6 +19,7 @@ ATSORA_LOCALE_CATALOG.fr.general = {
  * Components translations
  */
 ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
+  homeBtn: 'accueil',
   changebutton: 'Changer',
   contactsupport: "Prière de consulter l'équipe support",
   loadingDots: 'En chargement...',
@@ -52,12 +53,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     noDataTooOld: 'N/D'
   },
   currenticoncncalarm: {
-    iconTooltip: '' // Never used because specific alarm tooltip
+    iconTooltip: ' ' // Never used because specific alarm tooltip
   },
   currenticonnextstop: {
     iconTooltip: 'prochain arrêt'
   },
-  currenticonunanserweredreason: {
+  currenticonunansweredreason: {
     iconTooltip: 'état machine non renseigné'
   },
   currenticonworkinformation: {
@@ -119,14 +120,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     scheduledStatus: 'État planifié : '
   },
   lastmachinestatus: {
-    currentReasonColon: "Raison d'arrêt courante : ",
-    pastReasonData: "Raisons d'arrêt passées",
-    dataToClassified: 'arrêt à classifier',
-    dataToClassifiedPlural: 'arrêts à classifier',
-    currentTooltip: "Changer la raison d'arrêt courante",
     loading: 'En chargement...',
-    pastTooltip: "Consulter ou changer une raison passée",
-    tooOld: 'Donnée trop vieille'
   },
   lastserialnumber: {
     currentserialnumber: 'Numéro de série : ',
@@ -211,6 +205,14 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     today: 'Aujourd\'hui'
   },
   periodtoolbar: {
+    dayBtn: 'journée',
+    monthBtn: 'mois',
+    shiftBtn: 'équipe',
+    weekBtn: 'semaine',
+    monthBtn: 'mois',
+    quarterBtn: 'trimestre',
+    semesterBtn: 'semestre',
+    yearBtn: 'année',
     dialogTitle: "Entrer l'intervalle de temps",
     emptyPeriodError: 'Période vide',
     endAfterMaxError: 'La date de fin est postérieure à la date maximum autorisée',
@@ -267,6 +269,16 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     optionIdentified: 'Montrer les périodes classifiées',
     optionRunning: 'Montrer les périodes actives',
   },
+  unansweredreasonnumber: {
+    currentReasonColon: "Raison d'arrêt courante : ",
+    pastReasonData: "Raisons d'arrêt passées",
+    dataToClassified: 'arrêt à classifier',
+    dataToClassifiedPlural: 'arrêts à classifier',
+    currentTooltip: "Changer la raison d'arrêt courante",
+    loading: 'En chargement...',
+    pastTooltip: "Consulter ou changer une raison passée",
+    tooOld: 'Donnée trop vieille'
+  },
     unansweredreasonslotlist: {
     idle: 'Arrêtée',
     loading: 'En chargement...',
@@ -278,7 +290,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     sectionReasonTitle: 'Classifier la/les période(s) sélectionnée(s)',
     optionIdentified: 'Montrer les périodes classifiées',
     optionRunning: 'Montrer les périodes actives',
-    showallperiods: 'Montrer les détails',
+    advanced: 'Gestion avancé',
   },
   reportdatetime: {
     invalidGroupDisplayForm: 'Attribut groupDisplayForm invalide',

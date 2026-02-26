@@ -12,26 +12,29 @@
 @import "x-savereason/x-savereason.less";
 @import "x-revisionprogress/x-revisionprogress.less";
 
-x-lastmachinestatus {
+x-unansweredreasonnumber {
   display: block;
   color: @color_text;
-
-  /* To make is(':visible') works */
-}
-
-.lastmachinestatus-reasontooold {
-  color: @warn_main_color;
-
   position: relative;
-  //padding: 5px 10px;
-  display: inline;
+
+  /* Règle unique de basculement */
+  &.pulse-component-loading .pulse-cellbar-main {
+    visibility: hidden; /* Conserve la hauteur mais cache le contenu */
+  }
 }
+
+/* Le loader est caché */
+  .pulse-loader-div {
+    display: none;
+  }
+
+
 
 .pulse-cellbar-past-data {
   column-gap: 8px;
   display: flex;
   align-items: center;
-  
+
 }
 
 .pulse-cellbar-current-data{

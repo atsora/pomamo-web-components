@@ -327,11 +327,6 @@ var eventBus = require('eventBus');
       }
     }
 
-    /*hideStop () {
-      if (this._content != undefined) {
-        (this._content).empty();
-      }
-    }*/
 
     displayStop () {
       if (this._content != undefined) {

@@ -92,9 +92,6 @@ require('x-milestonesadd/x-milestonesadd');
       // was x-machineselector
       // OR
       this._machinesDisplay = $('<div></div>').addClass('milestonesmanager-machines-div');
-      // Fill machines selection display
-      //$('x-machineselection').get(0).fillExternalSummaryDisplay(this._machinesDisplay);
-      // REMOVED !!! -> external
       // Keep id for demo
       if (!this.element.hasAttribute('machine-id')) {
         this._machinesDisplay.html(this.element.getAttribute('machine-id'));
