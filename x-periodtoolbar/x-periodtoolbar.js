@@ -36,8 +36,8 @@ require('x-datetimepicker/x-datetimepicker');
   class periodtoolbarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -63,7 +63,7 @@ require('x-datetimepicker/x-datetimepicker');
         if ((isSelectable != null) && (true == isSelectable)) {
           svg.addClass('selectablebutton')
         }
-        let btn = $('<li></li>').addClass('periodtoolbar-li-btn').append(svg);
+        let btn = $('<div></div>').addClass('periodtoolbar-li-btn').append(svg);
         toolbar.append(btn);
         pulseSvg.inlineBackgroundSvg(svg);
         return btn;
@@ -169,7 +169,7 @@ require('x-datetimepicker/x-datetimepicker');
         self._displayToolBarSettingDialog()
       });
 
-      let periodselection_btn = $('<li></li>').addClass('periodtoolbar-li-text')
+      let periodselection_btn = $('<div></div>').addClass('periodtoolbar-li-text')
         .append(display);
       // Create DOM - Loader
       let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
@@ -754,7 +754,7 @@ require('x-datetimepicker/x-datetimepicker');
 
       let beginDiv = $('<div"></div>').addClass('datetimepicker-begindiv').append(this._beginDTP);
 
-      // End DTP // 
+      // End DTP //
       let endtimepickerOptions = {};
       endtimepickerOptions.defaultdatetime = pulseUtility.convertDateForWebService(this._dateRange.upper);
       endtimepickerOptions.nullable = false;
@@ -806,7 +806,7 @@ require('x-datetimepicker/x-datetimepicker');
 
     /**
      * @override
-     * 
+     *
      * @param {!string} context - Context
      * @return {!string} key
      */
@@ -821,7 +821,7 @@ require('x-datetimepicker/x-datetimepicker');
 
     /**
      * @override
-     * 
+     *
      * @param {!string} context - Context
      * @param {!string} key - Key
      * @returns {!State} Created states
@@ -893,10 +893,9 @@ require('x-datetimepicker/x-datetimepicker');
 
       // Create DOM - Loader + Message -> Included in button
       // Create DOM - Content
-      let toolbar = $('<ol></ol>').addClass('periodtoolbar-toolbar');
+      let toolbar = $('<div></div>').addClass('periodtoolbar');
       this._appendButtons(toolbar);
-      let div = $('<div></div>').addClass('periodtoolbar').append(toolbar);
-      $(this.element).append(div);
+      $(this.element).append(toolbar);
 
       if (this.element.hasAttribute('range')) { // FOR DEMO / TESTS / DOCS
         let newValue = this.element.getAttribute('range');
@@ -1016,7 +1015,7 @@ require('x-datetimepicker/x-datetimepicker');
     }
 
     refresh(data) {
-      // Update the component with data returned by the web service in case of success     
+      // Update the component with data returned by the web service in case of success
 
       // Fill this._dateRange is already done to define next context
       if (data && data.Display) {

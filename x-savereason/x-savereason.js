@@ -767,7 +767,7 @@ require('x-datetimerange/x-datetimerange');
      */
     clickOnReason(e) {
       let td = e.target;
-      let row = $(td).parent();
+      let row = $(td).closest('li');
       let reasonId = row[0].getAttribute('reason-id');
       let reasonName = row[0].getAttribute('reason-text');
       let detailsRequired = ('true' == row[0].getAttribute('details-required'));
@@ -785,7 +785,7 @@ require('x-datetimerange/x-datetimerange');
      */
     clickOnComment(e) {
       let td = e.target;
-      let row = $(td).parent();
+      let row = $(td).closest('li');
 
       let reasonId = row[0].getAttribute('reason-id');
       let reasonName = row[0].getAttribute('reason-text');

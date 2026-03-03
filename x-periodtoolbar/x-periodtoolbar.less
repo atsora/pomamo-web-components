@@ -31,51 +31,37 @@
 }
 
 x-periodtoolbar {
-  display: block;
+  display: flex;
+  height: 100%;
 
   .periodtoolbar {
-    text-align: center;
-    width: 100%;
-  }
-
-  ol.periodtoolbar-toolbar {
     //.bar-rounded-shadow; // Rounded border + shadow
 
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: @box_color;
-    //color: @box_text_color;
-    border: 1px solid darken(@box_color, 10%);
-    padding: 0px;
-    margin: 0 0 0 10px;
+    border: 1px solid @color_window_border;
+    padding: 0px 5px;
+    height: 100%;
     border-radius: @cellbar-corner-radius;
-    list-style-type: none;
-    //margin: 0;
-  }
-
-  .periodtoolbar-toolbar li:first-child {
-    margin: 4px;
+    box-sizing: border-box;
   }
 
   .content-period-buttons {
-    display: inline-block;
+    display: flex;
+    flex-wrap: wrap;
+    overflow: hidden;
+    height: 36px;
   }
 
   .content-zoom-buttons {
-    display: inline-block;
-  }
-
-  .periodtoolbar-li-btn {
-    display: inline-block;
-    margin: 4px 4px 4px 0;
-    vertical-align: top;
+    display: flex;
+    align-items: center;
   }
 
   .periodtoolbar-li-text {
-    display: inline-block;
-    margin: 4px 4px 4px 0;
-    vertical-align: top;
     height: @button-icon-size;
-    min-width: 300px;
 
     position: relative; // To position loader / message
 
@@ -99,7 +85,6 @@ x-periodtoolbar {
 
     .periodtoolbar-display-center {
       display: inline-block;
-      margin: 0 8px;
     }
 
     .periodtoolbar-display-right {
@@ -117,8 +102,11 @@ x-periodtoolbar {
 
   .periodtoolbar-editable {
     cursor: pointer;
+    display: flex;
+    text-wrap: nowrap;
     color: @color_text_button;
     border-radius: @border_radius_small;
+    letter-spacing: -1px;
 
     &:hover {
       background-color: @color_background_alternate;
@@ -206,22 +194,5 @@ x-periodtoolbar {
 
   .periodtoolbar-year {
     .create_svg_nostroke('periodtoolbar-1yearzoom', @box_text_color, @color_background_alternate);
-  }
-
-  .periodtoolbar-dialog-divinput {
-    margin-bottom: 20px;
-    text-align: center;
-  }
-
-  .periodtoolbar-dialog-divinputbegin {
-    display: inline-block;
-    margin-right: 20px;
-    vertical-align: top;
-  }
-
-  .periodtoolbar-dialog-divinputend {
-    display: inline-block;
-    margin-left: 20px;
-    vertical-align: top;
   }
 }
