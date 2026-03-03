@@ -401,9 +401,9 @@ require('x-reasonsubdetails/x-reasonsubdetails');
           $(changeButton).click(function (e) {
             // Hide Popup
             $('.popup-block').fadeOut(); // Never called. But to keep in case of display in popup
-            // Open Save Dlg
+            // Open Save Dlg - displayMode="force-all" to show all slots for context
             pulseDetailsPopup.openChangeReasonDialog(self, self._singleReasonRange, //self._dateRange,
-              true);
+              true, undefined, 'force-all');
           });
           $(this._divReasonDisplay).append(changeButton);
         }

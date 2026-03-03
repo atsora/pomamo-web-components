@@ -401,9 +401,10 @@ exports.openChangeWorkInfoDialog = function (component, dtRange) {
  * @param {Range} dtRange - date range
  * @param {Bool} skip1periodlist - true if 1 item list should display 2nd page
  * @param {Bool} forceDetails - true to force x-reasonslotlist even for operator
+ * @param {String} displayMode - display mode for x-reasonslotlist: "only-overwrite-required" (show only non-classified), "force-all" (show all), or undefined (default user control)
  *
  */
-var openChangeReasonDialog = exports.openChangeReasonDialog = function (component, dtRange, skip1periodlist, forceDetails) {
+var openChangeReasonDialog = exports.openChangeReasonDialog = function (component, dtRange, skip1periodlist, forceDetails, displayMode) {
   if ($('.dialog-savereason').length > 0) {
     return;
   }
@@ -431,12 +432,21 @@ var openChangeReasonDialog = exports.openChangeReasonDialog = function (componen
   let rangeString = dtRange.toString(d => d.toISOString());
   let role = pulseConfig.getAppContextOrRole && pulseConfig.getAppContextOrRole();
   let reasonslotlistTag = (role === 'operator' && !forceDetails) ? 'x-unansweredreasonslotlist' : 'x-reasonslotlist';
+
+  // Determine displayMode if not provided
+  let effectiveDisplayMode = displayMode;
+  if (!effectiveDisplayMode && reasonslotlistTag === 'x-reasonslotlist') {
+    effectiveDisplayMode = 'only-overwrite-required';
+  }
+
   let xreasonslotlist = pulseUtility.createjQueryElementWithAttribute(reasonslotlistTag, {
     'machine-id': machid,
-    'only-overwrite-required': true, //component.requiredReason,
     'range': rangeString,
     'skip1periodlist': skip1periodlist
   });
+  if (effectiveDisplayMode) {
+    xreasonslotlist.attr('display-mode', effectiveDisplayMode);
+  }
   dialog.append(xreasonslotlist);
 
   // PAGE 2 -> in RSL ?

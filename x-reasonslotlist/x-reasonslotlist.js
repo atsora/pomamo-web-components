@@ -54,6 +54,8 @@ require('x-revisionprogress/x-revisionprogress');
       self._skipList = false; // If there is a unique period, skip the list and update the reason
       self._firstLoad = true;
       self._xsaveReason = null;
+      self._displayMode = undefined; // display mode: "only-overwrite-required", "force-all", or undefined
+      self._displayModeInitialized = false;
 
       // Map [revisionid] = {revisionid,range,kind,machineid,initModifications,pendingModifications}
       self._mapOfModifications = new Map();
@@ -104,6 +106,12 @@ require('x-revisionprogress/x-revisionprogress');
           this._setAutoRange();
           this.start();
         } break;
+        case 'display-mode': {
+          this._displayMode = newVal;
+          if (this.isInitialized()) {
+            this._applyDisplayMode();
+          }
+        } break;
         default:
           break;
       }
@@ -114,6 +122,32 @@ require('x-revisionprogress/x-revisionprogress');
       if (this._xsaveReason != null) {
         this._xsaveReason[0].cleanReasons();
       }
+    }
+
+    _isForceAllEnabled() {
+      return this._displayMode === 'force-all';
+    }
+
+    _applyDisplayMode() {
+      if (!this._allIdleCheckbox) {
+        return;
+      }
+
+      if (this._displayModeInitialized) {
+        return;
+      }
+
+      if (this._displayMode === 'force-all') {
+        // Initialization only: start with all shown
+        this._allIdleCheckbox.prop('checked', true);
+      } else if (this._displayMode === 'only-overwrite-required') {
+        // Initialization only: start with non-classified only
+        this._allIdleCheckbox.prop('checked', false);
+      }
+
+      // Checkbox must always remain user-accessible
+      this._allIdleCheckbox.prop('disabled', false);
+      this._displayModeInitialized = true;
     }
 
     fillTable() {
@@ -486,6 +520,7 @@ require('x-revisionprogress/x-revisionprogress');
       this._allIdleCheckbox = undefined;
       this._motionCheckbox = undefined;
       this._xsaveReason = null;
+      this._displayModeInitialized = false;
 
       super.clearInitialization();
     }
@@ -503,6 +538,12 @@ require('x-revisionprogress/x-revisionprogress');
       this._table.empty()
         .removeClass('reasonslotlist-error')
         .addClass('reasonslotlist-table  pulse-selection-table-container');
+
+      // Initialize display mode from attribute if not already set
+      if (!this._displayMode && this.element.hasAttribute('display-mode')) {
+        this._displayMode = this.element.getAttribute('display-mode');
+      }
+
       this._dataReasonsList = data.ReasonOnlySlots
 
       let hasSelectableNonIdentified = false;
@@ -521,6 +562,11 @@ require('x-revisionprogress/x-revisionprogress');
       }
       else {
         $(this.element).find('.reasonslotlist-warning').hide();
+      }
+
+      // Apply display mode if set
+      if (this._displayMode) {
+        this._applyDisplayMode();
       }
 
       this.fillTable();
@@ -736,5 +782,5 @@ require('x-revisionprogress/x-revisionprogress');
 
   }
 
-  pulseComponent.registerElement('x-reasonslotlist', ReasonSlotListComponent, ['machine-id', 'range']);
+  pulseComponent.registerElement('x-reasonslotlist', ReasonSlotListComponent, ['machine-id', 'range', 'display-mode']);
 })();
