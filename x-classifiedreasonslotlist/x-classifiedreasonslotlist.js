@@ -19,6 +19,7 @@ require('x-revisionprogress/x-revisionprogress');
 require('x-stopclassification/x-stopclassification');
 require('x-tr/x-tr');
 require('x-machinedisplay/x-machinedisplay');
+require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
 
 
 (function () {
@@ -138,10 +139,10 @@ require('x-machinedisplay/x-machinedisplay');
         let range = pulseRange.createDateRangeFromString(rangeString);
         let displayedRange = pulseUtility.displayDateRange(range);
 
-        let overwriteColor = item.OverwriteRequired ? '#FF6347' : '#4CAF50';
+        let bgColor = item.BgColor ? item.BgColor : '#808080';
         let tr = $('<div></div>')
           .addClass('selectable classifiedreasonslotlist-tr')
-          .css('border-left', '8px solid ' + overwriteColor);
+          .css('border-left', '8px solid ' + bgColor);
 
         let attributeTr = {
           'range': rangeString,
@@ -436,10 +437,20 @@ require('x-machinedisplay/x-machinedisplay');
         this._openAllReasonsDialog();
       }.bind(this));
 
+      let seeUnansweredButton = $('<button type="button"></button>')
+        .addClass('classifiedreasonslotlist-showall-button');
+      let seeUnansweredLabel = $('<x-tr></x-tr>')
+        .attr('key', 'seeUnansweredOnly')
+        .attr('default', 'Unanswered only');
+      seeUnansweredButton.append(seeUnansweredLabel);
+      seeUnansweredButton.on('click', function () {
+        this._openUnansweredReasonsDialog();
+      }.bind(this));
 
       let defineReasonContainer = $('<div></div>')
         .addClass('classifiedreasonslotlist-define-container')
         .append(showAllButton)
+        .append(seeUnansweredButton)
         .append(defineReasonButton);
       this._defineReasonButton = defineReasonButton;
 
@@ -641,6 +652,45 @@ require('x-machinedisplay/x-machinedisplay');
 
       pulseCustomDialog.open('#' + stopClassificationDialogId);
     }
+    _openUnansweredReasonsDialog() {
+      let machid = $(this.element).attr('machine-id');
+
+      let parentDialog = $(this.element).closest('.customDialog');
+      if (parentDialog.length > 0) {
+        pulseCustomDialog.close('#' + parentDialog.attr('id'));
+      }
+
+      let dialog = $('<div></div>').addClass('dialog-unansweredreasonslotlist');
+      let unansweredDialogId = pulseCustomDialog.initialize(dialog, {
+        title: this.getTranslation('seeUnansweredOnly', 'Unanswered only'),
+        onClose: function () {
+          $('.popup-block').fadeOut();
+        }.bind(this),
+        autoClose: false,
+        autoDelete: true,
+        okButton: 'hidden',
+        cancelButton: 'hidden',
+        fullScreenOnSmartphone: true,
+        bigSize: true,
+        helpName: 'savereason'
+      });
+
+      let rangeString = this.range ? this.range.toString(d => d.toISOString()) : '';
+
+      let xunansweredreasonslotlist = pulseUtility.createjQueryElementWithAttribute('x-unansweredreasonslotlist', {
+        'machine-id': machid,
+        'range': rangeString
+      });
+      dialog.append(xunansweredreasonslotlist);
+
+      pulseCustomDialog.open('#' + unansweredDialogId);
+
+      let xMachine = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
+        'machine-id': machid
+      });
+      $('#' + unansweredDialogId + ' .customDialogTitle').append(xMachine);
+    }
+
     _openAllReasonsDialog() {
       let machid = $(this.element).attr('machine-id');
 

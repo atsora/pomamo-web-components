@@ -11,6 +11,7 @@ pulseConfig.setGlobal('path', 'http://localhost:8082/');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetMachine');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonOnlySlots');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonColorSlots');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonOverwriteRequiredSlots');
 
 //# sourceMappingURL=unansweredreasonslotlist.js.map
 

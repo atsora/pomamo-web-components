@@ -17,6 +17,7 @@ require('x-reasonslotlist/x-reasonslotlist');
 require('x-highlightperiodsbar/x-highlightperiodsbar');
 require('x-revisionprogress/x-revisionprogress');
 require('x-stopclassification/x-stopclassification');
+require('x-classifiedreasonslotlist/x-classifiedreasonslotlist');
 require('x-tr/x-tr');
 require('x-machinedisplay/x-machinedisplay');
 
@@ -342,12 +343,8 @@ require('x-machinedisplay/x-machinedisplay');
     }
 
     getShortUrl() {
-      let url = 'ReasonColorSlots?MachineId=' + this.element.getAttribute('machine-id');
+      let url = 'Reason/OverwriteRequiredSlots/?MachineId=' + this.element.getAttribute('machine-id');
       url += '&Range=' + pulseUtility.convertDateRangeForWebService(this._range);
-
-      if ('true' == this.getConfigOrAttribute('cancelHorizontalSplitInBar', 'false')) {
-        url += '&SkipDetails=true';
-      }
 
       if (this.stateContext == 'Reload') {
         url += '&Cache=No';
@@ -439,10 +436,21 @@ require('x-machinedisplay/x-machinedisplay');
         this._openAllReasonsDialog();
       }.bind(this));
 
+      let seeAllReasonsButton = $('<button type="button"></button>')
+        .addClass('unansweredreasonslotlist-showall-button');
+      let seeAllReasonsLabel = $('<x-tr></x-tr>')
+        .attr('key', 'seeAllReasons')
+        .attr('default', 'See all reasons');
+      seeAllReasonsButton.append(seeAllReasonsLabel);
+      seeAllReasonsButton.on('click', function () {
+        this._openClassifiedReasonsDialog();
+      }.bind(this));
+
 
       let defineReasonContainer = $('<div></div>')
         .addClass('unansweredreasonslotlist-define-container')
         .append(showAllButton)
+        .append(seeAllReasonsButton)
         .append(defineReasonButton);
       this._defineReasonButton = defineReasonButton;
 
@@ -485,18 +493,14 @@ require('x-machinedisplay/x-machinedisplay');
         .removeClass('unansweredreasonslotlist-error')
         .addClass('unansweredreasonslotlist-table  pulse-selection-table-container');
 
-      this._dataReasonsList = data.Blocks;
+      this._dataReasonsList = data.ReasonOverwriteRequiredSlots;
 
       if (!this._dataReasonsList || !Array.isArray(this._dataReasonsList)) {
+        this.fillTable([]);
         return;
       }
 
-      let unansweredBlocks = [];
-      for (let item of this._dataReasonsList) {
-        if (item.OverwriteRequired === true) {
-          unansweredBlocks.push(item);
-        }
-      }
+      let unansweredBlocks = this._dataReasonsList;
 
       unansweredBlocks.sort(function (a, b) {
         let aRange = pulseRange.createDateRangeFromString(a.Range);
@@ -519,6 +523,11 @@ require('x-machinedisplay/x-machinedisplay');
     }
 
     displayError(text) {
+      // Ensure the container is visible even if startLoading hid it
+      let container = this.element.querySelector('.unansweredreasonslotlist');
+      if (container) {
+        container.style.display = 'flex';
+      }
       this._table = $(this.element).find('.unansweredreasonslotlist div.unansweredreasonslotlist-data').first();
       this._table.empty()
         .removeClass('unansweredreasonslotlist-table pulse-selection-table-container')
@@ -643,6 +652,45 @@ require('x-machinedisplay/x-machinedisplay');
 
       pulseCustomDialog.open('#' + stopClassificationDialogId);
     }
+    _openClassifiedReasonsDialog() {
+      let machid = $(this.element).attr('machine-id');
+
+      let parentDialog = $(this.element).closest('.customDialog');
+      if (parentDialog.length > 0) {
+        pulseCustomDialog.close('#' + parentDialog.attr('id'));
+      }
+
+      let dialog = $('<div></div>').addClass('dialog-classifiedreasonslotlist');
+      let classifiedDialogId = pulseCustomDialog.initialize(dialog, {
+        title: this.getTranslation('seeAllReasons', 'See all reasons'),
+        onClose: function () {
+          $('.popup-block').fadeOut();
+        }.bind(this),
+        autoClose: false,
+        autoDelete: true,
+        okButton: 'hidden',
+        cancelButton: 'hidden',
+        fullScreenOnSmartphone: true,
+        bigSize: true,
+        helpName: 'savereason'
+      });
+
+      let rangeString = this.range ? this.range.toString(d => d.toISOString()) : '';
+
+      let xclassifiedreasonslotlist = pulseUtility.createjQueryElementWithAttribute('x-classifiedreasonslotlist', {
+        'machine-id': machid,
+        'range': rangeString
+      });
+      dialog.append(xclassifiedreasonslotlist);
+
+      pulseCustomDialog.open('#' + classifiedDialogId);
+
+      let xMachine = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
+        'machine-id': machid
+      });
+      $('#' + classifiedDialogId + ' .customDialogTitle').append(xMachine);
+    }
+
     _openAllReasonsDialog() {
       let machid = $(this.element).attr('machine-id');
 
