@@ -268,13 +268,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     optionRunning: 'Show running periods',
   },
   unansweredreasonnumber: {
-    currentReasonColon: 'Currrent reason: ',
     dataToClassified: 'stop to be classified',
     dataToClassifiedPlural: 'stops to be classified',
-    currentTooltip: 'Change current reason',
     pastReasonData: 'Past reason details',
     pastTooltip: 'Look or change past reason details',
-    tooOld: 'Reason is too old'
   },
   unansweredreasonslotlist: {
     idle: 'Idle',
@@ -639,13 +636,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     optionRunning: 'Montrer les périodes actives',
   },
   unansweredreasonnumber: {
-    currentReasonColon: "Raison d'arrêt courante : ",
-    pastReasonData: "Raisons d'arrêt passées",
     dataToClassified: 'arrêt à classifier',
     dataToClassifiedPlural: 'arrêts à classifier',
-    currentTooltip: "Changer la raison d'arrêt courante",
+    pastReasonData: "Raisons d'arrêt passées",
     pastTooltip: "Consulter ou changer une raison passée",
-    tooOld: 'Donnée trop vieille'
   },
   unansweredreasonslotlist: {
     idle: 'Arrêtée',

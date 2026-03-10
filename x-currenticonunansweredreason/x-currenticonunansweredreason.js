@@ -293,10 +293,7 @@ var eventBus = require('eventBus');
      * @param {Object} event
      */
     onDateTimeRangeChange(event) {
-      let newRange = event.target.daterange;
-      // Maybe check if range is KO somewhere... where ? RR
-      /* TODO : if range = KO -> switch to error ??? Verif/Define NR / RR  */
-      this._range = newRange;
+      this._range = event.target.daterange;
       this.start();
     }
 
@@ -342,16 +339,6 @@ var eventBus = require('eventBus');
         this.switchToContext('Reload');
       }
     }
-
-    /**
-     * Event bus callback triggered when a reload message is received -> reason may haev change
-     *
-     * @param {Object} event
-     */
-    /*onReload (event) {
-      //this.switchToContext('Reload');
-      this.start();
-    }*/
   }
 
   pulseComponent.registerElement('x-currenticonunansweredreason', CurrentIconUnansweredReasonComponent, ['machine-id', 'active', 'period-context', 'status-context']);
