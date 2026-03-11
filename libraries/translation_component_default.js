@@ -3,8 +3,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-var ATSORA_LOCALE_COMPONENT_CATALOG = ATSORA_LOCALE_COMPONENT_CATALOG || { default: {}, fr: {} };
-var ATSORA_LOCALE_CATALOG = ATSORA_LOCALE_CATALOG || { default: {}, fr: {} };
+var ATSORA_LOCALE_COMPONENT_CATALOG = ATSORA_LOCALE_COMPONENT_CATALOG || { default: {}, fr: {}, de: {} };
+var ATSORA_LOCALE_CATALOG = ATSORA_LOCALE_CATALOG || { default: {}, fr: {}, de: {} };
 
 var ATSORA_COMPONENT_CATALOG = ATSORA_COMPONENT_CATALOG || {};
 var ATSORA_CATALOG = ATSORA_CATALOG || {};
@@ -769,6 +769,387 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   saveworkinfo: {
     WorkInfoTitle: 'Ordre de fabrication / Opération'
+  }
+};
+
+// - de translation
+
+ATSORA_LOCALE_CATALOG.de.general = {
+  title: 'Atsora Tracking',
+};
+
+/*
+ * Components translations
+ */
+ATSORA_LOCALE_COMPONENT_CATALOG.de = {
+  homeBtn: 'Startseite',
+  changebutton: 'Ändern',
+  contactsupport: 'Bitte wenden Sie sich an den Support',
+  loadingDots: 'Laden...',
+  missingconfiguration: 'Konfiguration fehlt',
+  errorColon: 'Fehler: ',
+  waitingPath: 'Warte auf Pfad',
+  error: {
+    emptyPeriod: 'Leerer Zeitraum',
+    invalidMachineId: 'Ungültige Maschinen-ID',
+    invalidRange: 'Ungültiger Bereich',
+    missingMotionContext: 'Attribut motion-context fehlt',
+    missingParam: 'Parameter fehlt',
+    missingRange: 'Zeitraum fehlt',
+    missingWhen: 'Attribut when fehlt',
+    noMachineOrGroupToDisplay: 'Keine Maschine oder Gruppe anzuzeigen',
+    selectMachine: 'Bitte eine Maschine auswählen',
+    selectMachineGroup: 'Bitte eine Maschine oder eine Maschinengruppe auswählen',
+  },
+  checkcurrenttime: {
+    syncTime: 'Bitte Datum und Uhrzeit synchronisieren'
+  },
+  checkserveraccess: {
+    errorDatabaseAccess: 'Bitte Datenbankzugriff prüfen',
+    errorServerAccess: 'Bitte Serverzugriff prüfen'
+  },
+  checkpath: {
+    errorServerAccessOrPath: 'Bitte Serverzugriff (oder Pfad) prüfen',
+    skipWebService: 'Web-Service-Pfad überspringen'
+  },
+  currentcncvalue: {
+    noDataTooOld: 'N/V'
+  },
+  currenticoncncalarm: {
+    iconTooltip: ' ' // Never used because specific alarm tooltip
+  },
+  currenticonnextstop: {
+    iconTooltip: 'nächster Stopp'
+  },
+  currenticonunansweredreason: {
+    iconTooltip: 'Maschinenstatus nicht klassifiziert'
+  },
+  currenticonworkinformation: {
+    iconTooltip: 'Fertigungsauftrag nicht definiert'
+  },
+  currenttool: {
+    noDataTooOld: 'N/V'
+  },
+  currentsequence: {
+    noDataTooOld: '-', // N/A
+  },
+  cyclesinperiod: {
+    missing: 'Fehlend',
+    saveSerialNumber: 'Seriennummer speichern'
+  },
+  datetimerange: {
+    emptyPeriodError: 'Leerer Zeitraum',
+    emptyPeriodMessage: 'Warnung! Leerer Zeitraum',
+    endAfterMaxError: 'Enddatum/-uhrzeit liegt nach dem maximal zulässigen Datum/Uhrzeit',
+    endBeforeMinError: 'Enddatum/-uhrzeit liegt vor dem minimal zulässigen Datum/Uhrzeit',
+    endBeforeStartError: 'Enddatum/-uhrzeit liegt vor dem Startdatum/-uhrzeit',
+    endNotValidError: 'Enddatum/-uhrzeit ist ungültig',
+    invalidDatesError: 'Bitte gültige Datumsangaben eingeben',
+    selectAnd: ' und ',
+    selectBetween: 'Zeitraum auswählen zwischen ',
+    selectFrom: 'Zeitraum auswählen ab ',
+    splitPeriod: 'Zeitraum aufteilen',
+    selectPeriod: 'Zeitraum auswählen',
+    startAfterMaxError: 'Startdatum/-uhrzeit liegt nach dem maximal zulässigen Datum/Uhrzeit',
+    startBeforeMinError: 'Startdatum/-uhrzeit liegt vor dem minimal zulässigen Datum/Uhrzeit',
+    startNotValidError: 'Startdatum/-uhrzeit ist ungültig'
+  },
+  detailedcncvaluesat: {
+    true: 'wahr',
+    false: 'falsch'
+  },
+  detailedreasonat: {
+    seeAllReasons: 'Klicken, um alle Gründe anzuzeigen'
+  },
+  detailsViewSubTitles: {
+    reason: 'Stillstandsgrund',
+    machinemode: 'Maschinenmodus',
+    machinestatetemplate: 'Planungsstatus',
+    observationstate: 'Maschinenzustand',
+    operationcycle: 'Zyklus',
+    productionstate: 'Produktionsstatus',
+    shift: 'Schicht',
+    cncvalue: 'CNC-Wert',
+    cncalarms: 'CNC-Alarme',
+    workinfo: 'Fertigungsauftrag',
+    sequence: 'Bearbeitungssequenz',
+    isofile: 'NC-Programm',
+    partgoal: 'Anz. Teile / Ziel'
+  },
+  groupArray: {
+    noMachine: 'Keine Maschine in der Auswahl'
+  },
+  lastmachinestatetemplate: {
+    scheduledStatus: 'Planungsstatus: '
+  },
+  lastserialnumber: {
+    currentserialnumber: 'Seriennummer: ',
+    pastserialnumber: 'Vergangene Daten',
+    currentTooltip: 'Aktuelle Seriennummer ändern',
+    pastTooltip: 'Vergangene Seriennummern',
+    save: 'Seriennummer speichern',
+    selectPeriod: 'Zeitraum auswählen'
+  },
+  lastworkinformation: {
+    noOperation: ' ',
+    pastdata: 'Vergangene Daten',
+    pastTooltip: ''
+  },
+  loginchangepassword: {
+    user: 'Benutzer:',
+    oldPassword: 'Altes Passwort:',
+    newPassword: 'Neues Passwort:',
+  },
+  loginchangepasswordbutton: {
+    changePassword: 'Passwort ändern'
+  },
+  loginconnection: {
+    user: 'Benutzer:',
+    connectWith: 'Verbinden mit '
+  },
+  loginpassword: {
+    deniedError: 'Ungültiger Benutzername oder Passwort',
+    noRoleError: 'Keine Rolle für diesen Benutzer definiert. Bitte Konfiguration anpassen',
+    user: 'Benutzer:',
+    password: 'Passwort:',
+    stayConnected: 'Angemeldet bleiben',
+  },
+  loginpasswordbutton: {
+    login: 'Anmelden'
+  },
+  machinedisplay: {
+    invalidMachineGroup: 'Ungültige Maschine oder Gruppe'
+  },
+  machinemodecolorlegend: {
+    title: 'Maschinenmodus'
+  },
+  machinemodelegends: {
+    title: 'Maschinenmodus'
+  },
+  machineselection: {
+    clearButton: 'Zurücksetzen',
+    dynamicKey: 'DYNAMISCH',
+    errorMissingUnique: 'Bitte eine Maschine auswählen',
+    errorMissing: 'Bitte mindestens eine Maschine auswählen',
+    errorMissingGroup: 'Bitte mindestens eine Gruppe auswählen',
+    errorMissingMachineInGroup: 'Bitte Gruppen auswählen, die mindestens eine Maschine enthalten',
+    groupKey: 'G',
+    groupsButton: 'nach Gruppe',
+    machineKey: 'M',
+    machinesButton: 'nach Maschine',
+    noMachineSelection: 'Keine Maschinenauswahl',
+    noSelectedMachine: 'Keine Maschine ausgewählt',
+    noSelection: 'Keine Auswahl',
+    searchDots: 'Suchen...',
+    selectMachine: 'Maschine auswählen',
+    selectMachines: 'Maschinen auswählen',
+    selectedGroups: 'Ausgewählte Gruppen',
+    selectedMachines: 'Ausgewählte Maschinen',
+    switchToMachineSelection: 'Zur Maschinenauswahl wechseln'
+  },
+  milestonesadd: {
+    shortDescriptionColon: 'Kurzbeschreibung: ',
+    whenColon: 'Zeitpunkt: '
+  },
+  milestonesmanager: {
+    add: 'Meilenstein hinzufügen',
+    day: 'Tag',
+    description: 'Beschreibung',
+    errorRemove: 'Fehler beim Entfernen eines Eintrags',
+    machine: 'Maschine'
+  },
+  performancetarget: {
+    target: 'Zielwert'
+  },
+  periodmanager: {
+    today: 'Heute'
+  },
+  periodtoolbar: {
+    dialogTitle: 'Zeitraum einstellen',
+    dayBtn: 'Tag',
+    shiftBtn: 'Schicht',
+    weekBtn: 'Woche',
+    monthBtn: 'Monat',
+    quarterBtn: 'Quartal',
+    semesterBtn: 'Halbjahr',
+    yearBtn: 'Jahr',
+    emptyPeriodError: 'Leerer Zeitraum',
+    endAfterMaxError: 'Enddatum/-uhrzeit liegt nach dem maximal zulässigen Datum/Uhrzeit',
+    endBeforeMinError: 'Enddatum/-uhrzeit liegt vor dem minimal zulässigen Datum/Uhrzeit',
+    endBeforeStartError: 'Enddatum/-uhrzeit liegt vor dem Startdatum/-uhrzeit',
+    endNotValidError: 'Enddatum/-uhrzeit ist ungültig',
+    startAfterMaxError: 'Startdatum/-uhrzeit liegt nach dem maximal zulässigen Datum/Uhrzeit',
+    startBeforeMinError: 'Startdatum/-uhrzeit liegt vor dem minimal zulässigen Datum/Uhrzeit',
+    startNotValidError: 'Startdatum/-uhrzeit ist ungültig'
+  },
+  production: {
+    actual: 'Ist-Produktion',
+    target: 'Soll-Produktion',
+    preposition: 'um'
+  },
+  productionshiftgoal: {
+    productionshiftgoal: 'Schichtziel'
+  },
+  productionstatelegend: {
+    title: 'Produktionsstatus'
+  },
+  productiontrackergraph: {
+    parts: 'Teile'
+  },
+  productiontrackertable: {
+    actual: 'Ist',
+    capacity: 'Kapazität',
+    cumulative: 'kumulativ',
+    hourly: 'stündlich',
+    partsToMachine: 'zu bearbeitende Teile',
+    reserveCapacity: 'Reservekapazität',
+    summary: 'Zusammenfassung',
+    target: 'Soll',
+  },
+  productionmachiningstatus: {
+    notavailable: 'Nicht verfügbar'
+  },
+  progressbar: {
+    processingTitle: 'Verarbeitung läuft...'
+  },
+  reasongroups: {
+    title: 'Stillstandsgrund',
+    textidleDefaultValue: 'Stillstand . Kurzstillstand . Stopp'
+  },
+  reasonslotlist: {
+    idle: 'Stillstand',
+    motion: 'In Betrieb',
+    allPeriodsClassified: 'Alle Zeiträume sind klassifiziert',
+    noPeriod: 'Kein auswählbarer Zeitraum im angegebenen Bereich',
+    sectionTimeRangeTitle: 'Zeitraum auswählen',
+    sectionPeriodTitle: 'Einen oder mehrere Stillstandszeiträume auswählen',
+    sectionReasonTitle: 'Einen Grund auf den/die ausgewählten Zeitraum/Zeiträume anwenden',
+    optionIdentified: 'Klassifizierte Stillstandszeiträume anzeigen',
+    optionRunning: 'Aktive Zeiträume anzeigen',
+  },
+  unansweredreasonnumber: {
+    dataToClassified: 'Stillstand zu klassifizieren',
+    dataToClassifiedPlural: 'Stillstände zu klassifizieren',
+    pastReasonData: 'Vergangene Stillstandsgründe',
+    pastTooltip: 'Vergangene Stillstandsgründe einsehen oder ändern',
+  },
+  unansweredreasonslotlist: {
+    idle: 'Stillstand',
+    motion: 'In Betrieb',
+    noPeriod: 'Kein auswählbarer Zeitraum im angegebenen Bereich',
+    defineReason: 'Grund festlegen',
+    sectionTimeRangeTitle: 'Zeitraum auswählen',
+    sectionPeriodTitle: 'Einen oder mehrere Stillstandszeiträume auswählen',
+    sectionReasonTitle: 'Einen Grund auf den/die ausgewählten Zeitraum/Zeiträume anwenden',
+    optionIdentified: 'Klassifizierte Stillstandszeiträume anzeigen',
+    optionRunning: 'Aktive Zeiträume anzeigen',
+    advanced: 'Erweitert',
+    seeAllReasons: 'Alle Gründe anzeigen',
+  },
+  classifiedreasonslotlist: {
+    idle: 'Stillstand',
+    motion: 'In Betrieb',
+    noPeriod: 'Kein auswählbarer Zeitraum im angegebenen Bereich',
+    allPeriodsClassified: 'Alle Stillstandszeiträume sind klassifiziert',
+    defineReason: 'Grund festlegen',
+    advanced: 'Erweitert',
+    seeUnansweredOnly: 'Nur nicht klassifizierte',
+    seeAllReasons: 'Alle Gründe anzeigen',
+  },
+  reportdatetime: {
+    invalidGroupDisplayForm: 'Ungültiges Attribut groupDisplayForm',
+    invalidGroupName: 'Ungültiger Gruppenname',
+    invalidDataType: 'Ungültiger Datentyp',
+  },
+  runninglegends: {
+    title: 'Aktivitätsstatus',
+    textidle: 'Stillstand . Kurzstillstand . Stopp',
+    textrunning: 'In Betrieb'
+  },
+  savemachinestatetemplate: {
+    changeMachineStateButton: 'Geplanten Zustand ändern',
+    changeMachineStateTitle: 'Geplanten Zustand ändern',
+    switch: 'Wechseln zu '
+  },
+  savereason: {
+    applicableReasons: 'Anwendbare Gründe',
+    apply: 'Anwenden',
+    applyWithComment: 'Anwenden mit Kommentar',
+    comment: 'Kommentar',
+    currentReasonColon: 'Aktueller Grund: ',
+    errorNoDetails: 'Bitte einen Kommentar hinzufügen',
+    machineColon: 'Maschine: ',
+    modesColon: 'Modi: ',
+    multiple: 'mehrere',
+    noPeriod: 'Kein Zeitraum',
+    noSelectedPeriod: 'Kein Zeitraum ausgewählt',
+    nSelectedPeriods: 'ausgewählte Zeiträume',
+    periodColon: 'Zeitraum: ',
+    periods: 'Zeiträume',
+    reasonColon: 'Grund: ',
+    reasonDetailsTitle: 'Grunddetails',
+    resetReasonButton: 'Zurücksetzen',
+    saveReasonTitle: 'Grund festlegen',
+    selectedPeriodsColon: 'Ausgewählter/Ausgewählte Zeitraum/Zeiträume: ',
+    split: 'Aufteilen',
+    withComment: 'mit Kommentar'
+  },
+  savescrapreason: {
+    submitbutton: 'Bestätigen',
+    detailsbutton: 'Mit Details',
+    machineColon: 'Maschine: ',
+    reasonColon: 'Grund: ',
+    scrapreasons: 'Ausschussklassifizierung',
+    reasonDetailsTitle: 'Grunddetails',
+    errorNoDetails: 'Bitte einen Kommentar hinzufügen',
+    validparts: 'Gutteile'
+  },
+  scrapclassification: {
+    partcount: 'Teileanzahl: ',
+    scrapcount: 'Ausschussanzahl: ',
+    unproducedcount: 'Nicht produzierte Teile: ',
+  },
+  scrapstatus: {
+    shiftscrap: 'Schichtausschuss',
+    scrapDeclaration: 'Ausschuss melden'
+  },
+  sequencebar: {
+    sequence: 'Sequenz '
+  },
+  setupmachine: {
+    noOperation: 'Kein Vorgang',
+    setupsince: 'Rüsten seit: ',
+    switchTo: 'Wechseln zu ',
+    switchToProduction: 'In Produktion wechseln'
+  },
+  stopclassification: {
+    title: 'Ungeplante Stillstände',
+    options: 'Erweiterte Optionen',
+  },
+  taskslist: {
+    Late: 'Überfällig',
+    lateTextAfter: 'her',
+    lateTextBefore: 'vor',
+    Todo: 'Ausstehend',
+    todoTextAfter: 'verbleibend',
+    todoTextBefore: 'noch',
+    Upcoming: 'Bevorstehend',
+    upcomingTextAfter: '',
+    upcomingTextBefore: 'in '
+  },
+  task: {
+    Late: 'Überfällig',
+    Todo: 'Ausstehend',
+    Upcoming: 'Bevorstehend',
+  },
+  toollifemachine: {
+    noOperation: 'Kein Vorgang'
+  },
+  tr: {
+    invalidKey: 'Ungültiger Schlüssel',
+  },
+  saveworkinfo: {
+    WorkInfoTitle: 'Fertigungsauftrag / Arbeitsgang'
   }
 };
 
