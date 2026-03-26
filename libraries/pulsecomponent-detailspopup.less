@@ -1,9 +1,4 @@
-/*
- * Copyright (C) 2009-2023 Lemoine Automation Technologies
- *
- * SPDX-License-Identifier: Apache-2.0
- */
-
+// === IMPORTS ===
 @import 'x-machinedisplay/x-machinedisplay';
 @import 'x-detailedreasonat/x-detailedreasonat';
 @import 'x-detailedmachinestateat/x-detailedmachinestateat';
@@ -17,19 +12,17 @@
 @import 'x-detailedisofileat/x-detailedisofileat';
 @import 'x-detailedpartsat/x-detailedpartsat';
 @import 'x-detailedoperationcycleat/x-detailedoperationcycleat';
-
 @import 'x-datetimerange/x-datetimerange';
 @import 'x-datetimegraduation/x-datetimegraduation';
-@import 'x-reasonslotbar/x-reasonslotbar'; // to import ouside ???
+@import 'x-reasonslotbar/x-reasonslotbar';
 @import 'x-bartimeselection/x-bartimeselection';
 @import 'x-operationcyclebar/x-operationcyclebar';
 @import 'x-operationslotbar/x-operationslotbar';
 @import 'x-workinfoslotlist/x-workinfoslotlist';
-
 @import "pulse.customdialog.less";
 
+// === CONTENT & HIDDEN CONTENT ===
 // ALL other styles COULD be included elsewhere to avoid double
-
 .dialog-running {
   overflow: auto;
 
@@ -47,6 +40,11 @@
     }
 
     .main-table {
+      box-sizing: border-box;
+      overflow: hidden;
+      border-spacing: 0;
+      width: auto;
+      padding: 4px;
       margin-top: 24px;
       margin-bottom: 20px;
 

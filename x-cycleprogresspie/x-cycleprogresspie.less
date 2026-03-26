@@ -6,87 +6,125 @@
 
 @import "pulsewebcomponents-common.less";
 
-
 x-cycleprogresspie {
-  display: block;
-  height: 100% ;
-  width: 100% ;
+  // On passe la balise principale en flex pour remplir l'espace disponible
+  display: flex;
+  width: 100%;
+  height: 100%;
+
+  // Sécurités Flexbox
+  min-width: 0;
+  min-height: 0;
 
   .cycleprogresspie-content {
-    display: inline-block;
-    position: relative; // For loader position
-    height: 100% ;
-    width: 100% ;
+    flex: 1 1 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    // Référentiel pour les loaders
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
   }
-  .cycleprogresspie-progresspie, .cycleprogresspie-svg {
-    height: 100% ;
-    width: 100% ;
+
+  .cycleprogresspie-progresspie {
+    flex: 1 1 0px; // Prend tout l'espace restant
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+
+    // LA CLÉ EST ICI : Référentiel pour le SVG
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  
-  .cycleprogresspie-invisible-bk{
+
+  .cycleprogresspie-svg {
+    // Le SVG se moule strictement aux parois de .cycleprogresspie-progresspie
+    // sans repousser les bords (pas d'overflow)
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .cycleprogresspie-invisible-bk {
     stroke: lighten(@color_background_alternate, 35%);
   }
 
   /* COLORS -> maybe linked to theme - same as bar */
-  .donut-ring-background{
-    stroke: @color_alternate; //== @color_window;
+  .donut-ring-background {
+    stroke: @color_alternate;
   }
-  .stroke-color-as-background{ // For 'stop' lines...
+
+  .stroke-color-as-background { // For 'stop' lines...
     stroke: @box_color;
   }
+
   .cycleprogresspie-cicrcle-border {
     stroke: rgb(194, 190, 190);
   }
 
   // completion in pie (same colors as bar)
   .completion-stroke-noinfo {
-    stroke: @widget_background; // @color_text; Nearly hidden if no info
+    stroke: @widget_background; // Nearly hidden if no info
   }
-  .completion-stroke-activeevent{ // was stop 
+
+  .completion-stroke-activeevent { // was stop
     stroke: @color_blue;
   }
+
   // +Severity level :
-  .completion-stroke-activeevent.Error{
+  .completion-stroke-activeevent.Error {
     stroke: @color_red;
   }
-  .completion-stroke-comingevent{
-    stroke: @color_blue;
 
+  .completion-stroke-comingevent {
+    stroke: @color_blue;
   }
 
   // TEXT (same colors as bar)
-  .text-top{
+  .text-top {
     fill: @color_text;
-    // Style is defined in .js because most of it can not be defined here
   }
-  //.text-bottom == cycleprogresspie-time == time-in-pie
-  .time-in-pie{
-    fill: @color_text;
 
-    // Style is defined in .js because most of it can not be defined here
+  // .text-bottom == cycleprogresspie-time == time-in-pie
+  .time-in-pie {
+    fill: @color_text;
   }
+
   // was stop :
-  .time-in-pie.activeevent.Error{
+  .time-in-pie.activeevent.Error {
     fill: @color_red;
   }
+
   // Severity / Threshold
-  .time-in-pie.comingevent.Warning.threshold1{
+  .time-in-pie.comingevent.Warning.threshold1 {
     fill: @color_yellow;
   }
-  .time-in-pie.comingevent.Warning.threshold2{
+
+  .time-in-pie.comingevent.Warning.threshold2 {
     fill: @color_orange;
   }
-
 
   /* INTERN error / warning => roue dentee */
   .cycleprogresspie-error-warn-div {
     position: absolute;
   }
-  .cycleprogresspie-warn-image{
-    fill: @color_text_alternate;
-  }
-  .cycleprogresspie-error-image{
+
+  .cycleprogresspie-warn-image {
     fill: @color_text_alternate;
   }
 
+  .cycleprogresspie-error-image {
+    fill: @color_text_alternate;
+  }
 }

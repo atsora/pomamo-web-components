@@ -363,7 +363,12 @@ require('x-revisionprogress/x-revisionprogress');
         //'serialnumber-context': 'CIP' -> managed by modification
       });
 
-      let saveDialogId = pulseCustomDialog.initialize(dialog, {
+      if (!$(this._current).hasClass('pulse-cellbar-cell-nodata')) {
+        tag.attr('serial-number', $(this._currentText).html());
+      }
+      dialog.append(tag);
+
+      let saveDialogId = pulseCustomDialog.openDialog(dialog, {
         title: this.getTranslation ('save', 'Save serial number'),
         onOk: function () {
           tag[0].saveSN(tag[0]);
@@ -371,13 +376,6 @@ require('x-revisionprogress/x-revisionprogress');
         autoClose: true,
         autoDelete: true
       });
-
-      if (!$(this._current).hasClass('pulse-cellbar-cell-nodata')) {
-        tag.attr('serial-number', $(this._currentText).html());
-      }
-      dialog.append(tag);
-
-      pulseCustomDialog.open('#' + saveDialogId);
     }
 
     /**
@@ -433,7 +431,7 @@ require('x-revisionprogress/x-revisionprogress');
       let cyclesinperiod_div = $('<div></div>').addClass('lastserialnumber-cyclesinperiod').append(xcyclesinperiod);
       dialog.append(datetimerange_div).append(cyclesinperiod_div);
 
-      let saveDialogId = pulseCustomDialog.initialize(dialog, {
+      let saveDialogId = pulseCustomDialog.openDialog(dialog, {
         title: this.getTranslation ('selectPeriod', 'Select a period'),
         /*onOk: function () {
           self.load();
@@ -442,7 +440,6 @@ require('x-revisionprogress/x-revisionprogress');
         autoDelete: true,
         okButton: 'hidden'
       });
-      pulseCustomDialog.open('#' + saveDialogId);
     }
   }
 

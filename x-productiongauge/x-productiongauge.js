@@ -483,7 +483,7 @@ var eventBus = require('eventBus');
      * @returns {number} Target percentage between 0 and 1 for gauge visualization
      */
     _calculateTargetPercentage() {
-      let targetValue = this.getConfigOrAttribute('thresholdargetProduction', 80);
+      let targetValue = this.getConfigOrAttribute('thresholdtargetproduction', 80);
       let targetPercentage = targetValue / 100;
 
       // Clamp between 0 and 1
@@ -629,7 +629,7 @@ var eventBus = require('eventBus');
 
     onConfigChange(event) {
       if (event.target.config === 'thresholdsupdated') {
-        if (this._actualProduction) {
+        if (this._svgGauge) {
           this._redrawGauge();
           this._updateTextDisplay();
         }

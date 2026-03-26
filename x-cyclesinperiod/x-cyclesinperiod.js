@@ -306,23 +306,6 @@ require('x-saveserialnumber/x-saveserialnumber');
       let tr = $(td).parent();
       //create x-saveserialnumber component and put it in dialog box
       let dialog = $('<div></div>').addClass('lastserialnumber-dialog');
-      let saveDialogId = pulseCustomDialog.initialize(dialog, {
-        title: this.getTranslation ('saveSerialNumber', 'Save serial number'),
-        onOk: //function (xsaveinperiod, xsaveSNtag) { // to avoid closure
-          //return
-          function () {
-            $(this._saveSNtag)[0].save();
-            //this.load(); -> sn-context after progress in ssn
-          }.bind(this), //(this, this._saveSNtag), /* end of onOk */
-        onCancel: //function (xsaveinperiod) { // to avoid closure
-          //return
-          function () {
-            pulseCustomDialog.close('.lastserialnumber-dialog');
-          }.bind(this),
-        //}(this), /* end of onOk */
-        autoClose: false,
-        autoDelete: true
-      });
 
       let opts;
       if (!$(tr)[0].hasAttribute('estimated-begin')) {
@@ -348,7 +331,24 @@ require('x-saveserialnumber/x-saveserialnumber');
       this._saveSNtag = pulseUtility.createjQueryElementWithAttribute('x-saveserialnumber', opts);
       dialog.append(this._saveSNtag);
 
-      pulseCustomDialog.open('#' + saveDialogId);
+      pulseCustomDialog.openDialog(dialog, {
+        title: this.getTranslation ('saveSerialNumber', 'Save serial number'),
+        onOk: //function (xsaveinperiod, xsaveSNtag) { // to avoid closure
+          //return
+          function () {
+            $(this._saveSNtag)[0].save();
+            //this.load(); -> sn-context after progress in ssn
+          }.bind(this), //(this, this._saveSNtag), /* end of onOk */
+        onCancel: //function (xsaveinperiod) { // to avoid closure
+          //return
+          function () {
+            pulseCustomDialog.close('.lastserialnumber-dialog');
+          }.bind(this),
+        //}(this), /* end of onOk */
+        autoClose: false,
+        autoDelete: true
+      });
+
 
     }
 

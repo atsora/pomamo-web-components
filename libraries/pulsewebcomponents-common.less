@@ -179,7 +179,9 @@ svg {
 .pulse-legend-onelegend {
   display: flex;
   flex-direction: row;
-  padding: 3px;
+  container-type: inline-size;
+  container-name: legend-group;
+  padding: 0.3cqw;
   width: 100%;
   box-sizing: border-box;
 
@@ -189,11 +191,10 @@ svg {
     display: inline-block;
     font-weight: bold;
 
-    width: 17%;
+    width: 25%;
     //text-decoration-line: underline;
-    font-size: 1.1em;
 
-    padding-top: 3px; // align with pulse-legend-element
+    padding-top: 0.3cqw; // align with pulse-legend-element
   }
 
   .pulse-legend-elements {
@@ -201,7 +202,7 @@ svg {
     flex-wrap: wrap;
 
     text-align: left;
-    width: 83%;
+    width: 75%;
 
     .pulse-legend-empty-element-to-align {
       height: 1px;
@@ -218,7 +219,7 @@ svg {
       display: flex;
       flex-direction: row;
 
-      margin-top: 4px;
+      margin-top: 0.4cqw;
       vertical-align: middle;
       //height: 27px;
       //max-width: 20%;
@@ -228,15 +229,15 @@ svg {
 
       .pulse-legend-icon {
         //float: left;
-        margin-left: 12px;
-        margin-right: 4px;
+        margin-left: 1.2cqw;
+        margin-right: 0.4cqw;
         //margin-top: 3px;
         box-sizing: border-box;
 
         /* to vertically center */
         svg {
-          width: 15px;
-          height: 15px;
+          width: 1.5cqw;
+          height: 1.5cqw;
         }
       }
 
@@ -244,8 +245,8 @@ svg {
         //display: inline-block;
         max-width: 90%;
         box-sizing: border-box;
-        margin-left: 4px;
-        margin-right: 4px;
+        margin-left: 0.4cqw;
+        margin-right: 0.4cqw;
 
         flex-grow: 0;
         flex-shrink: 0;
@@ -374,7 +375,6 @@ svg {
   text-align: center;
   position: relative;
   margin: auto;
-  //padding-bottom: 10px;
 }
 
 /* .detailed-machinemodule-span::after {
@@ -584,9 +584,6 @@ svg {
         flex-basis: content; // Default size -> To display '...'
         flex-shrink: 9999; // To shrink more than "past" right display
         // flex-grow: 2; NEVER else bar can be too wide for small text
-
-        //padding: 0 6px;
-        border-right: 1px solid @color_window_border;
 
         &.clickable {
           cursor: pointer;

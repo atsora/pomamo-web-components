@@ -4,11 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// === IMPORTS ===
 @import "theme.less";
+
+// === CONTENT & HIDDEN CONTENT ===
 @imagedir: "../../images"; // To overload !
-
 @menuWidth : 270px;
-
 /* Main */
 html,
 body {
@@ -19,10 +20,8 @@ body {
   padding: 0;
   height: 100%;
 }
-
 @header_background_color_1: lighten(@color_window, 4%);
 @header_background_color_2: darken(@color_window, 4%);
-
 .pulse-header {
   position: absolute;
   top: 0;
@@ -42,7 +41,6 @@ body {
   z-index: 100;
   border-bottom: 1px solid @color_window_border;
 }
-
 .pulse-header-title {
   font-size: 21px;
   margin-top: 3px;
@@ -51,7 +49,6 @@ body {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-
 .pulse-header-left {
   float: left;
   border-right: 1px solid @color_window_border;
@@ -59,7 +56,6 @@ body {
   height: 28px;
   box-sizing: content-box;
 }
-
 .pulse-header-right {
   float: right;
   border-left: 1px solid @color_window_border;
@@ -67,7 +63,6 @@ body {
   height: 28px;
   box-sizing: content-box;
 }
-
 .pulse-header-center {
   position: absolute;
   left: 33px;
@@ -77,11 +72,9 @@ body {
   font-weight: bold;
   text-transform: uppercase;
 }
-
 .pulse-header-center a {
   text-decoration: none;
 }
-
 .pulse-header button {
   height: 28px;
   width: 28px;
@@ -90,42 +83,32 @@ body {
   background-color: transparent;
   padding: 0;
 }
-
 #navigationpanelbtn {
   .create_svg('menu');
 }
-
 #fullscreenbtn {
   .create_svg('fullscreen');
 }
-
 #machineselectionbtn {
   .create_svg('machineselection');
 }
-
 #configpanelbtn {
   .create_svg('actions');
 }
-
 //.pulse-header button.withHover:hover svg,
 .pulse-header button.activated svg {
   stroke: @color_highlight;
   fill: @color_highlight;
 }
-
 .pulse-header button.disabled svg {
   stroke: @color_gray;
   fill: @color_gray;
 }
-
 .pulse-header button.disabled:hover svg {
   stroke: @color_gray;
   fill: @color_gray;
 }
-
 // END pulse-header
-
-
 // Right / left panels
 #pulse-panel-navigation {
   position: absolute;
@@ -142,7 +125,6 @@ body {
 
   padding-top: 32px;
 }
-
 #pulse-panel-parameter {
   position: absolute;
   top: 0;
@@ -158,13 +140,9 @@ body {
 
   padding-top: 32px;
 }
-
 // END panels
-
-
 // Navigation panel
 // NAVIGATION PANEL
-
 #navbar>ul {
   border-bottom: 1px solid @color_window_border_light;
   padding: 0;
@@ -248,11 +226,9 @@ body {
     }
   }
 }
-
 #pulse-inner:not(.navigation-always-visible).pulse-panel-navigation-collapsed #pulse-panel-navigation {
   transform: translateX(-@menuWidth);
 }
-
 #pulse-inner.navigation-always-visible {
 
   #navbar>ul>li {
@@ -274,16 +250,12 @@ body {
     }
   }
 }
-
 // End navigation panel
-
 // Right panel
 .pulse-panel-parameter-collapsed #pulse-panel-parameter {
   transform: translateX(@menuWidth);
 }
-
 // End right panel
-
 // SWITCH theme
 .switch {
   position: relative;
@@ -292,12 +264,10 @@ body {
   height: 17px;
   margin: 0 !important;
 }
-
 .switch input {
   display: none !important;
   vertical-align: middle;
 }
-
 .switch .slider {
   position: absolute;
   cursor: pointer;
@@ -311,20 +281,16 @@ body {
   color: @color_text;
   border-radius: 17px;
 }
-
 .configuration-bottom-area-switch {
   padding: 10px;
 }
-
 .configuration-bottom-area-switch>span {
   vertical-align: top;
   margin-left: 10px;
 }
-
 input:checked+.slider {
   background-color: @color_highlight;
 }
-
 .slider::before {
   position: absolute;
   content: "";
@@ -337,15 +303,12 @@ input:checked+.slider {
   transition: 0.4s;
   border-radius: 50%;
 }
-
 input:checked+.slider::before {
   -webkit-transform: translateX(13px);
   -ms-transform: translateX(13px);
   transform: translateX(13px);
 }
-
 // End switch theme
-
 .pulse-mainarea {
   display: block;
   box-sizing: border-box;
@@ -358,18 +321,14 @@ input:checked+.slider::before {
   //overflow: hidden;
   color: @color_text_alternate;
 }
-
 #container {
   min-height: 100%;
   position: relative;
 }
-
 #footer {
   display: none;
 }
-
 /* Sections = MAIN */
-
 .description,
 .usage,
 .methods,
@@ -384,7 +343,6 @@ input:checked+.slider::before {
   border-radius: 4px;
   clear: both;
 }
-
 .demo-sub-title {
   height: 40px;
   padding: 8px 10px 0px 10px;
@@ -394,12 +352,10 @@ input:checked+.slider::before {
   font-weight: bold;
   font-size: 1.5em;
 }
-
 .demo-sub-content {
   display: block;
   padding: 10px;
 }
-
 .code-example {
   padding: 1em;
   background-color: @widget_background;
@@ -409,7 +365,6 @@ input:checked+.slider::before {
   display: block;
   margin: 0px;
 }
-
 .attribute-name,
 .method-name {
   font-weight: bold;
@@ -519,12 +474,10 @@ input:checked+.slider::before {
     }
   }
 }
-
 .attribute-description,
 .method-description {
   margin-bottom: 10px;
 }
-
 // Demo Labels, but not labels inside x-tags
 .demo>div {
   >label {
@@ -543,7 +496,6 @@ input:checked+.slider::before {
     }
   }
 }
-
 .demo {
   .demo-sub-content {
     .div-with-border {
@@ -552,8 +504,6 @@ input:checked+.slider::before {
     }
   }
 }
-
-
 /* GLOBAL pulsewebapp style */
 .pulse-bar-div {
   /* light green around each cell*/

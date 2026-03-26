@@ -1,7 +1,9 @@
 /* Copyright (C) 2025 Atsora Solutions */
 
+// === IMPORTS ===
 @import "pulsewebcomponents-common.less";
 
+// === CONTENT ===
 x-groupgrid {
   display: block;
   height: 100%;
@@ -10,7 +12,7 @@ x-groupgrid {
 
   .groupgrid-main {
     display: grid;
-    gap: 15px;
+    gap: 1.5vh 1.5vw;
     height: 100%;
     width: 100%;
     box-sizing: border-box;
@@ -25,16 +27,23 @@ x-groupgrid {
     /* Par défaut (sécurité) */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 
+    .groupgrid-item {
+      max-height: 60vh;
+    }
+
     /* 1 élément : Plein écran */
-    &[data-count="1"] { grid-template-columns: 1fr; }
+    &[data-count="1"] {
+      grid-template-columns: 1fr;
+      .groupgrid-item {
+        max-height: 100%;
+      }
+    }
 
     /* 2 éléments : 2 colonnes (1x2) */
     &[data-count="2"] { grid-template-columns: 1fr 1fr; }
 
-    /* 3 éléments : 3 colonnes (1x3) */
-    &[data-count="3"] { grid-template-columns: repeat(3, 1fr); }
-
-    /* 4 éléments : 2 colonnes (2x2) - Carré parfait */
+    /* 3 et 4 éléments : 2 colonnes (2x2) - Carré parfait */
+    &[data-count="3"],
     &[data-count="4"] { grid-template-columns: repeat(2, 1fr); }
 
     /* 5 et 6 éléments : 3 colonnes (2x3) */
@@ -52,6 +61,12 @@ x-groupgrid {
     &[data-count="10"],
     &[data-count="11"],
     &[data-count="12"] { grid-template-columns: repeat(4, 1fr); }
+
+    /* 13 à 16 éléments : 4 colonnes (4x4) */
+    &[data-count="13"],
+    &[data-count="14"],
+    &[data-count="15"],
+    &[data-count="16"] { grid-template-columns: repeat(4, 1fr); }
   }
 
   .groupgrid-item {
@@ -60,5 +75,11 @@ x-groupgrid {
     min-height: 0;
     display: flex; /* Sera écrasé par le JS (display:none) si caché */
     flex-direction: column;
+  }
+}
+
+@media (max-width: 685px) {
+  x-groupgrid .groupgrid-main {
+    grid-template-columns: 1fr !important;
   }
 }

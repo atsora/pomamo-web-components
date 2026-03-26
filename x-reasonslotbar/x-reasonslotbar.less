@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// === IMPORTS ===
 @import "pulsewebcomponents-common.less";
 /* NO need to import tho following files anywhere else */
 @import "x-datetimerange/x-datetimerange.less";
@@ -12,6 +13,7 @@
 @import "x-revisionprogress/x-revisionprogress.less";
 @import "pulsecomponent-detailspopup.less";
 
+// === CONTENT & HIDDEN CONTENT ===
 x-reasonslotbar {
   display: block;
 
@@ -19,11 +21,13 @@ x-reasonslotbar {
   .reasonslotbar {
     position: relative;
     width: auto; // 100%;
+    height: 100%;
   }
 
   .reasonslotbar-content {
     position: relative;
     width: 100%;
+    height: 100%;
 
     .reasonslotbar-svg {
       position: absolute;
@@ -31,6 +35,7 @@ x-reasonslotbar {
       top: 0px;
 
       width: 100%; // For resize auto
+      height: 100%;
     }
   }
 }

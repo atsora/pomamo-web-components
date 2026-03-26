@@ -217,6 +217,9 @@ require('x-stopclassification/x-stopclassification');
         this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
+      if (!this._range) {
+        return; // Wait for dateTimeRangeChangeEvent — onDateTimeRangeChange will call start()
+      }
 
       this.switchToNextContext();
     }

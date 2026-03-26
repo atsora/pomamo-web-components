@@ -312,7 +312,7 @@ require('x-milestonesadd/x-milestonesadd');
           let addPosition = $('<div></div>').addClass('milestonesmanager-add-div')
             .append(milestonesAdd);
 
-          let dialogId = pulseCustomDialog.initialize(addPosition, {
+          let dialogId = pulseCustomDialog.openDialog(addPosition, {
             title: this.getTranslation ('add', 'Add milestone'),
             cancelButton: 'hidden',
             okButton: 'hidden',
@@ -321,7 +321,6 @@ require('x-milestonesadd/x-milestonesadd');
             fullScreenOnSmartphone: true,
             smallSize: true
           });
-          pulseCustomDialog.open('#' + dialogId);
 
         }.bind(this));
     }
@@ -339,12 +338,12 @@ require('x-milestonesadd/x-milestonesadd');
     _removeError (errorMessage) {
       let close = function () { // Do Nothing
       };
-      pulseCustomDialog.openError(errorMessage.ErrorMessage, 'Error', close);
+      pulseCustomDialog.openDialog(errorMessage.ErrorMessage, { type: 'Error', title: 'Error', onClose: close });
     }
     _removeFail (url, isTimeout, xhrStatus) {
       let close = function () { // Do Nothing
       };
-      pulseCustomDialog.openError(this.getTranslation('errorRemove', 'Error in removing'), 'Error', close);
+      pulseCustomDialog.openDialog(this.getTranslation('errorRemove', 'Error in removing'), { type: 'Error', title: 'Error', onClose: close });
     }
 
     // Callback events

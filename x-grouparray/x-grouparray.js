@@ -203,10 +203,6 @@ var eventBus = require('eventBus');
 
         $(this._content).append(li);
 
-        /*if (machineRow.length != 0) { // if exists
-          // restoreDeleteWhenDisconnect
-          machineRow[0].find ('*').removeClass('disableDeleteWhenDisconnect');
-        }*/
       }
       let $tabs = $(this._content).find('x-machinetab');
       if ($tabs) {

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// === IMPORTS ===
 @import "pulsewebcomponents-common.less";
 @import "pulse.customdialog.less";
 
@@ -11,6 +12,7 @@
 @import "x-machinedisplay/x-machinedisplay.less";
 @import "x-freetext/x-freetext.less";
 
+// === CONTENT ===
 x-machineselection {
   display: block;
 }
@@ -176,13 +178,13 @@ x-machineselection {
     }
 
     &:not(.opened) {
-      .hide-sub {
+      .hide-sub { // === HIDDEN CONTENT ===
         display: none;
       }
     }
 
     &:not(.closed) {
-      .show-sub {
+      .show-sub { // === HIDDEN CONTENT ===
         display: none;
       }
     }
@@ -384,7 +386,7 @@ x-machineselection {
           display: block;
         }
 
-        .machineselection-remove-machine-button {
+        .machineselection-remove-machine-button { // === HIDDEN CONTENT ===
           display: none;
         }
 
@@ -400,7 +402,7 @@ x-machineselection {
       &.selected {
         color: @color_highlight;
 
-        .machineselection-add-machine-button {
+        .machineselection-add-machine-button { // === HIDDEN CONTENT ===
           display: none;
         }
 
@@ -437,7 +439,7 @@ x-machineselection {
 }
 
 ////////// ////////// ////////// ////////// ////////// //////////
-// 3- PAGES ET LAYOUT
+// 3- PAGES AND LAYOUT
 ////////// ////////// ////////// ////////// ////////// //////////
 
 .machineSelectionDialogPart1 {
@@ -687,7 +689,7 @@ x-machineselection {
         box-sizing: border-box;
         font-size: 10pt;
 
-        .hidden-content {
+        .hidden-content { // === HIDDEN CONTENT ===
           display: none;
         }
 
@@ -735,6 +737,7 @@ x-machineselection {
 // OVERRIDES RESPONSIVE BUREAU / TELEPHONE
 ////////// ////////// ////////// ////////// //////////
 
+// === MEDIA QUERIES ===
 @media (min-width: 686px) {
 
   .machineSelectionDialogPart1 {

@@ -546,7 +546,7 @@ var eventBus = require('eventBus');
 
     onConfigChange(event) {
       if (event.target.config === 'thresholdsupdated') {
-        if (this._actualProduction) {
+        if (this._productionRatio !== undefined) {
           this._draw();
           this._updateTextDisplay();
         }

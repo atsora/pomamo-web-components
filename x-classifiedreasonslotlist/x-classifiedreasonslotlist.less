@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// === IMPORTS ===
 @import "pulsewebcomponents-common.less";
 @import "pulse.customdialog.less";
-
 @import "x-savereason/x-savereason.less";
 @import "x-machinedisplay/x-machinedisplay.less";
 @import "x-datetimerange/x-datetimerange.less";
@@ -16,6 +16,7 @@
 // @import "x-reasonslotbar/x-reasonslotbar.less";*/
 @import "x-revisionprogress/x-revisionprogress.less";
 
+// === CONTENT & HIDDEN CONTENT ===
 x-classifiedreasonslotlist {
   display: flex;
   flex-direction: column;
@@ -234,20 +235,18 @@ x-classifiedreasonslotlist {
     background-color: fade(@color_red, 70%);
   }
 }
-
 .dialog-savereason x-classifiedreasonslotlist {
   height: 100%;
 }
-
 .dialog-savereason-page2 {
   padding: 10px;
 }
-
 .classifiedreasonslotlist-header-label {
   margin-bottom: 10px;
   font-weight: bold;
 }
 
+// === MEDIA QUERIES ===
 @media (max-width: 920px) {
   .classifiedreasonslotlist .datetimerange-rangedisplay {
     display: block;
@@ -257,4 +256,3 @@ x-classifiedreasonslotlist {
     margin-top: 0;
   }
 }
-

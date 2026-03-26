@@ -155,7 +155,7 @@ require('x-modificationmanager/x-modificationmanager');
 
       let title = this.getTranslation('changeMachineStateTitle', 'Change machine state');
 
-      let saveDialogId = pulseCustomDialog.initialize(this._dialog, {
+      let saveDialogId = pulseCustomDialog.openDialog(this._dialog, {
         title: title,
         autoClose: true,
         autoDelete: true,
@@ -169,9 +169,7 @@ require('x-modificationmanager/x-modificationmanager');
       this._saveDialogId = saveDialogId;
 
       // Disable OK button initially
-      //this._updateOkButtonState();
-
-      pulseCustomDialog.open('#' + saveDialogId);
+      //this._updateOkButtonState()
 
       /* // This DO NOT WORK [TODO] find a way to reload parent
         onClose :
@@ -259,7 +257,7 @@ require('x-modificationmanager/x-modificationmanager');
         this._drawCell(data.MachineStateTemplates[index]);
       }
       if (0 == data.MachineStateTemplates.length) {
-        pulseCustomDialog.openError('No flow is defined. Please contact support', 'No data');
+        pulseCustomDialog.openDialog('No flow is defined. Please contact support', { type: 'Error', title: 'No data' });
       }
     }
 
@@ -340,14 +338,14 @@ require('x-modificationmanager/x-modificationmanager');
         // DO nothing because of autoclose
       };
       //close(); // ???
-      pulseCustomDialog.openError(data.ErrorMessage, 'Error', close);
+      pulseCustomDialog.openDialog(data.ErrorMessage, { type: 'Error', title: 'Error', onClose: close });
     }
     _saveFail(url) {
       let close = function () {
         // DO nothing because of autoclose
       };
       //close(); // ???
-      pulseCustomDialog.openError('Error while saving', 'Error', close);
+      pulseCustomDialog.openDialog('Error while saving', { type: 'Error', title: 'Error', onClose: close });
     }
 
     onDateTimeRangeChange(event) {

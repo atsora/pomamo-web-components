@@ -4,8 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// === IMPORTS ===
 @import "pulsewebcomponents-common.less";
 
+// === CONTENT & HIDDEN CONTENT ===
 .taskslist-content {
     ol {
         list-style-type: none;
@@ -66,18 +68,14 @@
         }
     }
 }
-
-
 .taskslist-status-late {
     background-color: @color_red;
     color: @vue_text_red;
 }
-
 .taskslist-status-todo {
     background-color: @color_orange;
     color: @vue_text_orange;
 }
-
 .taskslist-status-upcoming {
     background-color: @color_blue;
     color: @vue_text_blue;

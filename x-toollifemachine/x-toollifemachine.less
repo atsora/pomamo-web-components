@@ -4,34 +4,32 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// === IMPORTS ===
 @import "pulsewebcomponents-common.less";
 
+// === CONTENT & HIDDEN CONTENT ===
 x-toollifemachine {
   display: block; // To make is(':visible') works
   position: relative; // For message position
 
   .pulse-cellbar-main {
     position: relative;
-    line-height: 2.6em !important;
-    height: 2.6em !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 2.5em; // base height — constrains SVGs (separator, soon-title); overridable by pages via flex: 1
   }
 
   .pulse-cellbar-current-data {
     border-right: none; // OVERLOAD common 1px solid @color_window_border;
-    line-height: 2.6em !important;
-    height: 2.6em !important;
-  }
-
-  .pulse-cellbar-past-data {
-    line-height: 2.6em !important;
-    height: 2.6em !important;
+    height: 2.5em;
   }
 
   .pulse-cellbar-last {
     //==.toollifemachine-tools
-    line-height: 2.6em !important;
-    height: 2.6em !important;
     box-sizing: border-box;
+    height: 2.5em;
   }
 
   // <a> ON THE LEFT only
@@ -100,6 +98,7 @@ x-toollifemachine {
     display: block;
     box-sizing: border-box;
     height: 100%;
+    width: 2px; // explicit width so height: 100% isn't constrained by the viewBox ratio
     margin: 0 5px;
 
     stroke: white;

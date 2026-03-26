@@ -184,10 +184,12 @@ require('x-revisionprogress/x-revisionprogress');
       if (this._height < this.minHeight) {
         this._height = this.minHeight;
       }
-      // Resize content
-      let c = this.content;
-      if (typeof c !== 'undefined') {
-        c.height(this._height);
+      // Resize content only if height attribute is explicitly set
+      if (this.element.hasAttribute('height')) {
+        let c = this.content;
+        if (typeof c !== 'undefined') {
+          c.height(this._height);
+        }
       }
     }
 
@@ -275,7 +277,9 @@ require('x-revisionprogress/x-revisionprogress');
       // create DOM
       // HTML structure - Content
       this._content = $('<div></div>').addClass('reasonslotbar-content pulse-bar-content');
-      this._content.height(this._height);
+      if (this.element.hasAttribute('height')) {
+        this._content.height(this._height);
+      }
 
       // HTML structure - Loader
       let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', ' Loading...')).css('display', 'none');

@@ -4,22 +4,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// === IMPORTS ===
 @import "pulsewebcomponents-common.less";
 @import "pulse.customdialog.less";
-
 @import "x-datetimerange/x-datetimerange.less";
 
+// === CONTENT & HIDDEN CONTENT ===
 x-savemachinestatetemplate {
   display: block;
   /* To make is(':visible') works */
 }
-
 .customDialogContent>div.savemachinestatetemplate-dialog {
   display: flex;
   align-items: center;
   flex-direction: column;
 }
-
 .savemachinestatetemplate-dialog {
   margin: 10px;
 
@@ -57,11 +56,9 @@ x-savemachinestatetemplate {
     }
   }
 }
-
 input[name=dtp_date] {
   min-width: 200px;
 }
-
 .savemachinestatetemplate-cells-list {
 
   display: grid;
@@ -89,7 +86,6 @@ input[name=dtp_date] {
       position: relative;
       border: 1px solid @color_window_border;
 
-
       .savemachinestatetemplate-cell-box-color {
         width: 1.5vw;
         height: 100%;
@@ -105,7 +101,6 @@ input[name=dtp_date] {
         align-items: center;
         justify-content: center;
         display: flex;
-
 
         .savemachinestatetemplate-cell-text {
           font-size: 1.4vw;
@@ -134,7 +129,6 @@ input[name=dtp_date] {
     background-color: @color_background_alternate;
   }
 }
-
 .savemachinestatetemplate-home-btn {
   width: 3%;
   cursor: pointer;
@@ -146,7 +140,6 @@ input[name=dtp_date] {
     border-radius: @border_radius_small;
   }
 }
-
 x-datetimerange {
   .datetimerange {
     .datetimerange-rangedisplay {

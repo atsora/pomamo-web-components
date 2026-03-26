@@ -103,9 +103,13 @@ var state = require('state');
         if (eventBus.EventBus.dispatchToAll) eventBus.EventBus.dispatchToAll('groupIsReloaded', payload);
         else if (eventBus.EventBus.dispatch) eventBus.EventBus.dispatch('groupIsReloaded', payload);
 
-        // On vide ici, car on attend que le moteur nous renvoie la liste complète via la config 'machine'
-        this._machineIdsArray = [];
-        this._displayAllMachines();
+        // EventBus is synchronous: onConfigChange may have already processed the
+        // configChangeEvent('machine') and rebuilt the grid (_waitingForEngine === false).
+        // Only clear+rebuild if the engine has NOT yet responded (async path).
+        if (this._waitingForEngine) {
+          this._machineIdsArray = [];
+          this._displayAllMachines();
+        }
       }
       else {
         this._machineIdsArray = allMachineIds;

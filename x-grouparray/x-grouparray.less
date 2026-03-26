@@ -4,9 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// === IMPORTS ===
 @import "pulsewebcomponents-common.less";
 
-x-grouparray { /* To make is(':visible') works */ 
+// === CONTENT ===
+x-grouparray { /* To make is(':visible') works */
   display: block;
   height: 100%;
 
@@ -15,20 +17,34 @@ x-grouparray { /* To make is(':visible') works */
   width: 100%;
 
   .group-main {
-    display: block;
-    // Minimum style here -> to define in main page
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: flex-start;
+
     box-sizing: border-box;
     width: 100%;
     height: 100%;
-    // To define to remove list style :
     list-style-type: none;
     padding: 0;
+    margin: 0;
+
     .group-single {
-      // Minimum style here -> to define in main page
+      display: inline-block;
+      list-style: none;
+      vertical-align: top;
+      position: relative;
+
+      padding: 4px;
       box-sizing: border-box;
-      //width ->  in js;
-      // To define to remove list style :
-      //list-style: none;
+
+      > * {
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+      }
     }
   }
 }

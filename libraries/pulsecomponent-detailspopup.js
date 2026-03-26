@@ -200,7 +200,7 @@ var openDetails = exports.openDetails = function (component, fullRange, cellRang
   middlebar.append(xSelBar);
   title.append(xGraduation).append(middlebar);
 
-  let dialogId = pulseCustomDialog.initialize(dialog, {
+  let dialogId = pulseCustomDialog.openDialog(dialog, {
     title: pulseConfig.pulseTranslate ('dialog.details', 'Details'),
     onOk: function () { // Validate
     },
@@ -213,7 +213,6 @@ var openDetails = exports.openDetails = function (component, fullRange, cellRang
     bigSize: true,
     helpName: 'details'
   });
-  pulseCustomDialog.open('#' + dialogId);
 }
 
 /**
@@ -356,7 +355,18 @@ exports.openChangeWorkInfoDialog = function (component, dtRange) {
 
   // PAGE 1
   let dialog = $('<div></div>').addClass('dialog-saveworkinfo');
-  let saveDialogId = pulseCustomDialog.initialize(dialog, {
+
+  let machid = $(component.element).attr('machine-id');
+  let rangeString = dtRange.toString(d => d.toISOString());
+  let xworkinfoslotlist = pulseUtility.createjQueryElementWithAttribute('x-workinfoslotlist', {
+    'machine-id': machid,
+    //'only-overwrite-required': true, //component.requiredReason,
+    'range': rangeString
+    //'skip1periodlist': skip1periodlist
+  });
+  dialog.append(xworkinfoslotlist);
+
+  let saveDialogId = pulseCustomDialog.openDialog(dialog, {
     title: component.getTranslation('saveworkinfo.WorkInfoTitle', 'Work information'),
     /*onCancel: function () { == default behavior
       pulseCustomDialog.close('.dialog-saveworkinfo');
@@ -372,19 +382,7 @@ exports.openChangeWorkInfoDialog = function (component, dtRange) {
     bigSize: true
   });
 
-  let machid = $(component.element).attr('machine-id');
-  let rangeString = dtRange.toString(d => d.toISOString());
-  let xworkinfoslotlist = pulseUtility.createjQueryElementWithAttribute('x-workinfoslotlist', {
-    'machine-id': machid,
-    //'only-overwrite-required': true, //component.requiredReason,
-    'range': rangeString
-    //'skip1periodlist': skip1periodlist
-  });
-  dialog.append(xworkinfoslotlist);
-
   // PAGE 2 -> in WISL ? - Not ended yet 2019-05 Maybe later when needed
-  pulseCustomDialog.open('#' + saveDialogId);
-
   let xMachine = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
     'machine-id': machid
   });
@@ -411,23 +409,7 @@ var openChangeReasonDialog = exports.openChangeReasonDialog = function (componen
 
   // PAGE 1
   let dialog = $('<div></div>').addClass('dialog-savereason');
-  let saveDialogId = pulseCustomDialog.initialize(dialog, {
-    title: component.getTranslation('savereason.saveReasonTitle', 'Set reason'),
-    /*onCancel: function () { == default
-      pulseCustomDialog.close('.dialog-savereason');
-    }.bind(component),*/
-    onClose: function () {
-      // Special for popup on a dialog (Reason '+2' display) :
-      $('.popup-block').fadeOut();
-    }.bind(component),
-    autoClose: false,
-    autoDelete: true,
-    okButton: 'hidden',
-    cancelButton: 'hidden',
-    fullScreenOnSmartphone: true,
-    bigSize: true,
-    helpName: 'savereason'
-  });
+
   let machid = $(component.element).attr('machine-id');
   let rangeString = dtRange.toString(d => d.toISOString());
   let role = pulseConfig.getAppContextOrRole && pulseConfig.getAppContextOrRole();
@@ -449,9 +431,25 @@ var openChangeReasonDialog = exports.openChangeReasonDialog = function (componen
   }
   dialog.append(xreasonslotlist);
 
-  // PAGE 2 -> in RSL ?
-  pulseCustomDialog.open('#' + saveDialogId);
+  let saveDialogId = pulseCustomDialog.openDialog(dialog, {
+    title: component.getTranslation('savereason.saveReasonTitle', 'Set reason'),
+    /*onCancel: function () { == default
+      pulseCustomDialog.close('.dialog-savereason');
+    }.bind(component),*/
+    onClose: function () {
+      // Special for popup on a dialog (Reason '+2' display) :
+      $('.popup-block').fadeOut();
+    }.bind(component),
+    autoClose: false,
+    autoDelete: true,
+    okButton: 'hidden',
+    cancelButton: 'hidden',
+    fullScreenOnSmartphone: true,
+    bigSize: true,
+    helpName: 'savereason'
+  });
 
+  // PAGE 2 -> in RSL ?
   let xMachine = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
     'machine-id': machid
   });
@@ -475,7 +473,15 @@ var openChangeScrapClassificationDialog = exports.openChangeScrapClassificationD
 
   // PAGE 1
   let dialog = $('<div></div>').addClass('dialog-scrapclassification');
-  let scrapClassificationDialogId = pulseCustomDialog.initialize(dialog, {
+
+  let machid = $(component.element).attr('machine-id');
+  // Use a provider that fetches ReasonOnlySlots and builds the classifier
+  let xscrapclassification = pulseUtility.createjQueryElementWithAttribute('x-scrapclassification', {
+    'machine-id': machid,
+  });
+  dialog.append(xscrapclassification);
+
+  pulseCustomDialog.openDialog(dialog, {
     title: component.getTranslation('scrapClassification.title', 'Declare scrap'),
     onClose: function () {
       $('.popup-block').fadeOut();
@@ -489,14 +495,6 @@ var openChangeScrapClassificationDialog = exports.openChangeScrapClassificationD
     helpName: 'savereason',
     className: 'scrapclassification'
   });
-  let machid = $(component.element).attr('machine-id');
-  // Use a provider that fetches ReasonOnlySlots and builds the classifier
-  let xscrapclassification = pulseUtility.createjQueryElementWithAttribute('x-scrapclassification', {
-    'machine-id': machid,
-  });
-  dialog.append(xscrapclassification);
-
-  pulseCustomDialog.open('#' + scrapClassificationDialogId);
 }
 
 /**
@@ -518,20 +516,7 @@ var openChangeStopClassificationDialog = exports.openChangeStopClassificationDia
 
   // PAGE 1
   let dialog = $('<div></div>').addClass('dialog-stopclassification');
-  let stopClassificationDialogId = pulseCustomDialog.initialize(dialog, {
-    title: component.getTranslation('stopclassification.title', 'Unplanned stops'),
-    onClose: function () {
-      $('.popup-block').fadeOut();
-    }.bind(component),
-    autoClose: false,
-    autoDelete: true,
-    okButton: 'hidden',
-    cancelButton: 'hidden',
-    fullScreenOnSmartphone: true,
-    bigSize: true,
-    helpName: 'savereason',
-    className: 'stopclassification'
-  });
+
   let machid = $(component.element).attr('machine-id');
   let rangeString = dtRange.toString(d => d.toISOString());
   if (useClickedRange) {
@@ -556,7 +541,20 @@ var openChangeStopClassificationDialog = exports.openChangeStopClassificationDia
     dialog.append(xstopperiods);
   }
 
-  pulseCustomDialog.open('#' + stopClassificationDialogId);
+  pulseCustomDialog.openDialog(dialog, {
+    title: component.getTranslation('stopclassification.title', 'Unplanned stops'),
+    onClose: function () {
+      $('.popup-block').fadeOut();
+    }.bind(component),
+    autoClose: false,
+    autoDelete: true,
+    okButton: 'hidden',
+    cancelButton: 'hidden',
+    fullScreenOnSmartphone: true,
+    bigSize: true,
+    helpName: 'savereason',
+    className: 'stopclassification'
+  });
 }
 
 /**
@@ -611,19 +609,6 @@ exports.openRunningDialog = function (groupId) {
   let pageName = 'running';
   // CREATE Dialog
   let dialog = $('<div></div>').addClass('dialog-running');
-  let dialogId = pulseCustomDialog.initialize(dialog, {
-    title: pulseConfig.pulseTranslate('pages.' + pageName + '.title', ''),
-    onClose: function () {
-      // Special for popup on a dialog (Reason '+2' display) :
-      $('.popup-block').fadeOut();
-    },
-    autoClose: true,
-    autoDelete: true,
-    okButton: 'hidden',
-    cancelButton: 'hidden',
-    fullScreenOnSmartphone: true,
-    fullSize: true
-  });
 
   // FILL Dialog
   let hiddenRunningDivContent = $('<div class="one_machine_cell" id="boxtocloneRunning"> \
@@ -700,7 +685,6 @@ exports.openRunningDialog = function (groupId) {
 
   dialog.append(hiddenRunningDiv).append(mainPageDiv);
 
-
   let addProductionMachining = pulseConfig.getBool('currentdisplay.displayjobshiftpartcount', false);
   let displayJob = pulseConfig.getBool('currentdisplay.displayjob', true);
   let displayShift = pulseConfig.getBool('currentdisplay.displayshift', true);
@@ -731,6 +715,18 @@ exports.openRunningDialog = function (groupId) {
     $(dialog).find('x-currentcncvalue').hide();
   }
 
-  // OPEN Dialog
-  pulseCustomDialog.open('#' + dialogId);
+  pulseCustomDialog.openDialog(dialog, {
+    title: pulseConfig.pulseTranslate('pages.' + pageName + '.title', ''),
+    onClose: function () {
+      // Special for popup on a dialog (Reason '+2' display) :
+      $('.popup-block').fadeOut();
+    },
+    autoClose: true,
+    autoDelete: true,
+    okButton: 'hidden',
+    cancelButton: 'hidden',
+    fullScreenOnSmartphone: true,
+    fullSize: true
+  });
+
 }

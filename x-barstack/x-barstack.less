@@ -1,0 +1,126 @@
+/*
+ * Copyright (C) 2025 Atsora Solutions
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "x-shiftslotbar/x-shiftslotbar.less";
+@import "x-machinestatebar/x-machinestatebar.less";
+@import "x-observationstatebar/x-observationstatebar.less";
+@import "x-operationcyclebar/x-operationcyclebar.less";
+@import "x-operationslotbar/x-operationslotbar.less";
+@import "x-isofileslotbar/x-isofileslotbar.less";
+@import "x-productionstatebar/x-productionstatebar.less";
+@import "x-reasonslotbar/x-reasonslotbar.less";
+@import "x-cncalarmbar/x-cncalarmbar.less";
+@import "x-redstacklightbar/x-redstacklightbar.less";
+@import "x-runningslotbar/x-runningslotbar.less";
+@import "x-cncvaluebar/x-cncvaluebar.less";
+
+x-barstack {
+  .bar-rounded-shadow; // border-radius: @border_radius_small + overflow: hidden
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
+  // Thin informational slot bars — equal share
+  x-shiftslotbar,
+  x-machinestatebar,
+  x-observationstatebar,
+  x-operationcyclebar,
+  x-operationslotbar,
+  x-isofileslotbar {
+    flex: 25 1 0;
+    min-height: 0;
+  }
+
+  // Reason group: reasonslotbar/runningslotbar/productionstatebar + overlay bars in a position:relative wrapper
+  // Overlay bars (cncalarmbar, redstacklightbar) are absolutely positioned inside
+  .barstack-reason-group {
+    flex: 40 1 0;
+    min-height: 0;
+    position: relative;
+
+    x-reasonslotbar,
+    x-runningslotbar,
+    x-productionstatebar {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    x-cncalarmbar,
+    x-redstacklightbar {
+      position: absolute;
+      inset: 0;
+      // Reset the component's own offset hack (height:0; top:-17px)
+      height: 100% !important;
+      top: 0 !important;
+      pointer-events: none; // pass clicks through to x-reasonslotbar below
+    }
+
+    x-redstacklightbar {
+      // Le SVG est position:absolute par défaut → hors flux → align-items n'a aucun effet.
+      // On le remet dans le flux (relative) pour que le flex parent puisse le centrer.
+      .redstacklightbar-content {
+        display: flex !important;
+        align-items: center !important;
+      }
+      .redstacklightbar-svg {
+        position: relative !important;
+        top: auto !important;
+      }
+    }
+  }
+
+  // Standalone reasonslotbar / runningslotbar / productionstatebar (no overlays in the bar list)
+  > x-reasonslotbar,
+  > x-runningslotbar,
+  > x-productionstatebar {
+    flex: 40 1 0;
+    min-height: 0;
+  }
+
+  // Value bar
+  x-cncvaluebar {
+    flex: 10 1 0;
+    min-height: 0;
+  }
+
+  // Force bar inner content to fill flex-allocated height
+  // (bars set inline height via jQuery, this overrides it)
+  .pulse-bar-content {
+    height: 100% !important;
+  }
+
+  // Collapse thin bars that have no data (component hides content via jQuery .hide() → inline style)
+  // :has() detects the inline style="display: none" set by the component itself
+  x-shiftslotbar:has(.pulse-bar-content[style*="display: none"]),
+  x-machinestatebar:has(.pulse-bar-content[style*="display: none"]),
+  x-observationstatebar:has(.pulse-bar-content[style*="display: none"]),
+  x-operationcyclebar:has(.pulse-bar-content[style*="display: none"]),
+  x-operationslotbar:has(.pulse-bar-content[style*="display: none"]),
+  x-isofileslotbar:has(.pulse-bar-content[style*="display: none"]),
+  x-cncvaluebar:has(.pulse-bar-content[style*="display: none"]) {
+    flex: 0 0 0 !important;
+    overflow: hidden;
+  }
+
+  // Fix inline-block SVG baseline gap inside machinestatebar
+  // (component CSS uses display:inline-block — needs matching specificity + override)
+  x-machinestatebar .machinestatebar-content svg {
+    display: block !important;
+  }
+
+  // cncvaluebar SVG is position:absolute with no CSS height — fill the content div
+  x-cncvaluebar .cncvaluebar-content > svg {
+    height: 100%;
+  }
+
+  // productionstatebar SVG has a fixed height attribute (30px default) — override to fill flex allocation
+  x-productionstatebar .productionstatebar-content > svg {
+    height: 100%;
+    width: 100%;
+  }
+}

@@ -12,6 +12,8 @@ var pulseUtility = require('pulseUtility');
 var pulseSvg = require('pulseSvg');
 var pulseConfig = require('pulseConfig');
 
+require('x-alertdialog/x-alertdialog');
+
 var pulseCustomDialog = function () {
   // Convenient object to store and get data attached to a dialog
   var _dataManager = pulseUtility.createDataManager('customDialogId');
@@ -309,19 +311,64 @@ var pulseCustomDialog = function () {
     }
   };
 
-  // Open common dialogs (info, warning, error, question)
-  var _addCommonPage = function (id, message, icon) {
-    var dialogId = 'customDialog' + id;
-    var pageId = dialogId + 'content';
-    $('body').append(
-      "<div id='" + pageId + "'>" +
-      "<div class='customDialogIcon customDialogIcon" + icon + "'></div>" +
-      "<div class='customDialogMessage'>" + message + '</div>' +
-      '</div>');
-    addPage('#' + dialogId, '#' + pageId);
+  var _defaultAlertTitles = {
+    'Information': function () { return pulseConfig.pulseTranslate('dialog.information', 'Information'); },
+    'Warning': function () { return pulseConfig.pulseTranslate('dialog.warning', 'Warning'); },
+    'Error': function () { return pulseConfig.pulseTranslate('dialog.error', 'Error'); },
+    'Question': function () { return pulseConfig.pulseTranslate('dialog.confirmation', 'Confirmation'); }
+  };
 
-    // Keep after addPage to kkep color
-    pulseSvg.inlineBackgroundSvg('#' + pageId + ' .customDialogIcon');
+  /*
+  * Open a dialog.
+  * - content is a DOM/jQuery element: standard dialog, reopened if already initialized
+  * - content is a string: alert shortcut, attrs.type sets the icon
+  *   ('Information' | 'Warning' | 'Error' | 'Question'), attrs.onClose / onOk / onCancel for callbacks
+  * attrs: dialog attributes (title, cancelButton, autoClose, autoDelete, onClose, onOk, onCancel, ...)
+  */
+  var openDialog = function (content, attrs) {
+    let dialogContent = content;
+    if (attrs == null) attrs = {};
+
+    if (typeof content === 'string') {
+      let type = attrs.type || 'Information';
+      let isConfirm = (type === 'Question');
+      let elt = document.createElement('x-alertdialog');
+      elt.setAttribute('type', type);
+      elt.setAttribute('message', content);
+      dialogContent = $(elt);
+      attrs = Object.assign({
+        title: _defaultAlertTitles[type] ? _defaultAlertTitles[type]() : type,
+        cancelButton: isConfirm ? undefined : 'hidden',
+        previousButton: 'hidden',
+        autoClose: true,
+        autoDelete: true
+      }, attrs);
+    }
+
+    let dialogId;
+    let isReuse = false;
+    try {
+      let id = _dataManager.getId(dialogContent);
+      dialogId = 'customDialog' + id;
+      isReuse = true;
+    }
+    catch (e) {
+      dialogId = initialize(dialogContent, attrs);
+    }
+    open('#' + dialogId, isReuse ? dialogId : undefined);
+    return dialogId;
+  };
+
+  // Backward-compatible aliases
+  var openAlert = function (message, type, title, onClose, onOk, onCancel) {
+    let isConfirm = (type === 'Question');
+    return openDialog(message, {
+      type: type,
+      title: title,
+      onClose: isConfirm ? undefined : onClose,
+      onOk: isConfirm ? onOk : undefined,
+      onCancel: isConfirm ? onCancel : undefined
+    });
   };
 
   /*
@@ -357,84 +404,11 @@ var pulseCustomDialog = function () {
     }
   };
 
-  /*
-  * Open an info dialog.
-  * It could be $.prompt BUT this one use Pomamo design.
-  * message: message inside the window
-  * title: title of the window
-  * onClose: callback when the window is closed (ok or cancel)
-  */
-  var openInfo = function (message, title, onClose) {
-    var id = _createDialog({
-      title: (title == null ? pulseConfig.pulseTranslate('dialog.information', 'Information') : title),
-      cancelButton: 'hidden',
-      previousButton: 'hidden',
-      autoClose: true,
-      autoDelete: true,
-      onClose: onClose
-    });
-    _addCommonPage(id, message, 'Information');
-    open('#customDialog' + id);
-
-    return 'customDialog' + id;
-  };
-
-  /*
-  * Open a warning dialog
-  * message: message inside the window
-  * title: title of the window
-  * onClose: callback when the window is closed (ok or cancel)
-  */
-  var openWarning = function (message, title, onClose) {
-    var id = _createDialog({
-      title: (title == null ? pulseConfig.pulseTranslate('dialog.warning', 'Warning') : title),
-      cancelButton: 'hidden',
-      previousButton: 'hidden',
-      autoClose: true,
-      autoDelete: true,
-      onClose: onClose
-    });
-    _addCommonPage(id, message, 'Warning');
-    open('#customDialog' + id);
-  };
-
-  /*
-  * Open an error dialog
-  * message: message inside the window
-  * title: title of the window
-  * onClose: callback when the window is closed (ok or cancel)
-  */
-  var openError = function (message, title, onClose) {
-    var id = _createDialog({
-      title: (title == null ? pulseConfig.pulseTranslate('dialog.error', 'Error') : title),
-      cancelButton: 'hidden',
-      previousButton: 'hidden',
-      autoClose: true,
-      autoDelete: true,
-      onClose: onClose
-    });
-    _addCommonPage(id, message, 'Error');
-    open('#customDialog' + id);
-  };
-
-  /*
-  * Open a confirm dialog
-  * message: message inside the window
-  * title: title of the window
-  * onOk: callback when "ok" is clicked
-  * onCancel: callback when "cancel" is clicked
-  */
-  var openConfirm = function (message, title, onOk, onCancel) {
-    var id = _createDialog({
-      title: (title == null ? pulseConfig.pulseTranslate('dialog.confirmation', 'Confirmation') : title),
-      autoClose: true,
-      autoDelete: true,
-      onOk: onOk,
-      onCancel: onCancel
-    });
-    _addCommonPage(id, message, 'Question');
-    open('#customDialog' + id);
-  };
+  // Backward-compatible aliases
+  var openInfo = function (message, title, onClose) { return openDialog(message, { type: 'Information', title: title, onClose: onClose }); };
+  var openWarning = function (message, title, onClose) { openDialog(message, { type: 'Warning', title: title, onClose: onClose }); };
+  var openError = function (message, title, onClose) { openDialog(message, { type: 'Error', title: title, onClose: onClose }); };
+  var openConfirm = function (message, title, onOk, onCancel) { openDialog(message, { type: 'Question', title: title, onOk: onOk, onCancel: onCancel }); };
 
   /*
   * Open a loader
@@ -538,6 +512,8 @@ var pulseCustomDialog = function () {
     initialize: initialize,
     setAttribute: setAttribute,
     open: open,
+    openDialog: openDialog,
+    openAlert: openAlert,
     openInfo: openInfo,
     openWarning: openWarning,
     openError: openError,

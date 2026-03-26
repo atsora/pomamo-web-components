@@ -262,8 +262,7 @@ require('x-machinedisplay/x-machinedisplay');
 
       let reasonDetailsTitle = this.getTranslation('reasonDetailsTitle', 'Reason details');
 
-      // Wrap the DOM element in jQuery for pulseCustomDialog
-      this._detailsDialogId = pulseCustomDialog.initialize($(dialogbox), {
+      this._detailsDialogId = pulseCustomDialog.openDialog($(dialogbox), {
         title: reasonDetailsTitle,
         onOk: () => {
           let details = textarea.value.trim();
@@ -274,7 +273,7 @@ require('x-machinedisplay/x-machinedisplay');
           } else {
             // Show error if details are empty
             let pleaseAddComment = this.getTranslation('errorNoDetails', 'Please add a comment');
-            pulseCustomDialog.openError(pleaseAddComment);
+            pulseCustomDialog.openDialog(pleaseAddComment, { type: 'Error' });
           }
         },
         onCancel: () => {
@@ -285,8 +284,6 @@ require('x-machinedisplay/x-machinedisplay');
         autoDelete: true,
         helpName: 'savereason'
       });
-
-      pulseCustomDialog.open('#' + this._detailsDialogId);
 
       // Disable OK button initially, enable when text is entered
       let okBtn = document.querySelector('#' + this._detailsDialogId + ' .customDialogOk');
@@ -352,7 +349,7 @@ require('x-machinedisplay/x-machinedisplay');
           }
         }
       }
-      pulseCustomDialog.openError(errorMessage);
+      pulseCustomDialog.openDialog(errorMessage, { type: 'Error' });
       return;
     }
 
@@ -366,11 +363,11 @@ require('x-machinedisplay/x-machinedisplay');
      */
     _saveFail(ajaxToken, url, isTimeout, xhrStatus) {
       if (isTimeout) {
-        pulseCustomDialog.openError('Timeout');
+        pulseCustomDialog.openDialog('Timeout', { type: 'Error' });
       }
       else {
         let message = pulseService.getAjaxErrorMessage(xhrStatus);
-        pulseCustomDialog.openError(message);
+        pulseCustomDialog.openDialog(message, { type: 'Error' });
       }
     }
 

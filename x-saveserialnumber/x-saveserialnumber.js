@@ -131,7 +131,7 @@ require('x-datetimerange/x-datetimerange');
         //DO nothing because of autoclose
         //pulseCustomDialog.close('.lastserialnumber-dialog');
       };
-      pulseCustomDialog.openError(data.ErrorMessage, 'Error', close);
+      pulseCustomDialog.openDialog(data.ErrorMessage, { type: 'Error', title: 'Error', onClose: close });
     }
 
     _saveFail (url) {
@@ -139,7 +139,7 @@ require('x-datetimerange/x-datetimerange');
         //DO nothing because of autoclose
         //pulseCustomDialog.close('.lastserialnumber-dialog');
       };
-      pulseCustomDialog.openError('Error while saving', 'Error', close);
+      pulseCustomDialog.openDialog('Error while saving', { type: 'Error', title: 'Error', onClose: close });
     }
 
 

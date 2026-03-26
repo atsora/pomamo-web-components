@@ -23,8 +23,8 @@ var pulseUtility = require('pulseUtility');
   class LoginPasswordComponent extends pulseComponent.PulseInitializedComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -119,12 +119,14 @@ var pulseUtility = require('pulseUtility');
         // Error :
         pulseLogin.cleanLoginRole();
 
-        this._infoDialog = pulseCustomDialog.openInfo(
+        this._infoDialog = pulseCustomDialog.openDialog(
           //'Bad login or password ! Retry',
           this.getTranslation('noRoleError', 'No role defined for this login. Please, change configuration'),
-          function () { // close
-            // Go to login page
-            pulseConfig.goToPageLogin();
+          { type: 'Information',
+            onClose: function () { // close
+              // Go to login page
+              pulseConfig.goToPageLogin();
+            }
           });
 
         return;
@@ -132,9 +134,9 @@ var pulseUtility = require('pulseUtility');
 
       // Un-log
       pulseLogin.cleanLoginRole();
-      // Re-log      
+      // Re-log
       role = role.toLowerCase();
-      
+
       let useSessionCookie = !this._stayConnectedCheck.is(':checked');
       pulseLogin.storeLoginRoleFromRefreshDTO(data, useSessionCookie);
       // cookie PulseLogin / PulseRole
@@ -168,28 +170,41 @@ var pulseUtility = require('pulseUtility');
       // Create DOM - Loader -> Not needed here
 
       // Create DOM - LOGIN Content
+      const loginInputId = 'loginpassword-login-input';
       this._loginEdit = $('<input></input>').addClass('loginpassword-login-input')
-        .attr('type', 'text');
+        .attr('type', 'text')
+        .attr('id', loginInputId);
       let loginLabel = $('<label></label>').addClass('loginpassword-login-label')
-        .html(this.getTranslation('user', 'User:'))
+        .attr('for', loginInputId)
+        .html(this.getTranslation('user', 'User:'));
+      let loginRow = $('<div></div>').addClass('loginpassword-row')
+        .append(loginLabel)
         .append(this._loginEdit);
 
+      const passInputId = 'loginpassword-password-input';
       this._passEdit = $('<input></input>').addClass('loginpassword-password-input')
-        .attr('type', 'password');
+        .attr('type', 'password')
+        .attr('id', passInputId);
       let passLabel = $('<label></label>').addClass('loginpassword-password-label')
-        .html(this.getTranslation('password', 'Password:'))
+        .attr('for', passInputId)
+        .html(this.getTranslation('password', 'Password:'));
+      let passRow = $('<div></div>').addClass('loginpassword-row')
+        .append(passLabel)
         .append(this._passEdit);
 
+      const stayConnectedInputId = 'loginpassword-stay-connected';
       this._stayConnectedCheck = $('<input type="checkbox" name="stay-connected"></input>')
+        .attr('id', stayConnectedInputId)
         .addClass('loginpassword-stay-connected');
-      let stayConnectedLabel = $('<label for="stay-connected"></label>')
+      let stayConnectedLabel = $('<label></label>')
         .addClass('loginpassword-stay-connected-label')
+        .attr('for', stayConnectedInputId)
         .html(this.getTranslation('stayConnected', 'Stay connected'));
       let stayConnectedDiv = $('<div"></div>').addClass('loginpassword-stay-connected-div')
         .append(this._stayConnectedCheck).append(stayConnectedLabel);
 
       this._changeContent = $('<div></div>').addClass('loginpassword-content')
-        .append(loginLabel).append(passLabel).append(stayConnectedDiv);
+        .append(loginRow).append(passRow).append(stayConnectedDiv);
 
       // Create DOM - message for error
       this._messageSpan = $('<span></span>')

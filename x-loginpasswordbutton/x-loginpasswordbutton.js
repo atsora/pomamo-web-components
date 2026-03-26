@@ -52,7 +52,7 @@ require('x-loginpassword/x-loginpassword');
     _openDialog () {
       let chgePass = pulseUtility.createjQueryElementWithAttribute('x-loginpassword', {});
 
-      let dialogId = pulseCustomDialog.initialize(chgePass, {
+      pulseCustomDialog.openDialog(chgePass, {
         title: this.getTranslation ('login', 'Login'),
         cancelButton: 'hidden',
         okButton: 'hidden',
@@ -62,7 +62,6 @@ require('x-loginpassword/x-loginpassword');
         smallSize: true,
         helpName: 'loginpassword'
       });
-      pulseCustomDialog.open('#' + dialogId);
     }
 
     initialize () {

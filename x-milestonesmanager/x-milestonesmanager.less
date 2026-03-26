@@ -4,13 +4,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// === IMPORTS ===
 @import "pulsewebcomponents-common.less";
-
 @import "x-datetimepicker/x-datetimepicker.less";
 @import "x-datetimerange/x-datetimerange.less";
 // @import "x-machineselector/x-machineselector.less";
 @import "x-milestonesadd/x-milestonesadd.less";
 
+// === CONTENT & HIDDEN CONTENT ===
 // To move == common
 .pulse-table {
   display: table;
@@ -84,7 +85,6 @@
     }
   }
 }
-
 /*
 // = svg ADD
 .add-button {
@@ -97,7 +97,6 @@
   .create_svg('plus-circle-solid', @color_text_alternate, @color_highlight);
   cursor: pointer;
 }*/
-
 x-milestonesmanager {
   /* To make is(':visible') works */
   display: block;

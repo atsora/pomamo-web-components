@@ -647,18 +647,18 @@ require('x-datetimerange/x-datetimerange');
           }
         }
       }
-      pulseCustomDialog.openError(errorMessage);
+      pulseCustomDialog.openDialog(errorMessage, { type: 'Error' });
       return;
     }
 
     _saveFail(ajaxToken, url, isTimeout, xhrStatus) {
       // ignore ajaxToken
       if (isTimeout) {
-        pulseCustomDialog.openError('Timeout');
+        pulseCustomDialog.openDialog('Timeout', { type: 'Error' });
       }
       else {
         let message = pulseService.getAjaxErrorMessage(xhrStatus);
-        pulseCustomDialog.openError(message);
+        pulseCustomDialog.openDialog(message, { type: 'Error' });
       }
     }
 
@@ -712,7 +712,7 @@ require('x-datetimerange/x-datetimerange');
 
       let reasonDetailsTitle = this.getTranslation('reasonDetailsTitle', 'Reason details');
 
-      this._detailsDialogId = pulseCustomDialog.initialize(dialogbox, {
+      this._detailsDialogId = pulseCustomDialog.openDialog(dialogbox, {
         title: reasonDetailsTitle,
         onOk: function (x_save, classifId, reasData, inputParam) { // to avoid closure
           return function () {
@@ -720,7 +720,7 @@ require('x-datetimerange/x-datetimerange');
             if ((details == '') && (detailsRequired)) {
               // show error msg -- should never happen if button is disabled
               let pleaseAddComment = x_save.getTranslation('errorNoDetails', 'Please add a comment');
-              pulseCustomDialog.openError(pleaseAddComment);
+              pulseCustomDialog.openDialog(pleaseAddComment, { type: 'Error' });
             }
             else {
               x_save._saveReason(classifId, details, reasData);
@@ -737,7 +737,6 @@ require('x-datetimerange/x-datetimerange');
         autoDelete: true,
         helpName: 'savereason'
       });
-      pulseCustomDialog.open('#' + this._detailsDialogId);
 
       // - Enable / Disable the OK button
       if (detailsRequired) { // Disable validateButton

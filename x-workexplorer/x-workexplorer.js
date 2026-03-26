@@ -655,7 +655,7 @@ var pulseCustomDialog = require('pulseCustomDialog');
                 if (prop.Limits.Maxsize) {
                   // Max number of chars
                   if (value.length > prop.Limits.Maxsize) {
-                    pulseCustomDialog.openError('Check limits');
+                    pulseCustomDialog.openDialog('Check limits', { type: 'Error' });
                     return;
                   }
                 }
@@ -670,13 +670,13 @@ var pulseCustomDialog = require('pulseCustomDialog');
               if (prop.Limits) {
                 if (prop.Limits.Min) {
                   if (value < prop.Limits.Min) {
-                    pulseCustomDialog.openError('Check limits');
+                    pulseCustomDialog.openDialog('Check limits', { type: 'Error' });
                     return;
                   }
                 }
                 if (prop.Limits.Max) {
                   if (value > prop.Limits.Max) {
-                    pulseCustomDialog.openError('Check limits');
+                    pulseCustomDialog.openDialog('Check limits', { type: 'Error' });
                     return;
                   }
                 }
@@ -688,13 +688,13 @@ var pulseCustomDialog = require('pulseCustomDialog');
               if (prop.Limits) {
                 if (prop.Limits.Min) {
                   if (value < prop.Limits.Min) {
-                    pulseCustomDialog.openError('Check limits');
+                    pulseCustomDialog.openDialog('Check limits', { type: 'Error' });
                     return;
                   }
                 }
                 if (prop.Limits.Max) {
                   if (value > prop.Limits.Max) {
-                    pulseCustomDialog.openError('Check limits');
+                    pulseCustomDialog.openDialog('Check limits', { type: 'Error' });
                     return;
                   }
                 }
@@ -709,13 +709,13 @@ var pulseCustomDialog = require('pulseCustomDialog');
               if (prop.Limits) {
                 if (prop.Limits.Min) {
                   if (value < prop.Limits.Min) {
-                    pulseCustomDialog.openError('Check limits');
+                    pulseCustomDialog.openDialog('Check limits', { type: 'Error' });
                     return;
                   }
                 }
                 if (prop.Limits.Max) {
                   if (value > prop.Limits.Max) {
-                    pulseCustomDialog.openError('Check limits');
+                    pulseCustomDialog.openDialog('Check limits', { type: 'Error' });
                     return;
                   }
                 }
@@ -739,7 +739,7 @@ var pulseCustomDialog = require('pulseCustomDialog');
           } // end switch format
 
           if (prop.Required && null == value) {
-            pulseCustomDialog.openError('Fill mandatory field ! ');
+            pulseCustomDialog.openDialog('Fill mandatory field ! ', { type: 'Error' });
             return;
           }
 
@@ -805,18 +805,18 @@ var pulseCustomDialog = require('pulseCustomDialog');
           }
         }
       }
-      pulseCustomDialog.openError(errorMessage);
+      pulseCustomDialog.openDialog(errorMessage, { type: 'Error' });
       return;
     }
 
     _saveNewFail (ajaxToken, url, isTimeout, xhrStatus) {
       // ignore ajaxToken
       if (isTimeout) {
-        pulseCustomDialog.openError('Timeout');
+        pulseCustomDialog.openDialog('Timeout', { type: 'Error' });
       }
       else {
         let message = pulseService.getAjaxErrorMessage(xhrStatus);
-        pulseCustomDialog.openError(message);
+        pulseCustomDialog.openDialog(message, { type: 'Error' });
       }
     }
 

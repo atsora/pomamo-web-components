@@ -4,8 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// === IMPORTS ===
 @import "pulsewebcomponents-common.less";
 
+// === CONTENT & HIDDEN CONTENT ===
 x-stacklight {
   display: block; /* To make is(':visible') works */
   
@@ -47,17 +49,14 @@ var def = pulseUtility.createPatternDef(svgNS,
     fill: @widget_background;
   }
 }
-
 ////////////////////////////////////////////////////////////
 // Stacklight colors + flashing... are outside to be used //
 // in x-detailedcncvaluesat and x-currentcncvalue too     //
 ////////////////////////////////////////////////////////////
-
 // Status 
 .stacklight-Off {
   fill: @widget_background;
 }
-
 @keyframes stacklight-blink {
   0%,
   50% {
@@ -74,48 +73,37 @@ var def = pulseUtility.createPatternDef(svgNS,
     opacity: 0.4;
   }
 }
-
 .stacklight-Flashing {
   animation: stacklight-blink 1s ease infinite;
 }
-
 // Colors - same as detailedcncvalue and currentcncvalue !
 .stacklight-color-Red.stacklight-Flashing {
   fill: @color_red;
 }
-
 .stacklight-color-Yellow.stacklight-Flashing {
   fill: @color_yellow;
 }
-
 .stacklight-color-Green.stacklight-Flashing {
   fill: @color_green;
 }
-
 .stacklight-color-Blue.stacklight-Flashing {
   fill: @color_blue;
 }
-
 .stacklight-color-White.stacklight-Flashing {
   fill: @color_white;
 }
-
 .stacklight-color-Red.stacklight-On {
   fill: @color_red;
 }
-
 .stacklight-color-Yellow.stacklight-On {
   fill: @color_yellow;
 }
-
 .stacklight-color-Green.stacklight-On {
   fill: @color_green;
 }
-
 .stacklight-color-Blue.stacklight-On {
   fill: @color_blue;
 }
-
 .stacklight-color-White.stacklight-On {
   fill: @color_white;
 }

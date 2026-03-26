@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// === IMPORTS ===
 @import "pulsewebcomponents-common.less";
 @import "pulse.customdialog.less";
-
 @import "x-datetimepicker/x-datetimepicker.less";
 
-
+// === CONTENT & HIDDEN CONTENT ===
 @button-icon-size : 24px; // Could be common
-
 x-datetimerange {
   .datetimerange {
     text-align: center;
@@ -125,11 +124,8 @@ x-datetimerange {
   /*end buttons*/
 
 }
-
 // x-datetimerange END
-
 /* DIALOG - NOT INCLUDED in x-datetimerange */
-
 .datetimerange-dialog-divinput {
   // MAIN dialog div
   padding: 10px; // NOT in global dialog
@@ -169,5 +165,4 @@ input[name=begin_dtp], input[name=end_dtp]{
     //opacity : 0.5;
   }
 }
-
 // DIALOG END

@@ -644,7 +644,7 @@ require('x-revisionprogress/x-revisionprogress');
 
             let reasonDetailsTitle = this.getTranslation('reasonDetailsTitle', 'Reason details');
 
-            this._detailsDialogId = pulseCustomDialog.initialize(dialogbox, {
+            this._detailsDialogId = pulseCustomDialog.openDialog(dialogbox, {
                 title: reasonDetailsTitle,
                 onOk: function (x_save, reasId, reasData, inputParam) { // to avoid closure
                     return function () {
@@ -652,7 +652,7 @@ require('x-revisionprogress/x-revisionprogress');
                         if ((details == '') && (detailsRequired)) {
                             // show error msg -- should never happen if button is disabled
                             let pleaseAddComment = x_save.getTranslation('errorNoDetails', 'Please add a comment');
-                            pulseCustomDialog.openError(pleaseAddComment);
+                            pulseCustomDialog.openDialog(pleaseAddComment, { type: 'Error' });
                         }
                         else {
                             x_save._saveReason(reasId, details, reasData);
@@ -669,7 +669,6 @@ require('x-revisionprogress/x-revisionprogress');
                 autoDelete: true,
                 helpName: 'savereason'
             });
-            pulseCustomDialog.open('#' + this._detailsDialogId);
 
             // - Enable / Disable the OK button
             if (detailsRequired) { // Disable validateButton
@@ -728,18 +727,18 @@ require('x-revisionprogress/x-revisionprogress');
                     }
                 }
             }
-            pulseCustomDialog.openError(errorMessage);
+            pulseCustomDialog.openDialog(errorMessage, { type: 'Error' });
             return;
         }
 
         /** Open a generic error dialog on transport failures */
         _saveFail(ajaxToken, url, isTimeout, xhrStatus) {
             if (isTimeout) {
-                pulseCustomDialog.openError('Timeout');
+                pulseCustomDialog.openDialog('Timeout', { type: 'Error' });
             }
             else {
                 let message = pulseService.getAjaxErrorMessage(xhrStatus);
-                pulseCustomDialog.openError(message);
+                pulseCustomDialog.openDialog(message, { type: 'Error' });
             }
         }
 

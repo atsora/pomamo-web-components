@@ -136,7 +136,7 @@ this.restoreDeleteWhenDisconnect ():
       let dtpDiv = $('<div></div>').addClass('setupmachine-dialog-dtp-div').append(dtp);
 
       //dialog.append(switchLabel).append(MST_CB).append(fromLabel).append(dtpDiv);
-      let saveDialogId = pulseCustomDialog.initialize(dialog, {
+      let saveDialogId = pulseCustomDialog.openDialog(dialog, {
         title: this.getTranslation('switchToproduction', 'Switch to production'),
         onOk: function () { // Validate
           let begin = $(dtp)[0].getISOValue();
@@ -159,8 +159,6 @@ this.restoreDeleteWhenDisconnect ():
       });
       // Append after
       dialog.append(switchLabel).append(MST_CB).append(fromLabel).append(dtpDiv);
-
-      pulseCustomDialog.open('#' + saveDialogId);
     }
 
     attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {

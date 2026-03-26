@@ -121,8 +121,7 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
       // Code here to display the error message
       // For example:
       $(this._content).html(message);
-      pulseCustomDialog.openError(message, 'Error',
-        this._close.bind(this));
+      pulseCustomDialog.openDialog(message, { type: 'Error', title: 'Error', onClose: this._close.bind(this) });
     }
     _close () {
       // Close popup

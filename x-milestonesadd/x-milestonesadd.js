@@ -99,13 +99,13 @@ require('x-datetimepicker/x-datetimepicker');
     _saveError (errorMessage) {
       let close = function () { // Do Nothing
       };
-      pulseCustomDialog.openError(errorMessage.ErrorMessage, 'Error', close);
+      pulseCustomDialog.openDialog(errorMessage.ErrorMessage, { type: 'Error', title: 'Error', onClose: close });
     }
 
     _saveFail (url, isTimeout, xhrStatus) {
       let close = function () { // Do Nothing
       };
-      pulseCustomDialog.openError('Error while saving', 'Error', close);
+      pulseCustomDialog.openDialog('Error while saving', { type: 'Error', title: 'Error', onClose: close });
     }
 
     initialize () {

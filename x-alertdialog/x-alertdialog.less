@@ -1,0 +1,47 @@
+/*
+ * Copyright (C) 2025 Atsora Solutions
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-alertdialog {
+  display: flex;
+  height: 100%;
+  padding: clamp(10px, calc(1vh + 0.6vw), 20px);
+  gap: clamp(12px, calc(1.4vh + 0.8vw), 24px);
+  box-sizing: border-box;
+
+  .alertdialog-icon {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    flex: 0 0 auto;
+    width: clamp(52px, calc(5vh + 3vw), 100px);
+    height: clamp(52px, calc(5vh + 3vw), 100px);
+  }
+
+  .alertdialog-icon.customDialogIconInformation {
+    .create_svg('dialog-information');
+  }
+
+  .alertdialog-icon.customDialogIconWarning {
+    .create_svg('dialog-warning');
+  }
+
+  .alertdialog-icon.customDialogIconError {
+    .create_svg('dialog-error');
+  }
+
+  .alertdialog-icon.customDialogIconQuestion {
+    .create_svg('dialog-question');
+  }
+
+  .alertdialog-message {
+    flex: 1 1 auto;
+    font-size: clamp(14px, calc(1.6vh + 0.7vw), 20px);
+    line-height: 1.35;
+    word-break: break-all;
+  }
+}

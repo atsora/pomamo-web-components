@@ -224,9 +224,6 @@ this.restoreDeleteWhenDisconnect ():
         .addClass('pulse-cellbar-first')
         .addClass('pulse-cellbar-current-data'); // Operation is added later
 
-      this._between = $('<div></div>')
-        .addClass('pulse-cellbar-between');
-
       // Next expiration
       /*let spanNextExp = $('<span></span>').addClass('toollifemachine-next-expiration-span');
       let divNextExp = $('<div></div>')
@@ -255,7 +252,7 @@ this.restoreDeleteWhenDisconnect ():
       // Main bar
       this._content = $('<div></div>')
         .addClass('pulse-cellbar-main') // was pulse-component-main
-        .append(this._operationDiv).append(this._between)
+        .append(this._operationDiv)
         .append(this._toolsDiv);
 
       $(this.element).append(this._content);
@@ -284,7 +281,6 @@ this.restoreDeleteWhenDisconnect ():
       $(this.element).empty();
 
       this._operationDiv = undefined;
-      this._between = undefined;
       this._toolsDiv = undefined;
       this._messageSpan = undefined;
       this._content = undefined;
@@ -488,7 +484,7 @@ this.restoreDeleteWhenDisconnect ():
               line.setAttribute('x1', '0');
               line.setAttribute('y1', '0');
               line.setAttribute('x2', '0');
-              line.setAttribute('y2', '45px');
+              line.setAttribute('y2', '45');
               line.setAttribute('class', 'toollife-separator-line');
               svg.appendChild(line);
               $(this._toolsDiv).append(svg);

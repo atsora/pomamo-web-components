@@ -693,7 +693,7 @@ require('x-datetimepicker/x-datetimepicker');
       // ADD BOUNDS
       this._setBeginEndBound();
 
-      this._settingsDialogId = pulseCustomDialog.initialize(divinput, {
+      this._settingsDialogId = pulseCustomDialog.openDialog(divinput, {
         title: isSplit ? this.getTranslation ('splitPeriod', 'Split a period') : this.getTranslation ('selectPeriod', 'Select a period'),
         onOk: function () {
           if (this._callback_validate_settings()) {
@@ -706,7 +706,6 @@ require('x-datetimepicker/x-datetimepicker');
         autoClose: false,
         autoDelete: true
       });
-      pulseCustomDialog.open('#' + this._settingsDialogId);
     }
 
     /**
@@ -748,11 +747,11 @@ require('x-datetimepicker/x-datetimepicker');
      */
     _callback_validate_settings () {
       if (!this._beginDTP[0].isValid()) {
-        pulseCustomDialog.openError(this.getTranslation('startNotValidError', 'Start date/time is not valid.'));
+        pulseCustomDialog.openDialog(this.getTranslation('startNotValidError', 'Start date/time is not valid.'), { type: 'Error' });
         return false;
       }
       if (!this._endDTP[0].isValid()) {
-        pulseCustomDialog.openError(this.getTranslation('endNotValidError', 'End date/time is not valid.'));
+        pulseCustomDialog.openDialog(this.getTranslation('endNotValidError', 'End date/time is not valid.'), { type: 'Error' });
         return false;
       }
 
@@ -765,7 +764,7 @@ require('x-datetimepicker/x-datetimepicker');
         this.element.getAttribute('min-begin') !== null) {
         let minBeginDate = new Date(this.element.getAttribute('min-begin'));
         if (beginDateTime < minBeginDate) {
-          pulseCustomDialog.openError(this.getTranslation('startBeforeMinError', 'Start date/time is before minimum allowed date/time'));
+          pulseCustomDialog.openDialog(this.getTranslation('startBeforeMinError', 'Start date/time is before minimum allowed date/time'), { type: 'Error' });
           return false;
         }
       }
@@ -773,7 +772,7 @@ require('x-datetimepicker/x-datetimepicker');
         this.element.getAttribute('max-begin') != null) {
         let maxBeginDate = new Date(this.element.getAttribute('max-begin'));
         if (beginDateTime > maxBeginDate) {
-          pulseCustomDialog.openError(this.getTranslation('startAfterMaxError', 'Start date/time is after maximum allowed date/time'));
+          pulseCustomDialog.openDialog(this.getTranslation('startAfterMaxError', 'Start date/time is after maximum allowed date/time'), { type: 'Error' });
           return false;
         }
       }
@@ -782,7 +781,7 @@ require('x-datetimepicker/x-datetimepicker');
         this.element.getAttribute('min-end') != null) {
         let minEndDate = new Date(this.element.getAttribute('min-end'));
         if ((endDateTime) && (endDateTime < minEndDate)) {
-          pulseCustomDialog.openError(this.getTranslation('endBeforeMinError', 'End date/time is before minimum allowed date/time'));
+          pulseCustomDialog.openDialog(this.getTranslation('endBeforeMinError', 'End date/time is before minimum allowed date/time'), { type: 'Error' });
           return false;
         }
       }
@@ -790,7 +789,7 @@ require('x-datetimepicker/x-datetimepicker');
         this.element.getAttribute('max-end') != null) {
         let maxEndDate = new Date(this.element.getAttribute('max-end'));
         if ((endDateTime) && (endDateTime > maxEndDate)) {
-          pulseCustomDialog.openError(this.getTranslation('endAfterMaxError', 'End date/time is after maximum allowed date/time'));
+          pulseCustomDialog.openDialog(this.getTranslation('endAfterMaxError', 'End date/time is after maximum allowed date/time'), { type: 'Error' });
           return false;
         }
       }
@@ -798,7 +797,7 @@ require('x-datetimepicker/x-datetimepicker');
       // Check the range
       if (endDateTime) {
         if (endDateTime < beginDateTime) {
-          pulseCustomDialog.openError(this.getTranslation('endBeforeStartError', 'End date/time is before start date/time'));
+          pulseCustomDialog.openDialog(this.getTranslation('endBeforeStartError', 'End date/time is before start date/time'), { type: 'Error' });
           return false;
         }
         else {
@@ -806,7 +805,7 @@ require('x-datetimepicker/x-datetimepicker');
             // Do nothing = it is OK
           }
           else {
-            pulseCustomDialog.openError(this.getTranslation ('emptyPeriodError', 'Empty period'));
+            pulseCustomDialog.openDialog(this.getTranslation ('emptyPeriodError', 'Empty period'), { type: 'Error' });
             return false;
           }
         }

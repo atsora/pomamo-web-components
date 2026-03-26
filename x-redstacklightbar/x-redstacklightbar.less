@@ -4,9 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// === IMPORTS ===
 @import "pulsewebcomponents-common.less";
 @import "pulsecomponent-detailspopup.less";
 
+// === CONTENT & HIDDEN CONTENT ===
 x-redstacklightbar { /* To make is(':visible') works */ 
   display: block;
   
@@ -25,6 +27,8 @@ x-redstacklightbar { /* To make is(':visible') works */
   .redstacklightbar-content{
     position: relative;
     pointer-events: none; // Disable click on this bar - forward to reasonbar
+    display: flex;
+    align-items: center;
   }
 
   .redstacklightbar-svg {

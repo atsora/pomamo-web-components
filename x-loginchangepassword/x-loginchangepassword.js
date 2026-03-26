@@ -127,12 +127,14 @@ var pulseCustomDialog = require('pulseCustomDialog');
       pulseLogin.cleanLoginRole();
 
       // Display splash screen
-      this._infoDialog = pulseCustomDialog.openInfo(
+      this._infoDialog = pulseCustomDialog.openDialog(
         'Your password has been changed, please reconnect ! ',
-        'Change password success',
-        function () { // close
-          // Go to login page
-          pulseConfig.goToPageLogin();
+        { type: 'Information',
+          title: 'Change password success',
+          onClose: function () { // close
+            // Go to login page
+            pulseConfig.goToPageLogin();
+          }
         });
 
       // Close 

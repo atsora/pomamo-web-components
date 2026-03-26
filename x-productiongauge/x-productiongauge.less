@@ -4,38 +4,73 @@
  */
 
 x-productiongauge {
-  display: inline-block;
-  vertical-align: top;
+  display: flex;
+  width: 100%;
+  height: 100%;
+
+  /* Sécurités maximales */
+  min-width: 0;
+  min-height: 0;
 }
 
 .productiongauge-content {
-  height: 100%;
+  flex: 1 1 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  /* 1. LE SECRET EST ICI : Créer le référentiel pour la position absolue de l'enfant */
+  position: relative;
 }
 
 .productiongauge-gauge {
-  flex: 1;
+  flex: 1 1 100%; /* Force la jauge à prendre tout l'espace de .productiongauge-content */
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
 }
 
 .productiongauge-svg {
+  /* Le SVG ignore sa propre taille et se moule STRICTEMENT à la case parent */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   max-width: 100%;
   max-height: 100%;
-  width: auto;
-  height: auto;
 }
 
 .productiongauge-text {
-  font-size: 30px;
+  /* 2. LE TEXTE SORT DU FLUX ET SE SUPERPOSE */
+  position: absolute;
+  left: 0;
+  right: 0;
+
+  /* Ajuste ce % pour monter ou descendre le texte dans la jauge.
+     Généralement entre 10% et 20% pour une jauge semi-circulaire */
+  bottom: 5%;
+
+  margin-top: 0; /* On retire la bidouille d'avant */
+  z-index: 2; /* S'assure qu'il passe au-dessus du SVG */
+
+  /* Laisse passer les clics à travers le texte si jamais la jauge est cliquable */
+  pointer-events: none;
+
+  font-size: 30px; /* Sera surclassé par ton clamp() dans oeeview.less */
   font-weight: bold;
   text-align: center;
-  margin-top: -18px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,16 +97,4 @@ x-productiongauge {
 
 .productiongauge-svg .needle {
   fill: @color_needle;
-}
-
-/* Responsive sizing */
-@media (max-width: 1000px) {
-  x-productiongauge {
-    width: 120px;
-    height: 110px;
-  }
-
-  .productiongauge-text {
-    font-size: 14px;
-  }
 }

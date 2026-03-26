@@ -208,7 +208,7 @@ require('x-freetext/x-freetext');
 
       if (undefined == this._dialogId)
         return;
-      pulseCustomDialog.open(this._dialogPage1, this._dialogId);
+      pulseCustomDialog.openDialog(this._dialogPage1);
     }
 
     _createDialogIfNotDone() {
@@ -330,7 +330,7 @@ require('x-freetext/x-freetext');
       this._fillCategoryList();
 
       // Create a dialog
-      this._dialogId = pulseCustomDialog.initialize(this._dialogPage1, {
+      this._dialogId = pulseCustomDialog.openDialog(this._dialogPage1, {
         title: this._uniquemachine ? this.getTranslation('selectMachine', 'Select a machine') : this.getTranslation('selectMachines', 'Select machines'),
         autoClose: false,
         className: 'machineselection', // Indispensable pour notre CSS
@@ -340,17 +340,19 @@ require('x-freetext/x-freetext');
         onOk: function () {
           if (this._useMachineSelection) {
             if (this._machineSelectionArray.length == 0) {
-              pulseCustomDialog.openError(
+              pulseCustomDialog.openDialog(
                 this._uniquemachine
                   ? this.getTranslation('errorMissingUnique', 'Please select one machine')
-                  : this.getTranslation('errorMissing', 'Please select at least one machine'));
+                  : this.getTranslation('errorMissing', 'Please select at least one machine'),
+                { type: 'Error' });
               return;
             }
           }
           else {
             if (this._groupSelectionArray.length == 0) {
-              pulseCustomDialog.openError(
-                this.getTranslation('errorMissingGroup', 'Please select at least one group'));
+              pulseCustomDialog.openDialog(
+                this.getTranslation('errorMissingGroup', 'Please select at least one group'),
+                { type: 'Error' });
               return;
             }
             if ($(this._previewList).find('.no-machines').length > 0) {
@@ -364,8 +366,9 @@ require('x-freetext/x-freetext');
                 }
               }
               if (staticOnly) {
-                pulseCustomDialog.openError(
-                  this.getTranslation('errorMissingMachineInGroup', 'Please select groups including at least one machine.'));
+                pulseCustomDialog.openDialog(
+                  this.getTranslation('errorMissingMachineInGroup', 'Please select groups including at least one machine.'),
+                  { type: 'Error' });
                 return;
               }
             }
@@ -395,7 +398,7 @@ require('x-freetext/x-freetext');
 
       if (this._machinesListContainer == undefined)
         return;
-      this._previewHeader.hide();
+      this._previewHeader.css('display', 'none');
       this._previewListContainer.hide();
 
       this._selectionTitle.html(this.getTranslation('selectedMachines', 'Selected machines'));
@@ -420,7 +423,7 @@ require('x-freetext/x-freetext');
 
       if (this._machinesListContainer == undefined)
         return;
-      this._previewHeader.show();
+      this._previewHeader.css('display', 'flex');
       this._previewListContainer.show();
 
       this._selectionTitle.html(this.getTranslation('selectedGroups', 'Selected groups'));
@@ -782,8 +785,9 @@ require('x-freetext/x-freetext');
     }
 
     _fillMachinePreview() {
+      if (!this._previewList) return;
       this._previewList.empty();
-      this._freeTextLastUpdate[0].cleanDisplay();
+      this._freeTextLastUpdate?.[0]?.cleanDisplay?.();
 
       if (false == this._useMachineSelection) {
         if (this._groupSelectionArray.length > 0) {
@@ -1155,7 +1159,7 @@ require('x-freetext/x-freetext');
             if (andOpen == true) {
               $(selectedCategory[iCat]).parents('.machineselection-category')
                 .find('.machineselection-category-content').show();
-              $(selectedCategory[iCat]).parents('closed')
+              $(selectedCategory[iCat]).parents('.closed')
                 .addClass('opened').removeClass('closed');
             }
           }

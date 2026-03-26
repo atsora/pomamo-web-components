@@ -303,25 +303,6 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
       let rangeStrings = ranges.map(range => range.toString(d => d.toISOString()));
       let rangeString = rangeStrings[0];
       let dialog = $('<div></div>').addClass('dialog-stopclassification');
-      let stopClassificationDialogId = pulseCustomDialog.initialize(dialog, {
-        title: this.getTranslation('stopclassification.title', 'Unplanned stops'),
-        onClose: function () {
-          $('.popup-block').fadeOut();
-          this.removeAllSelections();
-          let highlightBar = $(this.element).find('x-highlightperiodsbar');
-          if (highlightBar.length) {
-            highlightBar.get(0).cleanRanges();
-          }
-        }.bind(this),
-        autoClose: false,
-        autoDelete: true,
-        okButton: 'hidden',
-        cancelButton: 'hidden',
-        fullScreenOnSmartphone: true,
-        bigSize: true,
-        helpName: 'savereason',
-        className: 'stopclassification'
-      });
 
       let machid = $(this.element).attr('machine-id');
       let fullRangeString = this.range ? this.range.toString(d => d.toISOString()) : rangeString;
@@ -340,7 +321,25 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
         xstopclassification[0].hideAdvancedOptions(true);
       }
 
-      pulseCustomDialog.open('#' + stopClassificationDialogId);
+      pulseCustomDialog.openDialog(dialog, {
+        title: this.getTranslation('stopclassification.title', 'Unplanned stops'),
+        onClose: function () {
+          $('.popup-block').fadeOut();
+          this.removeAllSelections();
+          let highlightBar = $(this.element).find('x-highlightperiodsbar');
+          if (highlightBar.length) {
+            highlightBar.get(0).cleanRanges();
+          }
+        }.bind(this),
+        autoClose: false,
+        autoDelete: true,
+        okButton: 'hidden',
+        cancelButton: 'hidden',
+        fullScreenOnSmartphone: true,
+        bigSize: true,
+        helpName: 'savereason',
+        className: 'stopclassification'
+      });
     }
 
     getShortUrl() {
@@ -612,25 +611,6 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
       if ($('.dialog-stopclassification').length > 0) { return; }
 
       let dialog = $('<div></div>').addClass('dialog-stopclassification');
-      let stopClassificationDialogId = pulseCustomDialog.initialize(dialog, {
-        title: this.getTranslation('stopclassification.title', 'Unplanned stops'),
-        onClose: function () {
-          $('.popup-block').fadeOut();
-          this.removeAllSelections();
-          let highlightBar = $(this.element).find('x-highlightperiodsbar');
-          if (highlightBar.length) {
-            highlightBar.get(0).cleanRanges();
-          }
-        }.bind(this),
-        autoClose: false,
-        autoDelete: true,
-        okButton: 'hidden',
-        cancelButton: 'hidden',
-        fullScreenOnSmartphone: true,
-        bigSize: true,
-        helpName: 'savereason',
-        className: 'stopclassification'
-      });
 
       let machid = $(this.element).attr('machine-id');
       let fullRangeString = this.range ? this.range.toString(d => d.toISOString()) : rangeString;
@@ -650,7 +630,25 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
         xstopclassification[0].hideAdvancedOptions(true);
       }
 
-      pulseCustomDialog.open('#' + stopClassificationDialogId);
+      pulseCustomDialog.openDialog(dialog, {
+        title: this.getTranslation('stopclassification.title', 'Unplanned stops'),
+        onClose: function () {
+          $('.popup-block').fadeOut();
+          this.removeAllSelections();
+          let highlightBar = $(this.element).find('x-highlightperiodsbar');
+          if (highlightBar.length) {
+            highlightBar.get(0).cleanRanges();
+          }
+        }.bind(this),
+        autoClose: false,
+        autoDelete: true,
+        okButton: 'hidden',
+        cancelButton: 'hidden',
+        fullScreenOnSmartphone: true,
+        bigSize: true,
+        helpName: 'savereason',
+        className: 'stopclassification'
+      });
     }
     _openUnansweredReasonsDialog() {
       let machid = $(this.element).attr('machine-id');
@@ -661,7 +659,16 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
       }
 
       let dialog = $('<div></div>').addClass('dialog-unansweredreasonslotlist');
-      let unansweredDialogId = pulseCustomDialog.initialize(dialog, {
+
+      let rangeString = this.range ? this.range.toString(d => d.toISOString()) : '';
+
+      let xunansweredreasonslotlist = pulseUtility.createjQueryElementWithAttribute('x-unansweredreasonslotlist', {
+        'machine-id': machid,
+        'range': rangeString
+      });
+      dialog.append(xunansweredreasonslotlist);
+
+      let unansweredDialogId = pulseCustomDialog.openDialog(dialog, {
         title: this.getTranslation('seeUnansweredOnly', 'Unanswered only'),
         onClose: function () {
           $('.popup-block').fadeOut();
@@ -674,16 +681,6 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
         bigSize: true,
         helpName: 'savereason'
       });
-
-      let rangeString = this.range ? this.range.toString(d => d.toISOString()) : '';
-
-      let xunansweredreasonslotlist = pulseUtility.createjQueryElementWithAttribute('x-unansweredreasonslotlist', {
-        'machine-id': machid,
-        'range': rangeString
-      });
-      dialog.append(xunansweredreasonslotlist);
-
-      pulseCustomDialog.open('#' + unansweredDialogId);
 
       let xMachine = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
         'machine-id': machid
