@@ -562,9 +562,9 @@ x-machineselection {
             .reorderUpButton,
             .reorderDownButton,
             .reorderButton {
-              float: left;
               background-position: center;
               background-repeat: no-repeat;
+              flex-shrink: 0;
             }
 
             .reorderUpButton {
@@ -588,10 +588,10 @@ x-machineselection {
             .reorderButton {
               background-image: url('@{imagedir}/machineselection-reorder.png');
               display: inline-block;
-              width: 4px;
+              width: 14px;
               height: 14px;
               cursor: grab;
-              margin: 2px 8px 2px 5px;
+              margin: 2px 4px;
             }
 
             .selection-display {
@@ -766,6 +766,41 @@ x-machineselection {
 
   .reorderButton {
     display: none !important;
+  }
+
+  .machineselection-machine-label,
+  .machineselection-group-label {
+    display: none !important;
+  }
+
+  .machineselection-machines-list-container .machineselection-machines-list {
+    gap: 4px;
+
+    .machines-div {
+      margin: 0;
+      width: 100%;
+      min-width: unset;
+    }
+  }
+
+  .machineselection-selection-list-container {
+    padding-left: 2.5% !important;
+    padding-right: 2.5% !important;
+  }
+
+  .selection-position {
+    justify-content: flex-start !important;
+    gap: 4px;
+
+    .selection-left-side {
+      flex: 1 1 auto !important;
+      min-width: 0;
+    }
+
+    .selection-right-side {
+      flex: 0 0 auto !important;
+      margin-left: auto;
+    }
   }
 
   .machineselection-page1 .machineselection-switch-group-machines button {

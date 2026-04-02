@@ -52,7 +52,7 @@ x-periodtoolbar {
     display: flex;
     flex-wrap: wrap;
     overflow: hidden;
-    height: 36px;
+    height: calc(@button-icon-size + 12px); // one row
   }
 
   .content-zoom-buttons {
@@ -197,3 +197,5 @@ x-periodtoolbar {
     .create_svg_nostroke('periodtoolbar-1yearzoom', @box_text_color, @color_background_alternate);
   }
 }
+
+

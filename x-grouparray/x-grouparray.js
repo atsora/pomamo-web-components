@@ -273,11 +273,7 @@ var eventBus = require('eventBus');
         if (this._nbPagesTotal > 1) {
           let rotationDelay = Number(this.getConfigOrAttribute('rotation', '90'));
 
-          // Display pagination and progress line
-          $('.pulse-header-rotation-progress').html('<span style="width:0"></span>'); // Initialisation a 0px line
-          $('.pulse-header-rotation-progress > span').animate({
-            width: '100%'
-          }, rotationDelay * 1000, 'linear'); // Increase its width until 100%
+          // Display pagination
           $('#pulse-pagination').html((this._currentDisplayedPage) + ' / ' + this._nbPagesTotal);
 
           // Prepare next page rotation
@@ -291,7 +287,6 @@ var eventBus = require('eventBus');
         }
         else { // 1 page only
           // Reset rotation
-          $('.pulse-header-rotation-progress').html('');
           $('#pulse-pagination').html('');
         }
       }
