@@ -11,15 +11,23 @@ var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-motionpercentage> to display % utilization. This tag gets following attributes :
- *  motion-context : String (to get % directly)
- *  machine-id : complete motion-context when using x-grouparray
- *  machine-context : to change machine-id
- *
- */
 (function () {
 
+  /**
+   * `<x-motionpercentage>` — displays the utilization percentage driven by the event bus.
+   *
+   * No REST requests — purely event-driven.
+   * Listens to `motionChangeEvent` on `motion-context[_machine-id]` to update `_motionpercentage`.
+   * Also listens to `machineIdChangeSignal` on `machine-context` to track dynamic machine selection.
+   * Renders `X%` (rounded to 0 decimals), or empty string if no value.
+   *
+   * Attributes:
+   *   motion-context  - (required) event bus context key for motion data
+   *   machine-id      - (optional) appended to motion-context as suffix (`_<id>`)
+   *   machine-context - (optional) event bus context for machine selection changes
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class MotionPercentageComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
@@ -41,6 +49,9 @@ var eventBus = require('eventBus');
 
     //get content () { return this._content; }
 
+    /**
+     * Updates the text span with the current percentage, or clears it if undefined.
+     */
     _display () {
       let display = '';
       if (pulseUtility.isNumeric(this._motionpercentage) == true) {
@@ -163,12 +174,20 @@ var eventBus = require('eventBus');
       this.switchToNextContext();
     }
 
-    // Callback events
+    /**
+     * Event callback when the selected machine changes: updates `machine-id` attribute.
+     *
+     * @param {{ target: { newMachineId: number } }} event
+     */
     onMachineIdChange (event) {
       this.element.setAttribute('machine-id', event.target.newMachineId);
     }
 
-    // Callback events
+    /**
+     * Event callback when motion data changes: stores `MotionPercent * 100` and updates the display.
+     *
+     * @param {{ target: { MotionPercent?: number } }} event
+     */
     onMotionChange (event) {
       if (!pulseUtility.isNotDefined(event.target.MotionPercent)) {
         this._motionpercentage = Number(event.target.MotionPercent * 100);

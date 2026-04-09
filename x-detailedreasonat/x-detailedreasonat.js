@@ -20,6 +20,22 @@ require('x-reasonsubdetails/x-reasonsubdetails');
 
 (function () {
 
+  /**
+   * `<x-detailedreasonat>` — detail panel showing the reason slot (stop classification) at a given time.
+   *
+   * Fetches `ReasonAt/Get?MachineId=<id>&At=<when>` once per `when` value.
+   * Renders the reason color, description, details, and optional sub-details button (via `x-reasonsubdetails`).
+   * In editable roles, shows stop-classification and work-information edit buttons via `pulseDetailsPopup`.
+   * Listens to `dateTimeChangeEvent` and `machineIdChangeSignal` to update attributes.
+   *
+   * Attributes:
+   *   machine-id       - (required) integer machine id
+   *   when             - (required) ISO datetime string
+   *   datetime-context - event bus context for `dateTimeChangeEvent`
+   *   machine-context  - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class DetailedReasonAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

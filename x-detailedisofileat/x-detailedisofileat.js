@@ -15,6 +15,20 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-detailedisofileat>` — detail panel showing the ISO file (NC program) slot at a given time.
+   *
+   * Fetches `IsoFileSlots?MachineId=<id>&Range=<single-point-range>` once per `when` value.
+   * Listens to `dateTimeChangeEvent` and `machineIdChangeSignal` to update attributes.
+   *
+   * Attributes:
+   *   machine-id       - (required) integer machine id
+   *   when             - (required) ISO datetime string
+   *   datetime-context - event bus context for `dateTimeChangeEvent`
+   *   machine-context  - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class DetailedIsoFileAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

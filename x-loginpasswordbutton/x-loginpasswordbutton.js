@@ -17,31 +17,34 @@ var pulseSvg = require('pulseSvg');
 require('x-loginpassword/x-loginpassword');
 
 /**
- * Build a custom tag <x-loginpasswordbutton> with no attribute
+ * Build a custom tag <x-loginpasswordbutton> — button that opens the login-with-password dialog.
+ *
+ * No observed attributes. Renders a button that, when clicked, opens an `x-loginpassword`
+ * component inside a `pulseCustomDialog` (small, full-screen on smartphone, auto-close).
  */
 (function () {
 
+  /**
+   * `<x-loginpasswordbutton>` — button that opens the user/password login dialog.
+   *
+   * @extends pulseComponent.PulseInitializedComponent
+   */
   class LoginPasswordButtonComponent extends pulseComponent.PulseInitializedComponent {
     /**
-     * Constructor
-     * 
-     * @param  {...any} args 
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
       return self;
     }
 
-    //get content () { return this._content; }
-
     attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
-      switch (attr) {
-        default:
-          break;
-      }
     }
 
+    /**
+     * Binds the click handler on `_loginButton` to call `_openDialog`.
+     */
     _defineClickButtons () {
       this._loginButton.click(
         function () {
@@ -49,6 +52,10 @@ require('x-loginpassword/x-loginpassword');
         }.bind(this));
     }
 
+    /**
+     * Opens a small `pulseCustomDialog` containing an `<x-loginpassword>` component.
+     * Dialog is configured with no OK/cancel buttons, auto-close, and full-screen on smartphone.
+     */
     _openDialog () {
       let chgePass = pulseUtility.createjQueryElementWithAttribute('x-loginpassword', {});
 

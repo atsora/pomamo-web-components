@@ -15,6 +15,18 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-detailedshiftat>` — detail panel showing the shift information at a given point in time.
+   *
+   * Fetches `GetRangeAround?Around=<when>&RangeType=shift&RangeSize=1` once per `when` value.
+   * Listens to `dateTimeChangeEvent` to update the `when` attribute dynamically.
+   *
+   * Attributes:
+   *   when             - (required) ISO datetime string
+   *   datetime-context - event bus context for `dateTimeChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class DetailedShiftAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

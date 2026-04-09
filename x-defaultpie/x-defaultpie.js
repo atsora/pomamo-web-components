@@ -19,6 +19,24 @@ require('x-reasonslotpie/x-reasonslotpie');
 
 (function () {
 
+  /**
+   * `<x-defaultpie>` — adaptive pie dispatcher: renders the correct pie component based on server config.
+   *
+   * Polls `Machine/Pie?GroupId=<group-or-machine-id>`. The response `data.PieType` determines which
+   * sub-component to instantiate (`x-<PieType>`). Supported types:
+   *   - `cycleprogresspie`, `operationprogresspie`, `partproductionstatuspie`, `reasonslotpie`
+   *
+   * When `data.Permanent` is true, transitions to `Loaded` (StaticState) to stop polling.
+   * Passes `machine-id` and `textchange-context` attributes to the created sub-component.
+   *
+   * Attributes:
+   *   machine-id        - integer machine id (takes priority over group)
+   *   group             - group id (used if machine-id absent)
+   *   machine-context   - (optional) event bus context for machine selection changes
+   *   textchange-context - (optional) forwarded to the sub-component
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class DefaultPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -162,12 +180,21 @@ require('x-reasonslotpie/x-reasonslotpie');
       this.displayError('');
     }
 
+    /**
+     * Refresh interval: `currentRefreshSeconds` config * 1000 (default 10 s).
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate () {
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
+    /**
+     * REST endpoint: `Machine/Pie?GroupId=<group-or-machine-id>`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
-      // Return the Web Service URL here without path
       let url = 'Machine/Pie?GroupId=';
       if (this.element.hasAttribute('group')) {
         url += this.element.getAttribute('group');
@@ -180,6 +207,13 @@ require('x-reasonslotpie/x-reasonslotpie');
       return url;
     }
 
+    /**
+     * Instantiates the correct sub-component based on `data.PieType`.
+     * Clears any previously created sub-component before creating the new one.
+     * No-ops if `PieType` is undefined or `machine-id` is absent.
+     *
+     * @param {{ PieType?: string, Permanent: boolean }} data
+     */
     refresh (data) {
       if (pulseUtility.isNotDefined(data.PieType)) {
         // Clean any present xtag
@@ -221,6 +255,12 @@ require('x-reasonslotpie/x-reasonslotpie');
       }
     }
 
+    /**
+     * If `data.Permanent`, renders once and switches to `Loaded` (static) to stop polling.
+     * Otherwise delegates to the base class which calls `refresh(data)` and continues polling.
+     *
+     * @param {*} data
+     */
     manageSuccess (data) {
       if (data.Permanent) {
         this.refresh(data);

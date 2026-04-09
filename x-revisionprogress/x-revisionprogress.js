@@ -13,21 +13,28 @@ var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 var pulseUtility = require('pulseUtility');
 
-/**
- * Build a custom tag <x-revisionprogress> with attributes:
- *  range (optional) : total range of the bar. If not defined, use 100% width.
- *  period-context (optional) : to modify previous range
- *  revision-id: revision of the modified data
- *  kind: kind of the modified data
- *  revision-range: range of the modified data
- * and, for tests only :
- *  steps: for tests AND creation "not from 0%"
- *  remaining: for tests AND creation "not from 0%"
- */
 (function () {
 
   var revisionProgressMaxId = 0; // Global variable to generate unique id
 
+  /**
+   * `<x-revisionprogress>` — animated progress bar tracking a pending REST modification revision.
+   *
+   * Renders a horizontal bar that fills as the server processes a revision (e.g. after saving a reason
+   * or a machine state template). Used by `x-lastmachinestatetemplate`, `x-setupmachine`, etc.
+   * Polls the revision status via `x-modificationmanager` and updates the bar width accordingly.
+   *
+   * Attributes:
+   *   range          - (optional) ISO date range string for the total bar width; defaults to 100%
+   *   period-context - (optional) event bus context for `dateTimeRangeChangeEvent` to resize the bar
+   *   revision-id    - revision id of the pending modification
+   *   kind           - kind of the modified data (e.g. `'reason'`, `'serialnumber'`)
+   *   revision-range - date range of the modified data
+   *   steps          - (optional, for tests) initial steps value
+   *   remaining      - (optional, for tests) initial remaining value
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class RevisionProgressComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor

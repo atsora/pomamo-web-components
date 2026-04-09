@@ -19,6 +19,20 @@ require('x-datetimerange/x-datetimerange');
 
 (function () {
 
+  /**
+   * `<x-savereason>` — form widget for assigning a stop reason to a machine time slot.
+   *
+   * Fetches available reasons from `ReasonSelection/Post?MachineId=<id>&Range=<range>` once.
+   * Renders a categorized reason list with a confirm button; on confirm POSTs the reason assignment.
+   * Shows machine name via `x-machinedisplay` and the slot range via `x-datetimerange`.
+   * Integrates with `pulseLogin` to check operator permissions.
+   *
+   * Attributes:
+   *   machine-id - (required) integer machine id
+   *   range      - ISO date range string for the slot to classify
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class SaveReasonComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

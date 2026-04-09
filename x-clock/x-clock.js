@@ -10,13 +10,21 @@
 var pulseComponent = require('pulsecomponent');
 
 
-/**
- * Build a custom tag <x-clock> to display an clock component. This tag gets following attribute : 
-*  display-seconds : Boolean
-*  display-date : Boolean
- */
 (function () {
 
+  /**
+   * `<x-clock>` — live clock displaying local time (and optionally the date).
+   *
+   * No REST requests — uses a self-rescheduling `setTimeout` loop via `_startTime()`.
+   * Format adapts to locale: 24h for `fr`/`de`, 12h otherwise.
+   * Resyncs on the exact second boundary to avoid drift.
+   *
+   * Attributes:
+   *   display-seconds - `'true'` to show HH:mm:ss; default HH:mm (or 12h equivalents)
+   *   display-date    - `'true'` to show full date (dddd DD/MM/YYYY or MM/DD/YYYY for `en`) instead of time
+   *
+   * @extends pulseComponent.PulseInitializedComponent
+   */
   class ClockComponent extends pulseComponent.PulseInitializedComponent {
     /**
      * Constructor
@@ -58,6 +66,9 @@ var pulseComponent = require('pulsecomponent');
       return locale === 'fr' || locale === 'de' || locale.startsWith('fr-') || locale.startsWith('de-');
     }
 
+    /**
+     * Builds the DOM: `<div.clock-div>` containing `<div.clock-text>`, then starts the timer loop.
+     */
     initialize() {
       this.addClass('pulse-text');
 
@@ -93,6 +104,10 @@ var pulseComponent = require('pulsecomponent');
       super.clearInitialization();
     }
 
+    /**
+     * Formats and renders the current time (or date) into `.clock-text`, then reschedules itself.
+     * Waits until the next second boundary; if seconds are hidden, waits until the next minute boundary.
+     */
     _startTime() {
       let now = moment();
       let stringToDisplay = '';

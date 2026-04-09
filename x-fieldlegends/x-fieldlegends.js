@@ -14,6 +14,21 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-fieldlegends>` — legend panel for CNC value fields.
+   *
+   * Fetches `CncValueLegend/Get?MachineIds=<ids>` once on init.
+   * Renders one legend group per `data.Items` entry: field title + colored square SVGs + labels.
+   * Appends 4 filler divs for flexbox alignment and triggers `.legend-content` resize.
+   * Listens to `groupIsReloaded` globally to update `machine-ids` when the machine list changes.
+   * `isVisible` always returns `true`.
+   *
+   * Attributes:
+   *   machine-id  - single machine id (used if machine-ids absent)
+   *   machine-ids - comma-separated machine id list (takes priority)
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class fieldlegendsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
@@ -121,7 +136,12 @@ var eventBus = require('eventBus');
       return true;
     }
 
-    getShortUrl () { // Return the Web Service URL here without path
+    /**
+     * REST endpoint: `CncValueLegend/Get?MachineIds=<ids>` (supports single or multi machine).
+     *
+     * @returns {string} Short URL without base path.
+     */
+    getShortUrl () {
       if (this.element.hasAttribute('machine-ids') &&
         (!pulseUtility.isNotDefined(this.element.getAttribute('machine-ids')))) {
         return 'CncValueLegend/Get?MachineIds=' + this.element.getAttribute('machine-ids');
@@ -133,6 +153,13 @@ var eventBus = require('eventBus');
       return '';
     }
 
+    /**
+     * Renders one legend group per item in `data.Items`.
+     * Each group: field title + colored square SVGs + labels + 4 filler alignment divs.
+     * Triggers `.legend-content` resize after each group.
+     *
+     * @param {{ Items: Array<{ Field: { Display: string }, Legends: Array<{ Color: string, Display: string }> }> }} data
+     */
     refresh (data) {
       $(this._content).empty();
 

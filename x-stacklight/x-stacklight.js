@@ -30,6 +30,20 @@ function hexToRGB(hex)
 
 (function () {
 
+  /**
+   * `<x-stacklight>` — renders an SVG stacklight tower for a machine.
+   *
+   * Polls `CncValue/Current?FieldIds=126&MachineId=<id>` (field 126 = stacklight).
+   * `manageSuccess()` checks data staleness against `maximumElapsedTimeCurrentCncvalue`;
+   * stale data shows 'N/A' via `NotAvailable`. Fresh data is passed to `refresh(data)`.
+   * `refresh(data)` draws an SVG tower: top ellipse + one path per light slice,
+   * each styled with `stacklight-<status>` and `stacklight-color-<Color>` CSS classes.
+   *
+   * Attributes:
+   *   machine-id - (required) integer machine id; restart triggered on change
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class StacklightComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -135,10 +149,20 @@ function hexToRGB(hex)
       // Do nothing
     }
 
+    /**
+     * Refresh interval: `currentRefreshSeconds` config * 1000 (default 10 s).
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate () {
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
+    /**
+     * REST endpoint: `CncValue/Current?FieldIds=126&MachineId=<id>` (field 126 = stacklight).
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
       let url = 'CncValue/Current?FieldIds=126&MachineId='
         + this.element.getAttribute('machine-id');
@@ -146,6 +170,13 @@ function hexToRGB(hex)
       return url;
     }
 
+    /**
+     * Renders the SVG stacklight tower from `data.ByMachineModule[0].ByField[0].Value.Lights`.
+     * Each light: an SVG `<path>` slice with status/color CSS classes.
+     * Removes any existing `.stacklight-svg` before drawing.
+     *
+     * @param {{ ByMachineModule: Array<{ ByField: Array<{ Value: { Lights: Array<{ Status: string, Color: string }> } }> }> }} data
+     */
     refresh (data) {
       $(this._content).find('.stacklight-svg').remove(); // Remove Old SVG
 

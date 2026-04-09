@@ -27,6 +27,27 @@ require('x-stopclassification/x-stopclassification');
 
 (function () {
 
+  /**
+   * `<x-lastmachinestatus>` — bar-style display of the current and past machine reason status.
+   *
+   * Polls `GetLastMachineStatusV2?RequiredNumber=False&Id=<id>[&Begin=<date>][&Cache=No]`.
+   * Renders a cell-bar layout: current reason cell + past data cell.
+   * Integrates with `x-modificationmanager` and `x-revisionprogress` for pending reason modifications.
+   *
+   * `refresh(data)`: updates reason text/color, missing flags, dispatches `reasonStatusChange`.
+   * Clicking current: opens stop-classification or reason-slot-list dialog depending on
+   *   `lastmachinestatus` config (`'reasonslotlist'` or default `'stopclassification'`).
+   * Clicking past: opens a reason history dialog via `pulseDetailsPopup`.
+   * `onDateTimeRangeChange` updates `_beginDate` and restarts the component.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   period-context  - (optional) event bus context for `dateTimeRangeChangeEvent`
+   *   machine-context - (optional) event bus context for machine selection changes
+   *   status-context  - (optional) event bus context to dispatch `reasonStatusChange`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class LastMachineStatusComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -274,10 +295,21 @@ require('x-stopclassification/x-stopclassification');
       $(this._messageSpan).html('');
     }
 
+    /**
+     * Refresh interval: `currentRefreshSeconds` config * 1000 (default 10 s).
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate() {
       return 1000 * (Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10)));
     }
 
+    /**
+     * REST endpoint: `GetLastMachineStatusV2?RequiredNumber=False&Id=<id>[&Begin=<date>][&Cache=No]`.
+     * Appends `Cache=No` when a forced reload is needed (after a modification completes).
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl() {
       let url = 'GetLastMachineStatusV2?RequiredNumber=False&Id=' + this.element.getAttribute('machine-id');
       if (!pulseUtility.isNotDefined(this._beginDate)) {
@@ -290,6 +322,12 @@ require('x-stopclassification/x-stopclassification');
       return url;
     }
 
+    /**
+     * Updates the reason display: handles `ReasonTooOld`, `OverwriteRequired`, and `RequiredReason` flags.
+     * Dispatches `reasonStatusChange` and `reasonStatusCurrentChange` to `status-context`.
+     *
+     * @param {{ MachineStatus: object, RequiredReason: boolean, ReasonTooOld: boolean }} data
+     */
     refresh(data) {
       this._reasonText = data.MachineStatus.ReasonSlot.Reason.Text;
       this._reasonColor = data.MachineStatus.ReasonSlot.Reason.Color;

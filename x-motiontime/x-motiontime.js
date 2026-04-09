@@ -11,15 +11,23 @@ var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-motiontime> to display an utilization bar component. This tag gets following attribute :
- *  motion-context : String (to get time directly)
- *  machine-id : complete motion-context when using x-grouparray
- *  machine-context : to change machine-id
- *
- */
 (function () {
 
+  /**
+   * `<x-motiontime>` — displays the motion duration driven by the event bus.
+   *
+   * No REST requests — purely event-driven.
+   * Listens to `motionChangeEvent` on `motion-context[_machine-id]` to read `MotionSeconds`.
+   * Also listens to `machineIdChangeSignal` on `machine-context` for dynamic machine tracking.
+   * Renders the duration as `D'd' HH:MM` or `H:MM` (seconds are discarded).
+   *
+   * Attributes:
+   *   motion-context  - (required) event bus context key for motion data
+   *   machine-id      - (optional) appended to motion-context as suffix (`_<id>`)
+   *   machine-context - (optional) event bus context for machine selection changes
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class MotionTimeComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
@@ -38,6 +46,13 @@ var eventBus = require('eventBus');
 
     //get content () { return this._content; }
 
+    /**
+     * Formats a duration in seconds as `Dd HH:MM` (with days) or `H:MM` (without days).
+     * Seconds are discarded. Minutes are zero-padded.
+     *
+     * @param {number} seconds
+     * @returns {string}
+     */
     _formatSecondsInDDHHMM (seconds) {
       let retString = '';
 
@@ -62,6 +77,9 @@ var eventBus = require('eventBus');
       return retString;
     }
 
+    /**
+     * Updates the text span with the formatted duration, or clears it if `_motionSec` is null.
+     */
     _display () {
       if (!pulseUtility.isNotDefined(this._motionSec)) {
         $(this._text).html(this._formatSecondsInDDHHMM(this._motionSec));
@@ -181,12 +199,21 @@ var eventBus = require('eventBus');
       this.switchToNextContext();
     }
 
-    // Callback events
+    /**
+     * Event callback when the selected machine changes: updates `machine-id` attribute.
+     *
+     * @param {{ target: { newMachineId: number } }} event
+     */
     onMachineIdChange (event) {
       this.element.setAttribute('machine-id', event.target.newMachineId);
     }
 
-    // Callback events
+    /**
+     * Event callback when motion data changes: stores `MotionSeconds` and refreshes the display.
+     * Clears `_motionSec` if `MotionPercent` is undefined (no valid motion data).
+     *
+     * @param {{ target: { MotionPercent?: number, MotionSeconds?: number } }} event
+     */
     onMotionChange (event) {
       if (!pulseUtility.isNotDefined(event.target.MotionPercent)) {
         this._motionSec = event.target.MotionSeconds;

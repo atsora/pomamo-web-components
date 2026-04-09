@@ -18,6 +18,20 @@ require('x-revisionprogress/x-revisionprogress');
 
 (function () {
 
+  /**
+   * `<x-lastmachinestatetemplate>` — displays the current machine state template (MST) for a machine.
+   *
+   * Polls `MachineStateTemplateSlots?MachineId=<id>` at `currentRefreshSeconds` interval.
+   * Renders the current MST label and color; clicking opens the `x-savemachinestatetemplate` dialog.
+   * Used inside `x-setupmachine`; integrates with `x-revisionprogress` for optimistic updates.
+   * Listens to `machineIdChangeSignal` on `machine-context` and `modificationEvent` for revision tracking.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class LastMachineStateTemplateComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

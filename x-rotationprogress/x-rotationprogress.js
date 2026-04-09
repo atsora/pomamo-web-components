@@ -5,7 +5,23 @@ var pulseComponent = require('pulsecomponent');
 var eventBus = require('eventBus');
 
 (function () {
+  /**
+   * `<x-rotationprogress>` — visual indicator for page rotation progress.
+   *
+   * No REST requests — purely event-driven.
+   * Listens to `rotationPageUpdate` globally to update the display.
+   * Renders in two modes controlled by the `display-mode` attribute:
+   *  - `'bar'`  — animated progress bar (CSS transition width 0% → 100% over `delay` ms).
+   *  - `'text'` — text label `'Page N / T'`.
+   * Hidden when there is only one page or no delay is provided.
+   *
+   * Attributes:
+   *   display-mode - `'bar'` (default) or `'text'`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class RotationProgressComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
+    /** @param {...any} args */
     constructor(...args) {
       const self = super(...args);
       return self;
@@ -15,10 +31,10 @@ var eventBus = require('eventBus');
       this.addClass('pulse-rotationprogress');
       $(this.element).empty();
 
-      // Lecture du mode (par défaut 'bar' si non spécifié)
+      // Read display mode (default 'bar' if not specified)
       this._mode = this.element.getAttribute('display-mode') || 'bar';
 
-      // --- MODE BARRE ---
+      // --- BAR MODE ---
       if (this._mode === 'bar') {
         this._barContainer = $('<div></div>').addClass('rotation-progress-track');
         this._bar = $('<div></div>').addClass('rotation-progress-bar');
@@ -26,13 +42,13 @@ var eventBus = require('eventBus');
         $(this.element).append(this._barContainer);
       }
 
-      // --- MODE TEXTE ---
+      // --- TEXT MODE ---
       if (this._mode === 'text') {
         this._text = $('<div></div>').addClass('rotation-progress-text');
         $(this.element).append(this._text);
       }
 
-      // On écoute le moteur
+      // Listen to the rotation engine
       if (eventBus.EventBus.addGlobalEventListener) {
         eventBus.EventBus.addGlobalEventListener(this, 'rotationPageUpdate', this.onRotationUpdate);
       }
@@ -41,6 +57,12 @@ var eventBus = require('eventBus');
       this.switchToNextContext();
     }
 
+    /**
+     * Event callback for `rotationPageUpdate`: updates the bar or text display.
+     * Hides the component if only one page or no delay is provided.
+     *
+     * @param {{ target: { page: number, total: number, delay: number } }} event
+     */
     onRotationUpdate(event) {
       let data = event.target || event;
       let page = data.page;
@@ -54,12 +76,12 @@ var eventBus = require('eventBus');
 
       $(this.element).show();
 
-      // Mise à jour TEXTE
+      // Update TEXT
       if (this._mode === 'text' && this._text) {
         this._text.html('Page ' + page + ' / ' + total);
       }
 
-      // Mise à jour BARRE
+      // Update BAR
       if (this._mode === 'bar' && this._bar) {
         this._bar.stop(true, true).css({ 'width': '0%', 'transition': 'none' });
         this._bar[0].offsetHeight; // Force reflow

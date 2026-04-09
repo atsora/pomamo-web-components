@@ -13,11 +13,16 @@ var pulseService = require('pulseService');
 var pulseLogin = require('pulseLogin');
 var pulseCustomDialog = require('pulseCustomDialog');
 
-/**
- * Build a custom tag <x-loginchangepassword> with no attribute
- */
 (function () {
 
+  /**
+   * `<x-loginchangepassword>` — form widget for changing the current user's password.
+   *
+   * Renders old password, new password, and confirmation fields with a submit button.
+   * Submits the password change via the Pulse REST API and shows success or error feedback.
+   *
+   * @extends pulseComponent.PulseInitializedComponent
+   */
   class LoginChangePasswordComponent extends pulseComponent.PulseInitializedComponent {
     /**
      * Constructor

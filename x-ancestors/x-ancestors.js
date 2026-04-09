@@ -10,13 +10,46 @@ var pulseConfig = require('pulseConfig');
 require('x-machinedisplay/x-machinedisplay');
 
 (function () {
+
+  /**
+   * `<x-ancestors>` — breadcrumb navigation bar for group hierarchy.
+   *
+   * Reads `ancestor1`, `ancestor2`, ... config/attributes (group IDs) and the current
+   * `group` config to build a series of clickable breadcrumb links. Each link navigates
+   * to the page with that ancestor as the `group` parameter, preserving accumulated
+   * ancestor context in the URL query string.
+   *
+   * Rendering rules:
+   *  - `ancestor1` (level 1 / home): rendered as an `<a>` with an SVG icon (no x-machinedisplay).
+   *  - `ancestor2+`: rendered as `<a>` elements containing `<x-machinedisplay>` tags.
+   *  - The final element (current group, when not at root): rendered as a non-clickable `<div>`
+   *    with an `<x-machinedisplay>` inside.
+   *  - If at root level (ancestorNb == 1): final element is a re-clickable `<a>` (reload effect).
+   *  - Loop stops when an ancestor value matches the current `group` config.
+   *
+   * Attributes/Configs:
+   *   group       - current group id (used for comparison and final element display)
+   *   ancestor1   - root group id (home icon)
+   *   ancestor2+  - intermediate group ids (x-machinedisplay breadcrumb links)
+   *   AppContext  - passed through to all generated links
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class AncestorsComponent extends pulseComponent.PulseParamInitializedComponent {
+    /**
+     * @param {...any} args
+     */
     constructor(...args) {
       const self = super(...args);
       self._content = undefined;
       return self;
     }
 
+    /**
+     * Builds the breadcrumb DOM by iterating `ancestor1`, `ancestor2`, ... configs.
+     * Stops when an ancestor equals the current `group` or when no more ancestors exist.
+     * Appends the final current-group element as non-clickable (or re-clickable at root).
+     */
     initialize () {
       this.addClass('pulse-text');
       $(this.element).empty();

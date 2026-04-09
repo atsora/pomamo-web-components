@@ -13,6 +13,19 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-productionmachiningstatus>` — displays the current production and machining status for a machine.
+   *
+   * Polls `Operation/ProductionMachiningStatus?MachineId=<id>&Option=TrackTask` at `currentRefreshSeconds` interval.
+   * Renders current operation, part count, and task tracking information.
+   * Listens to `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class ProductionMachiningStatusComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

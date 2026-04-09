@@ -13,25 +13,40 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-freetext>` — event-driven free-text display component.
+   *
+   * Listens to `textChangeEvent` on a context derived from `textchange-context`
+   * (via `pulseUtility.getTextChangeContext`) and renders the received text as a `<span>`.
+   * Also dispatches `askForTextChangeEvent` on init to request the current value.
+   *
+   * Exposed method: `cleanDisplay()` — called by x-machineselection to clear on machine change.
+   *
+   * Attributes:
+   *   machine-id         - machine id (used for context computation)
+   *   group              - group id (used for context computation)
+   *   textchange-context - base context name for the text change event channel
+   *
+   * @extends pulseComponent.PulseInitializedComponent
+   */
   class freetextComponent extends pulseComponent.PulseInitializedComponent {
     /**
-     * Constructor
-     * 
-     * @param  {...any} args 
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
 
       self.methods = {
-        cleanDisplay: self.cleanDisplay // used by machineselection
+        cleanDisplay: self.cleanDisplay // exposed for x-machineselection
       };
 
-      // DOM - not here
+      // DOM
       self._content = undefined;
 
       return self;
     }
 
+    /** Clears the displayed text (called externally by machine selection changes). */
     cleanDisplay () {
       $(this._content).empty();
     }

@@ -14,14 +14,21 @@ var pulseComponent = require('pulsecomponent');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-highlightperiodsbar> to highlight periods in a bar component. This tag gets following attribute :
- *  height : Integer
- *  range : String '[begin,end]' or 'begin;end'
- *  period-context
- */
 (function () {
 
+  /**
+   * `<x-highlightperiodsbar>` — SVG overlay bar that highlights specific time periods within a range.
+   *
+   * Renders colored rectangles on a timeline bar to mark highlighted periods (e.g. shifts, breaks).
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` to re-render when the range changes.
+   *
+   * Attributes:
+   *   height         - (optional) integer pixel height of the bar
+   *   range          - ISO date range string `[begin,end]` or `begin;end`
+   *   period-context - event bus context for `dateTimeRangeChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class HighlightPeriodsBarComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor

@@ -17,23 +17,25 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-runningslotbar> to display an runningslotbar bar component. This tag gets following attribute :
- *  machine-id : Integer
- *  height : Integer
- *  motion-context : String
- *  period-context : String
- *  range : String 'begin;end' (optional)
- *  click : action on click (none/details/popup/change)
- *  showdetails: details to display after click - default in config
- *  showpopup: details to display in popup after click - default in config
- */
 (function () {
 
   /**
-   * Running slot bar component
+   * `<x-runningslotbar>` — timeline bar showing machine running/not-running slots over a period.
    *
-   * @extends module:pulseComponent~PulseParamAutoPathRefreshingComponent
+   * Polls `RunningSlots?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
+   * Renders green/red/yellow segments for each running state; clicking opens the running details popup.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   height          - (optional) integer pixel height of the bar
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *   motion-context  - event bus context for motion updates
+   *   range           - (optional) ISO date range string `begin;end`
+   *   showdetails     - (optional) details page to open on click (from config)
+   *   showpopup       - (optional) popup details to open on click (from config)
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class RunningSlotBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**

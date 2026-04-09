@@ -14,22 +14,35 @@ var pulseSvg = require('pulseSvg');
 var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 
 /**
- * Build a custom tag <x-showrunningdialogbutton> with group or machine-id attribute
+ * Build a custom tag <x-showrunningdialogbutton> — icon button that opens the running detail dialog.
+ *
+ * Requires `group` or `machine-id` attribute. Visibility is controlled by the `showRunningButton`
+ * config and updated live via `onConfigChange`.
+ *
+ * Attributes:
+ *   group      - group id used to open the running dialog
+ *   machine-id - machine id used to open the running dialog (fallback if no group)
  */
 (function () {
 
+  /**
+   * `<x-showrunningdialogbutton>` — clickable icon that opens a running-view popup.
+   *
+   * Shown/hidden via `pulseConfig.getBool('showRunningButton')`.
+   * Calls `pulseDetailsPopup.openRunningDialog(groupId)` on click.
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class ShowRunningDialogButtonComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
-     * Constructor
-     * 
-     * @param  {...any} args 
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
 
       // DOM
       self._content = undefined;
-      
+
       return self;
     }
 
@@ -41,32 +54,32 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
       }
     }
 
+    /**
+     * Builds a `.show-running-btn` div with an inlined SVG icon and a tooltip.
+     * Shows or hides the button based on `showRunningButton` config.
+     * Click handler resolves `group` or `machine-id` and opens the running dialog.
+     */
     initialize () {
       this.addClass('pulse-icon');
 
-      // Listeners and dispatchers
-
-      // In case of clone, need to be empty :
+      // In case of clone, need to be empty:
       $(this.element).empty();
 
       // Create DOM - Content
       this._content = $('<div></div>').addClass('show-running-btn');
       $(this.element).append(this._content);
 
-      // Color :
       pulseSvg.inlineBackgroundSvg(this._content);
 
-      // Tooltip
-      //this._content.attr('tooltip', 'running view');
       pulseUtility.addToolTip(this._content, 'running view');
 
-      // Visibility : display according to config
+      // Visibility: show based on config
       if (pulseConfig.getBool('showRunningButton'))
         $(this._content).show();
       else
         $(this._content).hide();
 
-      // Click
+      // Click: open running dialog for the configured group or machine
       $(this._content).click(
         function (e) {
           let groupId;
@@ -87,11 +100,10 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
       return;
     }
 
-    // Callback events
     /**
-     * Event callback in case a config is updated: (re-)start the component
+     * Reacts to `showRunningButton` config changes by showing or hiding the button.
      *
-     * @param {*} event
+     * @param {{ target: { config: string } }} event
      */
     onConfigChange (event) {
       if (event.target.config == 'showRunningButton') {

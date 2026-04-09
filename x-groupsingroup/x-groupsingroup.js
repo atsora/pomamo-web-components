@@ -14,13 +14,31 @@ var pulseUtility = require('pulseUtility');
 var state = require('state');
 var eventBus = require('eventBus');
 
-/*
- ** Attributes :
- - templateid
- - group
- */
 (function () {
 
+  /**
+   * `<x-groupsingroup>` — renders a grid of sub-group or machine items for a given group.
+   *
+   * Machine/group source resolution priority:
+   *  1. Multi-value `group` config (comma-separated) → each value becomes a sub-`x-groupsingroup`, transitions to `Loaded`.
+   *  2. No `group` config, `machine` config present → each machine id rendered as a single-machine item, transitions to `Loaded`.
+   *  3. Single `group` config, no `ancestor1` URL param → renders the group directly without AJAX, transitions to `Loaded`.
+   *  4. Single `group` config with `ancestor1` URL param → fetches `Machine/GroupZoomIn?GroupId=<group>&Details=true` via REST.
+   *
+   * Layout: items are rendered as `<li class="groupsingroup-subgroup">` inside an `<ol class="groupsingroup-main">`.
+   * Grid dimensions (width/height) are computed automatically from the number of items using `Math.sqrt`.
+   *
+   * Dispatches `groupIsReloaded` after each list rebuild (suppressed when `donotwarngroupreload` config is `'true'`).
+   * Static groups (`Dynamic=false` from REST) transition to `Loaded` StaticState to stop polling.
+   *
+   * Attributes:
+   *   templateid          - id of the DOM element to clone per group/machine (default `'boxtoclone'`)
+   *   group               - group id(s); comma-separated for multi-group mode
+   *   fixed-size          - adds `fixed-size` CSS class to the `<ol>` container
+   *   donotwarngroupreload - `'true'` suppresses `groupIsReloaded` dispatch
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class GroupsInGroupComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -47,6 +65,13 @@ var eventBus = require('eventBus');
       return this._content;
     }*/
 
+    /**
+     * Rebuilds the `<ol>` list of sub-group or machine items from `_groupIdsArray` / `_groupsDetails`.
+     * Removes items no longer in the list, reuses existing `<li>` elements in place, adds new ones.
+     * Computes per-item width/height from a square-root grid layout.
+     * Items with `SingleMachine=true` get class `subgroup-single-machine`; others get `subgroup-group-not-machine`.
+     * Dispatches `groupIsReloaded` after the rebuild (unless `donotwarngroupreload` config is `'true'`).
+     */
     _displayOrUpdateGroupsList () {
       //$(this._content).empty(); No !
 
@@ -184,6 +209,7 @@ var eventBus = require('eventBus');
 
     } // _displayOrUpdateGroupsList
 
+    /** Removes the `disableDeleteWhenDisconnect` guard class from all descendant elements. */
     _removeDisable () {
       $(this.element).find('.disableDeleteWhenDisconnect')
         .removeClass('disableDeleteWhenDisconnect');
@@ -323,8 +349,12 @@ var eventBus = require('eventBus');
       $(this._messageSpan).html('');
     }
 
+    /**
+     * Refresh interval: `refreshrate` attribute * 1000 if set, otherwise 30 s.
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate () {
-      // Return here the refresh rate in ms.
       if (this.element.hasAttribute('refreshrate')) {
         return 1000 * this.element.getAttribute('refreshrate');
       }
@@ -333,10 +363,13 @@ var eventBus = require('eventBus');
       }
     }
 
-    /*
-      Replace _runAjaxWhenIsVisible when NO url should be called
-      return true if something is done, false if _runAjaxWhenIsVisible should be called
-    */
+    /**
+     * Resolves the group/machine list without an AJAX call when possible.
+     * Priority: 1) multi-group comma list → renders directly; 2) no group, machine list → renders directly;
+     * 3) single group with no `ancestor1` URL param → renders directly; 4) single group with ancestor → returns false (triggers AJAX).
+     *
+     * @returns {boolean} `true` when handled locally, `false` to trigger the REST request.
+     */
     _runAlternateGetData () {
       let groups = this.getConfigOrAttribute('group');
 
@@ -405,19 +438,35 @@ var eventBus = require('eventBus');
       return false;
     }
 
+    /**
+     * REST endpoint: `Machine/GroupZoomIn?GroupId=<group>&Details=true`.
+     * Only called for a single-group config when `ancestor1` URL param is present.
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
-      // Return the Web Service URL here without path
       let group = this.getConfigOrAttribute('group');
       let url = 'Machine/GroupZoomIn?GroupId=' + group;
-      url += '&Details=true'; // WARNING ! Maybe remove (bug in web service) --201907
-      // Login is set in global service call
+      url += '&Details=true';
       return url;
     }
 
+    /**
+     * Delegates to `_displayOrUpdateGroupsList()` using the already-stored `_groupIdsArray` / `_groupsDetails`.
+     *
+     * @param {*} data - REST response (unused; data was stored in `manageSuccess`).
+     */
     refresh (data) {
       this._displayOrUpdateGroupsList();
     }
 
+    /**
+     * Stores `Children` and `ChildrenDetails` from the REST response.
+     * Static groups (`Dynamic=false`) rebuild the list and transition to `Loaded` StaticState.
+     * Dynamic groups call `super.manageSuccess()` to schedule the next polling cycle.
+     *
+     * @param {{ Dynamic: boolean, Children: number[], ChildrenDetails: Array<{ Display: string, TreeName: string, SingleMachine: boolean }> }} data
+     */
     manageSuccess (data) {
       this._dynamic = data.Dynamic;
       this._groupIdsArray = data.Children;

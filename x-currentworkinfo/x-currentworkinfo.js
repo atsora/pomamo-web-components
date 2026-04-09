@@ -13,6 +13,20 @@ var pulseComponent = require('pulsecomponent');
 
 (function () {
 
+  /**
+   * `<x-currentworkinfo>` — displays current work information for a machine or group.
+   *
+   * Polls `GetLastWorkInformationV3/<id-or-group>` at `currentRefreshSeconds` interval.
+   * `manageSuccess()` hides the component when `MonitoredMachineOperationBar` is 'None'.
+   * `refresh(data)` builds a single concatenated display of all `WorkInformations` values,
+   * but only re-renders if the data has changed (compared against `_displayedWorkInformations`).
+   *
+   * Attributes:
+   *   machine-id - integer machine id (takes priority over group)
+   *   group      - group id (used if machine-id absent)
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class CurrentWorkInfoComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -105,10 +119,20 @@ var pulseComponent = require('pulsecomponent');
     removeError () {
     }
 
+    /**
+     * Refresh interval: `currentRefreshSeconds` config * 1000 (default 10 s).
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate () {
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
+    /**
+     * REST endpoint: `GetLastWorkInformationV3/<group-or-machine-id>`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
       let url = 'GetLastWorkInformationV3/'
       if (this.element.hasAttribute('group')) {
@@ -120,6 +144,13 @@ var pulseComponent = require('pulsecomponent');
       return url;
     }
 
+    /**
+     * Re-renders the work info display only if the data has changed.
+     * Concatenates all `WorkInformations[].Value` into a single line.
+     * Clears the display if `SlotMissing` is true.
+     *
+     * @param {{ SlotMissing: boolean, WorkInformations: Array<{ Kind: string, Value: string }>, MonitoredMachineOperationBar: string }} data
+     */
     refresh (data) {
       if (data.SlotMissing) {
         $(this._content).empty();
@@ -158,6 +189,13 @@ var pulseComponent = require('pulsecomponent');
       }
     }
 
+    /**
+     * Overrides base success handler: hides the component and switches to `NotApplicable`
+     * when `MonitoredMachineOperationBar` is 'None' (machine has no operation tracking).
+     * Otherwise delegates to `refresh(data)`.
+     *
+     * @param {*} data
+     */
     manageSuccess (data) {
       //check if given machine do not manage Operation
       //if so, hide component

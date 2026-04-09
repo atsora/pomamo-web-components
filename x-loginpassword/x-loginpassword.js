@@ -15,11 +15,16 @@ var pulseLogin = require('pulseLogin');
 var pulseCustomDialog = require('pulseCustomDialog');
 var pulseUtility = require('pulseUtility');
 
-/**
- * Build a custom tag <x-loginpassword> with no attribute
- */
 (function () {
 
+  /**
+   * `<x-loginpassword>` — username/password input widget used by `x-loginconnection`.
+   *
+   * Renders username and password fields. Used as a sub-component of the login form.
+   * Exposes the entered credentials to the parent component via DOM access.
+   *
+   * @extends pulseComponent.PulseInitializedComponent
+   */
   class LoginPasswordComponent extends pulseComponent.PulseInitializedComponent {
     /**
      * Constructor

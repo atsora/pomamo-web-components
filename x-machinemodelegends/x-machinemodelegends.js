@@ -12,22 +12,33 @@ var pulseSvg = require('pulseSvg');
 
 (function () {
 
+  /**
+   * `<x-machinemodelegends>` — legend panel for machine mode categories.
+   *
+   * Fetches `MachineModeCategoryLegend` and renders one legend block with:
+   *  - a titled section (`pulse-legend-title`)
+   *  - one `pulse-legend-element` per item (SVG icon via `pulseSvg.getMachineModeClass` + label)
+   *  - 4 empty filler divs for flexbox alignment
+   *
+   * After render, triggers a `.legend-content` resize event.
+   * `isVisible` is always true so the legend always fetches regardless of scroll position.
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class machinemodelegendsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
-     * Constructor
-     * 
-     * @param  {...any} args 
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
 
-      // DOM - not here
+      // DOM
       self._content = undefined;
 
       return self;
     }
 
-    get content () { return this._content; } // Optional
+    get content () { return this._content; }
 
     initialize () {
       this.addClass('pulse-text');
@@ -68,15 +79,26 @@ var pulseSvg = require('pulseSvg');
       $(this._content).show();
     }
 
-    // Overload to always refresh value
+    /** Always visible — legend fetches regardless of DOM scroll position. */
     get isVisible () {
       return true;
     }
 
-    getShortUrl () { // Return the Web Service URL here without path
+    /**
+     * REST endpoint: `MachineModeCategoryLegend`
+     *
+     * @returns {string} Short URL without base path.
+     */
+    getShortUrl () {
       return 'MachineModeCategoryLegend';
     }
 
+    /**
+     * Renders the legend: title + one element per item (SVG icon + display label).
+     * Appends 4 empty filler divs for flexbox alignment, then triggers `.legend-content` resize.
+     *
+     * @param {{ Items: Array<{ Id: number, Display: string }> }} data
+     */
     refresh (data) {
       $(this._content).empty();
 

@@ -13,29 +13,39 @@ var pulseLogin = require('pulseLogin');
 var pulseSvg = require('pulseSvg');
 
 /**
- * Build a custom tag <x-logindisplay> 
+ * Build a custom tag <x-logindisplay> — displays the current user name and acts as a logout button.
  */
 (function () {
 
+  /**
+   * `<x-logindisplay>` — current user display + logout button.
+   *
+   * Shows a text span with the current user name (from `pulseConfig.getCurrentUserDisplay()`)
+   * and an SVG icon. Hidden when no role or AppContext is defined.
+   * Clicking the element logs out (clears role, navigates to login page).
+   *
+   * Attributes:
+   *   donotuseinline - if 'true', skips SVG inlining (for reporting use)
+   *
+   * @extends pulseComponent.PulseInitializedComponent
+   */
   class LoginDisplayComponent extends pulseComponent.PulseInitializedComponent {
     /**
-     * Constructor
-     * 
-     * @param  {...any} args 
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
-
-      // DOM: never in constructor, use the initialize method instead
-
       return self;
     }
-
 
     attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
     }
 
+    /**
+     * Populates the user display span and shows/hides the element.
+     * Hidden when no role or AppContext is defined (forces role selection first).
+     */
     _fillDisplay () {
       if (pulseConfig.currentRoleOrAppContextIsDefined()) {
         $(this._span).html(pulseConfig.getCurrentUserDisplay());
@@ -47,12 +57,12 @@ var pulseSvg = require('pulseSvg');
       }
     }
 
+    /**
+     * Binds the click handler: cleans the login role and redirects to the login page.
+     */
     _defineClick () {
-      // Logout button
       $(this._content).click(function (e) {
-        // Remove the current role
         pulseLogin.cleanLoginRole();
-
         pulseConfig.goToPageLogin();
       });
     }

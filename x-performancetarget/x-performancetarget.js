@@ -12,18 +12,25 @@ var pulseUtility = require('pulseUtility');
 
 (function () {
 
+  /**
+   * `<x-performancetarget>` — displays the utilization target percentage for a machine.
+   *
+   * Fetches `UtilizationTarget/Get?MachineId=<id>` once per load.
+   * Renders "Target: X%" when `TargetPercentage > 0`, or hides the value span when undefined/zero.
+   *
+   * Attributes:
+   *   machine-id - (required) integer machine id; restart triggered on change
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class performancetargetComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
-     * Constructor
-     *
-     * @param  {...any} args
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
 
-      //self._targetIsUpdated = false;
-
-      // DOM - not here
+      // DOM
       self._content = undefined;
       self._spanDisplay = undefined;
 
@@ -120,12 +127,22 @@ var pulseUtility = require('pulseUtility');
       $(this._content).show();
     }
 
+    /**
+     * REST endpoint: `UtilizationTarget/Get?MachineId=<id>`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
       return 'UtilizationTarget/Get?MachineId=' + this.element.getAttribute('machine-id');
     }
 
+    /**
+     * Renders the target percentage: removes `empty-performancetarget` class and sets text
+     * to `"X%"` (rounded) when `TargetPercentage > 0`. Adds `empty-performancetarget` otherwise.
+     *
+     * @param {{ TargetPercentage: number }} data
+     */
     refresh (data) {
-      //this._targetIsUpdated = true;
       this._targetpercentage = data.TargetPercentage;
       if (!pulseUtility.isNotDefined(this._targetpercentage) && this._targetpercentage > 0) {
         this._spanDisplay.removeClass('empty-performancetarget')
@@ -137,12 +154,15 @@ var pulseUtility = require('pulseUtility');
     }
 
     manageSuccess (data) {
-      super.manageSuccess(data); // or this.switchToNextContext(() => this.refresh(data));
+      super.manageSuccess(data);
     }
 
+    /**
+     * Applies `empty-performancetarget` when the endpoint returns not-applicable,
+     * then delegates to the base implementation.
+     */
     manageNotApplicable () {
       this._spanDisplay.addClass('empty-performancetarget');
-      // Override if required. By default switch to key Not_applicable
       super.manageNotApplicable();
     }
     /*

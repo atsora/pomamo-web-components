@@ -13,22 +13,31 @@ var pulseUtility = require('pulseUtility');
 
 (function () {
 
+  /**
+   * `<x-reasongroups>` — legend panel for reason groups.
+   *
+   * Fetches `ReasonGroupLegend` and renders one legend block per reason group:
+   * a colored square SVG + display label + optional alternate label (for RTD compact display).
+   * Tooltip on each element shows all individual reason groups within the category.
+   * Includes 4 empty alignment divs and triggers `.legend-content` resize.
+   * `isVisible` is always true so the legend always fetches.
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class reasongroupsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
-     * Constructor
-     * 
-     * @param  {...any} args 
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
 
-      // DOM - not here
+      // DOM
       self._content = undefined;
 
       return self;
     }
 
-    get content() { return this._content; } // Optional
+    get content() { return this._content; }
 
     initialize() {
       this.addClass('pulse-text');
@@ -69,15 +78,27 @@ var pulseUtility = require('pulseUtility');
       $(this._content).show();
     }
 
-    // Overload to always refresh value
+    /** Always visible — legend fetches regardless of DOM scroll position. */
     get isVisible() {
       return true;
     }
 
-    getShortUrl() { // Return the Web Service URL here without path
+    /**
+     * REST endpoint: `ReasonGroupLegend`
+     *
+     * @returns {string} Short URL without base path.
+     */
+    getShortUrl() {
       return 'ReasonGroupLegend';
     }
 
+    /**
+     * Renders the legend: title + one element per reason category.
+     * Each element: colored SVG square + display label (with reason-group tooltip) + alternate label.
+     * Appends 4 empty filler divs for flexbox alignment, then triggers `.legend-content` resize.
+     *
+     * @param {{ Items: Array<{ Color: string, Display: string, ReasonGroups: Array<{ Display: string }> }> }} data
+     */
     refresh(data) {
       $(this._content).empty();
 

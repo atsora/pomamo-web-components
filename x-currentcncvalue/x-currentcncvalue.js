@@ -12,12 +12,20 @@ var pulseUtility = require('pulseUtility');
 var pulseComponent = require('pulsecomponent');
 var pulseSvg = require('pulseSvg');
 
-/**
- * Build a custom tag <x-currentcncvalue> to display an currentcncvalue bar component. This tag gets following attribute :
- *  machine : Integer
- */
 (function () {
 
+  /**
+   * `<x-currentcncvalue>` — displays the current CNC field value for a machine.
+   *
+   * Polls `CncValue/Current?MachineId=<id>&FieldIds=<id>` at `currentRefreshSeconds` interval.
+   * Renders the numeric or text value of the specified CNC field with its label.
+   *
+   * Attributes:
+   *   machine-id - (required) integer machine id
+   *   field-id   - (optional) CNC field id to filter the query
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class CurrentCncValueComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

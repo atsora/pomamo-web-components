@@ -18,15 +18,22 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-productionstatebar>
- */
 (function () {
 
   /**
-   * Reason slot bar component
+   * `<x-productionstatebar>` — timeline bar showing production state color slots for a machine over a period.
    *
-   * @extends module:pulseComponent~PulseParamAutoPathRefreshingComponent
+   * Polls `ProductionState/ColorSlots?GroupId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
+   * Renders colored segments for each production state; clicking opens the state details popup.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine or group id
+   *   height          - (optional) integer pixel height of the bar
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *   range           - (optional) ISO date range string `begin;end`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ProductionStateBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**

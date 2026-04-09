@@ -14,6 +14,20 @@ var pulseUtility = require('pulseUtility');
 var eventBus = require('eventBus');
 
 (function () {
+  /**
+   * `<x-detailedproductionstateat>` — detail panel showing the production state slot at a given time.
+   *
+   * Fetches `ProductionStateSlots?GroupId=<id>&Range=<single-point-range>` once per `when` value.
+   * Listens to `dateTimeChangeEvent` and `machineIdChangeSignal` to update attributes.
+   *
+   * Attributes:
+   *   machine-id       - (required) integer machine / group id
+   *   when             - (required) ISO datetime string
+   *   datetime-context - event bus context for `dateTimeChangeEvent`
+   *   machine-context  - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class DetailedProductionStateAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

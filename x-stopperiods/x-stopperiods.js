@@ -20,7 +20,21 @@ require('x-stopclassification/x-stopclassification');
 
 (function () {
     /**
-     * Lightweight headless provider that fetches selectable ReasonOnlySlots for a given machine and range,
+     * `<x-stopperiods>` — headless provider fetching the current stop period for a machine.
+     *
+     * Fetches `CurrentReason?MachineId=<id>&Period=reason_machinemodecategory` once per trigger.
+     * On success, computes an open-ended range from `data.PeriodStart` to now and fires a
+     * `stopperiods-range` DOM CustomEvent with `{ range, slot }`.
+     * When `autocreate-stopclassification` attribute is present, auto-creates or updates a child
+     * `<x-stopclassification>` with the computed range.
+     * No UI is rendered; `displayError` logs to console only.
+     *
+     * Attributes:
+     *   machine-id                     - (required) integer machine id
+     *   range                          - (required) ISO 8601 date range string for the query period
+     *   autocreate-stopclassification  - (optional) if present, auto-manages a child x-stopclassification
+     *
+     * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
      */
     class StopPeriodsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
         /**

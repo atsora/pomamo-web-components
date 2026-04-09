@@ -13,11 +13,21 @@ var pulseUtility = require('pulseUtility');
 
 (function () {
 
+  /**
+   * `<x-lastshift>` — displays the last shift name for a machine.
+   *
+   * Polls `GetLastShift?MachineId=<id>` at `update` attribute ms or `currentRefreshSeconds` config interval.
+   * Renders `data.Shift.Display` into `.lastshift-shiftlabel`, or empty string if no shift data.
+   *
+   * Attributes:
+   *   machine-id - (required) integer machine id; restart triggered on change
+   *   update     - optional polling interval in ms (overrides config)
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class LastShiftComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
-     * Constructor
-     *
-     * @param  {...any} args
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -47,6 +57,10 @@ var pulseUtility = require('pulseUtility');
       }
     }
 
+    /**
+     * Builds the DOM: `<div.lastshift>` wrapping `<a.lastshift-linkreport>` with `<span.lastshift-shiftlabel>`.
+     * The `<a>` is kept for optional future report linking (`target="_blank"`).
+     */
     initialize () {
       this.addClass('pulse-text'); // NOT lastbar');
 
@@ -122,6 +136,11 @@ var pulseUtility = require('pulseUtility');
       this.displayError('');
     }
 
+    /**
+     * Polling interval: `update` attribute in ms if valid integer, otherwise `currentRefreshSeconds` config * 1000 (default 10 s).
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate () {
       if ((this.element.hasAttribute('update'))
         && pulseUtility.isInteger(this.element.getAttribute('update'))) {
@@ -130,14 +149,22 @@ var pulseUtility = require('pulseUtility');
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
+    /**
+     * REST endpoint: `GetLastShift?MachineId=<id>`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
       return 'GetLastShift?MachineId='
         + this.element.getAttribute('machine-id');
     }
 
+    /**
+     * Renders the shift display name, or empty string if no shift is active.
+     *
+     * @param {{ Shift?: { Display: string } }} data
+     */
     refresh (data) {
-      // Update the component with data which is returned by the web service in case of success
-      // For example:
       $(this._content).html(data.Name);
 
 

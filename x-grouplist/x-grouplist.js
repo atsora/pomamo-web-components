@@ -28,6 +28,33 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-grouplist>` — renders a single-column list of machine items from a group or explicit machine list.
+   *
+   * Machine source priority:
+   *  1. `machine` config (set by `common_page` or URL params) → used directly, transitions to `Loaded`.
+   *  2. `group` config → fetches `MachinesFromGroups?GroupIds=<group>` via REST, then `Loaded`.
+   *  3. Nothing configured → empty list, `Loaded`.
+   *
+   * Integrates with the rotation engine via `updateVisibleMachines` event (context `'PAGE'`),
+   * which controls per-machine-row visibility and sets `--visible-count` CSS custom property.
+   * Disabled when `no-rotation` attribute or `forcestaticlist = 'true'` config is set.
+   *
+   * Dispatches `groupIsReloaded` when the machine list changes (suppressed when engine already did it).
+   * Dispatches `groupGridRendered` after list rebuild (non-standalone mode only).
+   *
+   * Public method exposed via `methods`: `getMachinesList()` → comma-separated machine id string.
+   *
+   * Attributes:
+   *   templateid              - id of the DOM element to clone per machine (default `'boxtoclone'`)
+   *   group                   - group id(s), resolved via REST
+   *   machine                 - comma-separated machine id list (takes priority over group)
+   *   no-rotation             - disables rotation engine integration
+   *   forcestaticlist         - `'true'` disables rotation engine integration
+   *   donotwarngroupreload    - `'true'` suppresses `groupIsReloaded` dispatch
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class GroupComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     constructor(...args) {
       const self = super(...args);
@@ -264,15 +291,33 @@ var eventBus = require('eventBus');
       return true;
     }
 
+    /**
+     * REST endpoint: `MachinesFromGroups?GroupIds=<group>`
+     * Only reached when neither `machine` config nor empty group is configured.
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl() {
       let groups = this.getConfigOrAttribute('group');
       return 'MachinesFromGroups?GroupIds=' + groups;
     }
 
+    /**
+     * Called after `manageSuccess` sets `_machineIdsArray`. Delegates to `_buildMachineList()`.
+     *
+     * @param {*} data
+     */
     refresh(data) {
       this._buildMachineList();
     }
 
+    /**
+     * Stores `MachineIds` from the response, handles dynamic groups and engine handoff.
+     * When group data comes from AJAX and a group is configured: dispatches `groupIsReloaded`
+     * then waits for the rotation engine to set the actual visible machine list via `onConfigChange`.
+     *
+     * @param {{ MachineIds: number[], Dynamic: boolean }} data
+     */
     manageSuccess(data) {
       this.removeError();
 
@@ -305,6 +350,12 @@ var eventBus = require('eventBus');
       this.switchToContext('Loaded');
     }
 
+    /**
+     * Config change callback: restarts when `machine` or `group` config changes.
+     * Clears `_waitingForEngine` flag when the engine signals a machine list update.
+     *
+     * @param {{ target: { config: string } }} event
+     */
     onConfigChange(event) {
       if (event.target.config === 'machine') {
         this._waitingForEngine = false;

@@ -19,6 +19,26 @@ var state = require('state');
 
 (function () {
 
+  /**
+   * `<x-lastworkinformation>` — bar-style display of the last work information for a machine.
+   *
+   * Polls `GetLastWorkInformationV3/<machine-id>` at `currentRefreshSeconds` interval.
+   * Renders a cell-bar layout with current work info cells and a "Past Data" cell.
+   * Uses a custom `Loaded` (StaticState) context to stop polling after a successful fetch in bar mode.
+   *
+   * `manageSuccess()` hides the component if `MonitoredMachineOperationBar` is 'None'.
+   * `refresh(data)` builds current cells and the past-data cell; dispatches `workinformationStatusChange`.
+   * Clicking "Past Data" opens a change-work-info dialog via `pulseDetailsPopup`.
+   *
+   * Attributes:
+   *   machine-id        - (required) integer machine id; restart on change
+   *   machine-context   - (optional) event bus context for machine selection changes
+   *   status-context    - (optional) event bus context to dispatch `workinformationStatusChange`
+   *   period-context    - (optional) event bus context for `dateTimeRangeChangeEvent`
+   *   cancel-bar-style  - if truthy: renders as inline text instead of cell-bar layout
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class LastWorkInformationComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -46,11 +66,12 @@ var state = require('state');
     }*/
 
     /**
-    *Update display of workinformation data
-    *
-    *@param workinformations list of workinformation
-    *@param config
-    */
+     * Builds and inserts `.pulse-cellbar-first` cells for each work information item.
+     * Missing values get a red dot and a `missing` attribute; known values are set as HTML.
+     *
+     * @param {Array<{ Kind: string, Value?: string }>} workinformations
+     * @param {{ OperationFromCnc: boolean, IsEditable: boolean }} config
+     */
     _displayWorkInformations (workinformations, config) {
       $(this._content).find('.pulse-cellbar-first').remove();
 
@@ -281,19 +302,34 @@ var state = require('state');
       $(this._messageSpan).html('');
     }
 
+    /**
+     * Refresh interval: `currentRefreshSeconds` config * 1000 (default 10 s).
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate () {
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
+    /**
+     * REST endpoint: `GetLastWorkInformationV3/<machine-id>`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
-      // Return the Web Service URL here without path
       let url = 'GetLastWorkInformationV3/'
         + this.element.getAttribute('machine-id');
       return url;
     }
 
+    /**
+     * Builds current work info cells and the "Past Data" cell.
+     * Shows slot-missing state or calls `_displayWorkInformations`.
+     * Dispatches `workinformationStatusChange` with missing status boolean.
+     *
+     * @param {{ SlotMissing: boolean, WorkInformations: Array, Config: object, DataMissing: boolean, Begin: string, End: string }} data
+     */
     refresh (data) {
-      // Done in manageSuccess
       //$(this._content).find('.pulse-cellbar-first, .pulse-cellbar-last').remove(); // == empty excepted message and loaded
 
       let status = false;
@@ -353,6 +389,13 @@ var state = require('state');
         { status: status });
     }
 
+    /**
+     * Overrides base success handler: clears current cells, hides component if no operation tracking,
+     * dispatches null status, and transitions to `Loaded` (static) to stop polling in that case.
+     * Otherwise restores visibility and delegates to `refresh(data)`.
+     *
+     * @param {*} data
+     */
     manageSuccess (data) {
       $(this._content).find('.pulse-cellbar-first, .pulse-cellbar-last').remove(); // == empty excepted message and loaded
 

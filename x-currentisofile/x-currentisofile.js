@@ -11,12 +11,21 @@
 var pulseUtility = require('pulseUtility');
 var pulseComponent = require('pulsecomponent');
 
-/**
- * Build a custom tag <x-currentisofile> to display an currentisofile bar component. This tag gets following attribute :
- *  machine : Integer
- */
 (function () {
 
+  /**
+   * `<x-currentisofile>` — displays the current ISO file (CNC program) name for a machine.
+   *
+   * Polls `IsoFile/Current?MachineId=<id>` at `currentRefreshSeconds + 1` seconds.
+   * `manageSuccess()` intercepts `TooOld === true` and transitions to `NotAvailable` state showing 'N/A'.
+   * Otherwise delegates to `refresh(data)` which renders `data.IsoFiles` or '--'.
+   * `displayTextAndTooltip(text, tooltip)` manages a lazily created `<span>` inside the content div.
+   *
+   * Attributes:
+   *   machine-id - (required) integer machine id; restart triggered on change
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class CurrentIsoFileComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -43,6 +52,11 @@ var pulseComponent = require('pulsecomponent');
       }
     }
 
+    /**
+     * Maximum elapsed time threshold before considering ISO file data stale: 2 minutes (120 000 ms).
+     *
+     * @returns {number}
+     */
     get maximumElapsedTimeCurrentIsoFile () {
       return 120000; // 2 minutes = 120s
     }
@@ -117,14 +131,31 @@ var pulseComponent = require('pulsecomponent');
       this.displayError('');
     }
 
-    get refreshRate () {  // refresh rate in ms.
+    /**
+     * Refresh interval: `currentRefreshSeconds` config + 1 second (default ~11 s).
+     *
+     * @returns {number} Interval in ms.
+     */
+    get refreshRate () {
       return 1000.0 * (Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10)) + 1); // +1 to allow refresh from bars
     }
 
+    /**
+     * REST endpoint: `IsoFile/Current?MachineId=<id>`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
       return 'IsoFile/Current?MachineId=' + this.element.getAttribute('machine-id');
     }
 
+    /**
+     * Updates the text and optional tooltip on the content span.
+     * Creates the span lazily if it doesn't exist yet.
+     *
+     * @param {string} text      - HTML string to display.
+     * @param {string} [tooltip] - Tooltip string; removes `title` attribute if undefined.
+     */
     displayTextAndTooltip (text, tooltip) {
       let span = $(this._content).find('span');
       if (0 == span.length) {
@@ -140,6 +171,11 @@ var pulseComponent = require('pulsecomponent');
       }
     }
 
+    /**
+     * Renders the ISO file name, or '--' if `data.IsoFiles` is undefined.
+     *
+     * @param {{ IsoFiles?: string }} data
+     */
     refresh (data) {
       let isoFiles = '--';
       if (!pulseUtility.isNotDefined(data.IsoFiles)) {
@@ -148,6 +184,12 @@ var pulseComponent = require('pulsecomponent');
       this.displayTextAndTooltip(isoFiles);
     }
 
+    /**
+     * Overrides base success handler to handle `TooOld === true`:
+     * transitions to `NotAvailable` state showing 'N/A' instead of delegating to `refresh`.
+     *
+     * @param {{ TooOld: boolean, IsoFiles?: string }} data
+     */
     manageSuccess (data) {
       // Clear
       //$(this._content).css('display', 'inline-block');

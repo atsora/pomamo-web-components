@@ -15,18 +15,26 @@ var pulseUtility = require('pulseUtility');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-runningslotpie> to display an runningslot pie component. This tag gets following attribute :
- *  machine-id : Integer
- *  height : Integer
- *  machine-context : String
- *  motion-context : String
- *  period-context : String
- *  textchange-context : String -> elapsed time since yellow for example - special value == 'showPercent', 'DEMO'
- *  range : String 'begin;end'
- */
 (function () {
 
+  /**
+   * `<x-runningslotpie>` — SVG pie chart showing the distribution of machine running/not-running time over a period.
+   *
+   * Polls `RunningSlots?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
+   * Renders a pie with segments for running, idle, and off-time. Optionally dispatches elapsed-time
+   * or percentage text via `textChangeEvent` on `textchange-context`.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id         - (required) integer machine id
+   *   machine-context    - event bus context for `machineIdChangeSignal`
+   *   period-context     - event bus context for `dateTimeRangeChangeEvent`
+   *   range              - (optional) ISO date range string `begin;end`
+   *   motion-context     - event bus context for motion updates
+   *   textchange-context - event bus context for `textChangeEvent` (special values: `'showPercent'`, `'DEMO'`)
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class RunningSlotPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

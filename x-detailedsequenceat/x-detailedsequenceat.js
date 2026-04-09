@@ -15,6 +15,20 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-detailedsequenceat>` — detail panel showing the sequence slot at a given point in time.
+   *
+   * Fetches `SequenceSlots?MachineId=<id>&Range=<single-point-range>` once per `when` value.
+   * Listens to `dateTimeChangeEvent` and `machineIdChangeSignal` to update attributes.
+   *
+   * Attributes:
+   *   machine-id       - (required) integer machine id
+   *   when             - (required) ISO datetime string
+   *   datetime-context - event bus context for `dateTimeChangeEvent`
+   *   machine-context  - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class DetailedSequenceAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

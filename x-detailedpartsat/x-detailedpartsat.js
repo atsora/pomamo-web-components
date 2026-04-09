@@ -15,6 +15,21 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-detailedpartsat>` — detail panel showing parts production for a date range.
+   *
+   * Fetches `Operation/PartProductionRange?GroupId=<id>&Range=<range>` once per range.
+   * Range is typically provided via `period-context` or `range` attribute.
+   * Listens to `dateTimeRangeChangeEvent` and `machineIdChangeSignal` to update attributes.
+   *
+   * Attributes:
+   *   machine-id       - (required) integer machine / group id
+   *   range            - ISO date range string (alternative to period-context)
+   *   period-context   - event bus context for `dateTimeRangeChangeEvent`
+   *   machine-context  - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class DetailedPartsAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

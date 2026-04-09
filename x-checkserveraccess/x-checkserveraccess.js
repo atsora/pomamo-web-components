@@ -13,6 +13,24 @@ var pulseConfig = require('pulseConfig');
 
 (function () {
 
+  /**
+   * `<x-checkserveraccess>` — invisible server-health watchdog component.
+   *
+   * Polls `Data/Computer/GetLctr?Cache=No` periodically. On success, clears the `NO_SERVER`
+   * message and fires `serverProbablyAvailable` to resume all other components.
+   * Then transitions to `Stop` context to pause polling until the next disconnection event.
+   *
+   * Listens globally to:
+   *  - `serverProbablyDisconnected` — arms a 1-minute countdown; triggers `displayErrorAndStopAll()` after.
+   *  - `databaseProbablyDisconnected` — immediately shows a DB error and stops all components.
+   *  - `pulseMaintenance` — shows a maintenance overlay and stops all components.
+   *
+   * `displayErrorAndStopAll()` sends `showMessageSignal` (server or DB error) and `serverProbablyOffStopRefresh`.
+   *
+   * No DOM is rendered (`pulse-nodisplay`).
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class CheckServerAccessComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
 
     /**
@@ -93,6 +111,10 @@ var pulseConfig = require('pulseConfig');
       // Not here !!! Can be called anywhere else
     }
 
+    /**
+     * Broadcasts a user-visible error message (server or database, depending on `_databaseIsDisconnected`)
+     * via `showMessageSignal`, sets `_serverProbablyOff = true`, and fires `serverProbablyOffStopRefresh`.
+     */
     displayErrorAndStopAll () {
       // No display but send message for outside display
 
@@ -119,10 +141,21 @@ var pulseConfig = require('pulseConfig');
       //this._databaseIsDisconnected = false; ... Surtout pas ! le restart passe ici
     }
 
+    /**
+     * Polling interval: `currentRefreshSeconds` config * 1000 (default 10 s).
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate () {
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
+    /**
+     * Transient error delay: `freezeMinutes` config in ms, minus 2× `refreshRate`.
+     * This ensures the watchdog re-checks slightly before other components would freeze.
+     *
+     * @returns {number} Delay in ms.
+     */
     get transientErrorDelay () {
       //return Number(1000); // == 1sec // DO NOT USE freezeMinutes == too long *
       let basicFreezeMinutes = this.getConfigOrAttribute('stopRefreshingRate.freezeMinutes', this._defaultTransientErrorDelay / 60 / 1000);
@@ -131,11 +164,22 @@ var pulseConfig = require('pulseConfig');
         - 2 * fastRefreshRate; // To refresh faster than other components = avoid long 'Not Connected' display
     }
 
+    /**
+     * REST endpoint: `Data/Computer/GetLctr?Cache=No`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
       let url = 'Data/Computer/GetLctr?Cache=No'; // was 'Test';
       return url;
     }
 
+    /**
+     * On server success: clears the `NO_SERVER` error message, hides the maintenance overlay,
+     * resets disconnection flags, fires `serverProbablyAvailable`, then transitions to `Stop`.
+     *
+     * @param {*} data
+     */
     manageSuccess (data) {
       // Hide message
       let messageInfo = {

@@ -17,6 +17,31 @@ require('x-clock/x-clock');
 
 (function () {
 
+  /**
+   * `<x-production>` — displays actual vs. target production count for a machine.
+   *
+   * REST endpoint switches based on context:
+   *  - No range (live): `Operation/ProductionMachiningStatus?MachineId=<id>` → uses `NbPiecesDoneDuringShift` / `GoalNowShift`.
+   *  - With range (historical): `Operation/PartProductionRange?GroupId=<id>&Range=<range>` → uses `NbPieces` / `Goal`.
+   *
+   * Renders: "Actual [clock]: N / Target [clock]: N", or a percentage span depending on `productionpercent` config.
+   * Color-codes the actual value by efficiency thresholds (`thresholdredproduction`, `thresholdtargetproduction`).
+   * Forwards `WorkInformations` to `x-workinfo` via `operationChangeEvent` on `machine-id` context.
+   *
+   * `_applyProductionDisplayFromConfig()` switches between three modes:
+   *  - `'true'` (percent): shows percent span only.
+   *  - `'actualonly'`: shows actual count only.
+   *  - default: shows actual + separator + target.
+   * When `manual-display` attribute is present, layout management is delegated to external code.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   period-context  - (optional) event bus context for `dateTimeRangeChangeEvent`
+   *   machine-context - (optional) event bus context for machine selection changes
+   *   manual-display  - (optional) if present, skips internal display mode management
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class productionComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -278,10 +303,22 @@ require('x-clock/x-clock');
         this.element.getAttribute('machine-id'), {});
     }
 
+    /**
+     * Refresh interval: `currentRefreshSeconds` config * 1000 (default 10 s).
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate() {
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
+    /**
+     * REST endpoint: depends on whether `_range` is set.
+     *  - Live: `Operation/ProductionMachiningStatus?MachineId=<id>`
+     *  - Historical: `Operation/PartProductionRange?GroupId=<id>&Range=<range>`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl() {
       let url;
       if (this._range != undefined) {
@@ -297,6 +334,12 @@ require('x-clock/x-clock');
       return url;
     }
 
+    /**
+     * Updates actual/target counts, percentage span, and color efficiency classes.
+     * Also forwards `WorkInformations` to `x-workinfo` via `operationChangeEvent`.
+     *
+     * @param {{ NbPiecesDoneDuringShift?: number, GoalNowShift?: number, NbPieces?: number, Goal?: number, WorkInformations?: Array }} data
+     */
     refresh(data) {
       this._data = data;
       this._content.style.display = '';
@@ -359,6 +402,11 @@ require('x-clock/x-clock');
       }
     }
 
+    /**
+     * Applies `bad-efficiency`, `mid-efficiency`, or `good-efficiency` CSS classes to
+     * `_actualDisplay` and `_percentDisplaySpan` based on `thresholdredproduction` and
+     * `thresholdtargetproduction` config values.
+     */
     _updateColorEfficiency() {
       let nbPiecesDone = undefined;
       let goal = undefined;
@@ -420,10 +468,20 @@ require('x-clock/x-clock');
       }
     }
 
+    /**
+     * Returns `true` if the `manual-display` attribute is present,
+     * meaning display layout is managed by external code.
+     *
+     * @returns {boolean}
+     */
     _isDisplayManagedExternally() {
       return this.element.hasAttribute('manual-display');
     }
 
+    /**
+     * Shows/hides actual, separator, target, and percent elements based on `productionpercent` config
+     * and data availability. Modes: `'true'` (percent only), `'actualonly'`, or default (actual + target).
+     */
     _applyProductionDisplayFromConfig() {
       const mode = this.getConfigOrAttribute('productionpercent');
       const hasActual = !!this._hasActualData;
@@ -453,6 +511,12 @@ require('x-clock/x-clock');
       }
     }
 
+    /**
+     * Toggles `display: none` on an element.
+     *
+     * @param {HTMLElement} element
+     * @param {boolean} visible
+     */
     _setVisible(element, visible) {
       if (!element) {
         return;
@@ -464,6 +528,13 @@ require('x-clock/x-clock');
       this.element.setAttribute('machine-id', event.target.newMachineId);
     }
 
+    /**
+     * Event callback when the date/time range changes.
+     * If the current time is within the new range, clears `_range` (live mode).
+     * Otherwise stores the range (historical mode) and restarts.
+     *
+     * @param {{ target: { daterange: object } }} event
+     */
     onDateTimeRangeChange(event) {
       let newRange = event.target.daterange;
 

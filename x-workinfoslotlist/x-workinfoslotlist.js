@@ -31,10 +31,20 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
 
 
 (function () {
+
   /**
-   * Reason slot list component
+   * `<x-workinfoslotlist>` — list of operation slots (work info) for a machine over a period.
    *
-   * @extends module:pulseComponent~PulseSingleRequestComponent
+   * Fetches `GetListOfOperationSlotV2?Id=<machine-id>&Begin=<begin>&End=<end>` once per period change.
+   * Renders a scrollable list of operation slots with work order, component, and operation labels.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class ReasonSlotListComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**

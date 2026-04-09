@@ -25,9 +25,20 @@ require('x-revisionprogress/x-revisionprogress');
 
 (function () {
 
-    /**
-     * Behavior is similar to x-savereason but constrained to a single open/closed range.
-     */
+  /**
+   * `<x-stopclassification>` — stop reason classification form for a single machine time range.
+   *
+   * Fetches available reasons from `ReasonSelection/Post?MachineId=<id>&Range=<range>` once.
+   * Similar to `x-savereason` but constrained to a single open/closed range.
+   * Renders a reason list with a confirm button; integrates `x-revisionprogress` for save tracking.
+   * Uses `pulseLogin` to restrict editing based on user role.
+   *
+   * Attributes:
+   *   machine-id - (required) integer machine id
+   *   range      - ISO date range string for the stop slot to classify
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
     class StopClassificationComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
         /**
          * Constructor

@@ -13,22 +13,31 @@ var pulseUtility = require('pulseUtility');
 
 (function () {
 
+  /**
+   * `<x-productionstatelegends>` — legend panel for production state categories.
+   *
+   * Identical structure to `x-reasongroups` but uses production state data from `ProductionStateLegend`.
+   * Each item: colored square SVG + display label + alternate compact label (RTD use).
+   * Tooltip on each element shows all individual production states within the category.
+   * Includes 4 empty alignment divs and triggers `.legend-content` resize.
+   * `isVisible` is always true so the legend always fetches.
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class ProductionStateLegendsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
-     * Constructor
-     * 
-     * @param  {...any} args 
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
 
-      // DOM - not here
+      // DOM
       self._content = undefined;
 
       return self;
     }
 
-    get content () { return this._content; } // Optional
+    get content () { return this._content; }
 
     initialize () {
       this.addClass('pulse-text');
@@ -79,15 +88,27 @@ var pulseUtility = require('pulseUtility');
       $(this._content).show();
     }
 
-    // Overload to always refresh value
+    /** Always visible — legend fetches regardless of DOM scroll position. */
     get isVisible () {
       return true;
     }
 
-    getShortUrl () { // Return the Web Service URL here without path
+    /**
+     * REST endpoint: `ProductionStateLegend`
+     *
+     * @returns {string} Short URL without base path.
+     */
+    getShortUrl () {
       return 'ProductionStateLegend';
     }
 
+    /**
+     * Renders the legend: title + one element per production state category.
+     * Each element: colored SVG square + display label (with state tooltip) + alternate label.
+     * Appends 4 empty filler divs for flexbox alignment, then triggers `.legend-content` resize.
+     *
+     * @param {{ Items: Array<{ Color: string, Display: string, ProductionStates: Array<{ Display: string }> }> }} data
+     */
     refresh (data) {
       $(this._content).empty();
 

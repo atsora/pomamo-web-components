@@ -14,6 +14,22 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 
 (function () {
 
+  /**
+   * `<x-reasonsubdetails>` — headless component that fetches all reasons at a given point in time
+   * and opens a popup with the list of alternative reasons via `pulseDetailsPopup.openGenericPopup`.
+   *
+   * Fetches `Reason/AllAt/Get?MachineId=<id>&At=<when>` once (single request).
+   * Skips the first reason in `ReasonAllAtItems` (assumed to be the current primary reason).
+   * Displays `Display`, `Details`, and (in `dev` role) scoring/source metadata per reason.
+   *
+   * Attributes:
+   *   machine-id - (required) integer machine id
+   *   when       - (required) ISO datetime string for the `At` parameter
+   *   clientX    - X position for popup placement (forwarded to `pulseDetailsPopup`)
+   *   clientY    - Y position for popup placement
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class ReasonSubDetailsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
@@ -136,11 +152,22 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
       this.displayError('');
     }
 
+    /**
+     * REST endpoint: `Reason/AllAt/Get?MachineId=<id>&At=<when>`.
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
       return 'Reason/AllAt/Get?MachineId=' + this.element.getAttribute('machine-id')
         + '&At=' + this.element.getAttribute('when');
     }
 
+    /**
+     * Builds the popup content from `data.ReasonAllAtItems` (skipping index 0) and opens it
+     * via `pulseDetailsPopup.openGenericPopup` at the `clientX`/`clientY` position.
+     *
+     * @param {{ ReasonAllAtItems: Array<{ Display: string, Details?: string, Color?: string, Score: number, Source: { Default: boolean, Auto: boolean, Manual: boolean, UnsafeAutoReasonNumber?: number, UnsafeManualFlag?: boolean } }> }} data
+     */
     refresh (data) {
 
       var fillMethod = function (popup, data) {

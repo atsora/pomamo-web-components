@@ -12,22 +12,29 @@ var pulseSvg = require('pulseSvg');
 
 (function () {
 
+  /**
+   * `<x-machinemodecolorlegends>` — legend panel for machine mode colors.
+   *
+   * Identical structure to `x-machinemodelegends` but uses colored square SVGs
+   * (via `pulseSvg.createColoredLegend(item.Color)`) instead of mode-class icons.
+   * Fetches `MachineModeColorLegend/Get`.
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class machinemodecolorlegendsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
-     * Constructor
-     * 
-     * @param  {...any} args 
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
 
-      // DOM - not here
+      // DOM
       self._content = undefined;
 
       return self;
     }
 
-    get content () { return this._content; } // Optional
+    get content () { return this._content; }
 
     initialize () {
       this.addClass('pulse-text');
@@ -78,15 +85,26 @@ var pulseSvg = require('pulseSvg');
       $(this._content).show();
     }
 
-    // Overload to always refresh value
+    /** Always visible — legend fetches regardless of DOM scroll position. */
     get isVisible () {
       return true;
     }
 
-    getShortUrl () { // Return the Web Service URL here without path
+    /**
+     * REST endpoint: `MachineModeColorLegend/Get`
+     *
+     * @returns {string} Short URL without base path.
+     */
+    getShortUrl () {
       return 'MachineModeColorLegend/Get';
     }
 
+    /**
+     * Renders the legend: title + one element per item (colored square SVG + display label).
+     * Appends 4 empty filler divs for flexbox alignment, then triggers `.legend-content` resize.
+     *
+     * @param {{ Items: Array<{ Color: string, Display: string }> }} data
+     */
     refresh (data) {
       $(this._content).empty();
 

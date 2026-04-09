@@ -17,21 +17,23 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-shiftslotbar> to display an shiftslotbar bar component. This tag gets following attribute :
- *  height : Integer
- *  period-context : String
- *  range : String 'begin;end' (optional)
- *  click : action on click (none/details/popup/change)
- *  showdetails: details to display after click - default in config
- *  showpopup: details to display in popup after click - default in config
- */
 (function () {
 
   /**
-   * Shift slot bar component
+   * `<x-shiftslotbar>` — timeline bar showing shift slots over a period.
    *
-   * @extends module:pulseComponent~PulseParamAutoPathRefreshingComponent
+   * Polls `GetListOfShiftSlot?Begin=<begin>&End=<end>` at `currentRefreshSeconds` interval.
+   * Renders colored segments for each shift; clicking opens the shift details popup.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context`.
+   *
+   * Attributes:
+   *   height         - (optional) integer pixel height of the bar
+   *   period-context - event bus context for `dateTimeRangeChangeEvent`
+   *   range          - (optional) ISO date range string `begin;end`
+   *   showdetails    - (optional) details page to open on click (from config)
+   *   showpopup      - (optional) popup details to open on click (from config)
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ShiftSlotBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**

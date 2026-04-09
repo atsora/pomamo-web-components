@@ -14,6 +14,20 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-machinedisplay>` — displays the name of a machine or group.
+   *
+   * Fetches `Machine/Name?MachineId=<id>` or `Machine/Name?GroupId=<group>` once on init.
+   * Renders `data.Display` (fallback `data.Name`) into `.machinedisplay-data`.
+   * Listens to `machineIdChangeSignal` on `machine-context` to track dynamic machine selection.
+   *
+   * Attributes:
+   *   machine-id      - integer machine id (takes priority over group)
+   *   group           - group id (used if machine-id absent)
+   *   machine-context - (optional) event bus context for machine selection changes
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class MachineDisplayComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
@@ -119,6 +133,11 @@ var eventBus = require('eventBus');
       this.switchToNextContext();
     }
 
+    /**
+     * REST endpoint: `Machine/Name?MachineId=<id>` or `Machine/Name?GroupId=<group>`.
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
       let url = 'Machine/Name';
       if (this.element.hasAttribute('machine-id')) {
@@ -137,6 +156,11 @@ var eventBus = require('eventBus');
       return url;
     }
 
+    /**
+     * Renders the machine/group display name. Uses `data.Display` with fallback to `data.Name`.
+     *
+     * @param {{ Display?: string, Name: string }} data
+     */
     refresh (data) {
       if (!pulseUtility.isNotDefined(data.Display))
         $(this._dataElement).html(data.Display);
@@ -157,7 +181,11 @@ var eventBus = require('eventBus');
       this.displayError('');
     }
 
-    // Callback events
+    /**
+     * Event callback when the selected machine changes: updates `machine-id` attribute and restarts.
+     *
+     * @param {{ target: { newMachineId: number } }} event
+     */
     onMachineIdChange (event) {
       this.element.setAttribute('machine-id', event.target.newMachineId);
     }

@@ -14,6 +14,19 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-currenticonnextstop>` — icon showing whether the machine has an imminent programmed stop.
+   *
+   * Polls `CycleProgress?MachineId=<id>&Light=true&IncludeEvents=true` at `currentRefreshSeconds` interval.
+   * Displays a stop icon when the cycle progress data indicates a next stop event is approaching.
+   * Listens to `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class CurrentIconNextStopComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

@@ -16,28 +16,20 @@ var pulseService = require('pulseService');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-performancebar> to display a performance bar component. This tag gets following attribute :
- *  machine-id : Integer
- *  height : Integer
- *  period-context : String
- *  range : String 'begin;end'
- *  motion-context
- *
- */
 (function () {
 
-  // Create a horizontal gauge
-  // width: width of the gauge
-  // height: height of the gauge
-  // segments: array made of
-  // {
-  //   minPercent: min position X of the segment
-  //   maxPercent: max position X of the segment
-  //   color or colors: either a unique color or an array of colors to define a conical gradient (color format #XXXXXX)
-  // }
-  // ticks: array of values for displaying ticks (in percent), can be null
-  // margin: {left: ..., right: ..., top: ..., bottom: ...}
+  /**
+   * Creates a horizontal SVG gauge bar with rounded-corner segments and optional tick marks.
+   *
+   * @param {number} width - Total SVG width in pixels.
+   * @param {number} height - Total SVG height in pixels.
+   * @param {Array<{minPercent: number, maxPercent: number, color?: string, colors?: string[]}>} segments
+   *   Each segment spans from `minPercent` to `maxPercent` ([0,1]). `color` is a single fill;
+   *   `colors` is an array for left-to-right linear gradient sub-segments.
+   * @param {number[]|null} ticks - Tick mark positions as fractions [0,1], or null for no ticks.
+   * @param {{left: number, right: number, top: number, bottom: number}} margin - Inner margin in pixels.
+   * @returns {SVGSVGElement|null} The created SVG element, or null if `segments` is empty.
+   */
   var gradientNumber = 0;
   function createHorizontalGauge (width, height, segments, ticks, margin) {
     if (segments == null || segments.length == 0)
@@ -186,6 +178,26 @@ var eventBus = require('eventBus');
     return svg;
   }
 
+  /**
+   * `<x-performancebar>` — horizontal bar gauge showing machine utilization percentage for a time range.
+   *
+   * Fetches `Utilization/Get?MachineId=<id>&Range=<range>` and also (once per machine) fetches
+   * `UtilizationTarget/Get?MachineId=<id>` to obtain the performance target percentage.
+   * The gauge is drawn by `_draw()` using `createHorizontalGauge()`: a color gradient (red→orange→yellow→green)
+   * split at the target percentage when available, with a triangular cursor at the current utilization position.
+   * Dispatches `motionChangeEvent` on `motion-context` after each refresh (also on error/failure with empty payload).
+   * Listens to `dateTimeRangeChangeEvent` (on `period-context` or globally) to update the time range.
+   *
+   * Attributes:
+   *   machine-id     - (required) integer machine id
+   *   height         - bar height in pixels (default from `performancebar.height` config or 60)
+   *   period-context - event bus context for date range events
+   *   range          - `'begin;end'` date range string (alternative to period-context)
+   *   motion-context - event bus context for dispatching `motionChangeEvent`
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class PerformanceBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -209,11 +221,15 @@ var eventBus = require('eventBus');
 
     get content () { return this._content; } // Optional
 
+    /** Stores the given date range for use in the next REST request. */
     _setRange (range) {
       this._range = range;
-      //this.start(); ???
     }
 
+    /**
+     * Reads `performancebar.height` config/attribute and stores the validated pixel height in `_height`.
+     * Minimum 5 px; default 60 px.
+     */
     _setHeight () {
       let minHeight = 5;
       let defaultHeight = 60;
@@ -230,10 +246,17 @@ var eventBus = require('eventBus');
       }
     }
 
+    /** Removes the existing `.performancebar-svg` without drawing a new one (used on error). */
     _drawEmpty () { /* To clean the bar */
       $(this._content).find('.performancebar-svg').remove(); // Remove Old SVG
     }
 
+    /**
+     * Redraws the full performance gauge SVG.
+     * Removes the existing `.performancebar-svg`, builds a new gradient gauge (split at target percentage
+     * if available), and appends a triangular cursor positioned at `_percent`.
+     * When target is not yet loaded (`_targetIsUpdated === false`), uses a full-range gradient.
+     */
     _draw () {
       $(this._content).find('.performancebar-svg').remove(); // Remove Old SVG
 
@@ -538,25 +561,34 @@ var eventBus = require('eventBus');
       $(this._messageSpan).html('');
     }
 
+    /**
+     * Refresh interval: `barSlowUpdateMinutes` config * 60000 (default 5 min).
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate () {
-      /*
-    if (((new Date(self._rangeBegin)).getTime() - new Date().getTime()) < 3600 * 1000) { // less than 1h display => refresh more often
-      return self._updateDelay / 5 * 1000;
-    }else*/
-
       return 1000 * 60 * Number(this.getConfigOrAttribute('refreshingRate.barSlowUpdateMinutes', 5));
     }
 
+    /** AJAX success callback for `UtilizationTarget/Get`: stores the target percentage and redraws. */
     _perfSuccess (data) {
       this._targetpercentage = data.TargetPercentage;
       this._targetIsUpdated = true;
       this._draw();
     }
+    /** AJAX error callback for `UtilizationTarget/Get`: no-op (target remains undefined). */
     _perfError (errorMessage) {
     }
+    /** AJAX failure callback for `UtilizationTarget/Get`: no-op. */
     _perfFailed (url, isTimeout, xhrStatus) {
     }
 
+    /**
+     * REST endpoint: `Utilization/Get?MachineId=<id>&Range=<range>`.
+     * Also fires a one-time `UtilizationTarget/Get` AJAX call (via `pulseService`) when target is not yet loaded.
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
       // Target URL
       if (!this._targetIsUpdated) {
@@ -575,6 +607,12 @@ var eventBus = require('eventBus');
       return url;
     }
 
+    /**
+     * Computes `_percent` from `MotionDuration / (MotionDuration + NotRunningDuration)`,
+     * dispatches `motionChangeEvent` on `motion-context`, and redraws the gauge.
+     *
+     * @param {{ MotionDuration: number, NotRunningDuration: number }} data
+     */
     refresh (data) {
       let context = this.element.getAttribute('motion-context');
       if (this.element.hasAttribute('machine-id')) {

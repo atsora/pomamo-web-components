@@ -32,10 +32,21 @@ require('x-revisionprogress/x-revisionprogress');
 
 
 (function () {
+
   /**
-   * Reason slot list component
+   * `<x-reasonslotlist>` — list of reason slots for a machine in a period with stop-classification editing.
    *
-   * @extends module:pulseComponent~PulseSingleRequestComponent
+   * Fetches `ReasonOnlySlots?MachineId=<id>&Range=<range>&SelectableOption=true` once per period change.
+   * Renders a scrollable list of reason slots with color indicators, durations, and reason labels.
+   * Allows editing each slot via `x-savereason` dialog opened through `pulseCustomDialog`.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class ReasonSlotListComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**

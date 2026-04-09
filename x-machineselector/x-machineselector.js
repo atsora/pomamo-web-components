@@ -17,11 +17,21 @@ var pulseLogin = require('pulseLogin');
 var eventBus = require('eventBus');
 
 (function () {
+  /**
+   * `<x-machineselector>` — `<select>` dropdown populated from the full machine list.
+   *
+   * Fetches `Machine/Groups?MachineList=true` once on init.
+   * Stores machines in an internal `Map([id] → { display, sortpriority })`.
+   * Selecting an option dispatches `machineIdChangeSignal` on the `machine-context` attribute context.
+   *
+   * Attributes:
+   *   machine-context - (required) event bus context to dispatch machine selection changes
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class MachineSelectorComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
-     * Constructor
-     * 
-     * @param  {...any} args 
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -88,14 +98,22 @@ var eventBus = require('eventBus');
       //this._disable(message);
     }
 
-    // Return the Web Service URL here
+    /**
+     * REST endpoint: `Machine/Groups?MachineList=true`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
       let url = 'Machine/Groups?MachineList=true'; // Not needed Zoom=true
       // Login is set in global service call
       return url;
     }
 
-    // Update the component with data which is returned by the web service in case of success
+    /**
+     * Stores machines and groups from the response, then populates the `<select>`.
+     *
+     * @param {{ GroupCategories: Array, MachineList: Array<{ Id: number, Display: string, DisplayPriority: number }> }} data
+     */
     refresh (data) {
       // Store lists of available categories (=groups)
       this._groups = data.GroupCategories;
@@ -110,6 +128,10 @@ var eventBus = require('eventBus');
     // FUNCTIONS FOR UPDATING Machine List //
     /////////////////////////////////////////
 
+    /**
+     * Rebuilds `_machines` map from `_machinesFromService`.
+     * Keys are machine IDs as strings; values are `{ display, sortpriority }`.
+     */
     _storeMachines () {
       this._machines.clear();
 
@@ -123,7 +145,11 @@ var eventBus = require('eventBus');
 
     }
 
-    // Fill machines list
+    /**
+     * Populates the `<select>` element from `_machines` map.
+     * Auto-selects index 0 and dispatches initial selection via `_selectOption()`.
+     * Binds click handler on each `<option>` to re-dispatch on manual change.
+     */
     _fillMachinesList () {
       if (this._machinesSelector == undefined)
         return;
@@ -148,6 +174,10 @@ var eventBus = require('eventBus');
         }.bind(this));
     }
 
+    /**
+     * Reads the currently selected `<option>` value and dispatches `machineIdChangeSignal`
+     * on the `machine-context` event bus context.
+     */
     _selectOption () {
       let context = this.element.getAttribute('machine-context');
       let index = this._machinesSelector[0].options.selectedIndex;

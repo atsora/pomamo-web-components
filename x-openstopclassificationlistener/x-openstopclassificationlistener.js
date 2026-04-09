@@ -16,9 +16,20 @@ var pulseConfig = require('pulseConfig');
 var eventBus = require('eventBus');
 
 (function () {
-    /**
-     * Headless helper that listens for reasonStatusCurrentChange events and opens the Stop Classification dialog
-     */
+
+  /**
+   * `<x-openstopclassificationlistener>` — headless component that automatically opens the stop classification dialog.
+   *
+   * Listens for `reasonStatusCurrentChange` events on the event bus and automatically opens
+   * the stop classification popup via `pulseDetailsPopup` when the machine stops without a reason.
+   * Prevents re-opening the dialog too quickly after it was last closed (debounce via `_lastDialogCloseTime`).
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
     class OpenStopClassificationListener extends pulseComponent.PulseParamInitializedComponent {
         constructor(...args) {
             const self = super(...args);

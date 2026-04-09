@@ -14,6 +14,23 @@ var pulseSvg = require('pulseSvg');
 var pulseConfig = require('pulseConfig');
 
 (function () {
+  /**
+   * `<x-cycletask>` — donut/pie-chart progress widget for the current task instance of a machine.
+   *
+   * Polls `graphql` (POST) with `taskInstanceByMachineId(machineId)` query every `currentRefreshSeconds`.
+   * Renders a two-ring SVG donut:
+   *  - Outer ring (`_taskStateRing`): always full, colored grey (no task), white (in progress), or red (overdue).
+   *  - Inner ring (`_taskProgressRing`): fills proportionally with elapsed time while the task is in progress.
+   * Center text: top line = task name (truncated with ellipsis), bottom line = live countdown timer updated every second.
+   *
+   * The live timer loop (`_updateTaskTimerAndSchedule`) runs independently of the REST poll cycle.
+   * Server time offset is read from `diffServerTimeMinusNowMSec` config at each draw cycle.
+   *
+   * Attributes:
+   *   machine-id - (required) integer machine id; restart triggered on change
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class CycleTaskComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -57,6 +74,7 @@ var pulseConfig = require('pulseConfig');
       return self;
     }
 
+    /** Removes all child nodes from `element`. No-op if `element` is undefined. */
     _removeAllChildren (element) {
       if (pulseUtility.isNotDefined(element)) {
         return;
@@ -66,6 +84,10 @@ var pulseConfig = require('pulseConfig');
       }
     }
 
+    /**
+     * Sets `textContent` of the first element matching `selector` within this component.
+     * Converts `text` to string; uses empty string when `text` is undefined/null.
+     */
     _setTextContent (selector, text) {
       let el = this.element.querySelector(selector);
       if (!el) {
@@ -74,6 +96,7 @@ var pulseConfig = require('pulseConfig');
       el.textContent = pulseUtility.isNotDefined(text) ? '' : String(text);
     }
 
+    /** Clears `display` style on the first element matching `selector`, making it visible. */
     _showElement (selector) {
       let el = this.element.querySelector(selector);
       if (!el) {
@@ -82,6 +105,15 @@ var pulseConfig = require('pulseConfig');
       el.style.display = '';
     }
 
+    /**
+     * Truncates an SVG `<text>` element's content with a trailing `…` so it fits within `maxWidth` pixels.
+     * Uses binary search on `getComputedTextLength()` for efficiency.
+     * No-op if the element is undefined, `fullText` is undefined, or `maxWidth <= 0`.
+     *
+     * @param {SVGTextElement} textElement - SVG text node to truncate.
+     * @param {string} fullText - Original (untruncated) text.
+     * @param {number} maxWidth - Maximum allowed rendered width in pixels.
+     */
     _applyEllipsisToSvgText(textElement, fullText, maxWidth) {
       if (pulseUtility.isNotDefined(textElement)
         || pulseUtility.isNotDefined(fullText)
@@ -138,6 +170,10 @@ var pulseConfig = require('pulseConfig');
       textElement.textContent = (best > 0 ? original.slice(0, best) : '') + ellipsis;
     }
 
+    /**
+     * Removes all classes in `knownClasses` from `circle.classList`, then adds `classToAdd` (if non-empty).
+     * Used to switch state/progress ring CSS classes exclusively.
+     */
     _setExclusiveClass(circle, knownClasses, classToAdd) {
       if (pulseUtility.isNotDefined(circle) || pulseUtility.isNotDefined(circle.classList)) {
         return;
@@ -152,6 +188,7 @@ var pulseConfig = require('pulseConfig');
       }
     }
 
+    /** Updates the CSS class on `_taskStateRing` based on the current task state relative to `serverNow`. */
     _applyTaskStateRingClass(serverNow) {
       this._setExclusiveClass(
         this._taskStateRing,
@@ -160,6 +197,7 @@ var pulseConfig = require('pulseConfig');
       );
     }
 
+    /** Updates the CSS class on `_taskProgressRing` based on whether a task is currently in progress. */
     _applyTaskProgressRingClass(serverNow) {
       this._setExclusiveClass(
         this._taskProgressRing,
@@ -173,6 +211,15 @@ var pulseConfig = require('pulseConfig');
       return 1;
     }
 
+    /**
+     * Returns the CSS class for the state ring based on task timing:
+     * `'cycletask-taskstate-none'` (no task or future task),
+     * `'cycletask-taskstate-inprogress'` (within start–end window),
+     * `'cycletask-taskstate-negative'` (past end time).
+     *
+     * @param {Date} serverNow - Current server-adjusted time.
+     * @returns {string} CSS class name.
+     */
     _getTaskStateRingClass (serverNow) {
       if (pulseUtility.isNotDefined(this._taskStartDateTime)
         || pulseUtility.isNotDefined(this._taskEndDateTime)) {
@@ -194,6 +241,13 @@ var pulseConfig = require('pulseConfig');
       return 'cycletask-taskstate-none';
     }
 
+    /**
+     * Returns `'cycletask-taskprogress-active'` when `serverNow` is within the task start–end window,
+     * otherwise `'cycletask-taskprogress-empty'`.
+     *
+     * @param {Date} serverNow - Current server-adjusted time.
+     * @returns {string} CSS class name.
+     */
     _getTaskProgressRingClass (serverNow) {
       if (pulseUtility.isNotDefined(this._taskStartDateTime)
         || pulseUtility.isNotDefined(this._taskEndDateTime)) {
@@ -208,6 +262,12 @@ var pulseConfig = require('pulseConfig');
       return 'cycletask-taskprogress-empty';
     }
 
+    /**
+     * Updates `_taskStateRing` dash-array (always full) and re-applies its CSS state class.
+     * No-op if `_taskStateRing` is not yet initialized.
+     *
+     * @param {Date} serverNow - Current server-adjusted time.
+     */
     _updateTaskStateRing (serverNow) {
       if (pulseUtility.isNotDefined(this._taskStateRing)) {
         return;
@@ -218,6 +278,12 @@ var pulseConfig = require('pulseConfig');
       this._applyTaskStateRingClass(serverNow);
     }
 
+    /**
+     * Updates `_taskProgressRing` dash-array with `elapsed / total` progress ratio and re-applies its CSS class.
+     * Progress is clamped to [0, 1]. No-op if `_taskProgressRing` is not yet initialized.
+     *
+     * @param {Date} serverNow - Current server-adjusted time.
+     */
     _updateTaskProgressRing (serverNow) {
       if (pulseUtility.isNotDefined(this._taskProgressRing)) {
         return;
@@ -240,6 +306,11 @@ var pulseConfig = require('pulseConfig');
       this._applyTaskProgressRingClass(serverNow);
     }
 
+    /**
+     * Updates both rings and the center countdown text, then schedules itself to run again in 1 second.
+     * Stops the previous timer before rescheduling to prevent duplicate timers.
+     * Displays `Loading` when no task instance exists; a formatted countdown otherwise.
+     */
     _updateTaskTimerAndSchedule () {
       this._stopDashTimeRefreshTimer();
 
@@ -280,6 +351,7 @@ var pulseConfig = require('pulseConfig');
         1000);
     }
 
+    /** Clears `_dashTimeRefreshTimer` and sets it to `null`. */
     _stopDashTimeRefreshTimer() {
       if (this._dashTimeRefreshTimer) {
         clearTimeout(this._dashTimeRefreshTimer);
@@ -287,6 +359,12 @@ var pulseConfig = require('pulseConfig');
       }
     }
 
+    /**
+     * Formats a signed `seconds` value as `Ns` (< 60 s) or `±H:MM` (>= 60 s) and writes it
+     * into the `.time-in-pie` SVG text element via `_setTextContent`.
+     *
+     * @param {number} seconds - Seconds remaining (negative = overdue).
+     */
     _translateSecondsToTextAndDisplay(seconds) {
       if (Math.abs(seconds) < 60) {
         let text = seconds + 's';
@@ -309,6 +387,14 @@ var pulseConfig = require('pulseConfig');
       }
     }
 
+    /**
+     * Appends two SVG `<text>` elements to `svg`: a top label (task name, bold, ellipsis-truncated)
+     * and a bottom label (timer placeholder with class `time-in-pie`, updated by `_updateTaskTimerAndSchedule`).
+     *
+     * @param {SVGSVGElement} svg - Target SVG element.
+     * @param {string} topTextToDisplay - Task name for the top line.
+     * @param {string} bottomTextToDisplay - Initial text for the bottom line (typically empty).
+     */
     _createTextInTheMiddle(svg, topTextToDisplay, bottomTextToDisplay) {
       // Show text + positions -> GROUP
       let middleAvailableWidth = Math.sqrt(2 * this._middleRadius * this._middleRadius);
@@ -393,6 +479,10 @@ var pulseConfig = require('pulseConfig');
       svg.appendChild(bottomTextGroup);
     }
 
+    /**
+     * Stops the live timer and resets all task-related state to defaults:
+     * clears task name, start/end dates, ring references, and reads `diffServerTimeMinusNowMSec` config.
+     */
     _restoreDefaultValues() {
       this._stopDashTimeRefreshTimer();
       this._dashTimeRefreshTimer = null;
@@ -407,6 +497,11 @@ var pulseConfig = require('pulseConfig');
       this._diffServerTimeMinusNowMSec = pulseConfig.getInt('diffServerTimeMinusNowMSec', 0);
     }
 
+    /**
+     * Rebuilds the SVG donut from scratch: removes existing `.cycletask-svg`, creates two rings
+     * (`_taskStateRing`, `_taskProgressRing`), the center hole circle, and calls
+     * `_createTextInTheMiddle()` + `_updateTaskTimerAndSchedule()`.
+     */
     _draw() {
       // Clean SVG
       if ((this._pie == undefined) || (this._pie == null)) {
@@ -549,14 +644,30 @@ var pulseConfig = require('pulseConfig');
       }
     }
 
+    /**
+     * Refresh interval: `currentRefreshSeconds` config * 1000 (default 10 s).
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate() {
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
+    /**
+     * GraphQL endpoint path.
+     *
+     * @returns {string} `'graphql'`
+     */
     getShortUrl() {
       return 'graphql';
     }
 
+    /**
+     * POST body for the GraphQL request: `taskInstanceByMachineId(machineId)` query
+     * returning `start`, `end`, and `taskTemplate { name }`.
+     *
+     * @returns {{ query: string, variables: { machineId: string } }}
+     */
     postData() {
       let request = `query ($machineId: ID!) { taskInstanceByMachineId(machineId: $machineId) { start end taskTemplate { name } } }`;
       return {
@@ -567,6 +678,15 @@ var pulseConfig = require('pulseConfig');
       };
     }
 
+    /**
+     * Processes the GraphQL response.
+     * Extracts `taskInstanceByMachineId` (or `taskInstance`) from `data.data` or `data` directly.
+     * When no task instance: resets to defaults and redraws empty donut.
+     * When task data changed: resets, stores new name/start/end, and redraws.
+     * When task data unchanged: no-op (avoids unnecessary redraws and timer restarts).
+     *
+     * @param {{ data: { taskInstanceByMachineId?: { start: string, end: string, taskTemplate: { name: string } } } }} data
+     */
     refresh(data) {
       // GraphQL responses typically are: { data: { taskInstanceByMachineId: { start, end, taskTemplate: { name } } } }
       let taskInstance = null;

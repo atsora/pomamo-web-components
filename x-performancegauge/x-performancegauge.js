@@ -16,15 +16,6 @@ var pulseService = require('pulseService');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-performancegauge> to display a performance bar component. This tag gets following attribute :
- *  machine-id : Integer
- *  radius : Integer
- *  period-context : String
- *  range : String 'begin;end'
- *  motion-context
- *
- */
 (function () {
 
   // Create a circular gauge
@@ -156,6 +147,23 @@ var eventBus = require('eventBus');
     return svg;
   }
 
+  /**
+   * `<x-performancegauge>` — circular SVG gauge showing machine utilization performance vs. target.
+   *
+   * Polls `UtilizationTarget/Get?MachineId=<id>` once to fetch the target percentage, then polls
+   * `MachineUtilization?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval for actual data.
+   * Renders a `createCircularGauge` SVG donut with the utilization ratio overlaid on the target arc.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   radius          - (optional) integer pixel radius of the gauge
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *   range           - (optional) ISO date range string `begin;end`
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class PerformanceGaugeComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

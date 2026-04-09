@@ -14,6 +14,15 @@ var pulseUtility = require('pulseUtility');
 
 (function () {
 
+  /**
+   * `<x-validatetoken>` — validates a user authentication token or two-factor code.
+   *
+   * Calls `User/ValidateAuthenticationCode` via `pulseService` to verify the submitted token.
+   * Renders a token input field and a confirm button. On success, stores the validated session
+   * via `pulseLogin` and redirects to the appropriate page.
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class ValidateTokenComponent extends pulseComponent.PulseParamInitializedComponent {
     //PulseParamAutoPathSingleRequestComponent { Can not be used ! Only ONE call to service
     /**

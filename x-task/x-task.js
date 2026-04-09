@@ -16,7 +16,18 @@ var pulseUtility = require('pulseUtility');
 (function () {
 
   /**
+   * `<x-task>` — displays and manages a task instance for a machine via GraphQL.
    *
+   * Queries `graphql` with `{ allTaskInstances(machineId: $machineId) { id start end result taskTemplate { name } } }`
+   * at `currentRefreshSeconds` interval.
+   * Renders the task name, start/end time, and completion status; allows updating the task result.
+   * Listens to `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class TaskComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**

@@ -14,24 +14,28 @@ var pulseUtility = require('pulseUtility');
 require('x-datepicker/x-datepicker');
 require('x-datetimepicker/x-datetimepicker');
 
-/**
- * Build a custom tag <x-reportdatetime>
- * Used by report web app
- *
- * Parameters :
- * groupDisplayForm = DATERANGE
- * groupName. ex =
- * dataType = DATE or DATETIME
- * webapp. Ex : Last_1_day IN
- * webappname IN
- * mindate IN
- * mindatename IN
- * maxdate IN
- * maxdatename IN
- */
-
 (function () {
 
+  /**
+   * `<x-reportdatetime>` — date/datetime range selector widget for report pages.
+   *
+   * Fetches time range presets from the server via `Time/PastRange/<n>_<unit>` or date-range endpoints.
+   * Renders date/datetime pickers and preset buttons (e.g. "last day", "last week") for report filtering.
+   * Used by report web app pages to select the report period.
+   *
+   * Attributes:
+   *   groupDisplayForm - display form type (e.g. `'DATERANGE'`)
+   *   groupName        - (optional) parameter group name
+   *   dataType         - `'DATE'` or `'DATETIME'`
+   *   webapp           - preset value (e.g. `'Last_1_day'`)
+   *   webappname       - display name for the preset
+   *   mindate          - (optional) minimum selectable date
+   *   mindatename      - (optional) parameter name for minimum date
+   *   maxdate          - (optional) maximum selectable date
+   *   maxdatename      - (optional) parameter name for maximum date
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class ReportDateTimeComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

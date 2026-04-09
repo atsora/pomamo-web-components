@@ -17,22 +17,24 @@ var pulseComponent = require('pulsecomponent');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-cncalarmbar> to display a cncalarmbar bar component. This tag gets following attribute :
- *  machine-id : Integer
- *  height : Integer
- *  period-context : String (optional)
- *  range : String 'begin;end' (optional)
- *  REMOVED click : action on click (none/details/popup/change)
- *  showdetails: details to display after click - default in config
- *  showpopup: details to display in popup after click - default in config
- */
 (function () {
 
   /**
-   * Running slot bar component
+   * `<x-cncalarmbar>` — timeline bar showing CNC alarm color slots for a machine over a period.
    *
-   * @extends module:pulseComponent~PulseParamAutoPathRefreshingComponent
+   * Polls `CncAlarm/Color?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
+   * Renders colored segments on a horizontal bar; clicking a segment opens the alarm details popup.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   height          - (optional) integer pixel height of the bar
+   *   period-context  - (optional) event bus context for `dateTimeRangeChangeEvent`
+   *   range           - (optional) ISO date range string `begin;end`
+   *   showdetails     - (optional) details page to open on click (from config)
+   *   showpopup       - (optional) popup details to open on click (from config)
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CncAlarmBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**

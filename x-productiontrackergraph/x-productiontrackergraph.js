@@ -15,6 +15,22 @@ var eventBus = require('eventBus');
 const Chart = require('chart.js/auto');
 
 (function () {
+
+  /**
+   * `<x-productiontrackergraph>` — Chart.js graph showing production tracking data over a period.
+   *
+   * Polls `ProductionTracker?GroupId=<group>&Range=<range>` at `currentRefreshSeconds` interval.
+   * Renders a line or bar chart with actual vs. goal production quantities using Chart.js.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   group           - (optional) group id for filtering
+   *   machine-id      - (optional) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class ProductionTrackerGraphComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

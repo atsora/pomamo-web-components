@@ -12,11 +12,21 @@ var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-sequencebar> to display currently running sequence bar information.
- */
 (function () {
 
+  /**
+   * `<x-sequencebar>` — bar showing the currently running sequence progress for a machine.
+   *
+   * Polls `CycleProgress?MachineId=<id>&IncludeEvents=false` at `currentRefreshSeconds` interval.
+   * Renders a horizontal bar with the current sequence name and elapsed/expected time indicators.
+   * Listens to `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class SequenceBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

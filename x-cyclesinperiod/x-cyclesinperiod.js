@@ -20,13 +20,22 @@ var eventBus = require('eventBus');
 
 require('x-saveserialnumber/x-saveserialnumber');
 
-/*
- *This tag is used to display previous cycles with serial number and workinformations. It can take following attribute:
- *  - machine-id : id of given machine
- *  - range
- */
 (function () {
 
+  /**
+   * `<x-cyclesinperiod>` — table of machine cycles within a datetime range, with serial number editing.
+   *
+   * Fetches `GetCyclesWithWorkInformationsInPeriodV2?Id=<machine-id>&Begin=<begin>&End=<end>` once.
+   * Renders a table with one row per cycle showing begin/end, work info, and serial number.
+   * Clicking a serial number opens an `x-saveserialnumber` dialog via `pulseCustomDialog`.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `modificationEvent` for live updates.
+   *
+   * Attributes:
+   *   machine-id     - (required) integer machine id
+   *   period-context - event bus context for `dateTimeRangeChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class CyclesInPeriodComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

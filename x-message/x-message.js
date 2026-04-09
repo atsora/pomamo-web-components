@@ -13,24 +13,32 @@ var pulseSvg = require('pulseSvg');
 var pulseUtility = require('pulseUtility');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-message> to display a floating message.
- *  
- * Listen messages on context : 'MESSAGE'
- * 
- * var messageInfo = {
-        'id': {String} to allow remove and avoid duplicated messages 
-        'message': {String} 'Message to display',
-        'time' : {Integer} time duration to display the message in second. (default permanent)
-        'level': {String} 'error' | 'warning' | 'info'| 'default'
-        'clickToClose' {Boolean} : Tells if user may click on panel to close it. Default = false
-        'reloadURL' {String} : New URL to use to reload page. Default = no reload
-        'internalLAT': internal message to explain where it comes from
-      };
-   eventBus.EventBus.dispatchToAll('showMessageSignal', messageInfo);
- */
 (function () {
 
+  /**
+   * `<x-message>` — floating notification panel driven entirely by the event bus.
+   *
+   * Listens globally to:
+   *  - `showMessageSignal` — creates or updates a message alert with the given info.
+   *  - `clearMessageSignal` — removes the message with the matching `id`.
+   *
+   * Message info shape:
+   * ```js
+   * {
+   *   id:          string,   // deduplication key; updating replaces text in-place
+   *   message:     string,   // HTML content; `\n` converted to `<br>`
+   *   time:        number,   // seconds before auto-dismiss (omit for permanent)
+   *   level:       string,   // 'error' | 'warning' | 'info' | 'default'
+   *   clickToClose: boolean, // if true, shows a close button and binds click-to-remove
+   *   reloadURL:   string,   // if set, appends a reload `<a>` link
+   *   internalLAT: string,   // hidden debug span (visible in DOM, not styled)
+   * }
+   * ```
+   *
+   * On init, also checks `loginError` config and displays it if set.
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class MessageComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
@@ -114,10 +122,11 @@ var eventBus = require('eventBus');
     }
 
     /**
-     * @function showMessage
-     * 
-     * @param data including show header for details
+     * Creates or updates a message alert element inside `.xmessage`.
+     * If a message with the same `data.id` already exists, updates its text in place.
+     * Otherwise creates a new `.message-alert` div with the appropriate level class.
      *
+     * @param {{ id?: string, message?: string, level?: string, time?: number, clickToClose?: boolean, reloadURL?: string, internalLAT?: string }} data
      */
     showMessage (data) {
       console.log('component x-message showMessage function!');
@@ -228,6 +237,11 @@ var eventBus = require('eventBus');
       }
     }
 
+    /**
+     * Removes the message alert element with the given `id` attribute.
+     *
+     * @param {string} id
+     */
     clearMessage (id) {
       if (id) {
         // if a message with same id already exists, remove it
@@ -242,16 +256,26 @@ var eventBus = require('eventBus');
       }
     }
 
+    /** Removes all message alert elements from the container. */
     clearAllMessage () {
       $('message-alert').remove();
     }
 
-    // Callback events
+    /**
+     * Event bus callback for `showMessageSignal`. Delegates to `showMessage`.
+     *
+     * @param {{ target: object }} event
+     */
     onShowMessage (event) {
       let data = event.target;
       this.showMessage(data);
     }
 
+    /**
+     * Event bus callback for `clearMessageSignal`. Delegates to `clearMessage(data.id)`.
+     *
+     * @param {{ target: { id: string } }} event
+     */
     onClearMessage (event) {
       let data = event.target;
       this.clearMessage(data.id);

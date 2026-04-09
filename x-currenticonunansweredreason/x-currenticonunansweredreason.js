@@ -15,6 +15,20 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-currenticonunansweredreason>` — icon indicator for unanswered stop reasons on a machine.
+   *
+   * Polls `ReasonUnanswered?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
+   * Displays a warning icon when the machine has stops without an assigned reason in the period.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class CurrentIconUnansweredReasonComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

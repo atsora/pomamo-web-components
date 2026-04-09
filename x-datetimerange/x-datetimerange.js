@@ -21,11 +21,22 @@ var pulseComponent = require('pulsecomponent');
 
 require('x-datetimepicker/x-datetimepicker');
 
-/**
- * Build a custom tag <x-datetimerange> with attributes
- */
 (function () {
 
+  /**
+   * `<x-datetimerange>` — datetime range display and navigation widget.
+   *
+   * Renders the current begin/end datetime range with zoom-in, zoom-out, previous, and next period buttons.
+   * Dispatches `dateTimeRangeChangeEvent` on `period-context` when the range changes.
+   * When `noteditable` is set, renders the range as read-only text.
+   *
+   * Attributes:
+   *   range          - ISO date range string `begin;end`
+   *   noteditable    - (optional) if `'true'`, disables navigation controls
+   *   period-context - event bus context for `dateTimeRangeChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class ParamDateTimeRangeComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor

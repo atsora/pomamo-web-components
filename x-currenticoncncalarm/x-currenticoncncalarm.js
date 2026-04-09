@@ -14,6 +14,20 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-currenticoncncalarm>` — icon indicator for active CNC alarms on a machine.
+   *
+   * Polls `CncAlarm/Current?MachineId=<id>` at `currentRefreshSeconds` interval.
+   * Displays an alarm icon when active CNC alarms exist; optionally includes ignored alarms
+   * via `showIgnoredAlarm` config. Clicking opens the alarm details popup.
+   * Listens to `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class CurrentIconCNCAlarmComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

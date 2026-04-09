@@ -24,6 +24,20 @@ require('x-modificationmanager/x-modificationmanager');
 
 (function () {
 
+  /**
+   * `<x-savemachinestatetemplate>` — form widget for assigning a machine state template to a time slot.
+   *
+   * Fetches the next available machine state template options from `NextMachineStateTemplate`.
+   * Renders a selection list and a confirm button; on confirm POSTs the assignment via `pulseService`.
+   * Tracks the modification revision via `x-modificationmanager`.
+   *
+   * Attributes:
+   *   machine-id - (required) integer machine id
+   *   mst-id     - (optional) current machine state template id to fetch next options from
+   *   range      - (optional) ISO date range string for the slot
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class SaveMachineStateTemplateComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

@@ -11,11 +11,22 @@ var pulseUtility = require('pulseUtility');
 var pulseComponent = require('pulsecomponent');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-workinfo> with a single machine-id attribute
- */
 (function () {
 
+  /**
+   * `<x-workinfo>` — displays work information driven by the event bus.
+   *
+   * No REST requests — purely event-driven.
+   * Listens to `operationChangeEvent` on the `machine-id` context for work info updates.
+   * Also listens to `machineIdChangeSignal` on `machine-context` for dynamic machine tracking.
+   * Re-renders a concatenated line of all `workinformations[].Value` only when data changes.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id; also used as event bus context
+   *   machine-context - (optional) event bus context for machine selection changes
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class workinfoComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
@@ -128,7 +139,13 @@ var eventBus = require('eventBus');
       console.error('x-workinfo: ' + message);
     }
 
-    // Callback events
+    /**
+     * Event callback when operation/work info changes.
+     * Re-renders the display only if `workinformations` data has changed (by Kind or Value).
+     * Clears the display if `workinformations` is undefined.
+     *
+     * @param {{ target: { workinformations?: Array<{ Kind: string, Value: string }> } }} event
+     */
     onOperationChange (event) {
       if (pulseUtility.isNotDefined(event.target.workinformations)) {
         $(this._content).empty();
@@ -167,6 +184,12 @@ var eventBus = require('eventBus');
       }
     }
 
+    /**
+     * Event callback when the selected machine changes.
+     * Updates `machine-id`, re-wires the `operationChangeEvent` listener to the new context.
+     *
+     * @param {{ target: { newMachineId: number } }} event
+     */
     onMachineIdChange(event) {
       this.element.setAttribute('machine-id', event.target.newMachineId);
 

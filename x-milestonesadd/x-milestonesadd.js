@@ -16,11 +16,20 @@ var eventBus = require('eventBus');
 
 require('x-datetimepicker/x-datetimepicker');
 
-/**
- * Build a custom tag <x-milestonesadd> to add milestones in database
- */
 (function () {
 
+  /**
+   * `<x-milestonesadd>` — form widget for adding a milestone (named event) to the database.
+   *
+   * Renders a text input, a `x-datetimepicker` for the timestamp, and a submit button.
+   * On submit, POSTs to the Pulse REST API to create the milestone.
+   * Requires `machine-id` attribute. Used in the running-view or other operator pages.
+   *
+   * Attributes:
+   *   machine-id - (required) integer machine id for the milestone
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class MilestonesAddComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor

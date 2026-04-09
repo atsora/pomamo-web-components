@@ -17,14 +17,21 @@ var eventBus = require('eventBus');
 
 require('x-machinedisplay/x-machinedisplay');
 
-/**
- * Build a custom tag <x-savescrapreason> to display a scrap reason.
- *
- * Attributes:
- *  machine-id : Integer (required)
- */
 (function () {
 
+  /**
+   * `<x-savescrapreason>` — form widget for assigning a scrap reason to a machine cycle.
+   *
+   * Fetches available scrap reasons from `ReasonScrapSelection/Name?MachineId=<id>` once.
+   * Renders a scrap reason dropdown and quantity input with a confirm button.
+   * On confirm, POSTs the scrap reason assignment via `pulseService`.
+   *
+   * Attributes:
+   *   machine-id - (required) integer machine id
+   *   range      - (optional) ISO date range string for the cycle slot
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class SaveScrapReasonComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     // Ajout : prise en compte de la valeur à la perte de focus
     /**

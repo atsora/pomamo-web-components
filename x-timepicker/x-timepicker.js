@@ -10,16 +10,23 @@
 var pulseComponent = require('pulsecomponent');
 //var pulseUtility = require('pulseUtility');
 
-/**
- * Build a custom tag <x-timepicker> to display a time selector. This tag gets following attribute : 
- *  defaulttime : String (ISO)
- *  mintime : String
- *  maxtime : String
- *  showseconds : Boolean
- *  disabled
- */
 (function () {
 
+  /**
+   * `<x-timepicker>` — interactive time-only selector widget.
+   *
+   * Renders a time input field for selecting an ISO time value.
+   * Used as a sub-component of `x-datetimepicker`.
+   *
+   * Attributes:
+   *   defaulttime - (optional) initial ISO time string
+   *   mintime     - (optional) minimum selectable time (ISO string)
+   *   maxtime     - (optional) maximum selectable time (ISO string)
+   *   showseconds - (optional) if present, shows seconds in the input
+   *   disabled    - (optional) disables the input field
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class TimePickerComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor

@@ -14,6 +14,20 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-currenticonworkinformation>` — icon indicator for missing work information on a machine.
+   *
+   * Polls `MissingWorkInformation?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
+   * Displays a warning icon when the machine has no assigned work order/component/operation for the period.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class CurrentIconWorkInformationComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

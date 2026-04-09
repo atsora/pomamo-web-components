@@ -13,6 +13,22 @@ var pulseRange = require('pulseRange');
 var eventBus = require('eventBus');
 
 (function () {
+
+  /**
+   * `<x-productiontrackertable>` — table showing production tracking data over a period.
+   *
+   * Polls `ProductionTracker?GroupId=<group>&Range=<range>` at `currentRefreshSeconds` interval.
+   * Renders a tabular summary with actual vs. goal production quantities per shift or period.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   group           - (optional) group id for filtering
+   *   machine-id      - (optional) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class ProductionTrackerTableComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

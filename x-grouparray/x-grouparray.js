@@ -14,20 +14,42 @@ var pulseConfig = require('pulseConfig');
 var state = require('state');
 var eventBus = require('eventBus');
 
-/*
- ** Attributes :
- - templateid
- - machine
- - group
- - column (getConfigOrAttribute)
- - row (getConfigOrAttribute)
- - canUseRowsToSetHeight
- - allowpagerotation : bool true to start page rotation
- - rotation (getConfigOrAttribute) = rotation delay
- - refreshrate (ELSE rotation*nbPages ELSE 1hr)
- */
 (function () {
 
+  /**
+   * `<x-grouparray>` — paginated grid of machine items with optional page rotation.
+   *
+   * Machine source resolution priority:
+   *  1. No `group` config, `machine` config present → renders directly, transitions to `Loaded`.
+   *  2. `group` config → fetches `MachinesFromGroups?GroupIds=<group>` via REST.
+   *     Static groups (`Dynamic=false` or `forcestaticlist='true'`) transition to `Loaded` StaticState.
+   *     Dynamic groups keep polling on `refreshRate`.
+   *
+   * Grid layout: items are rendered as `<li class="group-single">` inside an `<ol class="group-main">`.
+   * `column` and `row` configs control per-page item count; items get class `li-page-N` for rotation.
+   * Page rotation: when `allowpagerotation='true'`, cycles visible pages on a `rotation`-second timer.
+   * The `#pulse-pagination` element is updated with `current / total` page count.
+   * When `#grouparray` panel contains only one machine, it is hidden via `hidden-content` class.
+   *
+   * Dispatches `groupIsReloaded` after each list rebuild (suppressed when `donotwarngroupreload='true'`).
+   * Optionally dispatches `textChangeEvent` on `textchange-context` with last-update timestamp.
+   *
+   * Attributes:
+   *   templateid          - id of the DOM element to clone per machine (default `'boxtoclone'`)
+   *   machine             - comma-separated machine id list (takes priority over group)
+   *   group               - group id(s), resolved via REST
+   *   column              - number of columns per page
+   *   row                 - number of rows per page (default `2`)
+   *   canUseRowsToSetHeight - `'true'` sets explicit row height via CSS
+   *   allowpagerotation   - `'true'` enables automatic page cycling
+   *   rotation            - page rotation delay in seconds (default `90`)
+   *   refreshrate         - explicit refresh interval in seconds (fallback when no rotation)
+   *   donotwarngroupreload - `'true'` suppresses `groupIsReloaded` dispatch
+   *   forcestaticlist     - `'true'` treats dynamic groups as static (stops polling)
+   *   textchange-context  - event bus context for `textChangeEvent` dispatch
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class GroupComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -73,6 +95,14 @@ var eventBus = require('eventBus');
       return this._content;
     }
 
+    /**
+     * Rebuilds the `<ol>` list of machine items from `_machineIdsArray`.
+     * Removes items no longer in the list, reuses or creates `<li class="group-single">` elements.
+     * Assigns `li-page-N` classes and `width`/`height` CSS based on `column`/`row` configs.
+     * Hides `#grouparray` panel when only one machine is present.
+     * Activates the first `x-machinetab` if none is active.
+     * Dispatches `groupIsReloaded` and initiates page rotation via `_dealWithRotation()`.
+     */
     _displayOrUpdateMachineList() {
       //$(this._content).empty(); No !
 
@@ -231,11 +261,16 @@ var eventBus = require('eventBus');
 
     } // _displayOrUpdateMachineList
 
+    /** Removes the `disableDeleteWhenDisconnect` guard class from all descendant elements. */
     _removeDisable() {
       $(this.element).find('.disableDeleteWhenDisconnect')
         .removeClass('disableDeleteWhenDisconnect');
     }
 
+    /**
+     * Computes the total page count from `_machineIdsArray.length`, `column`, and `row` configs.
+     * Resets `_currentDisplayedPage` to 1 and delegates to `_rotationAndProgressDisplay()`.
+     */
     _dealWithRotation() {
       let nbColumnToDisplay = Number(this.getConfigOrAttribute('column', '3'));
       let nbRowToDisplay = Number(this.getConfigOrAttribute('row', '2'));
@@ -259,6 +294,11 @@ var eventBus = require('eventBus');
       this._rotationAndProgressDisplay();
     }
 
+    /**
+     * Shows the current page, updates `#pulse-pagination` text, and schedules the next page rotation.
+     * Clears any existing rotation timer before setting a new one to prevent duplicates.
+     * No-ops (single page) when `_nbPagesTotal <= 1` or `allowpagerotation !== 'true'`.
+     */
     _rotationAndProgressDisplay() {
       // Clear timer if exist ! To avoid many living timers
       if (this._showHideTimer) {
@@ -292,6 +332,11 @@ var eventBus = require('eventBus');
       }
     }
 
+    /**
+     * Shows the `<li>` items belonging to `_currentDisplayedPage` and hides all others.
+     * Also calls `.load()` on any `x-datetimegraduation` elements in the visible page
+     * so they can measure their width correctly after being revealed.
+     */
     _showHidePages() {
       // Hide or show pages
       for (let index_page = 1; index_page <= this._nbPagesTotal; index_page++) {
@@ -467,8 +512,13 @@ var eventBus = require('eventBus');
       $('.grouparray-dependant').removeClass('grouparray-in-error'); //.show();
     }
 
+    /**
+     * Refresh interval in ms.
+     * Priority: rotation delay × total pages; then `refreshrate` attribute; then 1 hour.
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate() {
-      // Return here the refresh rate in ms.
       if (this._nbPagesTotal >= 1) {
         let rotationDelay = Number(this.getConfigOrAttribute('rotation', '90'));
         return rotationDelay * this._nbPagesTotal * 1000;
@@ -481,10 +531,13 @@ var eventBus = require('eventBus');
       }
     }
 
-    /*
-      Replace _runAjaxWhenIsVisible when NO url should be called
-      return true if something is done, false if _runAjaxWhenIsVisible should be called
-    */
+    /**
+     * Handles the machine-only case (no `group` config) without an AJAX call.
+     * Splits `machine` config by comma, rebuilds the list, and transitions to `Loaded`.
+     * Returns false when a `group` is configured, deferring to the REST path.
+     *
+     * @returns {boolean} `true` when handled locally, `false` to trigger the REST request.
+     */
     _runAlternateGetData() {
       let groups = this.getConfigOrAttribute('group'); //this.element.getAttribute('groups');
       if ((pulseUtility.isNotDefined(groups)) ||
@@ -515,22 +568,34 @@ var eventBus = require('eventBus');
       return false;
     }
 
+    /**
+     * REST endpoint: `MachinesFromGroups?GroupIds=<group>`.
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl() {
-      // Return the Web Service URL here without path
       let groups = this.getConfigOrAttribute('group');
-      let url = 'MachinesFromGroups?GroupIds=' + groups;
-      // Login is set in global service call
-      return url;
+      return 'MachinesFromGroups?GroupIds=' + groups;
     }
 
+    /**
+     * Delegates to `_displayOrUpdateMachineList()` using the already-stored `_machineIdsArray`.
+     *
+     * @param {*} data - REST response (unused; data was stored in `manageSuccess`).
+     */
     refresh(data) {
       this._displayOrUpdateMachineList();
     }
 
+    /**
+     * Stores `MachineIds` and `Dynamic` flag from the REST response.
+     * Dispatches `textChangeEvent` with last-update timestamp when `textchange-context` attribute is set.
+     * Static groups (`Dynamic=false` or `forcestaticlist='true'`) rebuild the list and transition to `Loaded`.
+     * Dynamic groups call `super.manageSuccess()` to schedule the next polling cycle via `refresh()`.
+     *
+     * @param {{ MachineIds: number[], Dynamic: boolean }} data
+     */
     manageSuccess(data) {
-      /* public List<int> MachineIds { get; set; }
-      public int? SortKind { get; set; }
-      public string SortKindTip { get; set; }*/
       this.removeError();
 
       this._machineIdsArray = data.MachineIds;

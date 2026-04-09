@@ -21,16 +21,25 @@ var pulseRange = require('pulseRange');
 
 require('x-datetimerange/x-datetimerange');
 
-/*
- *This tag is used to save serial number for a given machine. It can take following attribute:
- *  - machine-id : id of given machine
- *  - range :
- *  - datetime : realbegin or end
- *  - is-begin : is datetime == begin
- *  - serial-number :
- */
 (function () {
 
+  /**
+   * `<x-saveserialnumber>` — form widget for saving a serial number for a machine cycle.
+   *
+   * Renders an editable serial number input and a confirm button.
+   * On confirm, POSTs via `pulseService` to persist the serial number.
+   * The `range` attribute defines the cycle interval; `datetime` and `is-begin` identify
+   * whether the time refers to the cycle start or end.
+   *
+   * Attributes:
+   *   machine-id    - (required) integer machine id
+   *   range         - ISO date range string for the cycle
+   *   datetime      - specific datetime within the cycle
+   *   is-begin      - `'true'` if `datetime` is the cycle begin
+   *   serial-number - initial serial number value to pre-fill
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class SaveSerialNumberComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor

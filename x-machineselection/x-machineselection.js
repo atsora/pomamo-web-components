@@ -21,6 +21,30 @@ require('x-machinedisplay/x-machinedisplay');
 require('x-freetext/x-freetext');
 
 (function () {
+  /**
+   * `<x-machineselection>` — interactive dialog widget for selecting machines or groups.
+   *
+   * Fetches `Machine/Groups?Zoom=true&MachineList=true` once to populate the available groups and
+   * individual machines. The selection dialog (`pulseCustomDialog`) has two pages:
+   *  - Page 1: group tree (checkboxes) or flat machine list, with a search bar.
+   *  - Page 2: current selection list with drag-and-drop / up-down reordering, and a live preview
+   *    panel (using an embedded `x-grouparray`) when group selection is active.
+   *
+   * Mode switching: "by group" (default) → `_groupSelectionArray` stored; "by machine" →
+   * `_machineSelectionArray` stored. On OK: writes to `pulseConfig` (key `machine` and `group`),
+   * then dispatches `configChangeEvent` for both keys so the rest of the page reacts.
+   *
+   * In `in-report` mode: writes `pulse-machines` / `pulse-groups` attributes instead of config.
+   *
+   * Exposed `methods`: `changeMachineSelection`, `fillExternalSummaryDisplay`, `getMachinesArray`,
+   * `getGroupsArray`, `getMachinesString`, `getGroupsString`.
+   *
+   * Attributes:
+   *   unique-machine - `'true'` restricts selection to a single machine
+   *   in-report      - activates report mode (attributes instead of config)
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class MachineSelectionComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     constructor(...args) {
       const self = super(...args);
@@ -188,11 +212,20 @@ require('x-freetext/x-freetext');
       return true;
     }
 
+    /**
+     * REST endpoint: `Machine/Groups?Zoom=true&MachineList=true`.
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl() {
-      let url = 'Machine/Groups?Zoom=true&MachineList=true';
-      return url;
+      return 'Machine/Groups?Zoom=true&MachineList=true';
     }
 
+    /**
+     * Populates internal data structures from the REST response, then rebuilds all UI panels.
+     *
+     * @param {{ GroupCategories: Array, MachineList: Array }} data
+     */
     refresh(data) {
       this._groups = data.GroupCategories;
       this._machinesFromService = data.MachineList;
@@ -203,6 +236,10 @@ require('x-freetext/x-freetext');
       this._fillMachinesList();
     }
 
+    /**
+     * Opens the machine-selection dialog (creates it on first call via `_createDialogIfNotDone`).
+     * Exposed as a public method via `methods`.
+     */
     changeMachineSelection() {
       this._createDialogIfNotDone();
 
@@ -211,6 +248,10 @@ require('x-freetext/x-freetext');
       pulseCustomDialog.openDialog(this._dialogPage1);
     }
 
+    /**
+     * Lazily constructs the two-page selection dialog DOM and registers it with `pulseCustomDialog`.
+     * No-op if `_dialogId` is already set.
+     */
     _createDialogIfNotDone() {
       if (undefined != this._dialogId)
         return;
@@ -393,6 +434,10 @@ require('x-freetext/x-freetext');
       this._switchToGroupSelection();
     }
 
+    /**
+     * Switches the dialog to machine-selection mode: shows the machine list/search, hides the group tree
+     * and preview panel, clears `_groupSelectionArray`, and marks the "by machine" button as active.
+     */
     _switchToMachineSelection() {
       this._useMachineSelection = true;
 
@@ -418,6 +463,10 @@ require('x-freetext/x-freetext');
       this._switchToGroups_button.prop('disabled', false);
     }
 
+    /**
+     * Switches the dialog to group-selection mode: shows the category tree and preview panel,
+     * hides the machine list/search, and marks the "by group" button as active.
+     */
     _switchToGroupSelection() {
       this._useMachineSelection = false;
 
@@ -439,6 +488,11 @@ require('x-freetext/x-freetext');
       this._switchToGroups_button.prop('disabled', true);
     }
 
+    /**
+     * Attaches click handlers to all `.reorderUpButton` and `.reorderDownButton` elements in
+     * `_selectionList`. Each click shifts the item one position in the corresponding selection array
+     * and re-renders the list via `_fillSelection()`.
+     */
     _addMoveUpDownEvents() {
       var machineselection = this;
 
@@ -486,6 +540,11 @@ require('x-freetext/x-freetext');
       });
     }
 
+    /**
+     * Attaches HTML5 drag-and-drop handlers to all `.machineselection-selection` items in `_selectionList`.
+     * On drop: computes the new position from drag-over-top/bottom state and reorders the active
+     * selection array accordingly, then re-renders via `_fillSelection()`.
+     */
     _addDragAndDropEvents() {
       var machineselection = this;
       var dragSrcEl = null;
@@ -590,6 +649,10 @@ require('x-freetext/x-freetext');
       });
     }
 
+    /**
+     * Populates the flat machine list panel with one clickable `.machines-div` per single machine.
+     * Clicking toggles the machine in/out of `_machineSelectionArray` and updates the selection panel.
+     */
     _fillMachinesList() {
       if (this._machinesList == undefined)
         return;
@@ -645,6 +708,7 @@ require('x-freetext/x-freetext');
       }
     }
 
+    /** Filters the machine list display using the current value of `_inputSearch` (case-insensitive substring match). */
     _showHideMachinesInList() {
       let searchString = $(this._inputSearch)[0].value;
       let machinesDiv = $(this._machinesList).find('.machines-div');
@@ -659,6 +723,7 @@ require('x-freetext/x-freetext');
       }
     }
 
+    /** Syncs `.selected` CSS class on machine-list items to match `_machineSelectionArray`. */
     _changeSelectionInMachineList() {
       if (this._dialogPage1 == undefined)
         return;
@@ -672,6 +737,12 @@ require('x-freetext/x-freetext');
       }
     }
 
+    /**
+     * Rebuilds the right-side selection panel from the active selection array
+     * (`_groupSelectionArray` or `_machineSelectionArray`).
+     * Each item shows display name, a M/G label, an optional DYNAMIC badge, a remove button,
+     * and reorder handles. Attaches drag-and-drop and up/down events, then refreshes the preview.
+     */
     _fillSelection() {
       if (this._selectionList == undefined)
         return;
@@ -784,6 +855,10 @@ require('x-freetext/x-freetext');
       this._fillMachinePreview();
     }
 
+    /**
+     * Rebuilds the preview panel in group-selection mode using an embedded `x-grouparray`.
+     * Clears the panel when no groups are selected or when in machine-selection mode.
+     */
     _fillMachinePreview() {
       if (!this._previewList) return;
       this._previewList.empty();
@@ -811,6 +886,11 @@ require('x-freetext/x-freetext');
       }
     }
 
+    /**
+     * Persists the current selection to `pulseConfig` (keys `machine` and `group`) and dispatches
+     * `configChangeEvent` for both keys. In `in-report` mode, writes to element attributes instead.
+     * In group mode, resolves the actual machine list from the preview `x-grouparray`.
+     */
     _storeSelection() {
       if (false == this._useMachineSelection) {
         let grouparrays = $(this._previewList).find('x-grouparray');
@@ -859,6 +939,10 @@ require('x-freetext/x-freetext');
       return arr;
     }
 
+    /**
+     * Restores `_groupSelectionArray` and `_machineSelectionArray` from `pulseConfig` (or element
+     * attributes in `in-report` mode) and switches the dialog to the appropriate mode.
+     */
     _loadSelection() {
       let joinedMachines = "";
       let joinedGroups = "";
@@ -911,6 +995,7 @@ require('x-freetext/x-freetext');
       }
     }
 
+    /** Unchecks all checkboxes in the dialog and clears both selection arrays. */
     _clearSelection() {
       $(this._dialogPage1).find('input:checkbox').prop('checked', false);
       this._groupSelectionArray = [];
@@ -919,6 +1004,12 @@ require('x-freetext/x-freetext');
       this._changeSelectionInMachineList();
     }
 
+    /**
+     * Updates the `(N)` selection count badge in a category row header.
+     * Counts checked checkboxes within `mainCategory` and displays the count, or hides it when zero.
+     *
+     * @param {HTMLElement} mainCategory - `.machineselection-category` DOM element.
+     */
     _updateNumberOfSelections(mainCategory) {
       let selections = $(mainCategory).find('input:checkbox');
       let nbSel = 0;
@@ -935,6 +1026,11 @@ require('x-freetext/x-freetext');
       }
     }
 
+    /**
+     * Builds `_groupDisplays` (Map keyed by group/machine id string) from the REST response data.
+     * Recursively processes `Zoom` sub-groups. Individual machines from `MachineList` are added
+     * with `singlemachine: true` if not already present.
+     */
     _storeDisplays() {
       this._groupDisplays.clear();
 
@@ -974,6 +1070,11 @@ require('x-freetext/x-freetext');
       }
     }
 
+    /**
+     * Populates the group category tree in the dialog page 1.
+     * Each category becomes a collapsible section with labeled checkboxes per group/sub-group.
+     * Checking a box toggles the group in `_groupSelectionArray` and updates the selection panel.
+     */
     _fillCategoryList() {
       if (this._categoryList == undefined)
         return;
@@ -1137,6 +1238,13 @@ require('x-freetext/x-freetext');
       this._categoryList.append(fullListToScroll);
     }
 
+    /**
+     * Syncs all category-tree checkboxes to match `_groupSelectionArray`.
+     * When `andOpen` is `true`, also expands the category sections containing selected groups.
+     * Updates category selection count badges via `_updateNumberOfSelections()`.
+     *
+     * @param {boolean} [andOpen] - When `true`, expands parent category sections of selected groups.
+     */
     _changeSelectionInCategoryList(andOpen) {
       if (this._dialogPage1 == undefined)
         return;
@@ -1172,6 +1280,10 @@ require('x-freetext/x-freetext');
       this._fillSelection();
     }
 
+    /**
+     * Rebuilds `_summary` with the display names of the currently selected groups/machines.
+     * Adds `missing-config` class to ancestor elements when no selection is present.
+     */
     _fillSummaryDisplay() {
       if (this._summary == undefined)
         return;
@@ -1214,6 +1326,12 @@ require('x-freetext/x-freetext');
       }
     }
 
+    /**
+     * Fills an external DOM element with the same display names as `_fillSummaryDisplay()`.
+     * Exposed as a public method via `methods`.
+     *
+     * @param {jQuery|HTMLElement} summary - Target container to fill.
+     */
     fillExternalSummaryDisplay(summary) {
       if (summary == undefined)
         return;
@@ -1252,15 +1370,19 @@ require('x-freetext/x-freetext');
       }
     }
 
+    /** @returns {string[]} A copy of the current machine id selection array. */
     getMachinesArray() {
       return ([].concat(this._machineSelectionArray));
     }
+    /** @returns {string[]} A copy of the current group id selection array. */
     getGroupsArray() {
       return ([].concat(this._groupSelectionArray));
     }
+    /** @returns {string} Comma-separated machine ids from the current selection. */
     getMachinesString() {
       return this._machineSelectionArray.join();
     }
+    /** @returns {string} Comma-separated group ids from the current selection. */
     getGroupsString() {
       return this._groupSelectionArray.join();
     }

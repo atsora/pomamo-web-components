@@ -22,6 +22,20 @@ require('x-milestonesadd/x-milestonesadd');
 
 (function () {
 
+  /**
+   * `<x-milestonesmanager>` — displays and manages milestones (named events) for a machine or group.
+   *
+   * Fetches `MilestonesGet?GroupId=<id>` with an optional date range filter.
+   * Renders a list of milestones with timestamps and delete buttons.
+   * Includes an `x-milestonesadd` sub-component for adding new milestones.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `milestonesChangeEvent` globally.
+   *
+   * Attributes:
+   *   machine-id     - (required) integer machine or group id
+   *   period-context - event bus context for `dateTimeRangeChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class MilestonesManagerComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

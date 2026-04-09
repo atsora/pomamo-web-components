@@ -12,10 +12,30 @@ var pulseConfig = require('pulseConfig');
 var eventBus = require('eventBus');
 
 /**
- * Build a custom tag <x-checkcurrenttime> to check currenttime.  
+ * Build a custom tag <x-checkcurrenttime> to check server/client time synchronization.
+ *
+ * Invisible component. On each poll, computes the difference between server UTC time
+ * and local `Date.now()`, stores it in `pulseConfig` as `diffServerTimeMinusNowMSec`,
+ * and emits a warning notification if the discrepancy exceeds `seconds` threshold.
+ *
+ * Attributes:
+ *   seconds - allowed clock drift in seconds before warning (default: 30)
  */
 (function () {
 
+  /**
+   * `<x-checkcurrenttime>` — invisible server/client clock drift monitor.
+   *
+   * Polls `CurrentTime/` once per day (86 400 000 ms).
+   * Stores `diffServerTimeMinusNowMSec` globally in `pulseConfig` so other components
+   * can apply server-time corrections.
+   * Dispatches `showMessageSignal` if `|drift| > seconds`.
+   *
+   * Attributes:
+   *   seconds - maximum allowed absolute drift (default: 30)
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class CheckCurrentTimeComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -52,29 +72,44 @@ var eventBus = require('eventBus');
       return;
     }
 
-    /**
-     * Validate the (event) parameters
-     */
     validateParameters () {
       this.switchToNextContext();
     }
 
-    // Overload to always refresh value
+    /**
+     * Overrides the base `isVisible` to always return true.
+     * The component must poll even when not visually connected.
+     */
     get isVisible () {
       return true;
     }
 
+    /**
+     * Returns the polling interval: once per day.
+     *
+     * @returns {number} 86 400 000 ms.
+     */
     get refreshRate () {
-      // Return here the refresh rate in ms. 
       return 1000 * 60 * 60 * 24; // 1 day
     }
 
+    /**
+     * REST endpoint: `CurrentTime/`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
-      // Return the Web Service URL here without path
       let url = 'CurrentTime/';
       return url;
     }
 
+    /**
+     * Computes `serverTime - now` and stores it globally as `diffServerTimeMinusNowMSec`.
+     * Emits `showMessageSignal` (warning, permanent) if the absolute drift exceeds
+     * the configured `seconds` threshold.
+     *
+     * @param {{ Utc: string }} data - Server response containing UTC timestamp.
+     */
     refresh (data) {
       let now = new Date();
       let serverDate = new Date(data.Utc);
@@ -100,8 +135,6 @@ var eventBus = require('eventBus');
           messageInfo);
       }
     }
-
-    // Callback events
   }
 
   pulseComponent.registerElement('x-checkcurrenttime',

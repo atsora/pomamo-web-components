@@ -12,23 +12,35 @@ var pulseComponent = require('pulsecomponent');
 
 (function () {
 
+  /**
+   * `<x-runninglegends>` — static legend panel for Running/Idle activity states.
+   *
+   * Renders two legend items (Running + Idle) using colored SVG squares
+   * (`pulseSvg.createColoredLegend` with CSS classes `fill-running` and `fill-idle`).
+   * All content is built at initialization — no REST request needed.
+   * Includes 4 empty alignment divs and triggers a `.legend-content` resize.
+   *
+   * @extends pulseComponent.PulseInitializedComponent
+   */
   class runninglegendsComponent extends pulseComponent.PulseInitializedComponent {
     /**
-     * Constructor
-     * 
-     * @param  {...any} args 
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
 
-      // DOM - not here
+      // DOM
       self._content = undefined;
 
       return self;
     }
 
-    get content () { return this._content; } // Optional
+    get content () { return this._content; }
 
+    /**
+     * Builds the Running/Idle legend DOM entirely at initialization.
+     * No REST request — data is static (hardcoded states).
+     */
     initialize () {
       this.addClass('pulse-text');
 

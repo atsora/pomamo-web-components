@@ -15,6 +15,20 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-cycleprogressbar>` — animated bar showing the current machine cycle progress.
+   *
+   * Polls `CycleProgress?MachineId=<id>&IncludeEvents=true` at `currentRefreshSeconds` interval.
+   * Renders a horizontal bar indicating the elapsed fraction of the expected cycle time.
+   * Changes color based on whether the cycle is on-time, delayed, or stopped.
+   * Listens to `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class CycleProgressBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

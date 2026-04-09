@@ -13,16 +13,28 @@ var pulseSvg = require('pulseSvg');
 
 (function () {
 
+  /**
+   * `<x-zoominpagebutton>` — icon button that drills down into a sub-group.
+   *
+   * Fetches `Machine/GroupZoomIn?GroupId=...` to check if the group has children.
+   * Hidden if the group is dynamic or has no children; shown otherwise.
+   * On click, navigates to the same page with the target group as `group` parameter,
+   * pushing the current group as an `ancestorN` parameter.
+   *
+   * Attributes:
+   *   group      - target group id to zoom into
+   *   machine-id - fallback if no `group` attribute
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class ZoomInPageButtonComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
-     * Constructor
-     *
-     * @param  {...any} args
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
 
-      // DOM - not here
+      // DOM
       self._content = undefined;
 
       return self;
@@ -106,16 +118,25 @@ var pulseSvg = require('pulseSvg');
       this.switchToNextContext();
     }
 
+    /**
+     * REST endpoint: `Machine/GroupZoomIn?GroupId=<group>&Details=true`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
-      // Return the Web Service URL here without path
       let group = this.getConfigOrAttribute('group');
       let url = 'Machine/GroupZoomIn?GroupId=' + group;
       url += '&Details=true'; // WARNING ! Maybe remove (bug in web service) --201907
       return url;
     }
 
+    /**
+     * Shows the button only if the group has static children.
+     * Dynamic groups and empty groups keep the button hidden.
+     *
+     * @param {{ Dynamic: boolean, Children: Array }} data
+     */
     refresh (data) {
-      // Change visibility
       if (true == data.Dynamic) {
         // Hide for the moment -- 202001
         $(this._content).hide();

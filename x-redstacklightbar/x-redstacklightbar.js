@@ -17,22 +17,22 @@ var pulseComponent = require('pulsecomponent');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-redstacklightbar> to display a redstacklightbar component. This tag gets following attribute :
- *  machine-id : Integer
- *  height : Integer
- *  period-context : String
- *  range : String 'begin;end' (optional)
- *  REMOVED : click : action on click (none/details/popup/change)
- *  showdetails: details to display after click - default in config
- *  showpopup: details to display in popup after click - default in config
- */
 (function () {
 
   /**
-   * Running slot bar component
+   * `<x-redstacklightbar>` — timeline bar showing red stack light (CNC alarm) status over a period.
    *
-   * @extends module:pulseComponent~PulseParamAutoPathRefreshingComponent
+   * Polls `CncValue/RedStackLight?MachineId=<id>&Range=<range>&SkipDetails=true` at `currentRefreshSeconds` interval.
+   * Renders red/green segments indicating when the stack light alarm was active.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   height          - (optional) integer pixel height of the bar
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *   range           - (optional) ISO date range string `begin;end`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class RedStacklightBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**

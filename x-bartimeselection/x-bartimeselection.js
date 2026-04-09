@@ -15,19 +15,32 @@ var pulseUtility = require('pulseUtility');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-bartimeselection> to display a vertical red line on a bar. This tag gets following attribute : 
- *  height : integer
- *  when : isodatetime
- *  range : isodatetime range
- *  period-context: string (optional)
- *  datetime-context: string
- */
 (function () {
 
   var minHeight = 5;
   var defaultHeight = 30;
 
+  /**
+   * `<x-bartimeselection>` — overlays a vertical red line on a bar at a specific datetime.
+   *
+   * Renders an SVG line at the position corresponding to `when` within the given `range`.
+   * Clicking on the bar computes the click time, dispatches `dateTimeChangeEvent` on
+   * `datetime-context`, and updates the `when` attribute to move the red line.
+   *
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` (or globally if not set)
+   * to keep `_range` in sync with the parent bar's time window.
+   *
+   * No REST requests — purely event-driven and attribute-driven rendering.
+   *
+   * Attributes:
+   *   height           - bar height in px (default 30, min 5)
+   *   when             - ISO datetime of the red line position
+   *   range            - ISO datetime range string matching the parent bar's range
+   *   period-context   - (optional) event bus context for `dateTimeRangeChangeEvent`
+   *   datetime-context - event bus context to dispatch `dateTimeChangeEvent` on click
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class BarTimeSelectionComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor
@@ -51,6 +64,10 @@ var eventBus = require('eventBus');
 
     get content () { return this._content; }
 
+    /**
+     * Reads and clamps the `height` attribute, applies it to `.bartimeselection-content` and `.bartimeselection`.
+     * Repositions the overlay to match the nearest `.middle-bar` offset.
+     */
     _setHeight () {
       if (!pulseUtility.isNumeric(this.element.getAttribute('height'))) {
         this._height = defaultHeight;
@@ -79,6 +96,11 @@ var eventBus = require('eventBus');
       $(this._content).find('.bartimeselection-svg').remove(); // Remove Old SVG
     }*/
 
+    /**
+     * Redraws the SVG line at the computed `when` position within `_range`.
+     * Removes any previous SVG, creates a new one, and appends a `<line>` if `when` is in range.
+     * Binds a click handler to `_clickOnBar` for datetime selection.
+     */
     _draw () {
       if ((this._content == undefined) || (this._content == null)) {
         //$(content).height(this._height);
@@ -137,6 +159,12 @@ var eventBus = require('eventBus');
       }
     }
 
+    /**
+     * Handles click on the SVG bar: computes the clicked datetime from the click X offset,
+     * updates the `when` attribute, and dispatches `dateTimeChangeEvent` on `datetime-context`.
+     *
+     * @param {MouseEvent} evt
+     */
     _clickOnBar (evt) {
       // Prepare click for details
       //let e = evt.target;
@@ -278,7 +306,11 @@ var eventBus = require('eventBus');
       // Do nothing
     }
 
-    // Callback events
+    /**
+     * Event callback when the time range changes: updates `_range` and redraws.
+     *
+     * @param {{ target: { daterange: object } }} event
+     */
     onDateTimeRangeChange (event) {
       let newRange = event.target.daterange;
       this._range = newRange;

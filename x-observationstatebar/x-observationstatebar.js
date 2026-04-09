@@ -19,22 +19,25 @@ var eventBus = require('eventBus');
 
 require('x-revisionprogress/x-revisionprogress');
 
-/**
- * Build a custom tag <x-observationstatebar> to display an observationstatebar bar component. This tag gets following attribute :
- *  machine-id : Integer
- *  height : Integer
- *  period-context : String
- *  range : String 'begin;end' (optional)
- *  click : action on click (none/details/popup/change)
- *  showdetails: details to display after click - default in config
- *  showpopup: details to display in popup after click - default in config
- */
 (function () {
 
   /**
-   * ObservationStateBar component
+   * `<x-observationstatebar>` — timeline bar showing observation state slots for a machine over a period.
    *
-   * @extends module:pulseComponent~PulseParamAutoPathRefreshingComponent
+   * Polls `ObservationStateSlots?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
+   * Renders colored segments for each observation state; clicking opens the state details popup.
+   * Integrates `x-revisionprogress` for optimistic update tracking after edits.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   height          - (optional) integer pixel height of the bar
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *   range           - (optional) ISO date range string `begin;end`
+   *   showdetails     - (optional) details page to open on click (from config)
+   *   showpopup       - (optional) popup details to open on click (from config)
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ObservationStateBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**

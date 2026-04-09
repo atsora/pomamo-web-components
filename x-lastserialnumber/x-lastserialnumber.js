@@ -29,6 +29,23 @@ require('x-revisionprogress/x-revisionprogress');
  */
 (function () {
 
+  /**
+   * `<x-lastserialnumber>` — bar-style display of the last cycle serial number for a machine.
+   *
+   * Polls `GetLastCycleWithSerialNumberV2/<machine-id>` at `currentRefreshSeconds` interval.
+   * Renders a cell-bar layout with a current serial number cell and a "Past Data" cell.
+   * Integrates with `x-modificationmanager` and `x-revisionprogress` for pending modifications.
+   *
+   * `refresh(data)`: updates current/past cells. SerialNumber '0' = missing, '-1' = no cycle.
+   * Clicking current opens an `x-saveserialnumber` dialog.
+   * Clicking past opens an `x-cyclesinperiod` dialog with an `x-datetimerange` picker.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id; restart on change
+   *   machine-context - (optional) event bus context for machine selection changes
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class LastSerialNumberComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -233,16 +250,32 @@ require('x-revisionprogress/x-revisionprogress');
       $(this._messageSpan).html('');
     }
 
+    /**
+     * Refresh interval: `currentRefreshSeconds` config * 1000 (default 10 s).
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate () {
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
+    /**
+     * REST endpoint: `GetLastCycleWithSerialNumberV2/<machine-id>`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
       let url = 'GetLastCycleWithSerialNumberV2/'
         + this.element.getAttribute('machine-id');
       return url;
     }
 
+    /**
+     * Updates current and past data cells. Special values: '0' = missing, '-1' = no cycle.
+     * Stores internal serial number, range, and timing data for click handlers.
+     *
+     * @param {{ SerialNumber: string, DataMissing: boolean, Begin: string, End: string, EstimatedBegin: boolean }} data
+     */
     refresh (data) {
 
       // update display of 'Past Data' block

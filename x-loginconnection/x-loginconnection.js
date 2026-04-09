@@ -16,11 +16,17 @@ var pulseSvg = require('pulseSvg');
 
 require('x-loginpassword/x-loginpassword');
 
-/**
- * Build a custom tag <x-loginconnection> with no attribute
- */
 (function () {
 
+  /**
+   * `<x-loginconnection>` — login form component for authenticating against the Pulse web service.
+   *
+   * Fetches available authentication methods from `User/AuthenticationMethods` on first load.
+   * Renders username/password inputs (via `x-loginpassword`) and handles credential submission
+   * through `pulseLogin`. Redirects to the appropriate page on successful authentication.
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class LoginConnectionComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

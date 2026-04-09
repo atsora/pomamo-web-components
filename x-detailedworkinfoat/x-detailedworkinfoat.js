@@ -15,6 +15,20 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-detailedworkinfoat>` — detail panel showing the work information (operation slot) at a given time.
+   *
+   * Fetches `OperationSlots?MachineId=<id>&Range=<single-point-range>&SkipDetails=false` once per `when`.
+   * Listens to `dateTimeChangeEvent` and `machineIdChangeSignal` to update attributes.
+   *
+   * Attributes:
+   *   machine-id       - (required) integer machine id
+   *   when             - (required) ISO datetime string
+   *   datetime-context - event bus context for `dateTimeChangeEvent`
+   *   machine-context  - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class DetailedWorkinfoAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

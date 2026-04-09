@@ -25,6 +25,25 @@ require('x-stopclassification/x-stopclassification');
 
 (function () {
 
+  /**
+   * `<x-unansweredreasonnumber>` — bar-style display of the count of unanswered stop periods.
+   *
+   * Polls `ReasonUnanswered?MachineId=<id>&Number=True&Range=<range>[&Cache=No]`.
+   * Renders a single past-data cell showing "N STOP(s) to be classified" when unanswered periods exist,
+   * or "Past motion status details" when all stops are classified.
+   * Clicking the cell opens a reason history dialog via `pulseDetailsPopup`.
+   *
+   * Integrates with `x-modificationmanager` for pending reason modifications.
+   * Waits for a `dateTimeRangeChangeEvent` before its first request (`_range` must be set).
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   period-context  - (optional) event bus context for `dateTimeRangeChangeEvent`
+   *   machine-context - (optional) event bus context for machine selection changes
+   *   status-context  - (optional) event bus context to dispatch `reasonStatusChange`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class UnansweredReasonNumberComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -237,10 +256,20 @@ require('x-stopclassification/x-stopclassification');
       $(this._messageSpan).html('');
     }
 
+    /**
+     * Refresh interval: `currentRefreshSeconds` config * 1000 (default 10 s).
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate() {
       return 1000 * (Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10)));
     }
 
+    /**
+     * REST endpoint: `ReasonUnanswered?MachineId=<id>&Number=True&Range=<range>[&Cache=No]`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl() {
       let url = `ReasonUnanswered?MachineId=${this.element.getAttribute('machine-id')}&Number=True&Range=${pulseUtility.convertDateRangeForWebService(this._range)}`;
       if (this._forceReload) {
@@ -250,6 +279,12 @@ require('x-stopclassification/x-stopclassification');
       return url;
     }
 
+    /**
+     * Updates the past-data cell: shows count of unanswered stop periods or "all classified" label.
+     * Dispatches `reasonStatusChange` with missing status boolean to `status-context`.
+     *
+     * @param {{ IsUnansweredPeriod: boolean, UnansweredPeriodsNumber: number }} data
+     */
     refresh(data) {
       let status = false;
 

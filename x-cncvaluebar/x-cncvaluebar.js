@@ -18,22 +18,25 @@ var state = require('state');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-cncvaluebar> to display a cncvaluebar bar component. This tag gets following attribute :
- *  machine-id : Integer
- *  height : Integer
- *  period-context : String (optional)
- *  range : String 'begin;end' (optional)
- *  click : action on click (none/details/popup/change)
- *  showdetails: details to display after click - default in config
- *  showpopup: details to display in popup after click - default in config
- */
 (function () {
 
   /**
-   * CNC Value slot bar component
+   * `<x-cncvaluebar>` — timeline bar showing CNC field value color slots for a machine over a period.
    *
-   * @extends module:pulseComponent~PulseParamAutoPathRefreshingComponent
+   * Polls `CncValueColor?MachineId=<id>&Range=<range>&FieldId=<id>` at `currentRefreshSeconds` interval.
+   * Renders colored segments on a horizontal bar; clicking a segment opens the CNC value details popup.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   field-id        - (optional) CNC field id to filter the query
+   *   height          - (optional) integer pixel height of the bar
+   *   period-context  - (optional) event bus context for `dateTimeRangeChangeEvent`
+   *   range           - (optional) ISO date range string `begin;end`
+   *   showdetails     - (optional) details page to open on click (from config)
+   *   showpopup       - (optional) popup details to open on click (from config)
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CncValueBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**

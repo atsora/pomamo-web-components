@@ -20,6 +20,31 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
 
 (function () {
 
+  /**
+   * `<x-machinetab>` — clickable tab representing a single machine in a sidebar list.
+   *
+   * Polls `CurrentReason?MachineId=<id>` and applies the reason color as a right border.
+   * Renders: colored mode bar + machine name (`x-machinedisplay`) + icon row.
+   *
+   * Icons displayed (driven by `componentsToDisplay` config):
+   *  - `x-currenticonunansweredreason` — shown if `x-lastmachinestatus` is in the layout
+   *  - `x-currenticonworkinformation` — shown if `x-lastworkinformation` is in the layout
+   *  - `x-currenticonnextstop` — shown if `x-cycleprogressbar` is in the layout
+   *  - `x-currenticoncncalarm` — shown if colored bar + `showcoloredbar.cncalarm` config
+   *
+   * Clicking the tab dispatches `machineIdChangeSignal` on `machine-context` and scrolls to top.
+   * Responds to `machineIdChangeSignal` to auto-activate/deactivate based on matching machine id.
+   * Responds to `askForMachineIdSignal` to re-broadcast the active machine id.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   active          - `'true'` adds `active` CSS class to the tab cell
+   *   machine-context - event bus context for machine selection
+   *   period-context  - (optional) forwarded to icon components
+   *   status-context  - (optional) forwarded to icon components
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class MachineTabComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
     * Constructor
@@ -315,16 +340,31 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       // Do nothing
     }
 
+    /**
+     * Refresh interval: `currentRefreshSeconds` config * 1000 (default 10 s).
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate() {
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
+    /**
+     * REST endpoint: `CurrentReason?MachineId=<id>`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl() {
       let url = 'CurrentReason?MachineId=' +
         this.element.getAttribute('machine-id');
       return url;
     }
 
+    /**
+     * Applies the current reason color as `border-right-color` on the mode bar div.
+     *
+     * @param {{ Reason: { Color: string } }} data
+     */
     refresh(data) {
       $(this._content)
         .removeClass('machinetab-modecolor-undefined')
@@ -347,6 +387,10 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       }
     }
 
+    /**
+     * Event callback for `askForMachineIdSignal`: re-broadcasts the active machine id
+     * via `requestMachineIdSignal` if this tab is the active one.
+     */
     onAskForMachineId() {
       if (this.element.querySelector('.active')) {
         eventBus.EventBus.dispatchToContext('requestMachineIdSignal',
@@ -366,6 +410,10 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       this.changeSelectedMachine();
     }
 
+    /**
+     * Dispatches `machineIdChangeSignal` on `machine-context` with this tab's machine id,
+     * then smoothly scrolls the main content area to the top.
+     */
     changeSelectedMachine() {
       eventBus.EventBus.dispatchToContext('machineIdChangeSignal',
         this.element.getAttribute('machine-context'),

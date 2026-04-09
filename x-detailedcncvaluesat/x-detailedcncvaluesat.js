@@ -16,6 +16,20 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-detailedcncvaluesat>` — detail panel showing CNC field values at a given point in time.
+   *
+   * Fetches `CncValueAt?MachineId=<id>&At=<when>` once per `when` value.
+   * Listens to `dateTimeChangeEvent` and `machineIdChangeSignal` to update attributes.
+   *
+   * Attributes:
+   *   machine-id       - (required) integer machine id
+   *   when             - (required) ISO datetime string
+   *   datetime-context - event bus context for `dateTimeChangeEvent`
+   *   machine-context  - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class DetailedCNCValuesAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

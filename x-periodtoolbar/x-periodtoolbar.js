@@ -26,13 +26,22 @@ var state = require('state');
 
 require('x-datetimepicker/x-datetimepicker');
 
-/**
- * Build a custom tag <x-periodtoolbar> to display a period bar component with buttons. This tag gets following attribute :
- *  period-context : String (or range)
- *  displayshiftrange
- */
 (function () {
 
+  /**
+   * `<x-periodtoolbar>` — toolbar with navigation buttons for selecting and browsing time periods.
+   *
+   * When `displayshiftrange` is enabled, polls `RangeAround?RangeType=<type>&RangeSize=<n>&Around=<now>`
+   * to obtain shift boundaries; otherwise computes a rolling window locally.
+   * Renders previous/next/zoom navigation buttons and dispatches `dateTimeRangeChangeEvent` on `period-context`.
+   * Includes a `x-datetimepicker` for manual date selection.
+   *
+   * Attributes:
+   *   period-context     - event bus context for `dateTimeRangeChangeEvent`
+   *   displayshiftrange  - (optional) if `'true'`, aligns range to shift boundaries from the server
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class periodtoolbarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

@@ -12,6 +12,21 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-checkpath>` — invisible bootstrap component that resolves the web service base path.
+   *
+   * Fetches `WebServiceAddress/` from the main app host (derived from `mainpath` config or
+   * the current page URL + port 5001). On success, stores the returned `data.Url` as
+   * `path` in session storage and fires `pathChangeEvent` if the path changed.
+   *
+   * Special cases:
+   * - `skipWebServiceAddress = 'true'`: skips the REST call and uses `mainpath` directly.
+   * - `manageError` / `manageFailure`: fallback to `mainpath` config and show a user error message.
+   *
+   * No visible DOM is rendered (`pulse-nodisplay`).
+   *
+   * @extends pulseComponent.PulseParamSingleRequestComponent
+   */
   class CheckPathComponent extends pulseComponent.PulseParamSingleRequestComponent {
     /**
      * Constructor
@@ -77,7 +92,7 @@ var eventBus = require('eventBus');
       }
     }
 
-    // Overload to always refresh value
+    /** Always fetches regardless of scroll position, as long as the element is connected. */
     get isVisible () {
       if (!this._connected) { // == is connected
         return false;
@@ -85,6 +100,13 @@ var eventBus = require('eventBus');
       return true;
     }
 
+    /**
+     * Builds the full REST URL for `WebServiceAddress/`.
+     * Derives host from `mainpath` config or the current page URL + port 5001.
+     * Enforces a trailing `/`.
+     *
+     * @returns {string} Full URL including base path.
+     */
     get url () {
       let mainpath = this.getConfigOrAttribute('mainpath', ''); // Probably ""
       if (mainpath == '') {
@@ -117,6 +139,12 @@ var eventBus = require('eventBus');
       return mainpath + 'WebServiceAddress/';
     }
 
+    /**
+     * Stores the resolved web service URL as `path` in session storage.
+     * Fires `pathChangeEvent` to all components if the path differs from the previous value.
+     *
+     * @param {{ Url: string }} data
+     */
     refresh (data) {
       let previousPath = this.getConfigOrAttribute('path', '');
 
@@ -136,6 +164,12 @@ var eventBus = require('eventBus');
       }
     }
 
+    /**
+     * On non-fatal service error: falls back to `mainpath` config if set, fires `pathChangeEvent`.
+     * Silently suppresses the user-visible error message (commented out intentionally).
+     *
+     * @param {*} data
+     */
     manageError (data) {
       /* NO Message here, because it can happens if WebServiceAddress is badly configured
       var messageInfo = {
@@ -168,6 +202,13 @@ var eventBus = require('eventBus');
       super.manageError(data);
     }
 
+    /**
+     * On timeout or network failure: shows a user-visible error message via `showMessageSignal`,
+     * then falls back to `mainpath` config if set.
+     *
+     * @param {boolean} isTimeout
+     * @param {number}  xhrStatus
+     */
     manageFailure (isTimeout, xhrStatus) {
       var messageInfo = {
         'id': 'PATH',

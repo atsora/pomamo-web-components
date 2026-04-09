@@ -17,6 +17,22 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
 
 (function () {
 
+  /**
+   * `<x-reasonbutton>` — live stop-reason color button for the current machine mode.
+   *
+   * Polls `CurrentReason?MachineId=<id>` and applies the reason color as background.
+   * When `textchange-context` is set, adds `Period=running_machinemodecategory&NotRunningOnlyDuration=true`
+   * to retrieve not-running duration and dispatches `textChangeEvent` on that context.
+   * Clicking opens the stop-classification or running dialog via `pulseDetailsPopup`.
+   * Listens to `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id         - (required) integer machine id
+   *   machine-context    - event bus context for `machineIdChangeSignal`
+   *   textchange-context - event bus context for `textChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class ReasonButtonComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

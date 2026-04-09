@@ -12,12 +12,22 @@ var pulseSvg = require('pulseSvg');
 
 /**
  * Build a custom tag <x-alertdialog> to display a simple alert dialog content.
+ *
+ * Renders an icon (SVG inlined from background) and an HTML message side-by-side.
+ * Intended to be used as the content of a `pulseCustomDialog`.
+ *
  * Attributes:
- *   - type: 'Information' | 'Warning' | 'Error' | 'Question' (default: 'Information')
- *   - message: the message to display (can contain HTML)
+ *   type    - 'Information' | 'Warning' | 'Error' | 'Question' (default: 'Information')
+ *             Controls the CSS class applied to the icon: `customDialogIcon<type>`
+ *   message - HTML string to display as the dialog body
  */
 (function () {
 
+  /**
+   * `<x-alertdialog>` — static alert dialog content with icon and message.
+   *
+   * @extends pulseComponent.PulseInitializedComponent
+   */
   class AlertDialogComponent extends pulseComponent.PulseInitializedComponent {
     constructor (...args) {
       const self = super(...args);
@@ -28,6 +38,10 @@ var pulseSvg = require('pulseSvg');
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
     }
 
+    /**
+     * Builds the dialog DOM: an icon div (SVG inlined) and a message div.
+     * Icon CSS class is derived from the `type` attribute.
+     */
     initialize () {
       $(this.element).empty();
 
@@ -44,12 +58,15 @@ var pulseSvg = require('pulseSvg');
       this.switchToNextContext();
     }
 
+    /** No error display — dialog content is always static. */
     displayError (message) {
     }
 
+    /** No error to remove. */
     removeError () {
     }
 
+    /** No config changes affect this static component. */
     onConfigChange (event) {
     }
   }

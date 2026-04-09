@@ -17,22 +17,24 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-operationcyclebar> to display an operationcyclebar bar component. This tag gets following attribute :
- *  machine-id : Integer
- *  height : Integer
- *  period-context : String
- *  range : String 'begin;end' (optional)
- *  click : action on click (none/details/popup/change)
- *  showdetails: details to display after click - default in config
- *  showpopup: details to display in popup after click - default in config
- */
 (function () {
 
   /**
-   * Operation slot bar component
+   * `<x-operationcyclebar>` — timeline bar showing operation cycle slots for a machine over a period.
    *
-   * @extends module:pulseComponent~PulseParamAutoPathRefreshingComponent
+   * Polls `OperationCycleSlots?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
+   * Renders colored segments for each operation cycle; clicking opens the cycle details popup.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   height          - (optional) integer pixel height of the bar
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *   range           - (optional) ISO date range string `begin;end`
+   *   showdetails     - (optional) details page to open on click (from config)
+   *   showpopup       - (optional) popup details to open on click (from config)
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class OperationCycleBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**

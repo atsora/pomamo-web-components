@@ -13,9 +13,6 @@ var pulseService = require('pulseService');
 var eventBus = require('eventBus');
 var pulseRange = require('pulseRange');
 
-/**
- * Build a custom tag <x-modificationmanager> with 0 attribute
- */
 (function () {
 
   class SingleModification {
@@ -138,6 +135,15 @@ var pulseRange = require('pulseRange');
   } // end class SingleModification
 
 
+  /**
+   * `<x-modificationmanager>` — singleton component tracking pending REST modifications and their revision status.
+   *
+   * Manages a list of `SingleModification` instances; each polls its revision until it reaches a terminal state.
+   * Used internally by other components (e.g. `x-saveserialnumber`) to display a progress bar during saves.
+   * Dispatches `modificationEvent` on the event bus when the revision status changes.
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class ModificationManagerComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor

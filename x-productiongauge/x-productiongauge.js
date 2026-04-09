@@ -162,12 +162,28 @@ var eventBus = require('eventBus');
   }
 
   /**
-   * Custom element <x-productiongauge>
+   * `<x-productiongauge>` — circular gauge showing production performance ratio for a machine.
+   *
+   * Two endpoint modes depending on whether `period-context` provides a date range:
+   *  - With range: `Operation/PartProductionRange?GroupId=<id>&Range=<range>` — historical parts.
+   *  - Without range (live): `Operation/ProductionMachiningStatus?MachineId=<id>` — current shift.
+   *
+   * The gauge background is drawn once in `initialize()` using `createCircularGauge()` with a
+   * red→orange→yellow / green gradient split at `thresholdtargetproduction` config (default 80%).
+   * On each `refresh()`, only the needle SVG path is updated (`_drawNeedle()`).
+   * When the production target changes, the full gauge is redrawn via `_redrawGauge()`.
+   *
+   * `_textDisplay` shows `actual/target` (ratio mode) or `percent%` (percent mode, default), styled
+   * with `production-poor` / `production-medium` / `production-good` CSS classes.
+   * Reacts to `thresholdsupdated` config change event to redraw with new threshold values.
    *
    * Attributes:
-   * - machine-id: number (required) => target machine for which the production is displayed
-   * - machine-context: string (optional) => event bus context to listen for machine changes
-   * - display-mode: 'ratio' | 'percent' (optional, default 'percent') => text rendering mode
+   *   machine-id     - (required) integer machine id or group id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *   display-mode   - `'percent'` (default) or `'ratio'`
+   *   period-context - event bus context for date range events
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ProductionGaugeComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
@@ -627,6 +643,11 @@ var eventBus = require('eventBus');
       this.element.setAttribute('machine-id', event.target.newMachineId);
     }
 
+    /**
+     * Config change callback: redraws the gauge and updates the text when `thresholdsupdated` fires.
+     *
+     * @param {{ target: { config: string } }} event
+     */
     onConfigChange(event) {
       if (event.target.config === 'thresholdsupdated') {
         if (this._svgGauge) {
@@ -700,6 +721,13 @@ var eventBus = require('eventBus');
       this._drawNeedle();
     }
 
+    /**
+     * Event bus callback for `dateTimeRangeChangeEvent`.
+     * Sets `_range` when the current time is outside the new range (historical mode),
+     * or clears it (live shift mode) when the range includes the current time. Then restarts.
+     *
+     * @param {{ target: { daterange: Object } }} event
+     */
     onDateTimeRangeChange(event) {
       let newRange = event.target.daterange;
 

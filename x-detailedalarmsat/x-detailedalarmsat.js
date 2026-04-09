@@ -17,6 +17,22 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-detailedalarmsat>` — detail panel listing CNC alarms active at a given point in time.
+   *
+   * Fetches `CncAlarm/At?MachineId=<id>&At=<when>` once per `when` value.
+   * Optionally includes ignored alarms when `showIgnoredAlarm` config is `'true'`.
+   * Listens to `dateTimeChangeEvent` (on `datetime-context`) and `machineIdChangeSignal`
+   * (on `machine-context`) to update attributes dynamically.
+   *
+   * Attributes:
+   *   machine-id       - (required) integer machine id
+   *   when             - (required) ISO datetime string for the alarm query
+   *   datetime-context - event bus context for `dateTimeChangeEvent`
+   *   machine-context  - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class DetailedAlarmsAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

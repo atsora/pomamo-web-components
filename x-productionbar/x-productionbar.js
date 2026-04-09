@@ -16,26 +16,19 @@ var pulseService = require('pulseService');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-productionbar> to display a production bar component. This tag gets following attribute :
- *  machine-id : Integer
- *  height : Integer
- *  period-context : String
- *  machine-context : String
- */
 (function () {
 
-  // Create a horizontal bar
-  // width: width of the bar
-  // height: height of the bar
-  // segments: array made of
-  // {
-  //   minPercent: min position X of the segment
-  //   maxPercent: max position X of the segment
-  //   color or colors: either a unique color or an array of colors to define a conical gradient (color format #XXXXXX)
-  // }
-  // ticks: array of values for displaying ticks (in percent), can be null
-  // margin: {left: ..., right: ..., top: ..., bottom: ...}
+  /**
+   * Creates a horizontal SVG bar with rounded-corner segments and optional tick marks.
+   * Same structure as `createHorizontalGauge` in x-performancebar, adapted for the production bar.
+   *
+   * @param {number} width - Total SVG width in pixels.
+   * @param {number} height - Total SVG height in pixels.
+   * @param {Array<{minPercent: number, maxPercent: number, color?: string, colors?: string[]}>} segments
+   * @param {number[]|null} ticks - Tick positions as fractions [0,1], or null for none.
+   * @param {{left: number, right: number, top: number, bottom: number}} margin - Inner margin in pixels.
+   * @returns {SVGSVGElement|null} The created SVG element, or null if `segments` is empty.
+   */
   var gradientNumber = 0;
   function createHorizontalBar(width, height, segments, ticks, margin) {
     if (segments == null || segments.length == 0)
@@ -184,6 +177,30 @@ var eventBus = require('eventBus');
     return svg;
   }
 
+  /**
+   * `<x-productionbar>` — horizontal bar gauge showing production ratio (actual / target parts).
+   *
+   * Two endpoint modes depending on whether `range` attribute / `period-context` is provided:
+   *  - With range: `Operation/PartProductionRange?GroupId=<id>&Range=<range>` — historical parts.
+   *  - Without range (live): `Operation/ProductionMachiningStatus?MachineId=<id>` — current shift.
+   *
+   * `refresh(data)` computes `_productionRatio = actual / target` (capped at 1.0) and calls `_draw()`.
+   * The bar gradient is split at `thresholdtargetproduction` config (default 80%) into a red→orange→yellow
+   * zone and a green zone. A triangular cursor marks the current production ratio.
+   *
+   * `_textDisplay` shows `actual/target` (ratio mode) or `percent%` (percent mode, default), styled with
+   * `production-poor` / `production-medium` / `production-good` CSS classes based on config thresholds.
+   *
+   * Attributes:
+   *   machine-id     - (required) integer machine id or group id
+   *   height         - bar height in pixels
+   *   period-context - event bus context for date range events
+   *   range          - `'begin;end'` date range string
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *   display-mode   - `'percent'` (default) or `'ratio'`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class ProductionBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -455,6 +472,11 @@ var eventBus = require('eventBus');
       super.clearInitialization();
     }
 
+    /**
+     * Updates the `_textDisplay` element with either percentage or ratio text,
+     * and applies `production-poor` / `production-medium` / `production-good` CSS class
+     * based on `thresholdredproduction` and `thresholdtargetproduction` config values.
+     */
     _updateTextDisplay() {
       // Configuration takes priority over attribute
       let displayMode = 'percent'; // default
@@ -586,10 +608,16 @@ var eventBus = require('eventBus');
       $(this._messageSpan).html('');
     }
 
+    /**
+     * Refresh interval: `barSlowUpdateMinutes` config * 60000 (default 5 min).
+     *
+     * @returns {number} Interval in ms.
+     */
     get refreshRate() {
       return 1000 * Number(this.getConfigOrAttribute('refreshingRate.barSlowUpdateMinutes', 5));
     }
 
+    /** AJAX success callback for `UtilizationTarget/Get`: stores target percentage and redraws. */
     _perfSuccess(data) {
       this._targetpercentage = data.TargetPercentage;
       this._targetIsUpdated = true;
@@ -600,6 +628,12 @@ var eventBus = require('eventBus');
     _perfFailed(url, isTimeout, xhrStatus) {
     }
 
+    /**
+     * REST endpoint: `Operation/PartProductionRange?GroupId=<id>&Range=<range>` when a range is set,
+     * otherwise `Operation/ProductionMachiningStatus?MachineId=<id>` for live shift data.
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl() {
       let url;
       if (this._range != undefined) {
@@ -615,6 +649,13 @@ var eventBus = require('eventBus');
       return url;
     }
 
+    /**
+     * Extracts actual/target production from the REST response (field names differ by endpoint mode),
+     * computes `_productionRatio` (capped at 1.0), redraws the bar if the target changed, and
+     * updates the text display.
+     *
+     * @param {{ NbPieces?: number, Goal?: number, NbPiecesDoneDuringShift?: number, GoalNowShift?: number }} data
+     */
     refresh(data) {
       // Store previous target to detect changes
       let previousTargetProduction = this._targetProduction;

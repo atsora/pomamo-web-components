@@ -23,9 +23,21 @@ require('x-machinedisplay/x-machinedisplay');
 
 
 (function () {
+
   /**
-   * Reason slot list component
-   * Hérite de PulseParamAutoPathSingleRequestComponent pour faire sa propre requête
+   * `<x-unansweredreasonslotlist>` — list of unanswered (overwrite-required) reason slots for a machine.
+   *
+   * Fetches `Reason/OverwriteRequiredSlots/?MachineId=<id>&Range=<range>&SelectableOption=true` once per period.
+   * Renders a list of slots that require manual stop reason assignment, with stop-classification editing support.
+   * Uses `x-stopclassification` and `x-classifiedreasonslotlist` as sub-components.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class ReasonSlotListComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     constructor(...args) {

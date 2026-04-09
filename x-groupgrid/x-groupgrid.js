@@ -8,6 +8,25 @@ var eventBus = require('eventBus');
 var state = require('state');
 
 (function () {
+  /**
+   * `<x-groupgrid>` — grid layout of machine items, driven by the rotation engine.
+   *
+   * Identical machine-source resolution to `x-grouplist`:
+   *  1. `machine` config → renders all machines immediately, transitions to `Loaded`.
+   *  2. `group` config → fetches `MachinesFromGroups?GroupIds=<group>`, then delegates to engine.
+   *  3. Nothing → empty grid, `Loaded`.
+   *
+   * After rendering all machines into the DOM (`_displayAllMachines`), dispatches `groupGridRendered`.
+   * The rotation engine then controls per-item visibility via `updateVisibleMachines` (context `'PAGE'`),
+   * which updates `data-count` on the container and shows/hides `.groupgrid-item` divs.
+   *
+   * Attributes:
+   *   templateid - id of the DOM element to clone per machine (default `'boxtoclone'`)
+   *   group      - group id(s), resolved via REST
+   *   machine    - comma-separated machine id list (takes priority)
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class GroupGridComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     constructor(...args) {
       const self = super(...args);
@@ -31,7 +50,7 @@ var state = require('state');
       this._messageSpan = $('<span></span>').addClass('pulse-message');
       $(this._content).append($('<div></div>').addClass('pulse-message-div').append(this._messageSpan));
 
-      // [NOUVEAU] On écoute l'ordre du moteur pour afficher/masquer les tuiles
+      // Listen to the rotation engine's show/hide orders
       if (eventBus.EventBus.addEventListener) {
         eventBus.EventBus.addEventListener(this, 'updateVisibleMachines', 'PAGE', this.onUpdateVisibility);
       }
@@ -60,17 +79,29 @@ var state = require('state');
       }
     }
 
+    /**
+     * REST endpoint: `MachinesFromGroups?GroupIds=<group>`.
+     * Only called when no `machine` config is set and a `group` config is present.
+     *
+     * @returns {string|null} Short URL without base path, or null if no group is configured.
+     */
     getShortUrl() {
-      // On ne charge le groupe via AJAX que si aucune machine n'est fournie
       let groups = pulseConfig.getString('group');
       if (!groups || groups === '') return null;
       return 'MachinesFromGroups?GroupIds=' + groups;
     }
 
+    /**
+     * Attempts to resolve machines without an AJAX call.
+     * Priority: 1) `machine` config → renders immediately; 2) `group` config → returns false (triggers AJAX);
+     * 3) nothing → empty grid. Returns true when handled without AJAX, false to trigger the REST request.
+     *
+     * @returns {boolean}
+     */
     _runAlternateGetData() {
       if (this._waitingForEngine) return true;
 
-      // 1. PRIORITÉ : Config 'machine' (donnée par common_page)
+      // 1. Priority: 'machine' config (set by common_page)
       let machinesStr = pulseConfig.getString('machine');
       if (machinesStr && machinesStr.trim() !== '') {
         this._machineIdsArray = machinesStr.split(',').map(s => s.trim()).filter(s => s !== '');
@@ -79,7 +110,7 @@ var state = require('state');
         return true;
       }
 
-      // 2. Groupe
+      // 2. Group
       let groups = pulseConfig.getString('group');
       if (groups && groups.trim() !== '') {
         return false; // Launch AJAX
@@ -118,7 +149,11 @@ var state = require('state');
       this.switchToContext('Loaded');
     }
 
-    // Affiche TOUTES les machines dans le DOM (mais potentiellement cachées par le moteur plus tard)
+    /**
+     * Renders all machines from `_machineIdsArray` into the DOM as `.groupgrid-item` divs.
+     * Clones the template element per machine, sets `data-count`, and dispatches `groupGridRendered`.
+     * The rotation engine will later show/hide items via `onUpdateVisibility`.
+     */
     _displayAllMachines() {
       let container = $(this._content);
       container.find('.groupgrid-item').remove();
@@ -146,12 +181,17 @@ var state = require('state');
 
       console.log('[DEBUG] x-groupgrid: All ' + this._machineIdsArray.length + ' items rendered. Signaling Engine.');
 
-      // Signal au moteur que le DOM est prêt à être manipulé
+      // Signal the engine that the DOM is ready to be manipulated
       if (eventBus.EventBus.dispatchToAll) eventBus.EventBus.dispatchToAll('groupGridRendered', {});
       else if (eventBus.EventBus.dispatch) eventBus.EventBus.dispatch('groupGridRendered', {});
     }
 
-    // [NOUVEAU] C'est ici que la magie JS opère pour le Show/Hide
+    /**
+     * Rotation engine callback: shows/hides `.groupgrid-item` divs based on `visibleIds`.
+     * Also updates `data-count` attribute with the visible item count for CSS layout.
+     *
+     * @param {{ target?: { machines: string[] }, machines?: string[] }} event
+     */
     onUpdateVisibility(event) {
       let visibleIds = [];
       if (event.target && event.target.machines) visibleIds = event.target.machines;
@@ -159,8 +199,7 @@ var state = require('state');
 
       let count = visibleIds.length;
 
-      // [NOUVEAU] On injecte le compte directement dans le HTML du composant
-      // Cela permet au CSS du composant de réagir tout seul
+      // Inject count so CSS can react to it (e.g. grid column calculations)
       $(this._content).attr('data-count', count);
 
       let items = $(this._content).find('.groupgrid-item');

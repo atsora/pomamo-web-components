@@ -16,12 +16,22 @@ var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-productionshiftgoal> to display a period bar component with buttons. This tag gets following attribute :
- *  machine-context : String
- *  machine-id : Integer
- */
 (function () {
+  /**
+   * `<x-productionshiftgoal>` — displays and allows editing of the production target for the current shift.
+   *
+   * Polls `Operation/OperationCurrentShiftTarget?GroupId=<machine-id>` at `currentRefreshSeconds` interval.
+   * Renders: current target quantity with +/- increment buttons and a "Validate" button.
+   * Dispatches `textChangeEvent` on `textchange-context` with last-update timestamp.
+   * Listens to `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id        - (required) integer machine / group id
+   *   machine-context   - event bus context for `machineIdChangeSignal`
+   *   textchange-context - event bus context for `textChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class ProductionShiftGoalComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

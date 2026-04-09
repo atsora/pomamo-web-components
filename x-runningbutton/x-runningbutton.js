@@ -16,6 +16,21 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-runningbutton>` — live status button showing the current machine mode (running/not-running).
+   *
+   * Polls `CurrentMachineMode?MachineId=<id>` and applies the mode color to the button.
+   * When `textchange-context` is set, also adds `Period=running_machinemodecategory&NotRunningOnlyDuration=true`
+   * to the URL to retrieve duration data. Dispatches `textChangeEvent` on that context.
+   * Clicking the button opens the running-view dialog via `pulseDetailsPopup`.
+   *
+   * Attributes:
+   *   machine-id        - (required) integer machine id
+   *   machine-context   - event bus context for `machineIdChangeSignal`
+   *   textchange-context - event bus context for `textChangeEvent` (last-update display)
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class RunningButtonComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

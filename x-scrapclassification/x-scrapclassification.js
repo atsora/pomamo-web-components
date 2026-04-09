@@ -17,14 +17,22 @@ var eventBus = require('eventBus');
 
 require('x-savescrapreason/x-savescrapreason');
 
-/**
- * Build a custom tag <x-scrapclassification> to display scrap classification information
- *
- * Attributes:
- *  machine-id : Integer (required)
- */
 (function () {
 
+  /**
+   * `<x-scrapclassification>` — displays and allows editing of scrap reason for a machine cycle.
+   *
+   * Fetches `Scrap/At/Get?MachineId=<id>&At=<range>&NextPeriod=<n>` once per request.
+   * Renders the current scrap count and reason, with a button to open `x-savescrapreason` dialog.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class ScrapClassificationComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor

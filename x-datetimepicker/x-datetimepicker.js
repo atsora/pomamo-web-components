@@ -10,18 +10,25 @@
 var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
 
-/**
- * Build a custom tag <x-datetimepicker> to display a datetime selector. This tag gets following attribute : 
- *  defaultdatetime : String (ISO)
- *  mindatetime : String
- *  maxdatetime : String
- *  showseconds : Boolean
- *  nullable : Boolean
- *  novaluetext : String
- *  disabled
- */
 (function () {
 
+  /**
+   * `<x-datetimepicker>` — interactive date-time selector widget.
+   *
+   * Renders date and time input fields for selecting an ISO datetime value.
+   * Exposes `getISOValue()` to retrieve the current value programmatically.
+   *
+   * Attributes:
+   *   defaultdatetime - (optional) initial ISO datetime string
+   *   mindatetime     - (optional) minimum selectable datetime (ISO string)
+   *   maxdatetime     - (optional) maximum selectable datetime (ISO string)
+   *   showseconds     - (optional) if present, shows seconds in time input
+   *   nullable        - (optional) if present, allows clearing the value
+   *   novaluetext     - (optional) placeholder text when no value is set
+   *   disabled        - (optional) disables the input fields
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class DateTimePickerComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor

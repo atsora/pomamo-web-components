@@ -16,6 +16,21 @@ var eventBus = require('eventBus');
 //var state = require('state');
 
 (function () {
+
+  /**
+   * `<x-cycleprogresspie>` — SVG donut/pie showing the current machine cycle progress and schedule.
+   *
+   * Polls `CycleProgress?MachineId=<id>` at `currentRefreshSeconds` interval.
+   * Renders a two-ring SVG: outer ring for cycle state, inner ring for elapsed time ratio.
+   * Includes a live countdown timer updated every second between server polls.
+   * Listens to `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class CycleProgressPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

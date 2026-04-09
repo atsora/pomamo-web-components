@@ -14,6 +14,23 @@ var pulseUtility = require('pulseUtility');
 var eventBus = require('eventBus');
 
 (function () {
+  /**
+   * `<x-detailedobservationstateat>` — detail panel showing the machine observation-state slot
+   * that covers a specific point in time.
+   *
+   * Fetches `ObservationStateSlots?MachineId=<id>&Range=<single-point-range>` once per `when` value.
+   * Renders the slot date range and display string inside a `.detailed-content` div.
+   * Listens to `dateTimeChangeEvent` (on `datetime-context`) and `machineIdChangeSignal`
+   * (on `machine-context`) to update `when` and `machine-id` attributes dynamically.
+   *
+   * Attributes:
+   *   machine-id       - (required) integer machine id
+   *   when             - (required) ISO datetime string for the slot query
+   *   datetime-context - event bus context for `dateTimeChangeEvent`
+   *   machine-context  - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class DetailedObservationStateAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
@@ -189,13 +206,22 @@ var eventBus = require('eventBus');
       $(this.element).find('.pulse-message').html('');
     }
 
+    /**
+     * REST endpoint: `ObservationStateSlots?MachineId=<id>&Range=<single-point-range>`.
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
-      // Return the Web Service URL here without path
       return 'ObservationStateSlots?MachineId='
         + this.element.getAttribute('machine-id')
         + '&Range=' + pulseUtility.createSingleRangeForWebService(this.element.getAttribute('when'));
     }
 
+    /**
+     * Renders the first `ObservationStateSlots` entry: its date range and `Display` string.
+     *
+     * @param {{ ObservationStateSlots: Array<{ Range: string, Display: string }> }} data
+     */
     refresh (data) {
       $(this._detailedContent).empty();
 

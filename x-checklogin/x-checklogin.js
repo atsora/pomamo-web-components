@@ -15,6 +15,22 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-checklogin>` — invisible authentication guard component.
+   *
+   * On `validateParameters`:
+   *  - If not on a login page and app is `PulseWebApp`: redirects to login if role/context is missing.
+   *  - Checks login validity: empty login → redirect to login; expired token → redirect to login.
+   *  - Schedules a 60-second timer to re-check validity while the session is active.
+   *
+   * Listens to:
+   *  - `AuthorizationErrorEvent` — triggers a token refresh via `User/RenewToken` (POST).
+   *  - `TokenHasChangedEvent` (AccessToken kind) — re-validates token expiration.
+   *
+   * No DOM is rendered (`pulse-nodisplay`). No REST polling (transitions to `Loaded` immediately).
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   */
   class CheckLoginComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
      * Constructor
@@ -88,6 +104,11 @@ var eventBus = require('eventBus');
       // this.switchToNextContext();-> to restore if web service is used
     }
 
+    /**
+     * Checks if the current login is still valid.
+     * If `useLogin` config is enabled: verifies that a non-empty login exists and the token is not expired.
+     * On failure, redirects to the login page. On success, reschedules itself every 60 seconds.
+     */
     _checkLoginIsValid () {
       let useLogin = pulseConfig.getBool('useLogin', false);
       if (useLogin) {
@@ -140,7 +161,12 @@ var eventBus = require('eventBus');
       // Maybe re start ?
     }
 
-    // Token changed -> prepare timeout for disconnection (useful for static display like reporting)
+    /**
+     * Event callback when the access token changes.
+     * Immediately checks if the new token is expired and redirects to login if so.
+     *
+     * @param {{ target: { kind: string } }} event
+     */
     onTokenHaschanged (event) {
       if (event.target.kind != 'AccessToken') {
         // Ignore
@@ -153,6 +179,12 @@ var eventBus = require('eventBus');
       }
     }
 
+    /**
+     * Returns `true` if the access token expiration date is in the past, `false` otherwise.
+     * Returns `false` (not expired) if no expiration date is stored.
+     *
+     * @returns {boolean}
+     */
     _checkIfTokenIsExpired () {
       let access_token_exp = pulseLogin.getAccessTokenExpiration();
       if (access_token_exp == '') {
@@ -173,6 +205,11 @@ var eventBus = require('eventBus');
       }
     }
 
+    /**
+     * Clears login cookies/storage and redirects to the login page (unless already there).
+     *
+     * @returns {boolean|undefined}
+     */
     _disconnectAndGoToPageLogin () {
       // Clean all cookies linked to login
       pulseLogin.cleanLoginRole();
@@ -184,7 +221,13 @@ var eventBus = require('eventBus');
       }
     }
 
-    // Token expired -> GLOBAL refresh token
+    /**
+     * Global event callback when an HTTP 401 authorization error occurs.
+     * Posts to `User/RenewToken` with the stored refresh token (only one request at a time).
+     * On success: stores the renewed token. On error/fail: clears login and redirects.
+     *
+     * @param {*} event
+     */
     onAuthorizationError (event) {
       if (!this._pendingRefreshToken) {
         this._pendingRefreshToken = true;
@@ -215,11 +258,23 @@ var eventBus = require('eventBus');
       }
     }
 
+    /**
+     * Token renewal success: stores the new login/role data and clears the pending flag.
+     *
+     * @param {*} token
+     * @param {*} data
+     */
     _renewTokenSuccess (token, data) {
       pulseLogin.storeLoginRoleFromRefreshDTO(data, true);
       this._pendingRefreshToken = false;
     }
 
+    /**
+     * Token renewal error (server-side rejection): sets a login error message, clears login, redirects.
+     *
+     * @param {*} token
+     * @param {*} error
+     */
     _renewTokenError (token, error) {
       pulseConfig.setGlobal('loginError', 'Authentication Error. Please retry');
       // Clean all cookies linked to login
@@ -233,6 +288,14 @@ var eventBus = require('eventBus');
       this._pendingRefreshToken = false;
     }
 
+    /**
+     * Token renewal network failure (timeout or XHR error): sets error message, clears login, redirects.
+     *
+     * @param {*} token
+     * @param {string} url
+     * @param {boolean} isTimeout
+     * @param {number} xhrStatus
+     */
     _renewTokenFail (token, url, isTimeout, xhrStatus) {
       pulseConfig.setGlobal('loginError', 'Authentication Error. Please retry');
       // Clean all cookies linked to login

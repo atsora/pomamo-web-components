@@ -15,7 +15,18 @@ var state = require('state');
 (function () {
 
   /**
-   * Add a ReadStatic context between ParamValidation and Load
+   * `<x-tr>` — inline translation component. Renders a single translated string by key.
+   *
+   * Inserts a custom `Read` context between `ParamValidation` and `Load` that first checks
+   * the local translation catalog (`pulseConfig.pulseTranslate` / `getTranslation`). If the
+   * key is found locally, transitions immediately to `Loaded`. Otherwise falls through to
+   * the REST request `I18N/Catalog?Key=<key>[&Default=<default>]`.
+   *
+   * Attributes:
+   *   key     - (required) translation key; restart triggered on change
+   *   default - optional fallback value passed as `Default` query param
+   *
+   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class TrComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
     /**
@@ -83,6 +94,7 @@ var state = require('state');
       }
     }
 
+    /** Shows the loader when entering the `Read` context. */
     enterContext(context) {
       if (context == 'Read') {
         this.startLoading();
@@ -90,6 +102,7 @@ var state = require('state');
       return super.enterContext(context);
     }
 
+    /** Hides the loader when leaving the `Read` context. */
     exitContext(context) {
       if (context == 'Read') {
         this.endLoading();
@@ -156,7 +169,9 @@ var state = require('state');
     }
 
     /**
-     * Read the data in catalog
+     * Tries to resolve the key locally (config catalog then component translations).
+     * If found, sets `_dataElement.innerText` and switches to `Loaded`.
+     * If not found, advances to `Load` (triggers REST fetch).
      */
     read() {
       let key = this.element.getAttribute('key');
@@ -177,6 +192,11 @@ var state = require('state');
       }
     }
 
+    /**
+     * REST endpoint: `I18N/Catalog?Key=<key>[&Default=<default>]`
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl() {
       let url = 'I18N/Catalog';
       let key = this.element.getAttribute('key');
@@ -188,6 +208,11 @@ var state = require('state');
       return url;
     }
 
+    /**
+     * Renders the translated value from the REST response.
+     *
+     * @param {{ Value: string }} data
+     */
     refresh(data) {
       this._dataElement.innerText = data.Value;
     }

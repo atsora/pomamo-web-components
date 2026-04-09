@@ -20,13 +20,21 @@ const locales = {
   'es': require('d3-time-format/locale/es-ES.json'),
 };
 
-/**
- * Build a custom tag <x-datetimegraduation> to display an datetimegraduation component. This tag gets following attribute :
- * height : Integer
- * range : String 'begin;end'
- */
 (function () {
 
+  /**
+   * `<x-datetimegraduation>` — SVG time-axis ruler for timeline bars.
+   *
+   * Renders a horizontal graduation axis using d3-time-format for the given date range.
+   * Adapts tick density and locale to the current language setting.
+   * Used as a time ruler above or below `x-*bar` components.
+   *
+   * Attributes:
+   *   height - (optional) integer pixel height of the graduation area
+   *   range  - ISO date range string `begin;end`
+   *
+   * @extends pulseComponent.PulseParamInitializedComponent
+   */
   class DateTimeGraduationComponent extends pulseComponent.PulseParamInitializedComponent {
     /**
      * Constructor

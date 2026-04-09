@@ -14,6 +14,18 @@ var pulseUtility = require('pulseUtility');
 
 (function () {
 
+  /**
+   * `<x-chartreservecapacity>` — chart showing the reserve capacity utilization for the current shift by group.
+   *
+   * Polls `Operation/ReserveCapacityCurrentShiftChartByGroup` at `currentRefreshSeconds` interval,
+   * filtered by `group` config or `machine-id` attribute.
+   * Renders an SVG bar/chart visualizing the capacity utilization ratio.
+   *
+   * Attributes:
+   *   machine-id - (optional) integer machine id (used when `group` config is not set)
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class ChartReserveCapacityComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

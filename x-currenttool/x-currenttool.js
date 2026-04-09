@@ -11,12 +11,22 @@
 var pulseUtility = require('pulseUtility');
 var pulseComponent = require('pulsecomponent');
 
-/**
- * Build a custom tag <x-currenttool> to display a currenttool component. This tag gets following attribute :
- *  machine : Integer
- */
 (function () {
 
+  /**
+   * `<x-currenttool>` — displays the current tool number for a machine.
+   *
+   * Polls `CncValue/Current?MachineId=<id>&FieldIds=119` at `currentRefreshSeconds + 1` seconds.
+   * `manageSuccess()` intercepts stale data (delay > `maximumElapsedTimeCurrentTool` = 2 min)
+   * and shows '--' via `NotAvailable` context. Otherwise delegates to `refresh(data)`.
+   * `refresh(data)` renders `'T' + value` from the first machine module's first field, or empty.
+   * `displayTextAndTooltip(text, tooltip)` manages a lazily created `<span>`.
+   *
+   * Attributes:
+   *   machine-id - (required) integer machine id; restart triggered on change
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class CurrentToolComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
@@ -40,6 +50,11 @@ var pulseComponent = require('pulsecomponent');
       }
     }
 
+    /**
+     * Maximum elapsed time before CNC tool data is considered stale: 2 minutes (120 000 ms).
+     *
+     * @returns {number}
+     */
     get maximumElapsedTimeCurrentTool () {
       return 120000; // 2 minutes = 120s
     }
@@ -120,15 +135,32 @@ var pulseComponent = require('pulsecomponent');
       this.displayTextAndTooltip('');
     }
 
-    get refreshRate () { // refresh rate in ms.
+    /**
+     * Refresh interval: `currentRefreshSeconds` config + 1 second (default ~11 s).
+     *
+     * @returns {number} Interval in ms.
+     */
+    get refreshRate () {
       return 1000.0 * (Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10)) + 1);
     }
 
+    /**
+     * REST endpoint: `CncValue/Current?MachineId=<id>&FieldIds=119` (field 119 = Tool).
+     *
+     * @returns {string} Short URL without base path.
+     */
     getShortUrl () {
       return 'CncValue/Current?MachineId=' + this.element.getAttribute('machine-id') +
         '&FieldIds=119'; // == Tool
     }
 
+    /**
+     * Updates the text and optional tooltip on the content span.
+     * Creates the span lazily if it doesn't exist yet.
+     *
+     * @param {string} text      - HTML string to display.
+     * @param {string} [tooltip] - Tooltip string; removes `title` attribute if undefined.
+     */
     displayTextAndTooltip (text, tooltip) {
       let span = $(this._content).find('span');
       if (0 == span.length) {
@@ -144,6 +176,12 @@ var pulseComponent = require('pulsecomponent');
       }
     }
 
+    /**
+     * Renders `'T' + value` from the first machine module's first field, or empty string.
+     * Only shows the value if `_lastCncValueDate` is set (staleness already checked in `manageSuccess`).
+     *
+     * @param {{ ByMachineModule: Array }} data
+     */
     refresh (data) {
       if ((!pulseUtility.isNotDefined(data.ByMachineModule)) &&
         (data.ByMachineModule.length > 0) &&
@@ -180,6 +218,13 @@ var pulseComponent = require('pulsecomponent');
       //this.displayTextAndTooltip('TOOL');
     }
 
+    /**
+     * Overrides base success handler: stores `_lastCncValueDate`, checks staleness.
+     * If data is older than `maximumElapsedTimeCurrentTool`, shows '--' via `NotAvailable`.
+     * Otherwise delegates to `refresh(data)`.
+     *
+     * @param {{ ByMachineModule: Array }} data
+     */
     manageSuccess (data) {
       // Clear
       //$(this._content).css('display', 'inline-block');

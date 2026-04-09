@@ -12,35 +12,43 @@ var pulseComponent = require('pulsecomponent');
 var eventBus = require('eventBus');
 
 /**
- * Build a custom tag <x-remotedisplay> with a single display-context attribute
+ * Build a custom tag <x-remotedisplay> — event-driven text display driven by a named context.
+ *
+ * Renders whatever HTML string is pushed via `displayChangeEvent` on the given context.
+ * Also supports dynamic CSS class additions/removals from the event data.
+ *
+ * Attributes:
+ *   display-context - (required) event bus context key to listen on
  */
 (function () {
 
+  /**
+   * `<x-remotedisplay>` — passive display updated entirely by event bus messages.
+   *
+   * Listens to `displayChangeEvent` on the `display-context` context.
+   * Event payload fields:
+   *   - `Display`       : HTML string to render (empty string if undefined)
+   *   - `ClassToAdd`    : CSS class to add to the content div (optional)
+   *   - `ClassToRemove` : CSS class to remove from the content div (optional)
+   *
+   * @extends pulseComponent.PulseInitializedComponent
+   */
   class RemoteDisplay extends pulseComponent.PulseInitializedComponent {
     /**
-     * Constructor
-     * 
-     * @param  {...any} args 
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
 
-      // Parameters
       self._display = undefined;
-
       self._content = undefined;
 
       return self;
     }
 
-    //get content () { return this._content; }
-
     /**
-     * Associated parameter
+     * Re-subscribes to `displayChangeEvent` when `display-context` attribute changes.
      */
-    //get myparameter () { return this._myparameter; }
-    //_setMyparameter () { /* ... set here this._myparameter ... */ }
-
     attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
@@ -57,25 +65,25 @@ var eventBus = require('eventBus');
       }
     }
 
+    /**
+     * Validates `display-context` attribute, builds content div, subscribes to the event bus.
+     * Errors immediately if `display-context` is missing.
+     */
     initialize () {
-      // Attributes
       if (!this.element.hasAttribute('display-context')) {
         console.error('missing attribute display-context');
-        // Initialization error => switch to the Error state
         this.switchToKey('Error', () => this.displayError('missing attribute display-context'), () => this.removeError());
         return;
       }
 
-      // In case of clone, need to be empty :
+      // In case of clone, need to be empty:
       $(this.element).empty();
 
       // Create DOM - Content
       this._content = $('<div></div>').addClass('remotedisplay-content');
       $(this.element).append(this._content);
 
-      // No loader / No message
-
-      // Listener
+      // Subscribe to display change events
       if (this.element.hasAttribute('display-context')) {
         eventBus.EventBus.addEventListener(this,
           'displayChangeEvent',
@@ -89,17 +97,17 @@ var eventBus = require('eventBus');
     }
 
     clearInitialization () {
-      // Parameters
-      // DOM
       $(this.element).empty();
-
-      //this._messageSpan = undefined;
       this._content = undefined;
-
       super.clearInitialization();
     }
 
-    // Callback events
+    /**
+     * Updates the content div with the new display HTML.
+     * Applies optional CSS class changes from the event data.
+     *
+     * @param {{ target: { Display: string, ClassToAdd?: string, ClassToRemove?: string } }} event
+     */
     onDisplayChange (event) {
       this._display = event.target.Display;
       if (pulseUtility.isNotDefined(this._display)) {

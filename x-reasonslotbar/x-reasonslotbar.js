@@ -26,15 +26,23 @@ require('x-savereason/x-savereason');
 require('x-reasonslotlist/x-reasonslotlist');
 require('x-revisionprogress/x-revisionprogress');
 
-/**
- * Build a custom tag <x-reasonslotbar>
- */
 (function () {
 
   /**
-   * Reason slot bar component
+   * `<x-reasonslotbar>` — timeline bar showing reason color slots for a machine over a period.
    *
-   * @extends module:pulseComponent~PulseParamAutoPathRefreshingComponent
+   * Polls `ReasonColorSlots?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
+   * Renders colored segments for each reason slot; clicking opens the stop classification or reason details popup.
+   * Integrates `x-revisionprogress` for optimistic update tracking after reason edits.
+   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   height          - (optional) integer pixel height of the bar
+   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   *   range           - (optional) ISO date range string `begin;end`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ReasonSlotBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**

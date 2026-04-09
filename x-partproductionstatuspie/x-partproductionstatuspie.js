@@ -15,6 +15,20 @@ var pulseConfig = require('pulseConfig');
 var eventBus = require('eventBus');
 
 (function () {
+
+  /**
+   * `<x-partproductionstatuspie>` — SVG donut showing current part production status and machining progress.
+   *
+   * Polls `Operation/ProductionMachiningStatus?MachineId=<id>` at `currentRefreshSeconds` interval.
+   * Renders a pie chart with segments for actual vs. goal part count, with live timer between polls.
+   * Listens to `machineIdChangeSignal` on `machine-context`.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   machine-context - event bus context for `machineIdChangeSignal`
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class PartProductionStatusPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor

@@ -12,25 +12,41 @@ var pulseComponent = require('pulsecomponent');
 
 (function () {
 
+  /**
+   * `<x-markdowntext>` — renders Markdown text as HTML inside a content div.
+   *
+   * Content is set programmatically via `setText()` (exposed as a public method
+   * for use by the reporting framework). The component has no HTML attributes
+   * beyond the standard pulse lifecycle.
+   *
+   * Dependencies: `markdown-it` (loaded lazily on first `setText` call).
+   *
+   * @extends pulseComponent.PulseInitializedComponent
+   */
   class markDownTextComponent extends pulseComponent.PulseInitializedComponent {
     /**
-     * Constructor
-     * 
-     * @param  {...any} args 
+     * @param {...any} args
      */
     constructor(...args) {
       const self = super(...args);
 
       self.methods = {
-        setText: self.setText // used by reporting
+        setText: self.setText // exposed for use by reporting
       };
 
-      // DOM - not here
+      // DOM
       self._content = undefined;
 
       return self;
     }
 
+    /**
+     * Renders Markdown text into the component content div.
+     * Uses `markdown-it` to parse and render the input string.
+     * Clears any previous content before rendering.
+     *
+     * @param {string|null} textToDisplay - Markdown string, or null (logs a warning).
+     */
     setText (textToDisplay) {
       $(this._content).empty();
 
