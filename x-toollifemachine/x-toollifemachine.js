@@ -108,20 +108,16 @@ this.restoreDeleteWhenDisconnect ():
     }
 
     _createDivForSingleTool (spanOrLink, RemainingCycles) {
-      let toolNameDiv = $('<div></div>').addClass('toollifemachine-tool-name-div')
-        .append(spanOrLink);
       let singletool = $('<div></div>')
         .addClass('toollifemachine-singletool-div')
-        .append(toolNameDiv);
+        .append(spanOrLink);
 
       if ('true' == this.getConfigOrAttribute('displayremainingcyclesbelowtool')
         || true == this.getConfigOrAttribute('displayremainingcyclesbelowtool')) {
         if (!pulseUtility.isNotDefined(RemainingCycles)) {
           let remainingCycles = $('<span></span>').addClass('toollifemachine-remaining-cycles-span')
             .html(RemainingCycles);
-          let remainingCyclesDiv = $('<div></div>').addClass('toollifemachine-remaining-cycles-div')
-            .append(remainingCycles);
-          singletool.append(remainingCyclesDiv);
+          singletool.append(remainingCycles);
         }
       }
 
