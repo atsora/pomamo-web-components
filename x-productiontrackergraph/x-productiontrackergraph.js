@@ -34,8 +34,8 @@ const Chart = require('chart.js/auto');
   class ProductionTrackerGraphComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
-     * 
-     * @param  {...any} args 
+     *
+     * @param  {...any} args
      */
     constructor(...args) {
       const self = super(...args);
@@ -245,7 +245,7 @@ const Chart = require('chart.js/auto');
 
       if (!this.element.hasAttribute('group')) {
         console.error('missing attribute machine or group in MachineDisplayComponent.element');
-        this.switchToKey('Error', () => this.displayError(this.getTranslation('invalidMachineGroup', 'Invalid machine or group')), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('machinedisplay.invalidMachineGroup', 'Invalid machine or group')), () => this.removeError());
         return;
       }
 
@@ -416,7 +416,7 @@ const Chart = require('chart.js/auto');
         }
 
         // TODO: target for the full hour
-        // Create chart      
+        // Create chart
         if (this._chartInstance) {
           this._chartInstance.data.labels = labels;
           this._chartInstance.data.datasets[1].data = actualData;
@@ -600,8 +600,8 @@ const Chart = require('chart.js/auto');
 
     /**
       * Event callback in case a config is updated: (re-)start the component
-      * 
-      * @param {*} event 
+      *
+      * @param {*} event
       */
     onConfigChange(event) {
       if ((event.target.config == 'machine')

@@ -482,7 +482,7 @@ var openChangeScrapClassificationDialog = exports.openChangeScrapClassificationD
   dialog.append(xscrapclassification);
 
   pulseCustomDialog.openDialog(dialog, {
-    title: component.getTranslation('scrapClassification.title', 'Declare scrap'),
+    title: component.getTranslation('scrapclassification.title', 'Declare scrap'),
     onClose: function () {
       $('.popup-block').fadeOut();
     }.bind(component),

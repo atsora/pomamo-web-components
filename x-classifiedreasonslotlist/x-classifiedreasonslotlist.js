@@ -430,7 +430,7 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
         .addClass('classifiedreasonslotlist-define-button')
         .prop('disabled', true);
       let defineReasonLabel = $('<x-tr></x-tr>')
-        .attr('key', 'defineReason')
+        .attr('key', 'classifiedreasonslotlist.defineReason')
         .attr('default', 'Define reason');
       defineReasonButton.append(defineReasonLabel);
       defineReasonButton.on('click', function () {
@@ -440,7 +440,7 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
       let showAllButton = $('<button type="button"></button>')
         .addClass('classifiedreasonslotlist-showall-button');
       let showAllLabel = $('<x-tr></x-tr>')
-        .attr('key', 'advanced')
+        .attr('key', 'classifiedreasonslotlist.advanced')
         .attr('default', 'Advanced');
       showAllButton.append(showAllLabel);
 
@@ -451,7 +451,7 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
       let seeUnansweredButton = $('<button type="button"></button>')
         .addClass('classifiedreasonslotlist-showall-button');
       let seeUnansweredLabel = $('<x-tr></x-tr>')
-        .attr('key', 'seeUnansweredOnly')
+        .attr('key', 'classifiedreasonslotlist.seeUnansweredOnly')
         .attr('default', 'Unanswered only');
       seeUnansweredButton.append(seeUnansweredLabel);
       seeUnansweredButton.on('click', function () {
@@ -681,7 +681,7 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
       dialog.append(xunansweredreasonslotlist);
 
       let unansweredDialogId = pulseCustomDialog.openDialog(dialog, {
-        title: this.getTranslation('seeUnansweredOnly', 'Unanswered only'),
+        title: this.getTranslation('classifiedreasonslotlist.seeUnansweredOnly', 'Unanswered only'),
         onClose: function () {
           $('.popup-block').fadeOut();
         }.bind(this),

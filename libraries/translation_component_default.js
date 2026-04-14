@@ -25,10 +25,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   changebutton: 'Change',
   contactsupport: 'Please contact the support team',
   loadingDots: 'Loading...',
+  noDataTooOld: 'N/A',
   missingconfiguration: 'Missing configuration',
   errorColon: 'Error: ',
   waitingPath: 'Waiting for path',
   error: {
+    emptyRange: 'Empty range',
     emptyPeriod: 'Empty period',
     invalidMachineId: 'Invalid machine-id',
     invalidRange: 'Invalid range',
@@ -117,6 +119,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   },
   groupArray: {
     noMachine: 'No machine in selection'
+  },
+  lastmachinestatus: {
+    currentReasonColon: 'Current reason:',
+    pastReasonData: 'Past motion status details',
+    pastTooltip: 'Look or change past reason details',
+    tooOld: 'Reason is too old'
   },
   lastmachinestatetemplate: {
     scheduledStatus: 'Scheduled status:'
@@ -277,6 +285,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     idle: 'Idle',
     motion: 'Motion',
     noPeriod: 'No selectable period on the specified range',
+    allReasons: 'All reasons',
     defineReason: 'Set reason',
     sectionTimeRangeTitle: 'Select a time range',
     sectionPeriodTitle: 'Select one or more idle periods',
@@ -344,6 +353,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     validparts: 'Valid parts'
   },
   scrapclassification: {
+    title: 'Declare scrap',
     partcount: 'Part count: ',
     scrapcount: 'Scrap count: ',
     unproducedcount: 'Unproduced count: ',
@@ -405,11 +415,13 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   changebutton: 'Changer',
   contactsupport: "Prière de consulter l'équipe support",
   loadingDots: 'En chargement...',
+  noDataTooOld: 'N/D',
   missingconfiguration: 'Configuration manquante',
   errorColon: 'Erreur : ',
   waitingPath: 'En attente du chemin',
   homeBtn: 'accueil',
   error: {
+    emptyRange: 'Plage vide',
     emptyPeriod: 'Période vide',
     invalidMachineId: 'machine-id invalide',
     invalidRange: 'Plage invalide',
@@ -499,6 +511,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   groupArray: {
     noMachine: 'Aucune machine dans la sélection'
   },
+  lastmachinestatus: {
+    currentReasonColon: 'Raison courante :',
+    pastReasonData: "Raisons d'arret passees",
+    pastTooltip: 'Consulter ou changer une raison passee',
+    tooOld: 'La raison est trop ancienne'
+  },
   lastmachinestatetemplate: {
     scheduledStatus: 'État planifié : '
   },
@@ -528,6 +546,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     connectWith: 'Connecter avec '
   },
   loginpassword: {
+      deniedError: 'Utilisateur ou mot de passe invalide',
+      noRoleError: 'Aucun role defini pour ce login. Merci de verifier la configuration',
     user: 'Utilisateur :',
     password: 'Mot de passe :',
     stayConnected: 'Rester connecté',
@@ -655,13 +675,14 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     idle: 'Arrêtée',
     motion: 'En mouvement',
     noPeriod: 'Pas de période possible sur la place spécifiée',
+    allReasons: 'Toutes les raisons',
     defineReason: 'Définir la raison',
     sectionTimeRangeTitle: 'Selectionner une période de temps',
     sectionPeriodTitle: 'Selectionner une ou plusieurs périodes',
     sectionReasonTitle: 'Classifier la/les période(s) sélectionnée(s)',
     optionIdentified: 'Montrer les périodes classifiées',
     optionRunning: 'Montrer les périodes actives',
-    advanced: 'Gestion avancé',
+    advanced: 'Gestion avancée',
     seeAllReasons: 'Voir toutes les raisons',
     seeUnansweredOnly: 'Non classifiées uniquement',
   },
@@ -671,7 +692,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     noPeriod: 'Pas de période possible sur la place spécifiée',
     allPeriodsClassified: 'Toutes les périodes sont classifiées',
     defineReason: 'Définir la raison',
-    advanced: 'Gestion avancé',
+    advanced: 'Gestion avancée',
     seeUnansweredOnly: 'Non classifiées uniquement',
     seeAllReasons: 'Voir toutes les raisons',
   },
@@ -724,6 +745,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     validparts: 'Pièces valides'
   },
   scrapclassification: {
+    title: 'Declarer un rebut',
     partcount: 'Nombre de pièces : ',
     scrapcount: 'Nombre de rebuts : ',
     unproducedcount: 'Pièces non-produites : ',
@@ -786,10 +808,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   changebutton: 'Ändern',
   contactsupport: 'Bitte wenden Sie sich an den Support',
   loadingDots: 'Laden...',
+  noDataTooOld: 'k. A.',
   missingconfiguration: 'Konfiguration fehlt',
   errorColon: 'Fehler: ',
   waitingPath: 'Warte auf Pfad',
   error: {
+    emptyRange: 'Leerer Bereich',
     emptyPeriod: 'Leerer Zeitraum',
     invalidMachineId: 'Ungültige Maschinen-ID',
     invalidRange: 'Ungültiger Bereich',
@@ -878,6 +902,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   },
   groupArray: {
     noMachine: 'Keine Maschine in der Auswahl'
+  },
+  lastmachinestatus: {
+    currentReasonColon: 'Aktueller Grund:',
+    pastReasonData: 'Vergangene Stillstandsgrunde',
+    pastTooltip: 'Vergangene Stillstandsgrunde einsehen oder andern',
+    tooOld: 'Grund ist zu alt'
   },
   lastmachinestatetemplate: {
     scheduledStatus: 'Planungsstatus: '
@@ -1037,6 +1067,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     idle: 'Stillstand',
     motion: 'In Betrieb',
     noPeriod: 'Kein auswählbarer Zeitraum im angegebenen Bereich',
+    allReasons: 'Alle Gründe',
     defineReason: 'Grund festlegen',
     sectionTimeRangeTitle: 'Zeitraum auswählen',
     sectionPeriodTitle: 'Einen oder mehrere Stillstandszeiträume auswählen',
@@ -1105,6 +1136,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     validparts: 'Gutteile'
   },
   scrapclassification: {
+    title: 'Ausschuss melden',
     partcount: 'Teileanzahl: ',
     scrapcount: 'Ausschussanzahl: ',
     unproducedcount: 'Nicht produzierte Teile: ',

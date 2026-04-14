@@ -151,7 +151,7 @@ this.restoreDeleteWhenDisconnect ():
 
       //dialog.append(switchLabel).append(MST_CB).append(fromLabel).append(dtpDiv);
       let saveDialogId = pulseCustomDialog.openDialog(dialog, {
-        title: this.getTranslation('switchToproduction', 'Switch to production'),
+        title: this.getTranslation('switchToProduction', 'Switch to production'),
         onOk: function () { // Validate
           let begin = $(dtp)[0].getISOValue();
           let range = pulseUtility.createDateRangeForWebService(begin);

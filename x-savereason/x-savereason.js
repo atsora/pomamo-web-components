@@ -222,7 +222,7 @@ require('x-datetimerange/x-datetimerange');
 
     hideNoPeriod() {
       // Prepare infos (will be updated later)
-      $(this.element).find('.savereason-info-reason').html(`${this.getTranslation('currentReasonColon: ', 'Current reason')}`);
+      $(this.element).find('.savereason-info-reason').html(`${this.getTranslation('currentReasonColon', 'Current reason')}`);
       $(this.element).find('.savereason-info-modes').html(`${this.getTranslation('modesColon', 'Modes: ')}`);
       $('.savereason-defaultbutton').hide();
 

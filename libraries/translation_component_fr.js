@@ -23,10 +23,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   changebutton: 'Changer',
   contactsupport: "Prière de consulter l'équipe support",
   loadingDots: 'En chargement...',
+  noDataTooOld: 'N/D',
   missingconfiguration: 'Configuration manquante',
   errorColon: 'Erreur : ',
   waitingPath: 'En attente du chemin',
   error: {
+    emptyRange: 'Plage vide',
     emptyPeriod: 'Période vide',
     invalidMachineId: 'machine-id invalide',
     invalidRange: 'Plage invalide',
@@ -121,6 +123,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   lastmachinestatus: {
     loading: 'En chargement...',
+    currentReasonColon: 'Raison courante :',
+    pastReasonData: "Raisons d'arret passees",
+    pastTooltip: 'Consulter ou changer une raison passee',
+    tooOld: 'La raison est trop ancienne'
   },
   lastserialnumber: {
     currentserialnumber: 'Numéro de série : ',
@@ -278,6 +284,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     idle: 'Arrêtée',
     motion: 'En mouvement',
     noPeriod: 'Pas de période possible sur la place spécifiée',
+    allReasons: 'Toutes les raisons',
     defineReason: 'Définir la raison',
     sectionTimeRangeTitle: 'Selectionner une période de temps',
     sectionPeriodTitle: 'Selectionner une ou plusieurs périodes',
@@ -346,6 +353,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     validparts: 'Pièces valides'
   },
   scrapclassification: {
+    title: 'Declarer un rebut',
     partcount: 'Nombre de pièces : ',
     scrapcount: 'Nombre de rebuts : ',
     unproducedcount: 'Pièces non-produites : ',

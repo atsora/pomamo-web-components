@@ -133,7 +133,7 @@ require('x-machinedisplay/x-machinedisplay');
           });
 
         let message = $('<div></div>')
-          .text(this.getTranslation('allPeriodsClassified', 'All stop periods are classified'));
+          .text(this.getTranslation('classifiedreasonslotlist.allPeriodsClassified', 'All stop periods are classified'));
 
         emptyTr.append(message);
         this._table.append(emptyTr);
@@ -429,7 +429,7 @@ require('x-machinedisplay/x-machinedisplay');
         .addClass('unansweredreasonslotlist-define-button')
         .prop('disabled', true);
       let defineReasonLabel = $('<x-tr></x-tr>')
-        .attr('key', 'defineReason')
+        .attr('key', 'unansweredreasonslotlist.defineReason')
         .attr('default', 'Define reason');
       defineReasonButton.append(defineReasonLabel);
       defineReasonButton.on('click', function () {
@@ -439,7 +439,7 @@ require('x-machinedisplay/x-machinedisplay');
       let showAllButton = $('<button type="button"></button>')
         .addClass('unansweredreasonslotlist-showall-button');
       let showAllLabel = $('<x-tr></x-tr>')
-        .attr('key', 'advanced')
+        .attr('key', 'unansweredreasonslotlist.advanced')
         .attr('default', 'Advanced');
       showAllButton.append(showAllLabel);
 
@@ -450,7 +450,7 @@ require('x-machinedisplay/x-machinedisplay');
       let seeAllReasonsButton = $('<button type="button"></button>')
         .addClass('unansweredreasonslotlist-showall-button');
       let seeAllReasonsLabel = $('<x-tr></x-tr>')
-        .attr('key', 'seeAllReasons')
+        .attr('key', 'unansweredreasonslotlist.seeAllReasons')
         .attr('default', 'See all reasons');
       seeAllReasonsButton.append(seeAllReasonsLabel);
       seeAllReasonsButton.on('click', function () {
@@ -681,7 +681,7 @@ require('x-machinedisplay/x-machinedisplay');
       dialog.append(xclassifiedreasonslotlist);
 
       let classifiedDialogId = pulseCustomDialog.openDialog(dialog, {
-        title: this.getTranslation('seeAllReasons', 'See all reasons'),
+        title: this.getTranslation('unansweredreasonslotlist.allReasons', 'All reasons'),
         onClose: function () {
           $('.popup-block').fadeOut();
         }.bind(this),

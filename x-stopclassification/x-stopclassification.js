@@ -625,11 +625,11 @@ require('x-revisionprogress/x-revisionprogress');
                 'machine-id': this.element.getAttribute('machine-id')
             });
             let divMachine = $('<div></div>').addClass('savereason-machine')
-                .append($('<div></div>').addClass('savereason-machine-label').html(this.getTranslation('machineColon', 'Machine: ')))
+                .append($('<div></div>').addClass('savereason-machine-label').html(this.getTranslation('savereason.machineColon', 'Machine: ')))
                 .append(machineDisplay);
 
             // Reason
-            let divlabelReason = $('<div></div>').addClass('savereason-details-label').html(this.getTranslation('reasonColon', 'Reason: '));
+            let divlabelReason = $('<div></div>').addClass('savereason-details-label').html(this.getTranslation('savereason.reasonColon', 'Reason: '));
             let divNewReasonSpan = $('<span></span>').addClass('savereason-details-span').html(reasonName);
             let divNewReason = $('<div></div>').addClass('savereason-details-input').append(divNewReasonSpan);
             let divReason = $('<div></div>').addClass('savereason-details-reason')
@@ -653,7 +653,7 @@ require('x-revisionprogress/x-revisionprogress');
                 .append(divReason)
                 .append(divDetails);
 
-            let reasonDetailsTitle = this.getTranslation('reasonDetailsTitle', 'Reason details');
+            let reasonDetailsTitle = this.getTranslation('savereason.reasonDetailsTitle', 'Reason details');
 
             this._detailsDialogId = pulseCustomDialog.openDialog(dialogbox, {
                 title: reasonDetailsTitle,
@@ -662,7 +662,7 @@ require('x-revisionprogress/x-revisionprogress');
                         let details = inputParam.val();
                         if ((details == '') && (detailsRequired)) {
                             // show error msg -- should never happen if button is disabled
-                            let pleaseAddComment = x_save.getTranslation('errorNoDetails', 'Please add a comment');
+                            let pleaseAddComment = x_save.getTranslation('savereason.errorNoDetails', 'Please add a comment');
                             pulseCustomDialog.openDialog(pleaseAddComment, { type: 'Error' });
                         }
                         else {
