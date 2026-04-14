@@ -476,11 +476,15 @@ require('x-revisionprogress/x-revisionprogress');
         this.content.show();
       }
 
+      // Use the actual rendered height (CSS may override the jQuery-set height via flex layout)
+      // to avoid non-uniform SVG scaling with preserveAspectRatio:none
+      let actualHeight = this.content[0].clientHeight || this._height;
+
       let svg = document.createElementNS(pulseSvg.get_svgNS(), 'svg');
       //svg.setAttribute('width', this.barwidth); // NO ! for auto-adapt
-      svg.setAttribute('height', this._height);
+      svg.setAttribute('height', actualHeight);
       svg.setAttribute('viewBox', '0 0 '
-        + this.barwidth + ' ' + this._height);
+        + this.barwidth + ' ' + actualHeight);
       svg.setAttribute('preserveAspectRatio', 'none');
       svg.setAttribute('class', 'observationstatebar-svg');
       let contents = this.element.getElementsByClassName('pulse-bar-content');
@@ -494,11 +498,11 @@ require('x-revisionprogress/x-revisionprogress');
             let x = this.barwidth * this._data[i].beginPercent;
             let width = this.barwidth * this._data[i].widthPercent;
 
-            let topBarHeight = this._height;
+            let topBarHeight = actualHeight;
             let bottomBarHeight = 0;
             if (!pulseUtility.isNotDefined(this._data[i].patternColor)) {
-              topBarHeight = this._height * 3.0 / 4.0;
-              bottomBarHeight = this._height / 4.0;
+              topBarHeight = actualHeight * 3.0 / 4.0;
+              bottomBarHeight = actualHeight / 4.0;
             }
 
             // CREATE GROUP (to display rect AND text)
@@ -522,7 +526,7 @@ require('x-revisionprogress/x-revisionprogress');
 
             let display = document.createElementNS(pulseSvg.get_svgNS(), 'text');
             display.setAttribute('x', x + width / 2);
-            display.setAttribute('y', 0 + this._height * 0.58); // 0.66=OK for all browsers excepted Safari / 0.5 = best value for Safari
+            display.setAttribute('y', 0 + actualHeight * 0.58); // 0.66=OK for all browsers excepted Safari / 0.5 = best value for Safari
             display.setAttribute('fill', this._data[i].fgColor);
             display.setAttribute('text-anchor', 'middle');
             display.setAttribute('alignment-baseline', 'central');

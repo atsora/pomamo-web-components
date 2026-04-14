@@ -18,10 +18,12 @@ x-machinemodelegends {
 
   .machinemodelegends-svg {
     //color: @color_text_alternate; == text color no need to be defined
-    height: 15px;
-    width: 15px;
+    // Use cqw (not px) to match pulse-legend-icon svg size on all screen sizes
+    height: 1.5cqw;
+    width: 1.5cqw;
 
     svg {
+      display: block; // Fix inline-baseline gap
       height: 100%;
       width: 100%;
     }

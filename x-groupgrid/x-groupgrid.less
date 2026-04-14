@@ -67,6 +67,45 @@ x-groupgrid {
     &[data-count="14"],
     &[data-count="15"],
     &[data-count="16"] { grid-template-columns: repeat(4, 1fr); }
+
+    /* 17 à 25 éléments : 5 colonnes (4x5 → 5x5) */
+    &[data-count="17"], &[data-count="18"], &[data-count="19"], &[data-count="20"],
+    &[data-count="21"], &[data-count="22"], &[data-count="23"], &[data-count="24"],
+    &[data-count="25"] { grid-template-columns: repeat(5, 1fr); }
+
+    /* 26 à 36 éléments : 6 colonnes (5x6 → 6x6) */
+    &[data-count="26"], &[data-count="27"], &[data-count="28"], &[data-count="29"],
+    &[data-count="30"], &[data-count="31"], &[data-count="32"], &[data-count="33"],
+    &[data-count="34"], &[data-count="35"],
+    &[data-count="36"] { grid-template-columns: repeat(6, 1fr); }
+
+    /* 37 à 49 éléments : 7 colonnes (6x7 → 7x7) */
+    &[data-count="37"], &[data-count="38"], &[data-count="39"], &[data-count="40"],
+    &[data-count="41"], &[data-count="42"], &[data-count="43"], &[data-count="44"],
+    &[data-count="45"], &[data-count="46"], &[data-count="47"], &[data-count="48"],
+    &[data-count="49"] { grid-template-columns: repeat(7, 1fr); }
+
+    /* 50 à 64 éléments : 8 colonnes (7x8 → 8x8) */
+    &[data-count="50"], &[data-count="51"], &[data-count="52"], &[data-count="53"],
+    &[data-count="54"], &[data-count="55"], &[data-count="56"], &[data-count="57"],
+    &[data-count="58"], &[data-count="59"], &[data-count="60"], &[data-count="61"],
+    &[data-count="62"], &[data-count="63"],
+    &[data-count="64"] { grid-template-columns: repeat(8, 1fr); }
+
+    /* 65 à 81 éléments : 9 colonnes (8x9 → 9x9) */
+    &[data-count="65"], &[data-count="66"], &[data-count="67"], &[data-count="68"],
+    &[data-count="69"], &[data-count="70"], &[data-count="71"], &[data-count="72"],
+    &[data-count="73"], &[data-count="74"], &[data-count="75"], &[data-count="76"],
+    &[data-count="77"], &[data-count="78"], &[data-count="79"], &[data-count="80"],
+    &[data-count="81"] { grid-template-columns: repeat(9, 1fr); }
+
+    /* 82 à 100 éléments : 10 colonnes (9x10 → 10x10) */
+    &[data-count="82"], &[data-count="83"], &[data-count="84"], &[data-count="85"],
+    &[data-count="86"], &[data-count="87"], &[data-count="88"], &[data-count="89"],
+    &[data-count="90"], &[data-count="91"], &[data-count="92"], &[data-count="93"],
+    &[data-count="94"], &[data-count="95"], &[data-count="96"], &[data-count="97"],
+    &[data-count="98"], &[data-count="99"],
+    &[data-count="100"] { grid-template-columns: repeat(10, 1fr); }
   }
 
   .groupgrid-item {
