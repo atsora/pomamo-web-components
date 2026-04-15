@@ -5,13 +5,14 @@ SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <!-- Machine 20 : LIMITE EXACTE — 9 flat + 3 groupes = 12 = seuil → MIXTE attendu -->
   <div class='forceHeight'>
-    <x-stopclassification id='SR_1' machine-id="18" path="http://localhost:8082/" range="[2025-10-06T11:35:00Z;2025-10-07T11:35:00Z]"></x-stopclassification>
+    <p style="font-weight:bold;margin:4px">Machine 20 — limite=12 → mixte (9 flat + 3 groupes)</p>
+    <x-stopclassification id='SR_20' machine-id="20" path="http://localhost:8082/" range="[2025-10-06T11:35:00Z;2025-10-07T11:35:00Z]"></x-stopclassification>
   </div>
+  <!-- Machine 21 : DÉPASSEMENT — 10 flat + 3 groupes = 13 > seuil → TOUT GROUPÉ attendu -->
   <div class='forceHeight'>
-    <x-stopclassification id='SR_2' machine-id="19" path="http://localhost:8082/" range="[2017-01-16T11:35:00Z;2017-01-16T11:35:00Z]"></x-stopclassification>
+    <p style="font-weight:bold;margin:4px">Machine 21 — limite=13 → tout groupé (10 flat + 3 groupes)</p>
+    <x-stopclassification id='SR_21' machine-id="21" path="http://localhost:8082/" range="[2025-10-06T11:35:00Z;2025-10-07T11:35:00Z]"></x-stopclassification>
   </div>
-<!--   <div class='forceHeight'>
-    <x-stopclassification id='SR_3' machine-id="22" path="http://localhost:8082/" range="[2017-01-16T11:35:00Z;2017-01-16T11:35:00Z]"></x-stopclassification>
-  </div> -->
 </div>

@@ -325,10 +325,24 @@ require('x-revisionprogress/x-revisionprogress');
         }
 
         /**
-         * Render reason tiles (flat if <=12 reasons else grouped by ReasonGroupDisplay)
+         * Render reason tiles (flat if visual units <= threshold else grouped by ReasonGroupDisplay).
+         * Visual units = distinct AlwaysSecondLevel groups + non-AlwaysSecondLevel flat reasons.
+         * Threshold is configurable via 'stopclassification.maxflat' (default 12).
          */
         _drawReasons() {
-            if (this._data.length <= 12) {
+            const _alwaysGroups = new Set();
+            let _nonAlwaysCount = 0;
+            for (const reason of this._data) {
+                if (this._isAlwaysSecondLevel(reason)) {
+                    _alwaysGroups.add(reason.ReasonGroupDisplay || reason.ReasonGroupLongDisplay || '');
+                } else {
+                    _nonAlwaysCount++;
+                }
+            }
+            const _threshold = Number(this.getConfigOrAttribute('stopclassification.maxflat', 11));
+            const _shouldGroupAll = (_alwaysGroups.size + _nonAlwaysCount) > _threshold;
+
+            if (!_shouldGroupAll) {
                 this._groups = new Object();
                 let groupNames = [];
                 let nonAlwaysReasons = [];
@@ -375,7 +389,7 @@ require('x-revisionprogress/x-revisionprogress');
                 this._groups = new Object();
                 let groupNames = [];
                 for (const reason of this._data) {
-                    let currentGroupName = reason.ReasonGroupDisplay;
+                    let currentGroupName = reason.ReasonGroupDisplay || reason.ReasonGroupLongDisplay || '';
                     if (groupNames.indexOf(currentGroupName) == -1) {
                         this._groups[currentGroupName] = [];
                         groupNames.push(currentGroupName);
