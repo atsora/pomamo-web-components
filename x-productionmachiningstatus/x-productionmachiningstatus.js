@@ -44,10 +44,10 @@ var eventBus = require('eventBus');
 
     get content () { return this._content; } // Optional
 
-    _orderUsingShiftEfficiency () {
+    /*_orderUsingShiftEfficiency () {
       let parentsToOrder = $(this.element).parents('.group-single');
       $(parentsToOrder).css('order', Math.round(100.0 * this._shiftEfficiency));
-    }
+    }*/
 
     /**
       *Update display of workinformation data
@@ -214,7 +214,7 @@ var eventBus = require('eventBus');
       }
 
       this._shiftEfficiency = 999999.9; // = display last
-      this._orderUsingShiftEfficiency();
+      //this._orderUsingShiftEfficiency();
     }
 
     removeError () {
@@ -338,7 +338,7 @@ var eventBus = require('eventBus');
         shiftDiv.insertAfter(this._between);
       }
 
-      this._orderUsingShiftEfficiency(); // Always
+      //this._orderUsingShiftEfficiency();
     }
 
     // Callback events

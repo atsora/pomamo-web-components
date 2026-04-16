@@ -893,14 +893,46 @@ require('x-freetext/x-freetext');
      */
     _storeSelection() {
       if (false == this._useMachineSelection) {
+        // Build machine list in group click order:
+        // - single-machine groups: use stored MachineId directly (preserves click order)
+        // - multi-machine groups: fall back to x-grouparray result (API order within group)
+
+        // Collect direct machine IDs for single-machine groups (from stored MachineId or group ID)
+        const singleMachineIdSet = new Set();
+        for (const groupId of this._groupSelectionArray) {
+          const display = this._groupDisplays.get(groupId.toString());
+          if (display && display.singlemachine) {
+            const machId = display.machineid !== undefined ? display.machineid.toString() : groupId.toString();
+            singleMachineIdSet.add(machId);
+          }
+        }
+
+        // Get machines from x-grouparray for multi-machine groups only
         let grouparrays = $(this._previewList).find('x-grouparray');
+        let multiMachinePool = [];
         if (grouparrays.length > 0) {
           let machinesList = grouparrays[0].getMachinesList();
-          this._machineSelectionArray = machinesList.split(',');
+          if (machinesList) {
+            multiMachinePool = machinesList.split(',')
+              .filter(id => id !== '' && !singleMachineIdSet.has(id));
+          }
         }
-        else {
-          this._machineSelectionArray = [];
+
+        // Build ordered machine list following _groupSelectionArray click order
+        const orderedMachines = [];
+        for (const groupId of this._groupSelectionArray) {
+          const display = this._groupDisplays.get(groupId.toString());
+          if (display && display.singlemachine) {
+            // Use stored MachineId; fall back to group ID (often equal for single-machine groups)
+            const machId = display.machineid !== undefined ? display.machineid.toString() : groupId.toString();
+            orderedMachines.push(machId);
+          } else {
+            // Multi-machine group: insert all remaining pool machines at this position
+            orderedMachines.push(...multiMachinePool.splice(0));
+          }
         }
+
+        this._machineSelectionArray = orderedMachines;
       }
       else {
         this._groupSelectionArray = [].concat(this._machineSelectionArray);
@@ -1041,7 +1073,8 @@ require('x-freetext/x-freetext');
               display: groups[iGroup].Display,
               dynamic: (groups[iGroup].Dynamic == true),
               singlemachine: (groups[iGroup].SingleMachine == true),
-              sortpriority: groups[iGroup].SortPriority
+              sortpriority: groups[iGroup].SortPriority,
+              machineid: groups[iGroup].MachineId
             });
             if (!pulseUtility.isNotDefined(groups[iGroup].Zoom)) {
               storeSubGroups(machineselection, groups[iGroup].Zoom);

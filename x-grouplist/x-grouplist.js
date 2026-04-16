@@ -169,7 +169,6 @@ var eventBus = require('eventBus');
       let visibleIds = [];
       if (event.target && event.target.machines) visibleIds = event.target.machines;
       else if (event.machines) visibleIds = event.machines;
-
       let visibleStrIds = visibleIds.map(id => String(id).trim());
 
       // Expose visible count for CSS height calculations
@@ -273,6 +272,8 @@ var eventBus = require('eventBus');
       if (machinesStr && machinesStr.trim() !== '') {
         this._dynamic = false;
         this._machineIdsArray = machinesStr.split(',').map(s => s.trim()).filter(s => s !== '');
+        // Suppress groupIsReloaded: order is already user-defined, avoid cascading side-effects
+        this._suppressNextGroupReloaded = true;
         this._buildMachineList();
         this.switchToContext('Loaded');
         return true;
