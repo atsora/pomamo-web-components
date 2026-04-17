@@ -304,6 +304,15 @@ svg {
   }
 
   x-datetimegraduation {
+    // Keep native datetimegraduation layout in details dialogs,
+    // even when pages define global .datetimegraduation rules with !important.
+    .datetimegraduation {
+      margin: 0 !important;
+      padding-left: @margin_graduation !important;
+      padding-right: @margin_graduation !important;
+      width: 100% !important;
+    }
+
     .datetimegraduation-axis text {
       fill: @color_text;
     }
