@@ -54,6 +54,7 @@ require('x-revisionprogress/x-revisionprogress');
             self._rangesList = null;
             self._onStopPeriodsRange = null;
             self._savedRangesList = null;
+            self._hideAdvancedOptions = false;
 
             // Expose public methods similar to x-savereason (single-range flavor)
             self.methods = {
@@ -92,6 +93,9 @@ require('x-revisionprogress/x-revisionprogress');
                         this.addRanges(ranges);
                         this.start();
                     }
+                    break;
+                case 'noadvanced':
+                    this.hideAdvancedOptions('true' === newVal || newVal === true);
                     break;
                 default:
                     break;
@@ -146,6 +150,10 @@ require('x-revisionprogress/x-revisionprogress');
             // Initialize parameters
             this._closeAfterSave = true;
             this._hideAdvancedOptions = false;
+
+            if (this.element.hasAttribute('noadvanced')) {
+                this._hideAdvancedOptions = this.element.getAttribute('noadvanced') === 'true';
+            }
 
             // Initialize range(s) from attributes (like x-savereason does for 'ranges')
             if (this.element.hasAttribute('ranges')) {
@@ -313,7 +321,7 @@ require('x-revisionprogress/x-revisionprogress');
          * @param {boolean} closeAfterSave
          */
         closeAfterSave(closeAfterSave) {
-            this._closeAfterSave = !!closeAfterSave;
+          this._closeAfterSave = !!closeAfterSave;
         }
 
         /**
@@ -321,7 +329,16 @@ require('x-revisionprogress/x-revisionprogress');
          * @param {boolean} hide
          */
         hideAdvancedOptions(hide) {
-            this._hideAdvancedOptions = !!hide;
+          if (this._hideAdvancedOptions === !!hide) return;
+          this._hideAdvancedOptions = !!hide;
+          this.start();
+        }
+
+        _getRangesList () {
+          let rangesList = this._rangesList && this._rangesList.length
+             ? this._rangesList
+             : [this._rangeString || this.element.getAttribute('range')];
+          return rangesList.filter(range => typeof range === 'string' && range.length > 0);
         }
 
         /**
@@ -381,8 +398,8 @@ require('x-revisionprogress/x-revisionprogress');
                     tileCount += 1;
                 }
 
-                if (!this._hideAdvancedOptions) {
-                    this._drawAdancedButton(tileCount);
+                if (!this._hideAdvancedOptions && this._getRangesList().length <= 1) {
+                  this._drawAdvancedButton(tileCount);
                 }
             }
             else {
@@ -401,8 +418,8 @@ require('x-revisionprogress/x-revisionprogress');
                 for (const group of groupNames) {
                     this._drawCell(group, this._groups[group][0].Color, true);
                 }
-                if (!this._hideAdvancedOptions) {
-                    this._drawAdancedButton(groupNames.length);
+                if (!this._hideAdvancedOptions && this._getRangesList().length <= 1) {
+                  this._drawAdvancedButton(groupNames.length);
                 }
             }
         }
@@ -527,7 +544,7 @@ require('x-revisionprogress/x-revisionprogress');
          * Add an "Advanced Options" tile which opens the full reason dialog (x-savereason-like)
          * @param {number} nbElements Number of tiles to compute grid position
          */
-        _drawAdancedButton(nbElements) {
+        _drawAdvancedButton(nbElements) {
             let cellsList = this._content.querySelector('.stopclassification-cells-list');
 
             let cellItem = document.createElement('li');
@@ -557,9 +574,18 @@ require('x-revisionprogress/x-revisionprogress');
 
             cellsList.appendChild(cellItem);
 
-            box.addEventListener('click', () => {
-                pulseDetailsPopup.openChangeReasonDialog(this, this.element.getAttribute('fullRange'), true);
-            });
+            let rangesList = this._getRangesList();
+            if (1 < rangesList.length) {
+              // TODO: for the moment consider fullRange, but ideally should open a specific dialog enabling only the specific ranges
+              box.addEventListener('click', () => {
+                pulseDetailsPopup.openChangeReasonDialog(this, this.element.getAttribute('fullRange'), true, true);
+              });
+            }
+            else {
+              box.addEventListener('click', () => {
+                pulseDetailsPopup.openChangeReasonDialog(this, rangesList[0], true, true);
+              });
+            }
         }
 
         /**

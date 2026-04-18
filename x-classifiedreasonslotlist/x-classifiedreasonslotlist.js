@@ -322,15 +322,13 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
         'machine-id': machid,
         'range': rangeString,
         'ranges': rangeStrings.join('&'),
-        'fullRange': fullRangeString
+        'fullRange': fullRangeString,
+        'noadvanced': true
       });
       dialog.append(xstopclassification);
 
       if (xstopclassification[0] && xstopclassification[0].closeAfterSave) {
         xstopclassification[0].closeAfterSave(true);
-      }
-      if (xstopclassification[0] && xstopclassification[0].hideAdvancedOptions) {
-        xstopclassification[0].hideAdvancedOptions(true);
       }
 
       pulseCustomDialog.openDialog(dialog, {
@@ -631,15 +629,13 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
         'machine-id': machid,
         'range': rangeString,
         'ranges': rangeString,
-        'fullRange': fullRangeString
+        'fullRange': fullRangeString,
+        'noadvanced': true
       });
       dialog.append(xstopclassification);
 
       if (xstopclassification[0] && xstopclassification[0].closeAfterSave) {
         xstopclassification[0].closeAfterSave(true);
-      }
-      if (xstopclassification[0] && xstopclassification[0].hideAdvancedOptions) {
-        xstopclassification[0].hideAdvancedOptions(true);
       }
 
       pulseCustomDialog.openDialog(dialog, {

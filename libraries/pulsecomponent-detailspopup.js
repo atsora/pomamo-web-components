@@ -413,6 +413,7 @@ var openChangeReasonDialog = exports.openChangeReasonDialog = function (componen
   let machid = $(component.element).attr('machine-id');
   let rangeString = dtRange.toString(d => d.toISOString());
   let role = pulseConfig.getAppContextOrRole && pulseConfig.getAppContextOrRole();
+  // TODO: not the right method. Role === 'operator' should not be hardcoded but a specific configuration key used
   let reasonslotlistTag = (role === 'operator' && !forceDetails) ? 'x-unansweredreasonslotlist' : 'x-reasonslotlist';
 
   // Determine displayMode if not provided

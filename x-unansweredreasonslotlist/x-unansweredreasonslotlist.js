@@ -321,15 +321,13 @@ require('x-machinedisplay/x-machinedisplay');
         'machine-id': machid,
         'range': rangeString,
         'ranges': rangeStrings.join('&'),
-        'fullRange': fullRangeString
+        'fullRange': fullRangeString,
+        'noadvanced': true
       });
       dialog.append(xstopclassification);
 
       if (xstopclassification[0] && xstopclassification[0].closeAfterSave) {
         xstopclassification[0].closeAfterSave(true);
-      }
-      if (xstopclassification[0] && xstopclassification[0].hideAdvancedOptions) {
-        xstopclassification[0].hideAdvancedOptions(true);
       }
 
       pulseCustomDialog.openDialog(dialog, {
@@ -436,15 +434,15 @@ require('x-machinedisplay/x-machinedisplay');
         this._openStopClassificationForSelection();
       }.bind(this));
 
-      let showAllButton = $('<button type="button"></button>')
+      let advancedButton = $('<button type="button"></button>')
         .addClass('unansweredreasonslotlist-showall-button');
-      let showAllLabel = $('<x-tr></x-tr>')
+      let advancedLabel = $('<x-tr></x-tr>')
         .attr('key', 'unansweredreasonslotlist.advanced')
         .attr('default', 'Advanced');
-      showAllButton.append(showAllLabel);
+      advancedButton.append(advancedLabel);
 
-      showAllButton.on('click', function () {
-        this._openAllReasonsDialog();
+      advancedButton.on('click', function () {
+        this._openAdvancedDialog();
       }.bind(this));
 
       let seeAllReasonsButton = $('<button type="button"></button>')
@@ -460,7 +458,7 @@ require('x-machinedisplay/x-machinedisplay');
 
       let defineReasonContainer = $('<div></div>')
         .addClass('unansweredreasonslotlist-define-container')
-        .append(showAllButton)
+        .append(advancedButton)
         .append(seeAllReasonsButton)
         .append(defineReasonButton);
       this._defineReasonButton = defineReasonButton;
@@ -631,15 +629,13 @@ require('x-machinedisplay/x-machinedisplay');
         'machine-id': machid,
         'range': rangeString,
         'ranges': rangeString,
-        'fullRange': fullRangeString
+        'fullRange': fullRangeString,
+        'noadvanced': true
       });
       dialog.append(xstopclassification);
 
       if (xstopclassification[0] && xstopclassification[0].closeAfterSave) {
         xstopclassification[0].closeAfterSave(true);
-      }
-      if (xstopclassification[0] && xstopclassification[0].hideAdvancedOptions) {
-        xstopclassification[0].hideAdvancedOptions(true);
       }
 
       pulseCustomDialog.openDialog(dialog, {
@@ -700,7 +696,7 @@ require('x-machinedisplay/x-machinedisplay');
       $('#' + classifiedDialogId + ' .customDialogTitle').append(xMachine);
     }
 
-    _openAllReasonsDialog() {
+    _openAdvancedDialog() {
       let machid = $(this.element).attr('machine-id');
 
       let parentDialog = $(this.element).closest('.customDialog');
