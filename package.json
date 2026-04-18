@@ -1,7 +1,7 @@
 {
   "name": "@atsora/pomamo-web-components",
   "description": "Pomamo web components",
-  "version": "19.0.1",
+  "version": "19.1.0",
   "contributors": [
     "Lemoine Automation Technologies <nrelange@lemoinetechnologies.com>",
     "Nicolas Relange <nicolas@atsora.com>"
