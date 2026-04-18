@@ -716,7 +716,7 @@ exports.getMachineModeClass = function (machineModeCategory) {
  * The color can be defined by a color OR class.
 */
 exports.createColoredLegend = function (color, mainClass) {
-  return createRect(0, 0, 15, 15, color, mainClass);
+  return createRect(0, 0, 100, 100, color, mainClass);
 }
 
 /**

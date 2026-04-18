@@ -143,6 +143,7 @@ var eventBus = require('eventBus');
       // Suppressed when manageSuccess already dispatched it for the group AJAX path
       if (!this._suppressNextGroupReloaded &&
           'false' == this.getConfigOrAttribute('donotwarngroupreload', 'false')) {
+        this._suppressNextGroupReloaded = true;
         eventBus.EventBus.dispatchToAll('groupIsReloaded', {
           newMachinesList: this._machineIdsArray.join(',')
         });
@@ -272,8 +273,6 @@ var eventBus = require('eventBus');
       if (machinesStr && machinesStr.trim() !== '') {
         this._dynamic = false;
         this._machineIdsArray = machinesStr.split(',').map(s => s.trim()).filter(s => s !== '');
-        // Suppress groupIsReloaded: order is already user-defined, avoid cascading side-effects
-        this._suppressNextGroupReloaded = true;
         this._buildMachineList();
         this.switchToContext('Loaded');
         return true;
@@ -336,7 +335,6 @@ var eventBus = require('eventBus');
         eventBus.EventBus.dispatchToAll('groupIsReloaded', {
           newMachinesList: this._machineIdsArray.join(',')
         });
-        this._suppressNextGroupReloaded = true;
         // EventBus is synchronous: onConfigChange may have already processed the
         // configChangeEvent('machine') and rebuilt the list (_waitingForEngine === false).
         // Only clear+rebuild if the engine has NOT yet responded (async path).
