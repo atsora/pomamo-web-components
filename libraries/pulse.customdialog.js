@@ -45,6 +45,16 @@ var pulseCustomDialog = function () {
     $('#' + dialogId).toggleClass('customDialogNoNext', nextButton == 'hidden');
     $('#' + dialogId).toggleClass('customDialogNoOk', okButton == 'hidden');
 
+    // Collapse button bar when all buttons are hidden (avoids 10px margin gap).
+    // Previous/Next are navigation-only — treat undefined as "not needed" (only null = explicitly visible).
+    let anyButtonVisible = (cancelButton !== 'hidden') || (okButton !== 'hidden') ||
+      (previousButton != null && previousButton !== 'hidden') ||
+      (nextButton != null && nextButton !== 'hidden');
+    $('#' + dialogId + ' .customDialogButtons').css({
+      display: anyButtonVisible ? '' : 'none',
+      margin: anyButtonVisible ? '' : '0'
+    });
+
     // Multipage state
     $('#' + dialogId).toggleClass('customDialogMultiPageOn', multiPage == 'on');
     $('#' + dialogId).toggleClass('customDialogMultiPageOff', multiPage == 'off');

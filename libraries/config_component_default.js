@@ -39,49 +39,13 @@ PULSE_DEFAULT_CONFIG.general = {
    * role: the key of the role
    * display : role display
    */
-  roles: [ // Used ONLY to know list of roles -> maybe use translation...
-    {
-      role: 'operator',
-      display: 'Operator'
-      //firstPage: 'running'
-    },
-    {
-      role: 'manager',
-      display: 'Manager'
-    },
-    {
-      role: 'live', // Not a role, but AppContext - keep here
-      display: 'Live',
-      //firstPage: 'operationstatus',
-      noAccess: true
-    },
-    // Invible role / App Context
-    { // support == idem manager + live + reports
-      role: 'support',
-      display: 'Support',
-      noAccess: true
-    },
-    {
-      role: 'dev',
-      display: null,
-      noAccess: true
-    },
-    {
-      role: 'liveadmin',
-      display: 'Live'
-      //,noAccess: true
-    }/*,
-    {
-      role: 'reportAdmin',
-      display: 'Reports'
-      //,noAccess: true
-    }*/
-    /*,
-    {
-      role: 'ITGuy',
-      display: null,
-      noAccess: true
-    }*/
+  roles: [ // Used ONLY to enumerate roles - noAccess/display resolved via PULSE_DEFAULT_CONFIG.roles[role] and ATSORA_CATALOG
+    { role: 'operator' },
+    { role: 'manager' },
+    { role: 'live' },      // Not a role, but AppContext - keep here
+    { role: 'support' },   // invisible: noAccess in PULSE_DEFAULT_CONFIG.roles
+    { role: 'dev' },       // invisible: noAccess in PULSE_DEFAULT_CONFIG.roles
+    { role: 'liveadmin' }
   ]
 };
 
@@ -101,6 +65,7 @@ PULSE_DEFAULT_CONFIG.roles = {
     ]
   },
   support: { // == idem manager + live + reports
+    noAccess: true,
     displayedApps: [
       'PulseWebApp',
       'Live',   // AppContext = live in URL
@@ -109,8 +74,10 @@ PULSE_DEFAULT_CONFIG.roles = {
   },
   live: { // Special for LIVE pages. These config will overload role config
     //displayedApps Never defined here. It is not a role ! -> will use role config
+    noAccess: true
   },
   dev: {
+    noAccess: true,
     displayedApps: [ // ALL
       'PulseWebApp',
       'Live',   // AppContext = live in URL
@@ -208,51 +175,13 @@ var tagConfig = {
     cancelHorizontalSplitInBar: 'false'
   },
   toollifemachine: {
-    toollabelsselections: [
-      {
-        name: 'exp',
-        display: 'only expired',
-        labels: [],
-        showexpiredonly: true // To show tools expired only
-        //mandatorygroup: 'ET0'
-      },
-      // FYI : a group can be created using labels: [], showexpiredonly: false
-      // to show expired AND tools in warning with NO expirationdatetime
-      {
-        name: 'in1h',
-        display: 'expiring in the next hour',
-        labels: [5, 15, 30, 60],
-        showexpiredonly: false
-        //mandatorygroup: 'ET1'
-      },
-      {
-        name: 'in2h',
-        display: 'expiring in the next 2 hours',
-        labels: [15, 30, 60, 120],
-        showexpiredonly: false
-        //mandatorygroup: 'ET2'
-      },
-      {
-        name: 'in4h',
-        display: 'expiring in the next 4 hours',
-        labels: [30, 60, 120, 240],
-        showexpiredonly: false
-        //mandatorygroup: 'ET4'
-      },
-      {
-        name: 'in8h',
-        display: 'expiring in the next 8 hours',
-        labels: [60, 120, 240, 480],
-        showexpiredonly: false
-        //mandatorygroup: 'ET8'
-      },
-      {
-        name: 'in12h',
-        display: 'expiring in the next 12 hours',
-        labels: [60, 180, 360, 720],
-        showexpiredonly: false
-        //mandatorygroup: 'ET12'
-      }
+    toollabelsselections: [ // display labels resolved via ATSORA_CATALOG.general.toolLabels
+      { name: 'exp',   labels: [],               showexpiredonly: true  },
+      { name: 'in1h',  labels: [5, 15, 30, 60],  showexpiredonly: false },
+      { name: 'in2h',  labels: [15, 30, 60, 120], showexpiredonly: false },
+      { name: 'in4h',  labels: [30, 60, 120, 240], showexpiredonly: false },
+      { name: 'in8h',  labels: [60, 120, 240, 480], showexpiredonly: false },
+      { name: 'in12h', labels: [60, 180, 360, 720], showexpiredonly: false }
     ],
     toollabelname: 'in1h',
     toolReport: 'Tool/CurrentTools',

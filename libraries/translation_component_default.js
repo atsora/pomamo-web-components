@@ -15,6 +15,22 @@ var ATSORA_CATALOG = ATSORA_CATALOG || {};
 
 ATSORA_LOCALE_CATALOG.default.general = {
   title: 'Atsora Tracking',
+  roles: {
+    operator: 'Operator',
+    manager: 'Manager',
+    live: 'Live',
+    support: 'Support',
+    dev: 'Dev',
+    liveadmin: 'Live'
+  },
+  toolLabels: {
+    exp: 'only expired',
+    in1h: 'expiring in the next hour',
+    in2h: 'expiring in the next 2 hours',
+    in4h: 'expiring in the next 4 hours',
+    in8h: 'expiring in the next 8 hours',
+    in12h: 'expiring in the next 12 hours'
+  }
 };
 
 /*
@@ -406,6 +422,22 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
 
 ATSORA_LOCALE_CATALOG.fr.general = {
   title: 'Atsora Tracking',
+  roles: {
+    operator: 'Opérateur',
+    manager: 'Manager',
+    live: 'Live',
+    support: 'Support',
+    dev: 'Dev',
+    liveadmin: 'Live'
+  },
+  toolLabels: {
+    exp: 'seulement expirés',
+    in1h: "expirés dans l'heure",
+    in2h: 'expirés les 2 prochaines heures',
+    in4h: 'expirés les 4 prochaines heures',
+    in8h: 'expirés les 8 prochaines heures',
+    in12h: 'expirés les 12 prochaines heures'
+  }
 };
 
 /*
@@ -798,6 +830,22 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
 
 ATSORA_LOCALE_CATALOG.de.general = {
   title: 'Atsora Tracking',
+  roles: {
+    operator: 'Bediener',
+    manager: 'Manager',
+    live: 'Live',
+    support: 'Support',
+    dev: 'Dev',
+    liveadmin: 'Live'
+  },
+  toolLabels: {
+    exp: 'nur abgelaufene',
+    in1h: 'in der nächsten Stunde ablaufend',
+    in2h: 'in den nächsten 2 Stunden ablaufend',
+    in4h: 'in den nächsten 4 Stunden ablaufend',
+    in8h: 'in den nächsten 8 Stunden ablaufend',
+    in12h: 'in den nächsten 12 Stunden ablaufend'
+  }
 };
 
 /*
@@ -1185,6 +1233,16 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   }
 };
 
+function setAtsoraLocale (locale) {
+  if (typeof moment !== 'undefined') {
+    moment.locale(locale);
+  }
+  ATSORA_CATALOG = ATSORA_LOCALE_CATALOG[locale];
+  ATSORA_COMPONENT_CATALOG = ATSORA_LOCALE_COMPONENT_CATALOG[locale];
+  if (typeof document !== 'undefined' && document.documentElement) {
+    document.documentElement.setAttribute('lang', locale);
+  }
+}
+
 // Set the 'default' locale by default
-ATSORA_CATALOG = ATSORA_LOCALE_CATALOG.default;
-ATSORA_COMPONENT_CATALOG = ATSORA_LOCALE_COMPONENT_CATALOG.default;
+setAtsoraLocale('default');

@@ -884,51 +884,30 @@ exports.goToPageLogin = function () {
  * @function goToPageLogin
  */
 exports.goToFirstPage = function (role) {
-  // Go to firstPage (if defined)
-  let roles = getArray('roles');
+  let firstPageConfig = getRoleConfig('firstPage', role);
+  let targetPage = firstPageConfig.found ? firstPageConfig.value : 'home';
 
-  // Browse all roles
-  for (let iRole = 0; iRole < roles.length; iRole++) {
-    let aRole = roles[iRole];
-    if (role == aRole.role) {
-      // role found == aRole.display;
-      if (pulseUtility.isNotDefined(aRole.firstPage)) { // Maybe add soon
-        // go to home
-        let fullURL = window.location.pathname;
-        let newfullURL = fullURL.substring(0, fullURL.lastIndexOf('/') + 1) + 'home.html';
+  // Primary behavior: replace current page name in URL.
+  let newfullURL = pulseUtility.changePageName(window.location.href, targetPage);
 
-        // Add 'path' if exists in url :
-        let tmpPath = pulseUtility.getURLParameterValues(window.location.href, 'path');
-        if (tmpPath.length > 0) {
-          newfullURL = pulseUtility.changeURLParameter(newfullURL, 'path', tmpPath[0]);
-        }
-        let tmpMainPath = pulseUtility.getURLParameterValues(window.location.href, 'mainpath');
-        if (tmpMainPath.length > 0) {
-          newfullURL = pulseUtility.changeURLParameter(newfullURL, 'mainpath', tmpMainPath[0]);
-        }
-
-        window.location.href = newfullURL;
-      }
-      else { // go to firstPage
-        let firstPage = aRole.firstPage;
-        //let fullURL = window.location.pathname;
-        //let newfullURL = fullURL.substring(0, fullURL.lastIndexOf('/') + 1) + firstPage + '.html';
-        let newfullURL = pulseUtility.changePageName(window.location.pathname, firstPage);
-
-        // Add 'path' if exists in url :
-        let tmpPath = pulseUtility.getURLParameterValues(window.location.href, 'path');
-        if (tmpPath.length > 0) {
-          newfullURL = pulseUtility.changeURLParameter(newfullURL, 'path', tmpPath[0]);
-        }
-        let tmpMainPath = pulseUtility.getURLParameterValues(window.location.href, 'mainpath');
-        if (tmpMainPath.length > 0) {
-          newfullURL = pulseUtility.changeURLParameter(newfullURL, 'mainpath', tmpMainPath[0]);
-        }
-
-        window.location.href = newfullURL;
-      }
-    }
+  // Fallback for extensionless routes (for example "/login") where changePageName keeps URL unchanged.
+  if (newfullURL == window.location.href) {
+    let pathname = window.location.pathname;
+    let basePath = pathname.substring(0, pathname.lastIndexOf('/') + 1);
+    newfullURL = basePath + targetPage + '.html';
   }
+
+  // Keep path/mainpath parameters if present.
+  let tmpPath = pulseUtility.getURLParameterValues(window.location.href, 'path');
+  if (tmpPath.length > 0) {
+    newfullURL = pulseUtility.changeURLParameter(newfullURL, 'path', tmpPath[0]);
+  }
+  let tmpMainPath = pulseUtility.getURLParameterValues(window.location.href, 'mainpath');
+  if (tmpMainPath.length > 0) {
+    newfullURL = pulseUtility.changeURLParameter(newfullURL, 'mainpath', tmpMainPath[0]);
+  }
+
+  window.location.href = newfullURL;
 }
 
 
@@ -951,20 +930,23 @@ exports.currentRoleOrAppContextIsDefined = function () {
 // get login / role or appContext display according to what is available
 //var getCurrentUserDisplay =
 exports.getCurrentUserDisplay = function () {
-  let roles = getArray('roles');
+  // Helper: resolve role label via translation catalog (ATSORA_CATALOG.general.roles[role])
+  let getRoleLabel = function (role) {
+    if (typeof ATSORA_CATALOG !== 'undefined'
+      && ATSORA_CATALOG.general
+      && ATSORA_CATALOG.general.roles
+      && ATSORA_CATALOG.general.roles[role]) {
+      return ATSORA_CATALOG.general.roles[role];
+    }
+    return null;
+  };
 
   // App Context
   let appContext = getAppContextOnly();
   if (appContext != '') {
-    for (let i = 0; i < roles.length; i++) {
-      if (roles[i].role == appContext) {
-        if (roles[i].display != null) {
-          return roles[i].display;
-        }
-        else {
-          break;
-        }
-      }
+    let label = getRoleLabel(appContext);
+    if (label != null) {
+      return label;
     }
   }
 
@@ -976,15 +958,9 @@ exports.getCurrentUserDisplay = function () {
 
   // Or role
   let currentRole = pulseLogin.getRole();
-  for (let i = 0; i < roles.length; i++) {
-    if (roles[i].role == currentRole) {
-      if (roles[i].display != null) {
-        return roles[i].display;
-      }
-      else {
-        break;
-      }
-    }
+  let label = getRoleLabel(currentRole);
+  if (label != null) {
+    return label;
   }
 
   return '';
