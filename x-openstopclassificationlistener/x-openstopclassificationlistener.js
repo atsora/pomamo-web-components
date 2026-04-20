@@ -40,6 +40,8 @@ var eventBus = require('eventBus');
             return self;
         }
 
+        validateParameters () {}
+
         /**
          * Initialize listeners for period, machine, and reason status changes.
          */

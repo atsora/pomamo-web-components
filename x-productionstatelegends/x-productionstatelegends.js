@@ -39,6 +39,8 @@ var pulseUtility = require('pulseUtility');
 
     get content () { return this._content; }
 
+    validateParameters () {}
+
     initialize () {
       this.addClass('pulse-text');
 

@@ -159,8 +159,15 @@ var tagConfig = {
     showIgnoredAlarm: false
   },
   detailedreasonat: {
-    hideChangeReasonButton: false, //
-    showAutoReasonsWhenMotion: false
+    hideChangeReasonButton: false,
+    showAutoReasonsWhenMotion: false,
+    showReasonScore: false
+  },
+  reasonsubdetails: {
+    showReasonScore: false
+  },
+  detailspopup: {
+    useUnansweredReasonSlotList: false
   },
   loginchangepasswordbutton:{
     changepasswordallowed: true

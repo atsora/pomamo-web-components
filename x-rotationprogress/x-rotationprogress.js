@@ -27,6 +27,8 @@ var eventBus = require('eventBus');
       return self;
     }
 
+    validateParameters () {}
+
     initialize() {
       this.addClass('pulse-rotationprogress');
       $(this.element).empty();

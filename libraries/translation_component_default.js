@@ -256,6 +256,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   productionstatelegend: {
     title: 'Production state'
   },
+  productionstatelegends: {
+    title: 'Production state'
+  },
   productiontrackergraph: {
     parts: 'parts'
   },
@@ -663,6 +666,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   productionstatelegend: {
     title: 'État de production'
   },
+  productionstatelegends: {
+    title: 'État de production'
+  },
   productiontrackergraph: {
     parts: 'pièces'
   },
@@ -1068,7 +1074,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   productionshiftgoal: {
     productionshiftgoal: 'Schichtziel'
   },
-  productionstatelegend: {
+  productionstatelegends: {
     title: 'Produktionsstatus'
   },
   productiontrackergraph: {

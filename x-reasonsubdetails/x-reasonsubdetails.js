@@ -171,7 +171,7 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
     refresh (data) {
 
       var fillMethod = function (popup, data) {
-        let role = pulseConfig.getAppContextOrRole();
+        let showReasonScore = pulseConfig.getBool('reasonsubdetails.showReasonScore', false);
         // Fill popup
         let popup_content = $('<div></div>').addClass('reasonsubdetails-popupcontent');
 
@@ -212,7 +212,7 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 
           $(popup_content).append(onereason);
 
-          if (role != 'dev')
+          if (!showReasonScore)
             dev.hide();
         }
         popup.append(popup_content);

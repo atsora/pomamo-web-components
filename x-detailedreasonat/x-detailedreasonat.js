@@ -358,10 +358,8 @@ require('x-reasonsubdetails/x-reasonsubdetails');
           reasonDisplay += ' (' + data.ReasonOnlySlots[0].Details + ')';
         }
 
-        let role = pulseConfig.getAppContextOrRole();
-        if (role == 'dev') {
+        if (pulseConfig.getBool('detailedreasonat.showReasonScore', false)) {
           let score = data.ReasonOnlySlots[0].Score;
-          // Show score for DEV only
           reasonDisplay = '(Score:' + score + ') ' + reasonDisplay;
         }
 

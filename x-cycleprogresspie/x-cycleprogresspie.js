@@ -907,7 +907,7 @@ var eventBus = require('eventBus');
 
         // Find completion to show progress on circle (= main completion)
         if (pulseUtility.isNotDefined(this._data.Completion)) {
-          console.error('CycleProgressPie(' + this.element.getAttribute('machine-id') + '): NO completion = NO animation (probably between cycles)');
+          console.warn('CycleProgressPie(' + this.element.getAttribute('machine-id') + '): NO completion = NO animation (probably between cycles)');
           this._completion = null;
         }
         else {

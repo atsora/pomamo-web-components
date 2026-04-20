@@ -54,7 +54,7 @@ exports.runAjaxSimple = function (url, success, error, fail, timeout) {
     )
       .done(function (data, textStatus, jqXHR) {
         if (data.ErrorMessage) {
-          console.error(`runAjax: error, url=${url} message=${data.ErrorMessage}`);
+          console.warn(`runAjax: error, url=${url} message=${data.ErrorMessage}`);
           if (error) {
             error(data);
           }
@@ -67,7 +67,7 @@ exports.runAjaxSimple = function (url, success, error, fail, timeout) {
         }
       })
       .fail(function (jqXHR, textStatus, errorThrown) {
-        console.error(`runAjax: failure, url=${url} textStatus=${textStatus}`);
+        console.warn(`runAjax: failure, url=${url} textStatus=${textStatus}`);
         if (fail) {
           if (textStatus == 'timeout') {
             fail(url, true, jqXHR.status);
@@ -91,7 +91,7 @@ exports.runAjaxSimple = function (url, success, error, fail, timeout) {
     )
       .done(function (data, textStatus, jqXHR) {
         if (data.ErrorMessage) {
-          console.error(`runAjax: error, url=${url} message=${data.ErrorMessage}`);
+          console.warn(`runAjax: error, url=${url} message=${data.ErrorMessage}`);
           if (error) {
             error(data);
           }
@@ -104,7 +104,7 @@ exports.runAjaxSimple = function (url, success, error, fail, timeout) {
         }
       })
       .fail(function (jqXHR, textStatus, errorThrown) {
-        console.error(`runAjax: failure, url=${url} textStatus=${textStatus}`);
+        console.warn(`runAjax: failure, url=${url} textStatus=${textStatus}`);
         if (fail) {
           if (textStatus == 'timeout') {
             fail(url, true, jqXHR.status);
@@ -134,7 +134,7 @@ exports.runAjaxSimple = function (url, success, error, fail, timeout) {
  */
 exports.runAjax = function (token, url, timeout, success, error, fail) {
   if (typeof url === 'undefined') {
-    console.error(`runAjax(${token}): no valid url`);
+    console.warn(`runAjax(${token}): no valid url`);
     if (fail) {
       fail(token, url, false, null);
     }
@@ -157,7 +157,7 @@ exports.runAjax = function (token, url, timeout, success, error, fail) {
     )
       .done(function (data, textStatus, jqXHR) {
         if (data.ErrorMessage) {
-          console.error(`runAjax(${token}): error, url=${url} message=${data.ErrorMessage}`);
+          console.warn(`runAjax(${token}): error, url=${url} message=${data.ErrorMessage}`);
           if (error) {
             error(token, data);
           }
@@ -170,7 +170,7 @@ exports.runAjax = function (token, url, timeout, success, error, fail) {
         }
       })
       .fail(function (jqXHR, textStatus, errorThrown) {
-        console.error(`runAjax(${token}): failure, url=${url} textStatus=${textStatus}`);
+        console.warn(`runAjax(${token}): failure, url=${url} textStatus=${textStatus}`);
         if (fail) {
           if (textStatus == 'timeout') {
             fail(token, url, true, jqXHR.status);
@@ -194,7 +194,7 @@ exports.runAjax = function (token, url, timeout, success, error, fail) {
     )
       .done(function (data, textStatus, jqXHR) {
         if (data.ErrorMessage) {
-          console.error(`runAjax(${token}): error, url=${url} message=${data.ErrorMessage}`);
+          console.warn(`runAjax(${token}): error, url=${url} message=${data.ErrorMessage}`);
           if (error) {
             error(token, data);
           }
@@ -207,7 +207,7 @@ exports.runAjax = function (token, url, timeout, success, error, fail) {
         }
       })
       .fail(function (jqXHR, textStatus, errorThrown) {
-        console.error(`runAjax(${token}): failure, url=${url} textStatus=${textStatus}`);
+        console.warn(`runAjax(${token}): failure, url=${url} textStatus=${textStatus}`);
         if (fail) {
           if (textStatus == 'timeout') {
             fail(token, url, true, jqXHR.status);

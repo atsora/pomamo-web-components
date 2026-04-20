@@ -162,7 +162,6 @@ require('x-reasonslotpie/x-reasonslotpie');
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')
         && !this.element.hasAttribute('group')) {
-        console.error('missing attribute machine or group id in DefaultPie.element');
         this.setError(this.getTranslation('error.selectMachineGroup', 'Please select a machine or a group of machines')); // delayed error message
         return;
       }
