@@ -107,8 +107,6 @@ var pulseUtility = require('pulseUtility');
 
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')) {
-        console.error('missing attribute param in PerformanceTarget.element');
-        // Delayed display :
         this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         return;
       }

@@ -59,6 +59,8 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
      * Shows or hides the button based on `showRunningButton` config.
      * Click handler resolves `group` or `machine-id` and opens the running dialog.
      */
+    validateParameters () {}
+
     initialize () {
       this.addClass('pulse-icon');
 

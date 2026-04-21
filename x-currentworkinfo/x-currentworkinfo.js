@@ -103,7 +103,6 @@ var pulseComponent = require('pulsecomponent');
     validateParameters () {
       if (!this.element.hasAttribute('machine-id')
         && !this.element.hasAttribute('group')) {
-        console.error('missing attribute machine or group id in CurrentWorkInfo');
         this.setError(this.getTranslation('error.selectMachineGroup', 'Please select a machine or a group of machines')); // delayed error message
         return;
       }

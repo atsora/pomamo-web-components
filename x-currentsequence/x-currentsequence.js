@@ -55,6 +55,8 @@ var pulseComponent = require('pulsecomponent');
       }
     }
 
+    validateParameters () {}
+
     initialize () {
       this.addClass('pulse-smalltext');
 

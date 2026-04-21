@@ -50,6 +50,8 @@ require('x-machinedisplay/x-machinedisplay');
      * Stops when an ancestor equals the current `group` or when no more ancestors exist.
      * Appends the final current-group element as non-clickable (or re-clickable at root).
      */
+    validateParameters () {}
+
     initialize () {
       this.addClass('pulse-text');
       $(this.element).empty();
