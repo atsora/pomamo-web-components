@@ -77,6 +77,9 @@ require('x-reasongroups/x-reasongroups');
 require('x-fieldlegends/x-fieldlegends');
 require('x-machinemodelegends/x-machinemodelegends');
 require('x-stopperiods/x-stopperiods');
+require('x-reasoncommentdialog/x-reasoncommentdialog');
+require('x-detailsatdialog/x-detailsatdialog');
+require('x-runningdialog/x-runningdialog');
 
 /**
  * @module PulseComponentFunctions -> detailspopup AND change
@@ -109,101 +112,17 @@ var openDetails = exports.openDetails = function (component, fullRange, cellRang
     return; //  Do not display future data
   }
 
-  // Create Dialog
-  let dialog = $('<div></div>').addClass('click-on-bar-details-dialog');
-  let title = $('<div></div>').addClass('click-on-bar-details-title');
-  let content = $('<div></div>').addClass('click-on-bar-details-content');
-
   let machineid = $(component.element).attr('machine-id');
 
-  let xMachine = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
-    'machine-id': machineid
-  });
-
-  let tmpDateRange = pulseRange.createDateRangeDefaultInclusivity(d_clickTime.toISOString(), d_clickTime.toISOString());
-  let atDisplay = pulseUtility.displayDateRange(tmpDateRange, true);
-
-  let spanAt = $('<span></span>').addClass('detailed-at-subtitle')
-    .html(atDisplay);
-  let xPeriodBar = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
-    'period-context': 'details',
-    'range': fullRange.lower.toISOString() + ';' + fullRange.upper.toISOString(), // old range
-    'datetime-context': 'details', // force center on red line
-    'when': d_clickTime.toISOString()
-  });
-  title.append(xMachine).append(spanAt).append(xPeriodBar);
-  dialog.append(title).append(content);
-
-  // next lines AFTER dialog.append(title) to display the right width
-  let xGraduation = pulseUtility.createjQueryElementWithAttribute('x-datetimegraduation', {
-    'period-context': 'details',
+  let dialog = pulseUtility.createjQueryElementWithAttribute('x-detailsatdialog', {
+    'machine-id': machineid,
+    'when': d_clickTime.toISOString(),
     'range': fullRange.lower.toISOString() + ';' + fullRange.upper.toISOString()
   });
-  let barHeight = 30;
-  let xReasonBar = pulseUtility.createjQueryElementWithAttribute('x-reasonslotbar', {
-    'machine-id': machineid,
-    'period-context': 'details',
-    'height': barHeight,
-    'range': fullRange.toString(d => d.toISOString()),
-    'showoverwriterequired': false, // forced to overload config
-    //'click': 'none', // Automatic because click is on bartimeselection
-    //'datetime-context': 'details' // force refresh details on click
-  });
-  let middlebar = $('<div></div>').addClass('pulse-bar-div').append(xReasonBar);
 
-  let configArray = pulseConfig.getArray('showcoloredbar.showdetails');
-  if (configArray.length == 0) {
-    console.warn('No details defined');
-  }
-  else {
-    for (let iConfig = 0; iConfig < configArray.length; iConfig++) {
-      if (configArray[iConfig] == 'x-cncalarmbar') { // WAS 'x-detailedalarmsat') { // DISPLAY ALARM ?
-        let xAlarmBar = pulseUtility.createjQueryElementWithAttribute('x-cncalarmbar', {
-          'machine-id': machineid,
-          'period-context': 'details',
-          'range': fullRange.toString(d => d.toISOString()),
-          //'click': 'none', // Automatic because click is on bartimeselection
-          //'datetime-context': 'details' // force refresh details on click
-        });
-        middlebar.append(xAlarmBar);
-      }
-      else if (configArray[iConfig] == 'x-redstacklightbar') { // WAS x-detailedcncvaluesat') { // DISPLAY Cncvalue <-> stacklight
-        let xRedStackLightBar = pulseUtility.createjQueryElementWithAttribute('x-redstacklightbar', {
-          'machine-id': machineid,
-          'period-context': 'details',
-          'range': fullRange.toString(d => d.toISOString()),
-          //'click': 'none', // Automatic because click is on bartimeselection
-          //'datetime-context': 'details' // force refresh details on click
-        });
-        middlebar.append(xRedStackLightBar);
-      }
-      else {
-        content.append(
-          pulseUtility.createjQueryElementWithAttribute(configArray[iConfig], {
-            'machine-id': machineid,
-            'when': d_clickTime.toISOString(),
-            'datetime-context': 'details',
-            'range': fullRange.toString(d => d.toISOString()),
-            'period-context': 'details'
-          }));
-      }
-    }
-  }
-
-  let xSelBar = pulseUtility.createjQueryElementWithAttribute('x-bartimeselection', {
-    'height': barHeight,
-    'range': fullRange.lower.toISOString() + ';' + fullRange.upper.toISOString(),
-    'period-context': 'details',
-    'datetime-context': 'details', // force refresh details on click
-    'when': d_clickTime.toISOString()
-  });
-  middlebar.append(xSelBar);
-  title.append(xGraduation).append(middlebar);
-
-  let dialogId = pulseCustomDialog.openDialog(dialog, {
-    title: pulseConfig.pulseTranslate ('dialog.details', 'Details'),
-    onOk: function () { // Validate
-    },
+  pulseCustomDialog.openDialog(dialog, {
+    title: pulseConfig.pulseTranslate('dialog.details', 'Details'),
+    onOk: function () { },
     onClose: function () {
       // Special for popup on a dialog (Reason '+2' display) :
       $('.popup-block').fadeOut();
@@ -558,6 +477,49 @@ var openChangeStopClassificationDialog = exports.openChangeStopClassificationDia
 }
 
 /**
+ * Shared dialog for entering a reason comment (optional or required).
+ * Used by x-savereason, x-stopclassification, and any component needing
+ * a machine + period + reason + textarea dialog before saving.
+ *
+ * @memberof module:PulseComponentFunctions
+ * @function openReasonCommentDialog
+ *
+ * @param {Object} component       - calling component (provides machine-id + getTranslation)
+ * @param {number} classificationId
+ * @param {string} reasonName
+ * @param {string} rangeStr        - ISO range string
+ * @param {boolean} detailsRequired - if true, OK is disabled until textarea has content
+ * @param {Object} [reasonData]
+ * @param {Function} onSave        - callback(classificationId, comment, reasonData)
+ */
+var openReasonCommentDialog = exports.openReasonCommentDialog = function (component, classificationId, reasonName, rangeStr, detailsRequired, reasonData, onSave) {
+  let machid = component.element.getAttribute('machine-id');
+
+  let rcdlg = pulseUtility.createjQueryElementWithAttribute('x-reasoncommentdialog', {
+    'machine-id': machid,
+    'range': rangeStr,
+    'reason-name': reasonName,
+    'details-required': detailsRequired ? 'true' : 'false'
+  });
+
+  let dialogId = pulseCustomDialog.openDialog(rcdlg, {
+    title: component.getTranslation('reasonDetailsTitle', 'Reason details'),
+    onOk: function () {
+      let details = rcdlg[0].getDetails ? rcdlg[0].getDetails() : '';
+      if (details === '' && detailsRequired) {
+        pulseCustomDialog.openDialog(component.getTranslation('errorNoDetails', 'Please add a comment'), { type: 'Error' });
+      } else {
+        onSave(classificationId, details || undefined, reasonData);
+        pulseCustomDialog.close('#' + dialogId);
+      }
+    },
+    autoClose: false,
+    autoDelete: true,
+    helpName: 'savereason'
+  });
+};
+
+/**
  * Click on a bar (Open popup / details / change...)
  *
  * @memberof module:PulseComponentFunctions
@@ -606,117 +568,12 @@ exports.clickOnBar = function (component, fullRange, cellRange, event, callerNam
  * @param {Integer} groupId - group id
  */
 exports.openRunningDialog = function (groupId) {
-  let pageName = 'running';
-  // CREATE Dialog
-  let dialog = $('<div></div>').addClass('dialog-running');
-
-  // FILL Dialog
-  let hiddenRunningDivContent = $('<div class="one_machine_cell" id="boxtocloneRunning"> \
-  <div class="div-machine"> \
-    <x-machinedisplay></x-machinedisplay> \
-    <div class="div-current"> \
-      <div class="div-current-left"> \
-        <x-reasonbutton></x-reasonbutton> \
-      </div> \
-      <div class="div-current-right"> \
-        <x-productionmachiningstatus bar-style="false"></x-productionmachiningstatus> \
-        <x-lastworkinformation cancel-bar-style="true"></x-lastworkinformation> \
-        <x-lastshift></x-lastshift> \
-        <x-currentcncvalue></x-currentcncvalue> \
-      </div> \
-    </div> \
-  </div> \
-  <div class="div-bar"> \
-    <div class="pulse-bar-div"> \
-      <div class="top-bar"> \
-        <x-shiftslotbar period-context="runningdialog"></x-shiftslotbar> \
-        <x-machinestatebar period-context="runningdialog"></x-machinestatebar> \
-        <x-observationstatebar period-context="runningdialog"></x-observationstatebar> \
-      </div> \
-      <div class="middle-bar"> \
-        <x-operationcyclebar period-context="runningdialog"></x-operationcyclebar> \
-        <x-operationslotbar period-context="runningdialog"></x-operationslotbar> \
-        <x-isofileslotbar period-context="runningdialog"></x-isofileslotbar> \
-        <x-reasonslotbar motion-context="motion_machine" period-context="runningdialog"> \
-        </x-reasonslotbar> \
-        <x-cncalarmbar period-context="runningdialog"></x-cncalarmbar> \
-        <x-redstacklightbar period-context="runningdialog"></x-redstacklightbar> \
-        <x-cncvaluebar period-context="runningdialog"></x-cncvaluebar> \
-      </div> \
-      <div class="bottom-bar"></div> \
-    </div> \
-  </div> \
-  <div class="div-percent"> \
-    <x-motionpercentage motion-context="motion_machine" period-context="runningdialog"></x-motionpercentage> \
-    <x-motiontime motion-context="motion_machine" period-context="runningdialog"></x-motiontime> \
-  </div> \
-</div>');
-  let hiddenRunningDiv = $('<div class="hidden-content"></div>')
-    .append(hiddenRunningDivContent);
-
-  let mainPageDivContent = $(
-    '<div class="main-table running-page"> \
-      <div class="one_machine_cell top_cell"> \
-        <div class="div-machine"> \
-          <div class="div-current"> \
-            <label class="label-current">Current:</label> \
-            <x-clock display-seconds=false></x-clock> \
-          </div> \
-        </div> \
-        <div class="div-bar"> \
-          <x-periodtoolbar period-context="runningdialog"></x-periodtoolbar> \
-        </div> \
-        <div class="div-percent"></div> \
-      </div> \
-    </div> \
-    <div class= "main-table tile running-page" > \
-      <div class="one_machine_cell"> \
-        <div class="div-machine"></div> \
-        <div class="div-bar"> \
-          <x-datetimegraduation period-context="runningdialog"></x-datetimegraduation> \
-        </div> \
-        <div class="div-percent"></div> \
-      </div> \
-      <x-grouparray templateid="boxtocloneRunning" column=1 group='
-    + groupId
-    + '></x-grouparray >\
-    </div>');
-  let mainPageDiv = $('<div class="pulse-mainarea"></div>').append(mainPageDivContent);
-
-  dialog.append(hiddenRunningDiv).append(mainPageDiv);
-
-  let addProductionMachining = pulseConfig.getBool('currentdisplay.displayjobshiftpartcount', false);
-  let displayJob = pulseConfig.getBool('currentdisplay.displayjob', true);
-  let displayShift = pulseConfig.getBool('currentdisplay.displayshift', true);
-  let displayCNCValue = pulseConfig.getBool('currentdisplay.displaycncvalue', true);
-
-  if (addProductionMachining) {
-    $(dialog).find('x-productionmachiningstatus').show();
-  }
-  else {
-    $(dialog).find('x-productionmachiningstatus').hide();
-  }
-  if (displayJob) { // == LastWorkinformation
-    $(dialog).find('x-lastworkinformation').show();
-  }
-  else {
-    $(dialog).find('x-lastworkinformation').hide();
-  }
-  if (displayShift) {
-    $(dialog).find('x-lastShift').show();
-  }
-  else {
-    $(dialog).find('x-lastShift').hide();
-  }
-  if (displayCNCValue) {
-    $(dialog).find('x-currentcncvalue').show();
-  }
-  else {
-    $(dialog).find('x-currentcncvalue').hide();
-  }
+  let dialog = pulseUtility.createjQueryElementWithAttribute('x-runningdialog', {
+    'group': groupId
+  });
 
   pulseCustomDialog.openDialog(dialog, {
-    title: pulseConfig.pulseTranslate('pages.' + pageName + '.title', ''),
+    title: pulseConfig.pulseTranslate('pages.running.title', ''),
     onClose: function () {
       // Special for popup on a dialog (Reason '+2' display) :
       $('.popup-block').fadeOut();
@@ -728,5 +585,4 @@ exports.openRunningDialog = function (groupId) {
     fullScreenOnSmartphone: true,
     fullSize: true
   });
-
 }

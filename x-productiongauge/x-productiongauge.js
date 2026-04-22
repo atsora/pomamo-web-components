@@ -458,6 +458,7 @@ var eventBus = require('eventBus');
      * @returns {void}
      */
     refresh(data) {
+      this.removeError();
       // Store previous target to detect changes
       let previousTargetProduction = this._targetProduction;
 

@@ -12,113 +12,141 @@
 @import "x-savereason/x-savereason.less";
 @import "x-revisionprogress/x-revisionprogress.less";
 
+
 // === CONTENT & HIDDEN CONTENT ===
 x-stopclassification {
+  flex: 1;
+
   .stopclassification-content {
     width: 100%;
-    min-height: 31.25vw;
+    min-height: 20em;
     background-color: @box_color;
     display: flex;
     flex-direction: column;
     border-radius: 4px;
-
-    .stopclassification-title {
-      font-size: 2vw;
-      font-weight: 500;
-      margin-top: 0.5em;
-      padding-bottom: 0.3em;
-      width: 100%;
-      text-align: center;
-      //border-bottom: 1px solid var(--box_border_color);
-    }
+    height: 100%;
 
     .stopclassification-panel {
       width: 100%;
-      //border-top: 1px solid #5F5F5F;
+      height: 100%;
 
       .stopclassification-cells-list {
-
         display: grid;
-        grid-template-columns: auto auto auto auto;
-        padding-right: 2.1vw;
-        padding-left: 2.1vw;
-        margin-bottom: 1.6vw;
-        margin-top: 1.6vw;
-        row-gap: 3vw;
-        column-gap: 4.85vw;
-
-        max-height: 50vh; // Limit height to 50% of viewport height
-        overflow-y: auto; // Enable vertical scrolling
-        overflow-x: hidden; // Hide horizontal scrollbar
+        grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
+        align-content: start;
+        gap: 1em;
+        list-style-type: none;
+        margin: 0;
+        padding: 1em;
+        height: 100%;
+        overflow-y: auto;
+        box-sizing: border-box;
 
         .stopclassification-cell-item {
           list-style-type: none;
 
-          .stopclassification-cell-box {
-            height: 6vw;
-            display: flex;
-            align-items: center;
-            border-radius: @border_radius_small;
-            position: relative;
-            border: 1px solid @color_window_border;
-
-            .stopclassification-cell-box-color {
-              width: 1.5vw;
-              height: 100%;
-              border-top-left-radius: @border_radius_small;
-              border-bottom-left-radius: @border_radius_small;
-              position: absolute;
-            }
-
-            .stopclassification-cell-box-text {
-              position: absolute;
-              width: 100%;
-              height: 100%;
-              align-items: center;
-              justify-content: center;
-              display: flex;
-              gap: 1vw;
-
-              .stopclassification-cell-text {
-                font-size: 1.4vw;
-              }
-
-              i {
-                font-size: 2vw;
-                color: @color_text_button;
-              }
-            }
-
-            .stopclassification-cell-box-arrow {
-              position: absolute;
-              right: 0;
-              bottom: 0;
-
-              i {
-                font-size: 1.3vw;
-                margin: 0.4em;
-                color: @color_text_button;
-              }
-            }
-
-            .triangle {
-              position: absolute;
-              right: 0;
-              bottom: 0;
-              display: inline-block;
-              height: 0;
-              width: 0;
-              border-bottom: 3.65vw solid @color_window_hover;
-              border-left: 4.2vw solid transparent;
-              border-bottom-right-radius: 4px;
+          &.stopclassification-cell-item--advanced {
+            .stopclassification-cell-box {
+              border-left-color: @color_text_button;
             }
           }
-        }
 
-        .stopclassification-cell-box:hover {
-          cursor: pointer;
-          background-color: @color_background_alternate;
-          border-color: @color_window_border_light;
+          &.stopclassification-cell-item--nav {
+            .stopclassification-cell-box {
+              border-left-width: 1px;
+              border-left-color: @color_window_border;
+            }
+          }
+
+          .stopclassification-cell-box {
+            width: 100%;
+            min-height: 3.5em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5em;
+            padding: 0.4em 0.5em;
+            border-radius: @border_radius_small;
+            border: 1px solid @color_window_border;
+            border-left: 1em solid transparent;
+            box-sizing: border-box;
+            cursor: pointer;
+
+            .stopclassification-cell-text {
+              font-size: 0.8em;
+              line-height: 1.3;
+              text-align: center;
+              flex: 1;
+              overflow-wrap: break-word;
+              word-break: break-word;
+              min-width: 0;
+            }
+
+            .stopclassification-icon-back,
+            .stopclassification-icon-options {
+              width: 1.2em;
+              height: 1.2em;
+              flex-shrink: 0;
+            }
+
+            .stopclassification-icon-expand {
+              .create_svg_nostroke('stopclassification-expand', @color_text_button);
+              position: absolute;
+              right: 0.35em;
+              bottom: 0.35em;
+              width: 1em;
+              height: 1em;
+              z-index: 1;
+            }
+
+            &.stopclassification-cell-box--group {
+              position: relative;
+              overflow: hidden;
+
+              &::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                width: 0;
+                height: 0;
+                border-bottom: 2.8em solid @color_window_hover;
+                border-left: 3.2em solid transparent;
+                border-bottom-right-radius: @border_radius_small;
+              }
+            }
+
+            .stopclassification-icon-back {
+              .create_svg_nostroke('machineselection-arrow-left', @color_text_button);
+            }
+
+            .stopclassification-icon-options {
+              .create_svg_nostroke('stopclassification-options', @color_text_button);
+            }
+
+            .stopclassification-icon-comment {
+              .create_svg_nostroke('stopclassification-comment', @color_text_button);
+              height: 2.5em;
+              aspect-ratio: 1 / 1;
+              padding: 0.5em;
+              flex-shrink: 0;
+              box-sizing: border-box;
+              border: 1px solid @color_window_border;
+              border-radius: @border_radius_small;
+              opacity: 0.7;
+
+              &:hover {
+                opacity: 1;
+                border-color: @color_window_border_light;
+              }
+            }
+
+            &:hover {
+              background-color: @color_background_alternate;
+              border-color: @color_window_border_light;
+              border-left-color: inherit;
+            }
+          }
         }
       }
     }

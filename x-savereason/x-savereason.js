@@ -10,6 +10,7 @@ var pulseUtility = require('pulseUtility');
 var pulseService = require('pulseService');
 var pulseRange = require('pulseRange');
 var pulseCustomDialog = require('pulseCustomDialog');
+var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 var pulseComponent = require('pulsecomponent');
 var pulseLogin = require('pulseLogin');
 var state = require('state');
@@ -678,97 +679,10 @@ require('x-datetimerange/x-datetimerange');
 
     /* CLICK - Get details */
     _getDetailsAndSave(classificationId, reasonName, detailsRequired, reasonData) {
-      // Machine
-      let machineDisplay = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
-        'machine-id': this.element.getAttribute('machine-id')
-      });
-      let divMachine = $('<div></div>').addClass('savereason-machine')
-        .append($('<div></div>').addClass('savereason-machine-label').html(this.getTranslation('machineColon', 'Machine: ')))
-        .append(machineDisplay);
-
-      // Range
-      let range = this._tagdatetimerange[0].getRangeString();
-      let details_tagdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
-        'range': range,
-        'hide-buttons': 'true',
-        'not-editable': 'true',
-        'period-context': 'savereasondetails' + this.element.getAttribute('machine-id')
-      });
-      let divdatetimerange = $('<div></div>').addClass('savereason-datetimerange-details')
-        .append($('<div></div>').addClass('savereason-datetimerange-label').html(this.getTranslation('periodColon', 'Period: ')))
-        .append(details_tagdatetimerange);
-
-      // Reason
-      let divlabelReason = $('<div></div>').addClass('savereason-details-label').html(this.getTranslation('reasonColon', 'Reason: '));
-      let divNewReasonSpan = $('<span></span>').addClass('savereason-details-span').html(reasonName);
-      let divNewReason = $('<div></div>').addClass('savereason-details-input').append(divNewReasonSpan);
-      let divReason = $('<div></div>').addClass('savereason-details-reason')
-        .append(divlabelReason).append(divNewReason);
-
-      // Details
-      let divinput = $('<div></div>').addClass('savereason-details-input');
-      let input = $('<textarea name="details-comment" placeholder="Details..."></textarea>');
-      $(input).attr('maxlength', 255);
-      $(input).keydown(function (event) {
-        if (event.keyCode == 13) { // == Enter
-          $('a.dialog-button-frame-validate').click();
-        }
-      });
-      divinput.append(input);
-      let divDetails = $('<div></div>').addClass('savereason-details').append(divinput)
-
-      let dialogbox = $('<div></div>')
-        .addClass('savereason-dialog-details')
-        .append(divMachine)
-        .append(divdatetimerange)
-        .append(divReason)
-        .append(divDetails);
-
-      let reasonDetailsTitle = this.getTranslation('reasonDetailsTitle', 'Reason details');
-
-      this._detailsDialogId = pulseCustomDialog.openDialog(dialogbox, {
-        title: reasonDetailsTitle,
-        onOk: function (x_save, classifId, reasData, inputParam) { // to avoid closure
-          return function () {
-            let details = inputParam.val();
-            if ((details == '') && (detailsRequired)) {
-              // show error msg -- should never happen if button is disabled
-              let pleaseAddComment = x_save.getTranslation('errorNoDetails', 'Please add a comment');
-              pulseCustomDialog.openDialog(pleaseAddComment, { type: 'Error' });
-            }
-            else {
-              x_save._saveReason(classifId, details, reasData);
-              pulseCustomDialog.close('#' + x_save._detailsDialogId);
-              x_save._detailsDialogId = null;
-            }
-          }
-        }(this, classificationId, reasonData, input), /* end of validate*/
-        onCancel: function () {
-          pulseCustomDialog.close('#' + this._detailsDialogId);
-          this._detailsDialogId = null;
-        }.bind(this),
-        autoClose: false,
-        autoDelete: true,
-        helpName: 'savereason'
-      });
-
-      // - Enable / Disable the OK button
-      if (detailsRequired) { // Disable validateButton
-        let okBtn = $('#' + this._detailsDialogId).find('.customDialogOk');
-        $(okBtn)[0].setAttribute('disabled', 'disabled');
-      }
-      var self = this;
-      input.on('keyup paste input', notifyTextChanged);
-      function notifyTextChanged() {
-        if (detailsRequired) { // show / hide validateButton
-          if (0 == $(this).val().length) {
-            $('#' + self._detailsDialogId + ' .customDialogOk')[0].setAttribute('disabled', 'disabled');
-          }
-          else {
-            $('#' + self._detailsDialogId + ' .customDialogOk').removeAttr('disabled');
-          }
-        }
-      }
+      let rangeStr = this._tagdatetimerange[0].getRangeString();
+      pulseDetailsPopup.openReasonCommentDialog(this, classificationId, reasonName, rangeStr, detailsRequired, reasonData,
+        (classifId, details, reasData) => this._saveReason(classifId, details, reasData)
+      );
     }
 
     /* CLICKS */

@@ -292,61 +292,6 @@ svg {
 /* ********** ********** *********** *********** */
 
 /* ********** *********** *********** */
-/* outside DETAILS ****** *********** */
-/* ********** *********** *********** */
-.click-on-bar-details-dialog {
-  // For data height
-  min-height: 500px;
-
-  .click-on-bar-details-title {
-    font-size: 150%;
-    text-align: center;
-  }
-
-  x-datetimegraduation {
-    // Keep native datetimegraduation layout in details dialogs,
-    // even when pages define global .datetimegraduation rules with !important.
-    .datetimegraduation {
-      margin: 0 !important;
-      padding-left: @margin_graduation !important;
-      padding-right: @margin_graduation !important;
-      width: 100% !important;
-    }
-
-    .datetimegraduation-axis text {
-      fill: @color_text;
-    }
-
-    .datetimegraduation-axis line,
-    .datetimegraduation-axis path {
-      stroke: @color_text;
-    }
-
-    .datetimegraduation-axis {
-      .domain {
-        stroke: @color_text;
-      }
-    }
-  }
-
-  .pulse-bar-div {
-    // .bar-rounded-shadow; // Rounded border + shadow-> global
-    border-radius: 2px;
-
-    // align with graduation
-    margin: 0 @margin_graduation;
-  }
-
-  .click-on-bar-details-content {
-    color: @color_text_alternate;
-    margin: 0 @margin_graduation;
-    overflow-y: auto;
-    /* max-height: 600px; */
-    padding: 5px;
-  }
-}
-
-/* ********** *********** *********** */
 /* inside DETAILS ******* *********** */
 /* ********** *********** *********** */
 
@@ -1779,3 +1724,5 @@ x-machinedisplay.pulse-component-warning {
 /* ********** ********** *********** *********** *********** */
 /* ********** ********** End CHART  ************ *********** */
 /* ********** ********** *********** *********** *********** */
+
+@import "x-detailsatdialog/x-detailsatdialog.less";

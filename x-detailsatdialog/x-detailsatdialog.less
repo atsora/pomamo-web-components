@@ -1,0 +1,54 @@
+/*
+ * Copyright (C) 2025 Atsora Solutions
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+
+x-detailsatdialog {
+  display: block;
+  width: 100%;
+  min-height: 500px;
+
+  .detailsatdialog-title {
+    font-size: 150%;
+    text-align: center;
+  }
+
+  x-datetimegraduation {
+    .datetimegraduation {
+      margin: 0 !important;
+      padding-left: @margin_graduation !important;
+      padding-right: @margin_graduation !important;
+      width: 100% !important;
+    }
+
+    .datetimegraduation-axis text {
+      fill: @color_text;
+    }
+
+    .datetimegraduation-axis line,
+    .datetimegraduation-axis path {
+      stroke: @color_text;
+    }
+
+    .datetimegraduation-axis {
+      .domain {
+        stroke: @color_text;
+      }
+    }
+  }
+
+  .pulse-bar-div {
+    border-radius: 2px;
+    margin: 0 @margin_graduation;
+  }
+
+  .detailsatdialog-content {
+    color: @color_text_alternate;
+    margin: 0 @margin_graduation;
+    overflow-y: auto;
+    padding: 5px;
+  }
+}

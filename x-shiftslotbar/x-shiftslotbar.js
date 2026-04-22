@@ -425,11 +425,15 @@ var eventBus = require('eventBus');
         this.content.show();
       }
 
+      // Use the actual rendered height (CSS may override the jQuery-set height via flex layout)
+      // to avoid non-uniform SVG scaling with preserveAspectRatio:none
+      let actualHeight = this.content[0].clientHeight || this._height;
+
       let svg = document.createElementNS(pulseSvg.get_svgNS(), 'svg');
       //svg.setAttribute('width', this.barwidth); // NO ! for auto-adapt
-      svg.setAttribute('height', this._height);
+      svg.setAttribute('height', actualHeight);
       svg.setAttribute('viewBox', '0 0 '
-        + this.barwidth + ' ' + this._height);
+        + this.barwidth + ' ' + actualHeight);
       svg.setAttribute('preserveAspectRatio', 'none');
       svg.setAttribute('class', 'shiftslotbar-svg');
       let contents = this.element.getElementsByClassName('pulse-bar-content');
@@ -445,7 +449,7 @@ var eventBus = require('eventBus');
           // CREATE GROUP (to display rect AND text)
           let g = document.createElementNS(pulseSvg.get_svgNS(), 'g');
           g.setAttribute('width', width);
-          g.setAttribute('height', this._height);
+          g.setAttribute('height', actualHeight);
           g.setAttribute('range', range.toString(d => d.toISOString()));
           g.onclick = evt => this.onClick(evt, range);
 
@@ -454,7 +458,7 @@ var eventBus = require('eventBus');
           rect.setAttribute('x', x);
           rect.setAttribute('y', 0);
           rect.setAttribute('width', width);
-          rect.setAttribute('height', this._height);
+          rect.setAttribute('height', actualHeight);
           if (undefined === this._data[i].bgColor)
             rect.setAttribute('fill', 'tranparent');
           else
@@ -469,7 +473,7 @@ var eventBus = require('eventBus');
 
             let display = document.createElementNS(pulseSvg.get_svgNS(), 'text');
             display.setAttribute('x', x + width / 2);
-            display.setAttribute('y', 0 + this._height * 0.58); //* 0.66=OK for all browsers excepted Safari / 0.5 = best value for Safari
+            display.setAttribute('y', 0 + actualHeight * 0.58); //* 0.66=OK for all browsers excepted Safari / 0.5 = best value for Safari
 
             //display.setAttribute('fill', this._data[i].fgColor);
             if (pulseUtility.isNotDefined(this._data[i].fgColor)) { // Always
@@ -483,7 +487,7 @@ var eventBus = require('eventBus');
             }
             display.setAttribute('text-anchor', 'middle');
             display.setAttribute('alignment-baseline', 'central');
-            display.setAttribute('font-size', this._height / 2);
+            display.setAttribute('font-size', actualHeight / 2);
             display.setAttribute('font-weight', 'bold');
             //display.setAttribute('preserveAspectRatio','xMidYMid meet');
             //display.innerHTML = textToDisplay; // Mozilla&Chrome = OK - IE11=KO

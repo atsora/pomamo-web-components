@@ -7,6 +7,7 @@
 @import "pulsewebcomponents-common.less";
 @import "x-machinedisplay/x-machinedisplay.less";
 @import "x-datetimerange/x-datetimerange.less";
+@import "x-reasoncommentdialog/x-reasoncommentdialog.less";
 
 x-savereason {
   display: block;
@@ -246,89 +247,3 @@ x-savereason {
 }
 
 // end x-savereason
-
-// Dialog details == outside
-.savereason-dialog-details {
-  padding: 5px;
-  font-size: 1.3em;
-
-  .savereason-machine,
-  .savereason-datetimerange-details,
-  .savereason-details-reason {
-    margin-bottom: 10px;
-  }
-
-  .savereason-datetimerange-label,
-  .savereason-machine-label,
-  .savereason-details-label {
-    vertical-align: bottom;
-    display: inline-block;
-    margin-right: 5px;
-    font-weight: bold;
-  }
-
-  .savereason-machine {
-    x-machinedisplay {
-      display: inline-block; // To remove -> must be block
-      font-weight: normal;
-    }
-  }
-
-  .savereason-datetimerange-details {
-    display: flex;
-    align-items: center;
-
-    x-datetimerange {
-      display: inline-block; // To remove -> must be block
-      vertical-align: bottom;
-
-      .datetimerange-rangedisplay {
-        margin: 0;
-        color: @color_text;
-
-        &:after {
-          display: none;
-        }
-      }
-
-      .datetimerange-toolbar {
-        display: none;
-      }
-
-      .datetimerange-display {
-        line-height: inherit;
-      }
-    }
-  }
-
-  .savereason-details-reason {
-    .savereason-details-input {
-      display: inline-block;
-    }
-  }
-
-  .savereason-details {
-    textarea {
-      width: 100%;
-      box-sizing: border-box;
-      resize: none;
-      font-size: 1.3em;
-      background-color: @color_window;
-      color: @color_text;
-      border-radius: @border_radius_small;
-      outline: 0 none transparent;
-      outline-offset: 0;
-      border: 1px solid @color_window_border;
-
-      &:hover {
-        border-color: @color_window_border_light;
-      }
-
-      &:focus {
-        border-color: @color_highlight;
-      }
-    }
-  }
-}
-
-// end .savereason-dialog-details = dialog for details

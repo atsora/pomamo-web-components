@@ -1,0 +1,235 @@
+/*
+ * Copyright (C) 2025 Atsora Solutions
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Mirrors src/pages/running/running.less, scoped to <x-runningdialog>.
+ */
+
+@import "pulsewebcomponents-common.less";
+@import "x-grouplist/x-grouplist.less";
+@import "x-machinedisplay/x-machinedisplay.less";
+@import "x-productionmachiningstatus/x-productionmachiningstatus.less";
+@import "x-currentcncvalue/x-currentcncvalue.less";
+@import "x-lastshift/x-lastshift.less";
+@import "x-datetimegraduation/x-datetimegraduation.less";
+@import "x-barstack/x-barstack.less";
+@import "x-motionpercentage/x-motionpercentage.less";
+@import "x-motiontime/x-motiontime.less";
+@import "x-periodtoolbar/x-periodtoolbar.less";
+@import "x-reasonbutton/x-reasonbutton.less";
+@import "x-clock/x-clock.less";
+
+.setdynamicfontsize-rd () {
+  font-size: ~"clamp(0.6rem, 1.8vh + 0.35rem, 3rem)";
+}
+
+x-runningdialog {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0.5em;
+  overflow: hidden;
+
+  .hidden-content { display: none; }
+
+  .running-header {
+    display: flex;
+    flex-direction: row-reverse;
+    margin-bottom: 0.5em;
+    align-items: center;
+    flex-wrap: wrap;
+    height: 45px;
+    box-sizing: border-box;
+    overflow: hidden;
+    flex: 0 0 auto;
+
+    x-periodtoolbar {
+      flex: 0 1 auto;
+      min-width: 280px;
+      margin: 0 auto;
+
+      .periodtoolbar {
+        display: flex;
+        justify-content: center;
+        border: 1px solid @color_window_border;
+        align-items: center;
+        width: 100%;
+        box-sizing: border-box;
+      }
+    }
+
+    .div-datetime {
+      box-sizing: border-box;
+      background-color: @color_background;
+      border: 1px solid @color_window_border;
+      padding: 0 5px;
+      border-radius: @border_radius_small;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: nowrap;
+      gap: 5px;
+      height: 100%;
+      width: 8em;
+      margin-left: 0.8em;
+      .setdynamicfontsize-rd();
+      font-weight: bold;
+
+      .label-current { font-size: 0.5em; }
+      x-clock { font-size: 0.7em; }
+
+      .clock-div {
+        display: flex;
+        align-items: center;
+        line-height: normal;
+      }
+    }
+  }
+
+  .tile {
+    .setdynamicfontsize-rd();
+    display: flex;
+    flex-direction: column;
+    border-radius: @border_radius;
+    border: 1px solid @color_window_border;
+    box-sizing: border-box;
+    background-color: @color_background;
+    color: @box_text_color;
+    padding: 5px 0;
+    gap: 2px;
+    width: auto;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .datetimegraduation {
+    // margin-left matches .div-machine width (8em)
+    // margin-right matches .div-percent (3em) minus its padding
+    margin: 0 2.4em 0 8em !important;
+    padding: 0 2.3em !important;
+    width: auto !important;
+  }
+
+  x-grouplist {
+    .group-single {
+      min-height: fit-content !important;
+    }
+
+    .group-main {
+      gap: 0.5em;
+    }
+  }
+
+  .one_machine_cell {
+    display: flex;
+    flex-direction: row;
+    padding: 0 0.8em;
+    height: auto;
+    align-items: center;
+  }
+
+  .div-machine {
+    border: 1px solid #3f3f46;
+    border-radius: @border_radius_small;
+    padding: 0.2em 0.5em;
+    box-sizing: border-box;
+    width: 8em;
+    min-height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+
+    x-machinedisplay { font-size: 0.7em; }
+
+    .div-current {
+      background-color: transparent;
+      height: fit-content;
+      display: flex;
+      flex-direction: row;
+
+      .clock-div {
+        display: inline-block;
+        padding: 0 5px;
+      }
+
+      .div-current-left {
+        height: 1.3em;
+        width: 1.3em;
+      }
+
+      .div-current-right {
+        flex-grow: 1;
+        padding-left: 4px;
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        font-size: 0.5em;
+        height: fit-content;
+
+        a { color: @color_text_alternate; }
+      }
+    }
+  }
+
+  x-barstack {
+    flex: 1;
+    align-self: stretch;
+    height: auto;
+    overflow: hidden;
+    margin: 0 1.5em;
+  }
+
+  .div-percent {
+    width: 3em;
+    font-size: 0.8em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 900px) and (orientation: portrait) {
+    .datetimegraduation {
+      margin: 0 50px 0 38vw !important;
+      padding: 0 3.2vw !important;
+    }
+
+    .one_machine_cell {
+      min-height: 70px;
+      align-items: stretch;
+    }
+
+    .div-machine {
+      width: 38vw;
+      padding: 4px 2vw;
+
+      x-machinedisplay { font-size: 18px; }
+
+      .div-current {
+        .div-current-left {
+          height: 24px;
+          width: 24px;
+        }
+
+        .div-current-right { font-size: 13px; }
+      }
+    }
+
+    .div-percent {
+      width: 50px;
+
+      x-motionpercentage,
+      x-motiontime {
+        font-size: 20px;
+        line-height: 20px;
+      }
+    }
+
+    x-barstack { margin: 0 1.2vw !important; }
+  }
+}

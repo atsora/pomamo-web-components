@@ -1,0 +1,79 @@
+/*
+ * Copyright (C) 2025 Atsora Solutions
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import "pulsewebcomponents-common.less";
+@import "x-machinedisplay/x-machinedisplay.less";
+@import "x-datetimerange/x-datetimerange.less";
+
+x-reasoncommentdialog {
+  display: block;
+  width: 100%;
+  padding: 1em;
+  font-size: 1.3em;
+
+  .reasoncommentdialog-machine,
+  .reasoncommentdialog-period,
+  .reasoncommentdialog-reason {
+    margin-bottom: 0.6em;
+  }
+
+  .reasoncommentdialog-label {
+    vertical-align: bottom;
+    display: inline-block;
+    margin-right: 5px;
+    font-weight: bold;
+  }
+
+  .reasoncommentdialog-machine {
+    x-machinedisplay {
+      display: inline-block;
+      font-weight: normal;
+    }
+  }
+
+  .reasoncommentdialog-period {
+    display: flex;
+    align-items: center;
+
+    x-datetimerange {
+      display: inline-block;
+      vertical-align: bottom;
+
+      .datetimerange-rangedisplay {
+        margin: 0;
+        color: @color_text;
+
+        &:after {
+          display: none;
+        }
+      }
+
+      .datetimerange-toolbar { display: none; }
+      .datetimerange-display { line-height: inherit; }
+    }
+  }
+
+  .reasoncommentdialog-reason-name {
+    display: inline-block;
+  }
+
+  .reasoncommentdialog-details {
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      resize: none;
+      font-size: 1em;
+      background-color: @color_window;
+      color: @color_text;
+      border-radius: @border_radius_small;
+      outline: 0 none transparent;
+      border: 1px solid @color_window_border;
+
+      &:hover { border-color: @color_window_border_light; }
+      &:focus { border-color: @color_highlight; }
+    }
+  }
+}

@@ -20,65 +20,7 @@
 @import 'x-operationslotbar/x-operationslotbar';
 @import 'x-workinfoslotlist/x-workinfoslotlist';
 @import "pulse.customdialog.less";
+@import "x-runningdialog/x-runningdialog.less";
+@import "x-detailsatdialog/x-detailsatdialog.less";
+@import "x-reasoncommentdialog/x-reasoncommentdialog.less";
 
-// === CONTENT & HIDDEN CONTENT ===
-// ALL other styles COULD be included elsewhere to avoid double
-.dialog-running {
-  overflow: auto;
-
-  .pulse-mainarea {
-    overflow-y: auto; // Add scrollbar
-    border-width: 0;
-
-    x-grouparray .group-main li {
-      border-width: 0;
-    }
-
-    .tile {
-      padding: 14px 4px;
-      margin: 4px 22px;
-    }
-
-    .main-table {
-      box-sizing: border-box;
-      overflow: hidden;
-      border-spacing: 0;
-      width: auto;
-      padding: 4px;
-      margin-top: 24px;
-      margin-bottom: 20px;
-
-      .div-current:has(x-clock) {
-        border-radius: @border_radius_small;
-        border: 1px solid @color_window_border;
-        margin-left: 10px;
-      }
-
-      .div-machine:has(x-machinedisplay) {
-        border-radius: @border_radius_small;
-        padding: 12px;
-        padding-right: 0;
-      }
-    }
-
-    .pulse-mainarea-full {
-      bottom: auto;
-    }
-
-    .pulse-mainarea-inner {
-      height: auto;
-    }
-
-    .tile {
-      height: auto;
-    }
-
-    x-grouparray {
-      height: auto;
-    }
-  }
-}
-
-x-groupsingroup {
-  max-height: 85% !important;
-}

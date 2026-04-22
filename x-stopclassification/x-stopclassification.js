@@ -18,7 +18,9 @@ var pulseService = require('pulseService');
 var pulseCustomDialog = require('pulseCustomDialog');
 var pulseUtility = require('pulseUtility');
 var pulseLogin = require('pulseLogin');
+var pulseSvg = require('pulseSvg');
 
+require('x-datetimerange/x-datetimerange');
 require('x-savereason/x-savereason');
 require('x-reasonslotlist/x-reasonslotlist');
 require('x-revisionprogress/x-revisionprogress');
@@ -389,7 +391,7 @@ require('x-revisionprogress/x-revisionprogress');
                         classificationId = reason.Id;
                     }
 
-                    this._drawCell(reason.Display, reason.Color, false, classificationId, reason.DetailsRequired, reason.Data);
+                    this._drawCell(reason.Display, reason.Color, false, classificationId, reason.DetailsRequired, reason.Data, reason.NoDetails);
                     tileCount += 1;
                 }
 
@@ -432,8 +434,9 @@ require('x-revisionprogress/x-revisionprogress');
          * @param {number} [classificationId]
          * @param {boolean} [detailsRequired]
          * @param {Object} [reasonData]
+         * @param {boolean} [noDetails]
          */
-        _drawCell(text, color, isGroup, classificationId, detailsRequired, reasonData) {
+        _drawCell(text, color, isGroup, classificationId, detailsRequired, reasonData, noDetails) {
             let cellsList = this._content.querySelector('.stopclassification-cells-list');
 
             let cellItem = document.createElement('li');
@@ -441,35 +444,20 @@ require('x-revisionprogress/x-revisionprogress');
 
             let box = document.createElement('div');
             box.classList.add('stopclassification-cell-box');
-
-            let boxColor = document.createElement('div');
-            boxColor.classList.add('stopclassification-cell-box-color');
-            boxColor.style.backgroundColor = color;
-            box.appendChild(boxColor);
-
-            let boxText = document.createElement('div');
-            boxText.classList.add('stopclassification-cell-box-text');
+            box.style.borderLeftColor = color;
 
             let spanText = document.createElement('span');
             spanText.classList.add('stopclassification-cell-text');
             spanText.innerHTML = text;
-            boxText.appendChild(spanText);
-
-            box.appendChild(boxText);
+            box.appendChild(spanText);
 
             if (isGroup) {
-                let triangle = document.createElement('div');
-                triangle.classList.add('triangle');
-                box.appendChild(triangle);
+                box.classList.add('stopclassification-cell-box--group');
 
-                let boxArrow = document.createElement('div');
-                boxArrow.classList.add('stopclassification-cell-box-arrow');
-
-                let arrow = document.createElement('i');
-                arrow.classList.add('fa-solid', 'fa-arrow-down-short-wide');
-                boxArrow.appendChild(arrow);
-
-                box.appendChild(boxArrow);
+                let arrow = document.createElement('div');
+                arrow.classList.add('stopclassification-icon-expand');
+                box.appendChild(arrow);
+                pulseSvg.inlineBackgroundSvg(arrow);
 
                 box.addEventListener('click', () => {
                     this._extendGroup(text);
@@ -480,14 +468,40 @@ require('x-revisionprogress/x-revisionprogress');
                 box.setAttribute('reason-text', text);
                 box.setAttribute('details-required', detailsRequired);
                 box.reasondata = reasonData;
-                box.addEventListener('click', (box) => {
-                    this._selectReason(box);
-                })
+                box.addEventListener('click', (e) => {
+                    this._selectReason(e);
+                });
+
+                // Comment button: visible if reason allows details and config permits it
+                const showCommentConfig = this.getConfigOrAttribute('stopclassification.showcomment', 'true');
+                if (!noDetails && showCommentConfig !== 'false') {
+                    let commentBtn = document.createElement('div');
+                    commentBtn.classList.add('stopclassification-icon-comment');
+                    box.appendChild(commentBtn);
+                    pulseSvg.inlineBackgroundSvg(commentBtn);
+
+                    commentBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this._openCommentPopup(classificationId, text, reasonData);
+                    });
+                }
             }
 
             cellItem.appendChild(box);
-
             cellsList.appendChild(cellItem);
+        }
+
+        /**
+         * Open a popup to enter an optional comment before saving the reason
+         * @param {number} classificationId
+         * @param {string} reasonName
+         * @param {Object} [reasonData]
+         */
+        _openCommentPopup(classificationId, reasonName, reasonData) {
+            let rangeStr = this._getRangesList()[0];
+            pulseDetailsPopup.openReasonCommentDialog(this, classificationId, reasonName, rangeStr, false, reasonData,
+                (reasId, comment, reasData) => this._saveReason(reasId, comment, reasData)
+            );
         }
 
         /** Clear all tiles */
@@ -507,7 +521,7 @@ require('x-revisionprogress/x-revisionprogress');
 
             this._drawBackButton();
             for (const reason of reasons) {
-                this._drawCell(reason.Display, reason.Color, false, reason.Id, reason.DetailsRequired, reason.Data);
+                this._drawCell(reason.Display, reason.Color, false, reason.Id, reason.DetailsRequired, reason.Data, reason.NoDetails);
             }
         }
 
@@ -516,22 +530,17 @@ require('x-revisionprogress/x-revisionprogress');
             let cellsList = this._content.querySelector('.stopclassification-cells-list');
 
             let cellItem = document.createElement('li');
-            cellItem.classList.add('stopclassification-cell-item');
+            cellItem.classList.add('stopclassification-cell-item', 'stopclassification-cell-item--nav');
 
             let box = document.createElement('div');
             box.classList.add('stopclassification-cell-box');
 
-            let boxArrow = document.createElement('div');
-            boxArrow.classList.add('stopclassification-cell-box-text');
-
-            let arrow = document.createElement('i');
-            arrow.classList.add('fa-solid', 'fa-arrow-left');
-            boxArrow.appendChild(arrow);
-
-            box.appendChild(boxArrow);
+            let arrow = document.createElement('div');
+            arrow.classList.add('stopclassification-icon-back');
+            box.appendChild(arrow);
+            pulseSvg.inlineBackgroundSvg(arrow);
 
             cellItem.appendChild(box);
-
             cellsList.appendChild(cellItem);
 
             box.addEventListener('click', () => {
@@ -548,30 +557,22 @@ require('x-revisionprogress/x-revisionprogress');
             let cellsList = this._content.querySelector('.stopclassification-cells-list');
 
             let cellItem = document.createElement('li');
-            cellItem.classList.add('stopclassification-cell-item');
+            cellItem.classList.add('stopclassification-cell-item', 'stopclassification-cell-item--advanced');
 
             let box = document.createElement('div');
             box.classList.add('stopclassification-cell-box');
 
-            let boxText = document.createElement('div');
-            boxText.classList.add('stopclassification-cell-box-text');
-
-            let icon = document.createElement('i');
-            icon.classList.add('fa-solid', 'fa-screwdriver-wrench');
-            boxText.appendChild(icon);
-
             let text = document.createElement('span');
             text.innerHTML = this.getTranslation('options', 'Advanced Options');
             text.classList.add('stopclassification-cell-text');
-            boxText.appendChild(text);
+            box.appendChild(text);
 
-            box.appendChild(boxText);
+            let icon = document.createElement('div');
+            icon.classList.add('stopclassification-icon-options');
+            box.appendChild(icon);
+            pulseSvg.inlineBackgroundSvg(icon);
 
             cellItem.appendChild(box);
-
-            cellItem.style.gridColumn = 4;
-            cellItem.style.gridRow = Math.ceil((nbElements + 1) / 4);
-
             cellsList.appendChild(cellItem);
 
             let rangesList = this._getRangesList();
@@ -688,7 +689,7 @@ require('x-revisionprogress/x-revisionprogress');
             let divDetails = $('<div></div>').addClass('savereason-details').append(divinput)
 
             let dialogbox = $('<div></div>')
-                .addClass('savereason-dialog-details')
+                .addClass('stopclassification-comment-dialog')
                 .append(divMachine)
                 .append(divReason)
                 .append(divDetails);
@@ -718,7 +719,7 @@ require('x-revisionprogress/x-revisionprogress');
                 }.bind(this),
                 autoClose: false,
                 autoDelete: true,
-                helpName: 'savereason'
+                helpName: 'stopclassification'
             });
 
             // - Enable / Disable the OK button
