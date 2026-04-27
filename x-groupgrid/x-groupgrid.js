@@ -40,6 +40,7 @@ var state = require('state');
 
     initialize() {
       this.addClass('pulse-groupgrid');
+      this.addClass('pulse-bigdisplay');
       $(this.element).empty();
 
       this._content = $('<div></div>').addClass('groupgrid-main');
