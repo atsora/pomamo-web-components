@@ -23,11 +23,11 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
 (function () {
 
   /**
-   * `<x-machinetab>` — machine switcher list, indexed on machine selection.
+   * `<x-machinetab>` — machine switcher tab strip, stateless renderer.
    *
-   * Resolves the machine list from `machine` config (comma-separated ids from
-   * `x-machineselection`) or via AJAX `MachinesFromGroups` when `group` is set.
-   * Renders one tab item per machine directly in the DOM (no nested custom elements).
+   * Listens to `machineListChanged` from `x-machineselection` (single source of truth)
+   * to rebuild its tab list. Renders one tab item per machine directly in the DOM
+   * (no nested group renderer).
    *
    * Each item contains:
    *  - a colored mode bar (polled from `CurrentReason?MachineId=<id>`)
@@ -42,8 +42,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
    * changes the selected machine.
    * Responds to `askForMachineIdSignal` to re-broadcast the currently active id.
    *
-   * Hides the `#grouparray` panel when only one machine is present.
-   * Dispatches `groupIsReloaded` after each list rebuild.
+   * Hides the `#grouparray` panel when only one machine is present (CSS hook).
    *
    * Attributes:
    *   machine-context - event bus context for machine selection signals
@@ -98,8 +97,23 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
           this.onAskForMachineId.bind(this));
       }
 
+      // Connect to source of truth (x-machineselection)
+      if (eventBus.EventBus.addGlobalEventListener) {
+        eventBus.EventBus.addGlobalEventListener(this,
+          'machineListChanged', this.onMachineListChanged.bind(this));
+      }
+
       $(this.element).empty().addClass('group-main');
       this._listContainer = $(this.element);
+
+      // Loader DOM kept (hidden) for parity with the historical structure.
+      let loader = $('<div></div>').addClass('pulse-loader')
+        .html(this.getTranslation('loadingDots', 'Loading...')).hide();
+      this._listContainer.append($('<div></div>').addClass('pulse-loader-div').append(loader));
+
+      this._messageSpan = $('<span></span>').addClass('pulse-message');
+      this._messageDiv = $('<div></div>').addClass('pulse-message-div').append(this._messageSpan);
+      this._listContainer.append(this._messageDiv);
 
       // Click delegation — one handler for all tab items
       this._listContainer.on('click', '.machinetab-machine-cell', (e) => {
@@ -108,6 +122,19 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
           this._activateTab(machineId);
         }
       });
+
+      // Late-arrival sync: render immediately if machineselection already resolved
+      try {
+        let machineSel = document.querySelector('x-machineselection');
+        if (machineSel && typeof machineSel.isReady === 'function' && machineSel.isReady()) {
+          let initIds = machineSel.getResolvedMachineIds();
+          if (initIds && initIds.length > 0) {
+            this._machineIdsArray = initIds.map(s => String(s));
+            this._renderList();
+          }
+        }
+      } catch (e) { /* no machineselection on this page */ }
+
       this.switchToNextContext();
     }
 
@@ -117,6 +144,8 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       eventBus.EventBus.removeEventListenerBySignal(this, 'askForMachineIdSignal');
       $(this.element).empty();
       this._listContainer = undefined;
+      this._messageDiv = undefined;
+      this._messageSpan = undefined;
       this._machineIdsArray = [];
       this._activeMachineId = null;
       super.clearInitialization();
@@ -150,66 +179,46 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
     }
 
     validateParameters() {
-      let groups = this.getConfigOrAttribute('group');
-      let machines = this.getConfigOrAttribute('machine');
-      if ((!groups || groups === '') && (!machines || machines === '')) {
-        this.switchToKey('Error',
-          () => this.displayError(this.getTranslation('error.selectMachineGroup', 'Please select a machine or a group of machines')),
-          () => this.removeError());
-        return;
-      }
+      // No validation: source of truth (x-machineselection) drives state.
       this.switchToNextContext();
     }
 
-    displayError(message) { }
-    removeError() { }
-
-    get refreshRate() {
-      return 1000 * 60 * 60; // 1 hr for dynamic groups; static groups never reach this
+    displayError(message) {
+      if (this._messageSpan) $(this._messageSpan).html(message);
+      if (this._messageDiv) this._messageDiv.addClass('force-visibility');
     }
 
-    // ─── MACHINE LIST RESOLUTION ────────────────────────────────────────────
+    removeError() {
+      if (this._messageSpan) $(this._messageSpan).html('');
+      if (this._messageDiv) this._messageDiv.removeClass('force-visibility');
+    }
 
-    // Handles the machine-only case (no group config) without AJAX
+    get refreshRate() {
+      return 1000 * 60 * 60; // unused; _runAlternateGetData short-circuits AJAX
+    }
+
+    /**
+     * Stateless: no AJAX. Render is driven by `machineListChanged` events.
+     */
     _runAlternateGetData() {
-      let groups = this.getConfigOrAttribute('group');
-      if (!pulseUtility.isNotDefined(groups) && groups !== '') {
-        return false; // defer to AJAX MachinesFromGroups
-      }
-      this.removeError();
-      this._dynamic = false;
-      this._machineIdsArray = this.getConfigOrAttribute('machine').split(',');
-      this._renderList();
       this.switchToContext('Loaded');
       return true;
     }
 
-    getShortUrl() {
-      return 'MachinesFromGroups?GroupIds=' + this.getConfigOrAttribute('group');
-    }
-
-    manageSuccess(data) {
-      this.removeError();
-      this._machineIdsArray = data.MachineIds;
-      this._dynamic = data.Dynamic;
-      if (this.getConfigOrAttribute('forcestaticlist') === 'true') {
-        this._dynamic = false;
-      }
-      if (!this._dynamic) {
-        this._renderList();
-        this.switchToContext('Loaded');
-      } else {
-        super.manageSuccess(data);
-      }
-    }
-
-    refresh(data) {
-      this._renderList();
-    }
-
-    onConfigChange(event) {
-      if (event.target.config === 'machine' || event.target.config === 'group') {
-        this.start();
+    /**
+     * Source-of-truth callback: x-machineselection has resolved a new list of machine ids.
+     */
+    onMachineListChanged(event) {
+      let ids = (event.target && event.target.ids) || event.ids || [];
+      let isNetworkError = !!((event.target && event.target.error) || event.error);
+      if (this._listContainer) {
+        if (isNetworkError) {
+          this.displayError(this.getTranslation('serverUnreachable', 'Server unreachable'));
+        } else {
+          this.removeError();
+          this._machineIdsArray = ids.map(s => String(s));
+          this._renderList();
+        }
       }
     }
 
@@ -248,14 +257,19 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
         }
       }
 
-      // Activate first if no machine is currently active
+      // Activate first if no machine is currently active.
+      // Defer one microtask: x-machineselection's synchronous early-emit fires
+      // machineListChanged DURING HTML parsing, so page-level components on the
+      // same machine-context may not have connected yet — dispatching now would
+      // miss them and leave them stuck in "Please select a machine".
+      // The microtask ensures all synchronous connectedCallback chains have run.
       if (this._activeMachineId === null && this._machineIdsArray.length > 0) {
-        this._activateTab(Number(this._machineIdsArray[0]));
+        let firstId = Number(this._machineIdsArray[0]);
+        let self = this;
+        Promise.resolve().then(function () {
+          if (self._activeMachineId === null) self._activateTab(firstId);
+        });
       }
-
-      eventBus.EventBus.dispatchToAll('groupIsReloaded', {
-        newMachinesList: this._machineIdsArray.join(',')
-      });
 
       this._startReasonPolling();
     }

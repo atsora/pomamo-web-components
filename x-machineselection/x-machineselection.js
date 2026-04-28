@@ -14,9 +14,9 @@ var pulseComponent = require('pulsecomponent');
 var pulseCustomDialog = require('pulseCustomDialog');
 var pulseLogin = require('pulseLogin');
 var pulseConfig = require('pulseConfig');
+var pulseService = require('pulseService');
 var eventBus = require('eventBus');
 
-require('x-grouparray/x-grouparray');
 require('x-machinedisplay/x-machinedisplay');
 require('x-freetext/x-freetext');
 
@@ -28,7 +28,9 @@ require('x-freetext/x-freetext');
    * individual machines. The selection dialog (`pulseCustomDialog`) has two pages:
    *  - Page 1: group tree (checkboxes) or flat machine list, with a search bar.
    *  - Page 2: current selection list with drag-and-drop / up-down reordering, and a live preview
-   *    panel (using an embedded `x-grouparray`) when group selection is active.
+   *    panel rendering one `<x-machinedisplay>` per resolved machine when group selection is active.
+   *    Resolution is internal: single-machine groups from `_groupDisplays`, multi-machine groups via
+   *    the `_resolvedGroupCache` or a `MachinesFromGroups` AJAX call.
    *
    * Mode switching: "by group" (default) → `_groupSelectionArray` stored; "by machine" →
    * `_machineSelectionArray` stored. On OK: writes to `pulseConfig` (key `machine` and `group`),
@@ -81,13 +83,31 @@ require('x-freetext/x-freetext');
       self._summary = undefined;
 
       self._dialogId = undefined;
+
+      // Single-source-of-truth state for resolved machine list
+      self._resolvedMachineIds = [];
+      self._isResolvedReady = false;
+      self._resolvedGroupCache = new Map();
+      self._dynamicPollTimer = null;
+      self._retryTimer = null;
+      // Inflight key for in-progress MachinesFromGroups call (joined GroupIds).
+      // Prevents duplicate AJAX when _resolveAndEmit fires twice in a row during boot
+      // (synchronous early emit + post-Machine/Groups reconcile).
+      self._machinesFromGroupsInflight = null;
+
+      // Dialog preview state (resolved internally, no longer delegated to x-grouparray)
+      self._previewResolvedMachineIds = [];
+      self._previewLoading = false;
+
       self.methods = {
         'changeMachineSelection': self.changeMachineSelection,
         'fillExternalSummaryDisplay': self.fillExternalSummaryDisplay,
         'getMachinesArray': self.getMachinesArray,
         'getGroupsArray': self.getGroupsArray,
         'getMachinesString': self.getMachinesString,
-        'getGroupsString': self.getGroupsString
+        'getGroupsString': self.getGroupsString,
+        'getResolvedMachineIds': self.getResolvedMachineIds,
+        'isReady': self.isReady
       };
 
       if (!this.element.hasAttribute('in-report')) {
@@ -116,6 +136,14 @@ require('x-freetext/x-freetext');
     }
 
     clearInitialization() {
+      if (this._dynamicPollTimer) {
+        clearTimeout(this._dynamicPollTimer);
+        this._dynamicPollTimer = null;
+      }
+      if (this._retryTimer) {
+        clearTimeout(this._retryTimer);
+        this._retryTimer = null;
+      }
       $(this.element).empty();
       this._editbutton = undefined;
       this._summary = undefined;
@@ -197,6 +225,19 @@ require('x-freetext/x-freetext');
         reportDiv.append(machineReportDiv);
       }
 
+      // Early emit (machine-only fast path): if pulseConfig already holds a direct
+      // machine list, dispatch machineListChanged synchronously here without waiting
+      // for the Machine/Groups AJAX. This restores the historical zero-AJAX-blocking
+      // behaviour for the most common case (returning user with machine selection).
+      // For the group case we can't emit early (path is set by ParamValidation, not
+      // yet at initialize()) — refresh() will call _resolveAndEmit('url') normally.
+      let machineConfigEarly = pulseConfig.getString(this._configMachines, '');
+      if (machineConfigEarly && machineConfigEarly.trim() !== '') {
+        let earlyIds = machineConfigEarly.split(',')
+          .map(s => s.trim()).filter(s => s !== '');
+        this._emitMachineList(earlyIds, 'url-early');
+      }
+
       this.switchToNextContext();
     }
 
@@ -234,6 +275,7 @@ require('x-freetext/x-freetext');
       this._fillCategoryList();
       this._fillSummaryDisplay();
       this._fillMachinesList();
+      this._resolveAndEmit('url');
     }
 
     /**
@@ -856,7 +898,8 @@ require('x-freetext/x-freetext');
     }
 
     /**
-     * Rebuilds the preview panel in group-selection mode using an embedded `x-grouparray`.
+     * Rebuilds the preview panel in group-selection mode by resolving the current
+     * `_groupSelectionArray` into machine ids and rendering one `<x-machinedisplay>` per machine.
      * Clears the panel when no groups are selected or when in machine-selection mode.
      */
     _fillMachinePreview() {
@@ -864,25 +907,162 @@ require('x-freetext/x-freetext');
       this._previewList.empty();
       this._freeTextLastUpdate?.[0]?.cleanDisplay?.();
 
-      if (false == this._useMachineSelection) {
-        if (this._groupSelectionArray.length > 0) {
-          let singleMachine = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {});
-          let toClone = $('<div id=machinetoclone></div').addClass('preview-machine-position').append(singleMachine);
-          let hidden = $('<div></div').addClass('hidden-content').append(toClone);
-          this._previewList.append(hidden);
+      if (this._useMachineSelection || this._groupSelectionArray.length === 0) {
+        this._previewResolvedMachineIds = [];
+        this._previewLoading = false;
+        this._updateOkButtonState();
+        return;
+      }
 
-          let grouparray = pulseUtility.createjQueryElementWithAttribute('x-grouparray', {
-            'templateid': 'machinetoclone',
-            'group': this._groupSelectionArray.join(),
-            'canUseRowsToSetHeight': false,
-            'allowpagerotation': 'false',
-            'rotation': 10,
-            'row': 999,
-            'textchange-context': 'machineselection',
-            'donotwarngroupreload': 'true'
-          });
-          this._previewList.append(grouparray);
+      this._resolvePreviewMachines();
+    }
+
+    /**
+     * Resolves the currently selected groups into machine ids for the dialog preview.
+     * Reuses the same logic as `_resolveAndEmit` (single-machine local resolution from
+     * `_groupDisplays`, static multi-machine via `_resolvedGroupCache`, everything else via
+     * a `MachinesFromGroups` AJAX call). The fetched result is cached in `_resolvedGroupCache`
+     * (when only one group needed AJAX), benefiting subsequent resolutions including the OK
+     * click via `_resolveAndEmit('user')`.
+     *
+     * Discards stale AJAX responses if the selection changed in the meantime.
+     */
+    _resolvePreviewMachines() {
+      let resolvedIds = [];
+      let unresolvedGroups = [];
+
+      // When MULTIPLE groups are selected, the API applies cross-group semantics
+      // (e.g. intersection) so we MUST send the full set as a single call —
+      // pre-resolving single-machine groups locally would produce a union instead.
+      // Local resolution / cache is only safe for a single-group selection.
+      const multiGroup = this._groupSelectionArray.length > 1;
+
+      for (let i = 0; i < this._groupSelectionArray.length; i++) {
+        let groupId = this._groupSelectionArray[i];
+        let display = this._groupDisplays.get(String(groupId));
+        if (!multiGroup && display && display.singlemachine && !display.dynamic) {
+          let machId = (display.machineid !== undefined) ? String(display.machineid) : String(groupId);
+          resolvedIds.push(machId);
         }
+        else if (!multiGroup && display && display.dynamic === false) {
+          let cached = this._resolvedGroupCache.get(String(groupId));
+          if (cached) {
+            for (let j = 0; j < cached.length; j++) resolvedIds.push(cached[j]);
+          }
+          else {
+            unresolvedGroups.push(groupId);
+          }
+        }
+        else {
+          unresolvedGroups.push(groupId);
+        }
+      }
+
+      if (unresolvedGroups.length === 0) {
+        this._previewResolvedMachineIds = this._dedupePreserveOrder(resolvedIds);
+        this._previewLoading = false;
+        this._renderPreviewMachines();
+        this._updateOkButtonState();
+        return;
+      }
+
+      // AJAX needed: show loader, disable OK while loading
+      this._previewLoading = true;
+      this._renderPreviewLoader();
+      this._updateOkButtonState();
+
+      let basePath = this.path || '';
+      let url = basePath + 'MachinesFromGroups?GroupIds=' + unresolvedGroups.join(',');
+      let self = this;
+      let groupSnapshot = this._groupSelectionArray.slice();
+
+      pulseService.runAjaxSimple(
+        url,
+        function (data) {
+          if (self._previewSelectionChanged(groupSnapshot)) return;
+          let fetched = (data && data.MachineIds) ? data.MachineIds.map(String) : [];
+          let isDynamic = (data && data.Dynamic === true);
+          if (!isDynamic && unresolvedGroups.length === 1) {
+            self._resolvedGroupCache.set(String(unresolvedGroups[0]), fetched);
+          }
+          let combined = resolvedIds.concat(fetched);
+          self._previewResolvedMachineIds = self._dedupePreserveOrder(combined);
+          self._previewLoading = false;
+          self._renderPreviewMachines();
+          self._updateOkButtonState();
+        },
+        function (errData) {
+          if (self._previewSelectionChanged(groupSnapshot)) return;
+          console.error('[x-machineselection preview] error', errData);
+          self._previewResolvedMachineIds = [];
+          self._previewLoading = false;
+          self._renderPreviewError();
+          self._updateOkButtonState();
+        },
+        function (failedUrl, isTimeout, status) {
+          if (self._previewSelectionChanged(groupSnapshot)) return;
+          console.error('[x-machineselection preview] ' + (isTimeout ? 'timeout' : 'failure (status ' + status + ')'), failedUrl);
+          self._previewResolvedMachineIds = [];
+          self._previewLoading = false;
+          self._renderPreviewError();
+          self._updateOkButtonState();
+        }
+      );
+    }
+
+    /** True if the selection changed since the snapshot was captured (stale AJAX detector). */
+    _previewSelectionChanged(snapshot) {
+      if (snapshot.length !== this._groupSelectionArray.length) return true;
+      for (let i = 0; i < snapshot.length; i++) {
+        if (String(snapshot[i]) !== String(this._groupSelectionArray[i])) return true;
+      }
+      return false;
+    }
+
+    _renderPreviewMachines() {
+      if (!this._previewList) return;
+      this._previewList.empty().removeClass('pulse-component-loading');
+      if (this._previewResolvedMachineIds.length === 0) {
+        let noMachine = $('<div></div>').addClass('no-machines')
+          .html(this.getTranslation('groupArray.noMachine', 'No machine in selection'));
+        this._previewList.append(noMachine);
+        return;
+      }
+      for (let i = 0; i < this._previewResolvedMachineIds.length; i++) {
+        let machId = this._previewResolvedMachineIds[i];
+        let xdisp = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
+          'machine-id': machId
+        });
+        let row = $('<div></div>').addClass('preview-machine-position').append(xdisp);
+        this._previewList.append(row);
+      }
+    }
+
+    _renderPreviewLoader() {
+      if (!this._previewList) return;
+      this._previewList.empty().addClass('pulse-component-loading');
+      let loader = $('<div></div>').addClass('pulse-loader')
+        .html(this.getTranslation('loadingDots', 'Loading...'));
+      this._previewList.append($('<div></div>').addClass('pulse-loader-div').append(loader));
+    }
+
+    _renderPreviewError() {
+      if (!this._previewList) return;
+      this._previewList.empty().removeClass('pulse-component-loading');
+      let err = $('<div></div>').addClass('preview-error')
+        .html(this.getTranslation('serverUnreachable', 'Server unreachable'));
+      this._previewList.append(err);
+    }
+
+    /** Disables the dialog OK button while the preview is resolving asynchronously. */
+    _updateOkButtonState() {
+      if (!this._dialogId) return;
+      let okBtn = $('#' + this._dialogId + ' .customDialogOk');
+      if (okBtn.length === 0) return;
+      if (this._previewLoading) {
+        okBtn.prop('disabled', true).addClass('disabled');
+      } else {
+        okBtn.prop('disabled', false).removeClass('disabled');
       }
     }
 
@@ -895,7 +1075,8 @@ require('x-freetext/x-freetext');
       if (false == this._useMachineSelection) {
         // Build machine list in group click order:
         // - single-machine groups: use stored MachineId directly (preserves click order)
-        // - multi-machine groups: fall back to x-grouparray result (API order within group)
+        // - multi-machine groups: pull from `_previewResolvedMachineIds` (resolved internally
+        //   by `_resolvePreviewMachines`, with cache reuse and AJAX fallback)
 
         // Collect direct machine IDs for single-machine groups (from stored MachineId or group ID)
         const singleMachineIdSet = new Set();
@@ -907,16 +1088,10 @@ require('x-freetext/x-freetext');
           }
         }
 
-        // Get machines from x-grouparray for multi-machine groups only
-        let grouparrays = $(this._previewList).find('x-grouparray');
-        let multiMachinePool = [];
-        if (grouparrays.length > 0) {
-          let machinesList = grouparrays[0].getMachinesList();
-          if (machinesList) {
-            multiMachinePool = machinesList.split(',')
-              .filter(id => id !== '' && !singleMachineIdSet.has(id));
-          }
-        }
+        // Multi-machine pool: every preview-resolved id that isn't already covered by
+        // a single-machine group (those are reinserted in click order below).
+        let multiMachinePool = this._previewResolvedMachineIds
+          .filter(id => id !== '' && !singleMachineIdSet.has(id));
 
         // Build ordered machine list following _groupSelectionArray click order
         const orderedMachines = [];
@@ -955,6 +1130,8 @@ require('x-freetext/x-freetext');
           { 'config': this._configGroups });
 
         $('.legend-content').resize();
+
+        this._resolveAndEmit('user');
       }
       else {
         this.element.setAttribute('pulse-machines', joinedMachines);
@@ -1418,6 +1595,207 @@ require('x-freetext/x-freetext');
     /** @returns {string} Comma-separated group ids from the current selection. */
     getGroupsString() {
       return this._groupSelectionArray.join();
+    }
+
+    /**
+     * Single-source-of-truth API: returns the currently resolved machine id list
+     * (after group→machine resolution).
+     *
+     * @returns {string[]} A copy of the resolved machine id list.
+     */
+    getResolvedMachineIds() {
+      return ([].concat(this._resolvedMachineIds));
+    }
+
+    /** @returns {boolean} True once the first resolution has completed and an event was emitted. */
+    isReady() {
+      return this._isResolvedReady;
+    }
+
+    /**
+     * Reads `pulseConfig` (machine + group), resolves any group ids to machine ids
+     * (locally for single-machine groups, via REST `MachinesFromGroups` for the rest),
+     * dedupes preserving order, then dispatches a single `machineListChanged` event.
+     *
+     * Schedules a poll for dynamic groups via `_scheduleDynamicPoll()`.
+     *
+     * @param {'url'|'user'|'group-poll'} source - origin of the resolution
+     */
+    _resolveAndEmit(source) {
+      let machineConfig = pulseConfig.getString(this._configMachines, '');
+      let groupConfig = pulseConfig.getString(this._configGroups, '');
+
+      // 1) Direct machine list — takes precedence
+      if (machineConfig && machineConfig.trim() !== '') {
+        let ids = machineConfig.split(',').map(s => s.trim()).filter(s => s !== '');
+        this._scheduleDynamicPoll(false);
+        this._emitMachineList(ids, source);
+        return;
+      }
+
+      // 2) Empty
+      if (!groupConfig || groupConfig.trim() === '') {
+        this._scheduleDynamicPoll(false);
+        this._emitMachineList([], source);
+        return;
+      }
+
+      // 3) Group resolution
+      let groupIds = groupConfig.split(',').map(s => s.trim()).filter(s => s !== '');
+      let resolvedIds = [];
+      let unresolvedGroups = [];
+      let hasDynamic = false;
+
+      // When MULTIPLE groups are selected, the backend applies cross-group semantics
+      // (e.g. intersection) on the combined `MachinesFromGroups?GroupIds=A,B,...` call,
+      // so pre-resolving single-machine groups locally would yield a different (union)
+      // result. Local / cache resolution is only safe for a single-group selection.
+      const multiGroup = groupIds.length > 1;
+
+      for (let i = 0; i < groupIds.length; i++) {
+        let groupId = groupIds[i];
+        let display = this._groupDisplays.get(String(groupId));
+        if (!multiGroup && display && display.singlemachine && !display.dynamic) {
+          // Static single-machine group: resolve locally from boot cache
+          let machId = (display.machineid !== undefined) ? String(display.machineid) : String(groupId);
+          resolvedIds.push(machId);
+        }
+        else if (!multiGroup && display && display.dynamic === false) {
+          // Static multi-machine group: cache lookup, AJAX once if unknown
+          let cached = this._resolvedGroupCache.get(String(groupId));
+          if (cached) {
+            for (let j = 0; j < cached.length; j++) resolvedIds.push(cached[j]);
+          }
+          else {
+            unresolvedGroups.push(groupId);
+          }
+        }
+        else {
+          // Dynamic group (single or multi) OR unknown — must AJAX every time
+          // (single-machine dynamic groups can change identity between polls,
+          // so the boot-time machineid is not reliable)
+          unresolvedGroups.push(groupId);
+          hasDynamic = true;
+        }
+      }
+
+      if (unresolvedGroups.length === 0) {
+        this._scheduleDynamicPoll(hasDynamic);
+        this._emitMachineList(this._dedupePreserveOrder(resolvedIds), source);
+        return;
+      }
+
+      // 4) AJAX needed
+      let basePath = this.path || '';
+      let inflightKey = unresolvedGroups.join(',');
+      // Skip if the same query is already in flight (prevents duplicate calls when
+      // _resolveAndEmit is invoked twice during boot — early emit + Machine/Groups reconcile).
+      if (this._machinesFromGroupsInflight === inflightKey) return;
+      this._machinesFromGroupsInflight = inflightKey;
+      let url = basePath + 'MachinesFromGroups?GroupIds=' + inflightKey;
+      let self = this;
+      pulseService.runAjaxSimple(
+        url,
+        function (data) {
+          self._machinesFromGroupsInflight = null;
+          // Cancel any pending error retry — server is back
+          if (self._retryTimer) {
+            clearTimeout(self._retryTimer);
+            self._retryTimer = null;
+          }
+          let fetched = (data && data.MachineIds) ? data.MachineIds.map(String) : [];
+          let isDynamic = (data && data.Dynamic === true) || hasDynamic;
+          if (!isDynamic) {
+            // Cache only when static and only a single group was unresolved
+            // (we can't split the response across multiple groups without per-group info)
+            if (unresolvedGroups.length === 1) {
+              self._resolvedGroupCache.set(String(unresolvedGroups[0]), fetched);
+            }
+          }
+          let combined = resolvedIds.concat(fetched);
+          self._scheduleDynamicPoll(isDynamic);
+          self._emitMachineList(self._dedupePreserveOrder(combined), source);
+        },
+        function (errData) {
+          self._machinesFromGroupsInflight = null;
+          console.error('[x-machineselection] MachinesFromGroups error', errData);
+          self._scheduleErrorRetry(source);
+          eventBus.EventBus.dispatchToAll('machineListChanged', { ids: [], error: 'network' });
+        },
+        function (failedUrl, isTimeout, status) {
+          self._machinesFromGroupsInflight = null;
+          console.error('[x-machineselection] MachinesFromGroups ' + (isTimeout ? 'timeout' : 'failure (status ' + status + ')'), failedUrl);
+          self._scheduleErrorRetry(source);
+          eventBus.EventBus.dispatchToAll('machineListChanged', { ids: [], error: 'network' });
+        }
+      );
+    }
+
+    _dedupePreserveOrder(arr) {
+      let seen = new Set();
+      let out = [];
+      for (let i = 0; i < arr.length; i++) {
+        let s = String(arr[i]);
+        if (s !== '' && !seen.has(s)) {
+          seen.add(s);
+          out.push(s);
+        }
+      }
+      return out;
+    }
+
+    _emitMachineList(ids, source) {
+      // Dedupe identical re-emits.
+      // Boot sequence: initialize() does an early-emit (synchronous, source='url-early')
+      // and refresh() emits again after the Machine/Groups AJAX returns (source='url').
+      // For the machine config case both produce the same id list — the second emit would
+      // trigger another _buildItems() pass in renderers, re-appending DOM items and forcing
+      // disconnect/reconnect on every sub-component (visible as duplicated AJAX, double
+      // bar rendering on x-barstack-based pages, etc.).
+      // Skip when the list is unchanged. Real changes (group poll, dialog OK) still go through.
+      if (this._isResolvedReady
+          && this._resolvedMachineIds.length === ids.length
+          && this._resolvedMachineIds.every((v, i) => String(v) === String(ids[i]))) {
+        return;
+      }
+      this._resolvedMachineIds = ids;
+      this._isResolvedReady = true;
+      eventBus.EventBus.dispatchToAll('machineListChanged', {
+        ids: [].concat(ids),
+        source: source
+      });
+    }
+
+    _scheduleErrorRetry(source) {
+      if (this._retryTimer) {
+        clearTimeout(this._retryTimer);
+        this._retryTimer = null;
+      }
+      let self = this;
+      let delay = pulseConfig.getInt('serverRetrySeconds', 15) * 1000;
+      if (delay < 5000) delay = 5000;
+      this._retryTimer = setTimeout(function () {
+        self._retryTimer = null;
+        console.warn('[x-machineselection] retrying MachinesFromGroups after server error');
+        self._resolveAndEmit(source);
+      }, delay);
+    }
+
+    _scheduleDynamicPoll(hasDynamic) {
+      if (this._dynamicPollTimer) {
+        clearTimeout(this._dynamicPollTimer);
+        this._dynamicPollTimer = null;
+      }
+      if (!hasDynamic) return;
+      // Period defined by `dynamicGroupRefreshSeconds` config (default 30s).
+      // Dynamic groups re-fetch their machine list at this cadence so the UI
+      // reflects backend criteria changes (machines entering/leaving the group).
+      let period = pulseConfig.getInt('dynamicGroupRefreshSeconds', 30) * 1000;
+      if (period < 5000) period = 5000;
+      let self = this;
+      this._dynamicPollTimer = setTimeout(function () {
+        self._resolveAndEmit('group-poll');
+      }, period);
     }
   }
 

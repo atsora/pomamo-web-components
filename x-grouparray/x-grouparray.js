@@ -40,7 +40,6 @@ var eventBus = require('eventBus');
    *   group               - group id(s), resolved via REST
    *   column              - number of columns per page
    *   row                 - number of rows per page (default `2`)
-   *   canUseRowsToSetHeight - `'true'` sets explicit row height via CSS
    *   allowpagerotation   - `'true'` enables automatic page cycling
    *   rotation            - page rotation delay in seconds (default `90`)
    *   refreshrate         - explicit refresh interval in seconds (fallback when no rotation)
@@ -124,23 +123,14 @@ var eventBus = require('eventBus');
       if (pulseUtility.isNotDefined(boxtocloneid))
         boxtocloneid = 'boxtoclone';
 
-      // Calculate width for multi-column (and height)
+      // Calculate width for multi-column
       let column_width = null;
       let row_height = null;
       let nbColumnToDisplay = this.getConfigOrAttribute('column');
       let nbRowToDisplay = this.getConfigOrAttribute('row', 2);
-      let canUseRowsToSetHeight = this.getConfigOrAttribute('canUseRowsToSetHeight', 'false');
-      let allowpagerotation = this.getConfigOrAttribute('allowpagerotation', 'false');
 
       if (!pulseUtility.isNotDefined(nbColumnToDisplay)) {
         column_width = 100.0 / nbColumnToDisplay + '%';
-        if (allowpagerotation == 'true') { // No page rotation == auto-size
-          if ((canUseRowsToSetHeight == 'true') || (canUseRowsToSetHeight == true)) {
-            if (!pulseUtility.isNotDefined(nbRowToDisplay)) {
-              row_height = 100.0 / nbRowToDisplay + '%';
-            }
-          }
-        }
       }
 
       // Update the component with data returned by the web service
@@ -393,7 +383,6 @@ var eventBus = require('eventBus');
         case 'machine':
         case 'column':
         case 'row':
-        case 'canUseRowsToSetHeight':
         case 'allowpagerotation':
           //case 'rotation':
           //case 'refreshrate':
@@ -654,5 +643,5 @@ var eventBus = require('eventBus');
 
   }
 
-  pulseComponent.registerElement('x-grouparray', GroupComponent, ['templateid', 'group', 'machine', 'column', 'row', 'canUseRowsToSetHeight', 'allowpagerotation']);
+  pulseComponent.registerElement('x-grouparray', GroupComponent, ['templateid', 'group', 'machine', 'column', 'row', 'allowpagerotation']);
 })();

@@ -13,6 +13,7 @@ x-alertdialog {
   padding: clamp(10px, calc(1vh + 0.6vw), 20px);
   gap: clamp(12px, calc(1.4vh + 0.8vw), 24px);
   box-sizing: border-box;
+  min-width: 0;
 
   .alertdialog-icon {
     background-repeat: no-repeat;
@@ -41,8 +42,10 @@ x-alertdialog {
 
   .alertdialog-message {
     flex: 1 1 auto;
+    min-width: 0;
     font-size: clamp(14px, calc(1.6vh + 0.7vw), 20px);
     line-height: 1.35;
+    overflow-wrap: anywhere;
     word-break: break-all;
   }
 }

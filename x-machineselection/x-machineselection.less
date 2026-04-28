@@ -688,43 +688,58 @@ x-machineselection {
       .machineselection-preview-list {
         box-sizing: border-box;
         font-size: 10pt;
+        // Layout matching demo2 preview: flex-wrap container with fixed-width
+        // cells (3 cells per row in the right pane). Each cell has 4px padding
+        // around an inline x-machinedisplay tag with rounded-shadow + opacity 0.6.
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        position: relative;
+        min-height: 60px;
 
         .hidden-content { // === HIDDEN CONTENT ===
           display: none;
         }
 
-        x-grouparray {
-          .group-main {
-            margin: 0;
-            display: flex;
-            flex-direction:row ;
-            flex-wrap: wrap;
+        > .preview-error,
+        > .no-machines {
+          width: 100%;
+          padding: 8px 0;
+          font-style: italic;
+          opacity: 0.7;
+        }
 
-            >.pulse-loader-div {
-              padding: 0;
-              position: relative;
-              min-height: 100px;
+        .preview-machine-position {
+          // 33.33% width with no shrink/grow — produces the 3-column layout
+          // demo2 has (panel width / 3) without using CSS grid.
+          flex: 0 0 33.33%;
+          box-sizing: border-box;
+          padding: 4px;
+          display: block;
+          min-width: 0; // allow children to shrink below intrinsic width
+
+          x-machinedisplay {
+            display: block;
+            font-weight: normal;
+            .bar-rounded-shadow;
+            opacity: 0.6;
+            padding: 1px 3px;
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+
+            .machinedisplay-data {
+              cursor: default;
+              font-size: 1.725em;
+              width: 100%;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
+              display: block;
             }
 
-            >.pulse-message-div {
-              padding: 0;
-            }
-
-            x-machinedisplay {
-              font-weight: normal;
-              .bar-rounded-shadow;
-              opacity: 0.6;
-              margin: 3px;
-              padding: 1px 3px;
-
-              .machinedisplay-data {
-                cursor: default;
-                font-size: 1.725em;
-              }
-
-              span {
-                color: @color_text;
-              }
+            span {
+              color: @color_text;
             }
           }
         }
