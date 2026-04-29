@@ -9,13 +9,52 @@ x-groupgrid {
   height: 100%;
   width: 100%;
   box-sizing: border-box;
+  position: relative;
+
+  // Boot loader: circular spinner centered while waiting for machineListChanged
+  &.pulse-component-loading:not(.pulse-component-error):not(.pulse-component-warning) {
+    .pulse-loader-div {
+      .pulse-loader {
+        margin: auto;
+        width: 1em;
+        height: 1em;
+        border-radius: 50%;
+        text-indent: -9999em;
+        animation: loadcircle 1.3s infinite linear;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%) translateZ(0);
+      }
+    }
+  }
+
+  .pulse-message-div {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    grid-column: 1 / -1;
+    text-align: center;
+
+    &.force-visibility {
+      display: flex;
+    }
+
+    // "No machine in selection" / "Server unreachable" — unified style.
+    .pulse-message {
+      color: @color_orange;
+      font-size: 14px;
+      font-weight: normal;
+    }
+  }
 
   .groupgrid-main {
     display: grid;
     gap: 0.8rem;
     height: 100%;
     width: 100%;
-    box-sizing: border-box;
     overflow: hidden;
 
     /* Les lignes s'étirent toujours pour remplir la hauteur */
@@ -40,10 +79,13 @@ x-groupgrid {
     }
 
     /* 2 éléments : 2 colonnes (1x2) */
+    /* 2 éléments : 2 colonnes */
     &[data-count="2"] { grid-template-columns: 1fr 1fr; }
 
-    /* 3 et 4 éléments : 2 colonnes (2x2) - Carré parfait */
-    &[data-count="3"],
+    /* 3 éléments : 3 colonnes (1x3) */
+    &[data-count="3"] { grid-template-columns: repeat(3, 1fr); }
+
+    /* 4 éléments : 2 colonnes (2x2) */
     &[data-count="4"] { grid-template-columns: repeat(2, 1fr); }
 
     /* 5 et 6 éléments : 3 colonnes (2x3) */
@@ -117,6 +159,7 @@ x-groupgrid {
   }
 }
 
+// === MEDIA QUERIES ===
 @media (max-width: 685px) {
   x-groupgrid .groupgrid-main {
     grid-template-columns: 1fr !important;

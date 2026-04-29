@@ -331,7 +331,7 @@ require('x-machinedisplay/x-machinedisplay');
       }
 
       pulseCustomDialog.openDialog(dialog, {
-        title: this.getTranslation('stopclassification.title', 'Unplanned stops'),
+        title: this.getTranslation('stopclassification.title', 'Stops'),
         onClose: function () {
           $('.popup-block').fadeOut();
           this.removeAllSelections();
@@ -639,7 +639,7 @@ require('x-machinedisplay/x-machinedisplay');
       }
 
       pulseCustomDialog.openDialog(dialog, {
-        title: this.getTranslation('stopclassification.title', 'Unplanned stops'),
+        title: this.getTranslation('stopclassification.title', 'Stops'),
         onClose: function () {
           $('.popup-block').fadeOut();
           this.removeAllSelections();

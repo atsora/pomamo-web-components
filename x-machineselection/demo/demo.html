@@ -25,6 +25,11 @@ SPDX-License-Identifier: Apache-2.0
     <x-machineselection path='http://localhost:8082/' group='D1' enableGroups=true></x-machineselection>
   </div>
 
+  <div class="div-separate-tests">
+    <label>loader test — select "Random" (dynamic, always 3s) or "D2" (static, 3s first open)</label>
+    <x-machineselection path='http://localhost:8082/' enableGroups=true></x-machineselection>
+  </div>
+
   <!--div class="div-separate-tests">
     <label>reordering enabled</label>
     <x-machineselection path='http://localhost:8082/' ordering=true machine=4,1></x-machineselection>

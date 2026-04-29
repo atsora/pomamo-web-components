@@ -372,7 +372,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     switchToProduction: 'Passer en production'
   },
   stopclassification: {
-    title: 'Arrêts Non-Planifiés',
+    title: 'Arrêts',
     options: 'Options Avancées',
   },
   taskslist: {

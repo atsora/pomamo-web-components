@@ -461,7 +461,7 @@ var openChangeStopClassificationDialog = exports.openChangeStopClassificationDia
   }
 
   pulseCustomDialog.openDialog(dialog, {
-    title: component.getTranslation('stopclassification.title', 'Unplanned stops'),
+    title: component.getTranslation('stopclassification.title', 'Stops'),
     onClose: function () {
       $('.popup-block').fadeOut();
     }.bind(component),

@@ -244,6 +244,12 @@ const Chart = require('chart.js/auto');
       }
 
       if (!this.element.hasAttribute('group')) {
+        // If a machine-context is wired, the `group` attribute is set asynchronously
+        // by `onMachineIdChange` once the machinetab activates the first machine.
+        // Wait silently until then — no error, no flash on screen.
+        if (this.element.hasAttribute('machine-context')) {
+          return;
+        }
         console.error('missing attribute machine or group in MachineDisplayComponent.element');
         this.switchToKey('Error', () => this.displayError(this.getTranslation('machinedisplay.invalidMachineGroup', 'Invalid machine or group')), () => this.removeError());
         return;

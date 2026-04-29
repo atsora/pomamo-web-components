@@ -450,16 +450,11 @@ require('x-datetimerange/x-datetimerange');
       });
       let groupCount = groupNames.length + (!shouldGroupAll && nonAlwaysReasons.length > 0 ? 1 : 0);
 
-      // Hide the group names if there is only one group
-      if (groupCount == 1 && !hasAlwaysSecondLevel) {
-        $('.savereason-table > li > span').hide();
-      }
-
       // Always hide the flat group header
       $('.savereason-table > li[data-flat="true"] > span').hide();
 
-      if (groupCount > 2 || nonAlwaysCount > nonAlwaysThreshold) {
-        // Collapse all groups if there are too many groups or effective reasons
+      if (groupCount > 1 && (groupCount > 2 || nonAlwaysCount > nonAlwaysThreshold)) {
+        // Collapse groups only when multiple groups exist (otherwise header is hidden and can't be clicked)
         $('.savereason-table > li:not([data-flat="true"]) > ul').hide();
       }
     }

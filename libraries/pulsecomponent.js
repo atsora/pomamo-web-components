@@ -902,6 +902,14 @@ class PulseInitializedComponent extends PulseStateComponent {
    */
   connectedCallback () {
     super.connectedCallback();
+    // Skip components living inside a `boxtoclone` template element. They have no
+    // valid machine-id/group, would run pointless retries (200ms ParamValidation loops),
+    // pollute the console with errors, and propagate stale CSS state classes when cloned.
+    // The cloned copies — produced by pulseUtility.cloneWithNewMachineId — won't match
+    // because the id is removed and the clone is appended outside the template.
+    if (this.element && this.element.closest && this.element.closest('#boxtoclone')) {
+      return;
+    }
     if (!this.isStarted) {
       this.start();
     }

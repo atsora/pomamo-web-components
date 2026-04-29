@@ -80,7 +80,7 @@ require('x-tr/x-tr');
       let tile = $('\
 <div class="tile"> \
   <x-datetimegraduation period-context="runningdialog"></x-datetimegraduation> \
-  <x-grouplist templateid="boxtocloneRunningDialog" no-rotation group="' + groupId + '"></x-grouplist> \
+  <x-grouplist templateid="boxtocloneRunningDialog" no-rotation donotwarngroupreload="true" group="' + groupId + '"></x-grouplist> \
 </div>');
 
       $(this.element).append(hiddenWrapper).append(header).append(tile);

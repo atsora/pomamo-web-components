@@ -20,7 +20,7 @@ var eventBus = require('eventBus');
    * Fetches `CncValueLegend/Get?MachineIds=<ids>` once on init.
    * Renders one legend group per `data.Items` entry: field title + colored square SVGs + labels.
    * Appends 4 filler divs for flexbox alignment and triggers `.legend-content` resize.
-   * Listens to `groupIsReloaded` globally to update `machine-ids` when the machine list changes.
+   * Listens to `machineListChanged` globally to update `machine-ids` when the machine list changes.
    * `isVisible` always returns `true`.
    *
    * Attributes:
@@ -67,7 +67,21 @@ var eventBus = require('eventBus');
 
       // listeners/dispatchers
       eventBus.EventBus.addGlobalEventListener(this,
-        'groupIsReloaded', this.onGroupReloaded.bind(this));
+        'machineListChanged', this.onMachineListChanged.bind(this));
+
+      // Late-arrival sync: if x-machineselection has already emitted
+      // machineListChanged synchronously during its own initialize() (early-emit
+      // for the machine config case), x-fieldlegends connecting later in DOM
+      // order would miss the event entirely. Pull the resolved list now if ready.
+      try {
+        let ms = document.querySelector('x-machineselection');
+        if (ms && typeof ms.isReady === 'function' && ms.isReady()) {
+          let ids = ms.getResolvedMachineIds();
+          if (ids && ids.length > 0) {
+            this.element.setAttribute('machine-ids', ids.join(','));
+          }
+        }
+      } catch (e) { /* no machineselection on this page */ }
 
       // In case of clone, need to be empty :
       $(this.element).empty();
@@ -107,19 +121,23 @@ var eventBus = require('eventBus');
     }
 
     validateParameters () {
-      if (this.element.hasAttribute('machine-ids') &&
-        (!pulseUtility.isNotDefined(this.element.getAttribute('machine-ids')))) {
-        // Success
+      let machineIds = this.element.getAttribute('machine-ids');
+      let machineId = this.element.getAttribute('machine-id');
+      if (machineIds && machineIds.trim() !== '') {
+        // Success — has a non-empty machine list
         this.switchToNextContext();
+        return;
       }
-      else if (this.element.hasAttribute('machine-id') &&
-        (!pulseUtility.isNotDefined(this.element.getAttribute('machine-id')))) {
-        // Success
+      if (machineId && machineId.trim() !== '') {
+        // Success — has a non-empty single machine id
         this.switchToNextContext();
+        return;
       }
-      // Delayed display :
-      this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
-      return;
+      // No machines selected: silent wait — the renderer (x-grouplist/x-groupgrid)
+      // already shows "No machine in selection". Don't fire a second error here,
+      // and don't trigger a CncValueLegend AJAX with empty MachineIds (which the
+      // backend rejects, surfacing the global "please contact support team" banner).
+      this.switchToKey('Error', () => this.displayError(''), () => this.removeError());
     }
 
     displayError (message) {
@@ -205,12 +223,13 @@ var eventBus = require('eventBus');
     // Callback events
 
     /**
-     * Event bus callback triggered when list of machines changes
+     * Event bus callback triggered when x-machineselection resolves a new machine list.
      *
      * @param {Object} event
      */
-    onGroupReloaded (event) {
-      this.element.setAttribute('machine-ids', event.target.newMachinesList);
+    onMachineListChanged (event) {
+      let ids = (event.target && event.target.ids) || event.ids || [];
+      this.element.setAttribute('machine-ids', ids.join(','));
     }
 
   }

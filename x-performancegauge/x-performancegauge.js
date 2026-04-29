@@ -315,10 +315,10 @@ var eventBus = require('eventBus');
       switch (attr) {
         case 'machine-id':
           if (this.isInitialized()) {
-            // Reset Target
             this._targetIsUpdated = false;
             this._targetpercentage = null;
-
+            this._percent = null;
+            this._drawEmpty();
             this.start();
           }
           break;
@@ -551,6 +551,7 @@ var eventBus = require('eventBus');
             });
         }
         else {
+          this._percent = null;
           eventBus.EventBus.dispatchToContext('motionChangeEvent', context,
             {
               MotionSeconds: data.MotionDuration

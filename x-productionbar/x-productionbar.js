@@ -352,10 +352,13 @@ var eventBus = require('eventBus');
       switch (attr) {
         case 'machine-id':
           if (this.isInitialized()) {
-            // Reset Target
             this._targetIsUpdated = false;
             this._targetpercentage = null;
-
+            this._actualProduction = 0;
+            this._targetProduction = 0;
+            this._productionRatio = 0;
+            this._drawEmpty();
+            this._updateTextDisplay();
             this.start();
           }
           break;
@@ -599,12 +602,16 @@ var eventBus = require('eventBus');
     }
 
     displayError(message) {
+      if (this._content) {
+        this._content.style.display = 'none';
+      }
       $(this._messageSpan).html(message);
-
-      //this._drawEmpty();
     }
 
     removeError() {
+      if (this._content) {
+        this._content.style.display = '';
+      }
       $(this._messageSpan).html('');
     }
 
@@ -657,6 +664,8 @@ var eventBus = require('eventBus');
      * @param {{ NbPieces?: number, Goal?: number, NbPiecesDoneDuringShift?: number, GoalNowShift?: number }} data
      */
     refresh(data) {
+      this.removeError();
+
       // Store previous target to detect changes
       let previousTargetProduction = this._targetProduction;
 
