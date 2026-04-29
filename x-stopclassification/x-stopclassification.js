@@ -521,7 +521,11 @@ require('x-revisionprogress/x-revisionprogress');
 
             this._drawBackButton();
             for (const reason of reasons) {
-                this._drawCell(reason.Display, reason.Color, false, reason.Id, reason.DetailsRequired, reason.Data, reason.NoDetails);
+                // Prefer ClassificationId (string code like "MST123") over Id (number)
+                // when the backend distinguishes the two — same fallback as in
+                // _drawReasons() at the top level.
+                let id = reason.ClassificationId || reason.Id;
+                this._drawCell(reason.Display, reason.Color, false, id, reason.DetailsRequired, reason.Data, reason.NoDetails);
             }
         }
 
@@ -595,7 +599,10 @@ require('x-revisionprogress/x-revisionprogress');
          */
         _selectReason(e) {
             let elmt = e.currentTarget;
-            let classificationId = Number(elmt.getAttribute('reason-id'));
+            // Keep the raw string — reason.ClassificationId is a non-numeric code
+            // (e.g. "MST123") that must be preserved as-is for the backend.
+            // Number() would coerce it to NaN.
+            let classificationId = elmt.getAttribute('reason-id');
             let reasonName = elmt.getAttribute('reason-text');
             let detailsRequired = ('true' == elmt.getAttribute('details-required'));
             let reasonData = elmt.reasondata;
