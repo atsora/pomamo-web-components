@@ -127,42 +127,61 @@ x-datetimerange {
 // x-datetimerange END
 /* DIALOG - NOT INCLUDED in x-datetimerange */
 .datetimerange-dialog-divinput {
-  // MAIN dialog div
-  padding: 10px; // NOT in global dialog
-  //margin-bottom: 20px; == too much !
-  text-align: center;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8em;
 
-  .datetimerange-dialog-divinputbegin {
-    display: inline-block;
-    margin: 10px;
-    vertical-align: top;
+  // ── Two pickers side by side ─────────────────────────────────────────────
+  .datetimerange-dialog-pickers-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1.5em;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
+  .datetimerange-dialog-divinputbegin,
   .datetimerange-dialog-divinputend {
-    display: inline-block;
-    margin: 10px;
-    vertical-align: top;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  /*
-input+label{
-  margin-left:10px;
-}
+  // ── End picker greyed out when no-end is checked ──────────────────────────
+  .datetimerange-dtp-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+    user-select: none;
+  }
 
-input[name=begin_dtp], input[name=end_dtp]{
-  font-size: 1.5em;
-  width: 350px;
-}
-*/
+  // ── No-end checkbox row ───────────────────────────────────────────────────
+  .datetimerange-dialog-noend {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: 1em;
+    color: @color_text;
+
+    input[type="checkbox"] {
+      width: 1.1em;
+      height: 1.1em;
+      cursor: pointer;
+      accent-color: @color_highlight;
+      flex-shrink: 0;
+    }
+
+    label {
+      cursor: pointer;
+      user-select: none;
+    }
+  }
 
   .datetimerange-dtp-input {
     font-size: 1.5em;
     width: 200px;
-  }
-
-  .datetimerange-dtp-input-disabled {
-    color: @color_gray !important;
-    //opacity : 0.5;
   }
 }
 // DIALOG END

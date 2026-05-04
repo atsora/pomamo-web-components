@@ -475,6 +475,7 @@ require('x-stopclassification/x-stopclassification');
      * @param {event} e - DOM event
      */
     clickOnCurrent(e) {
+      if (!this._dateRange) return;
       let applicableRange =
         pulseRange.createDateRangeDefaultInclusivity(
           this._lastReasonBegin, this._dateRange.upper);
@@ -496,6 +497,7 @@ require('x-stopclassification/x-stopclassification');
      * @param {event} e - DOM event
      */
     clickOnPast(e) {
+      if (!this._dateRange) return;
       pulseDetailsPopup.openChangeReasonDialog(this, this._dateRange, false);
     }
   }

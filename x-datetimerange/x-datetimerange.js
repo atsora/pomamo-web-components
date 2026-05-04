@@ -600,11 +600,12 @@ require('x-datetimepicker/x-datetimepicker');
      * Display to change date time range
      */
     _displaySettingDialog (isSplit = false) {
-      //let dialogbox = $('<div></div>').addClass('datetimerange-dialog');
+      let possibleNoEnd = (this.element.hasAttribute('possible-no-end')) &&
+        (this.element.getAttribute('possible-no-end').toUpperCase() == 'TRUE');
 
       // Are seconds mandatory ?
       let secondsMandatory = (this._dateRange.lower.getSeconds() != 0)
-        || (this._dateRange.upper.getSeconds() != 0);
+        || (this._dateRange.upper != null && this._dateRange.upper.getSeconds() != 0);
 
       // Info div, on top
       this._infotext = $('<span></span>').addClass('datetimerange-dialog-span-info');
@@ -616,10 +617,10 @@ require('x-datetimepicker/x-datetimepicker');
           let min = pulseUtility.displayDate(this.element.getAttribute('min-begin'), secondsMandatory);
           if (this.element.hasAttribute('max-end')) {
             let max = pulseUtility.displayDate(this.element.getAttribute('max-end'), secondsMandatory);
-            infoText = this.getTranslation ('selectBetween', 'Select period between ') + min + this.getTranslation ('selectAnd', ' and ') + max;
+            infoText = this.getTranslation('selectBetween', 'Select period between ') + min + this.getTranslation('selectAnd', ' and ') + max;
           }
           else {
-            infoText = this.getTranslation ('selectFrom', 'Select period from ') + min;
+            infoText = this.getTranslation('selectFrom', 'Select period from ') + min;
           }
         }
       }
@@ -653,32 +654,24 @@ require('x-datetimepicker/x-datetimepicker');
         begintimepickerOptions);
       this._beginDTP[0].addEventListener('change', this.onChangeDateTime.bind(this), false);
 
-      let beginDiv = $('<div"></div>').addClass('datetimepicker-begindiv')
-        .append(this._beginDTP);
+      let beginDiv = $('<div>').addClass('datetimepicker-begindiv').append(this._beginDTP);
       let divinputbegin = $('<div></div>')
         .addClass('datetimerange-dialog-divinputbegin')
         .append(beginDiv);
 
-      // END DTP
-      let endtimepickerOptions = {};
-      if ((this.element.hasAttribute('possible-no-end')) &&
-        (this.element.getAttribute('possible-no-end').toUpperCase() == 'TRUE')) {
-        endtimepickerOptions.defaultdatetime = pulseUtility.convertDateForWebService(this._dateRange.upper);
-        endtimepickerOptions.nullable = true;
-        endtimepickerOptions.novaluetext = 'No end';
-      }
-      else {
-        endtimepickerOptions.defaultdatetime = pulseUtility.convertDateForWebService(this._dateRange.upper);
-        endtimepickerOptions.nullable = false;
-      }
-
+      // END DTP — always has a concrete value; "no end" managed by external checkbox
+      let endDefault = (this._dateRange.upper != null)
+        ? pulseUtility.convertDateForWebService(this._dateRange.upper)
+        : pulseUtility.convertDateForWebService(new Date());
+      let endtimepickerOptions = {
+        defaultdatetime: endDefault,
+        nullable: false
+      };
       if (this.element.getAttribute('min-end')) {
         endtimepickerOptions.mindatetime = this.element.getAttribute('min-end');
       }
-      else {
-        if (this.element.getAttribute('min-begin')) {
-          endtimepickerOptions.mindatetime = this.element.getAttribute('min-begin');
-        }
+      else if (this.element.getAttribute('min-begin')) {
+        endtimepickerOptions.mindatetime = this.element.getAttribute('min-begin');
       }
       if (this.element.getAttribute('max-end')) {
         endtimepickerOptions.maxdatetime = this.element.getAttribute('max-end');
@@ -691,21 +684,49 @@ require('x-datetimepicker/x-datetimepicker');
         endtimepickerOptions);
       this._endDTP[0].addEventListener('change', this.onChangeDateTime.bind(this), false);
 
-      let endDiv = $('<div"></div>').addClass('datetimepicker-enddiv')
-        .append(this._endDTP);
+      let endDiv = $('<div>').addClass('datetimepicker-enddiv').append(this._endDTP);
       let divinputend = $('<div></div>').addClass('datetimerange-dialog-divinputend')
         .append(endDiv);
 
+      // NO-END CHECKBOX — shown only when possible-no-end is set
+      this._noEndCheckbox = null;
+      let noEndDiv = null;
+      if (possibleNoEnd) {
+        let isNoEnd = (this._dateRange.upper == null);
+        let checkboxId = 'dtr-noend-' + Date.now().toString(36);
+        this._noEndCheckbox = $('<input>').attr({ type: 'checkbox', id: checkboxId });
+        if (isNoEnd) {
+          this._noEndCheckbox.prop('checked', true);
+          endDiv.addClass('datetimerange-dtp-disabled');
+        }
+        let noEndLabel = $('<label>').attr('for', checkboxId)
+          .html(this.getTranslation('noEnd', 'No end date'));
+        noEndDiv = $('<div></div>').addClass('datetimerange-dialog-noend')
+          .append(this._noEndCheckbox).append(noEndLabel);
+
+        this._noEndCheckbox.on('change', () => {
+          let checked = this._noEndCheckbox.prop('checked');
+          endDiv.toggleClass('datetimerange-dtp-disabled', checked);
+          this.onChangeDateTime();
+        });
+      }
+
+      let pickersRow = $('<div></div>').addClass('datetimerange-dialog-pickers-row')
+        .append(divinputbegin).append(divinputend);
+
       let divinput = $('<div></div>').addClass('datetimerange-dialog-divinput')
         .append(infodiv)
-        .append(divinputbegin).append(divinputend)
-        .append(warningdiv);
+        .append(pickersRow);
+      if (noEndDiv) {
+        divinput.append(noEndDiv);
+      }
+      divinput.append(warningdiv);
 
       // ADD BOUNDS
       this._setBeginEndBound();
 
       this._settingsDialogId = pulseCustomDialog.openDialog(divinput, {
-        title: isSplit ? this.getTranslation ('splitPeriod', 'Split a period') : this.getTranslation ('selectPeriod', 'Select a period'),
+        title: isSplit ? this.getTranslation('splitPeriod', 'Split a period') : this.getTranslation('selectPeriod', 'Select a period'),
         onOk: function () {
           if (this._callback_validate_settings()) {
             pulseCustomDialog.close('.datetimerange-dialog-divinput');
@@ -724,12 +745,14 @@ require('x-datetimepicker/x-datetimepicker');
      * To display warning message or not
      */
     onChangeDateTime () {
-      if (!this._beginDTP[0].isValid() || !this._endDTP[0].isValid()) {
+      let isNoEnd = this._noEndCheckbox && this._noEndCheckbox.prop('checked');
+
+      if (!this._beginDTP[0].isValid() || (!isNoEnd && !this._endDTP[0].isValid())) {
         this._warningtext.html(this.getTranslation('invalidDatesError', 'Please, input valid dates'));
         $('#' + this._settingsDialogId + ' .customDialogOk')[0].setAttribute('disabled', 'disabled');
         return;
       }
-      if (null == this._endDTP[0].getISOValue()) {
+      if (isNoEnd) {
         this._warningtext.html('');
         $('#' + this._settingsDialogId + ' .customDialogOk').removeAttr('disabled');
         return;
@@ -741,13 +764,13 @@ require('x-datetimepicker/x-datetimepicker');
         $('#' + this._settingsDialogId + ' .customDialogOk')[0].setAttribute('disabled', 'disabled');
         return;
       }
-      if (end > begin) { // '==' not implemented
-        this._warningtext.html(''); // == Normal
+      if (end > begin) {
+        this._warningtext.html('');
         $('#' + this._settingsDialogId + ' .customDialogOk').removeAttr('disabled');
         return;
       }
       else {
-        this._warningtext.html(this.getTranslation ('emptyPeriodMessage', 'Warning! Empty period'));
+        this._warningtext.html(this.getTranslation('emptyPeriodMessage', 'Warning! Empty period'));
         $('#' + this._settingsDialogId + ' .customDialogOk')[0].setAttribute('disabled', 'disabled');
         return;
       }
@@ -767,8 +790,8 @@ require('x-datetimepicker/x-datetimepicker');
       }
 
       let beginDateTime = new Date(this._beginDTP[0].getISOValue());
-      let endDateTime = (null == this._endDTP[0].getISOValue())
-        ? null : new Date(this._endDTP[0].getISOValue());
+      let isNoEnd = this._noEndCheckbox && this._noEndCheckbox.prop('checked');
+      let endDateTime = isNoEnd ? null : new Date(this._endDTP[0].getISOValue());
 
       // Is min date in the limits?
       if (this.element.hasAttribute('min-begin') &&
