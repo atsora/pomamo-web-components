@@ -37,7 +37,7 @@ var eventBus = require('eventBus');
    * Attributes:
    *   templateid          - id of the DOM element to clone per machine (default `'boxtoclone'`)
    *   machine             - comma-separated machine id list (takes priority over group)
-   *   group               - group id(s), resolved via REST
+   *   group               - group id(s)
    *   column              - number of columns per page
    *   row                 - number of rows per page (default `2`)
    *   allowpagerotation   - `'true'` enables automatic page cycling
