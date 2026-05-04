@@ -22,6 +22,7 @@ x-alertdialog {
     flex: 0 0 auto;
     width: clamp(52px, calc(5vh + 3vw), 100px);
     height: clamp(52px, calc(5vh + 3vw), 100px);
+    pointer-events: none; // decorative — suppress the hover from create_svg mixin
   }
 
   .alertdialog-icon.customDialogIconInformation {

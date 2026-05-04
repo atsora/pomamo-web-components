@@ -175,6 +175,7 @@ require('x-modificationmanager/x-modificationmanager');
         autoDelete: true,
         bigSize: true,
         okButton: 'hidden',
+        cancelButton: 'hidden',
         helpName: 'savemachinestatetemplate',
         className: 'machinestatetemplate'
       });
@@ -284,24 +285,15 @@ require('x-modificationmanager/x-modificationmanager');
 
       let box = document.createElement('div');
       box.classList.add('savemachinestatetemplate-cell-box');
-
-      let boxColor = document.createElement('div');
-      boxColor.classList.add('savemachinestatetemplate-cell-box-color');
-      boxColor.style.backgroundColor = option.BgColor;
-      box.appendChild(boxColor);
-
-      let boxText = document.createElement('div');
-      boxText.classList.add('savemachinestatetemplate-cell-box-text');
+      box.style.borderLeftColor = option.BgColor;
 
       let spanText = document.createElement('span');
       spanText.classList.add('savemachinestatetemplate-cell-text');
       spanText.innerHTML = option.Display;
-      boxText.appendChild(spanText);
 
-      box.appendChild(boxText);
+      box.appendChild(spanText);
 
       cellItem.setAttribute('id', option.Id);
-
       cellItem.appendChild(box);
 
       this._MSTselectCB.appendChild(cellItem);

@@ -4,156 +4,172 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// === IMPORTS ===
 @import "pulsewebcomponents-common.less";
-@import "pulse.customdialog.less";
 @import "x-datetimerange/x-datetimerange.less";
 
-// === CONTENT & HIDDEN CONTENT ===
+
+// ════════════════════════════════════════════════════════════════════════════
+// COMPONENT (trigger, invisible in the page)
+// ════════════════════════════════════════════════════════════════════════════
+//
+// x-savemachinestatetemplate is a trigger element that opens a pulseCustomDialog
+// in its initialize(). Once the dialog is opened, the dialog content (a
+// `div.savemachinestatetemplate-dialog`) is detached from this element and
+// placed inside `.customDialogContent`. The host element itself never renders
+// any visible UI — only `display: block` to keep `is(':visible')` truthy.
+// ════════════════════════════════════════════════════════════════════════════
+
 x-savemachinestatetemplate {
   display: block;
-  /* To make is(':visible') works */
 }
-.customDialogContent>div.savemachinestatetemplate-dialog {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-}
+
+
+// ════════════════════════════════════════════════════════════════════════════
+// POPUP DIALOG
+// ════════════════════════════════════════════════════════════════════════════
+//
+// Scoped under `.savemachinestatetemplate-dialog` so it works wherever the div
+// lives (it's moved into `.customDialogContent` after openDialog()). All inner
+// selectors (x-datetimerange, input[name=dtp_date]) are nested here to avoid
+// global pollution.
+//
+// Layout: flex column filling the dialog window. The header (date range row)
+// is fixed-height; the cell grid grows to fill remaining space and scrolls
+// internally when there are too many templates.
+//
+// Note: legacy class names like `dialog-div-select` and JS variable
+// `_MSTselectCB` (CB = ComboBox) are kept as-is — they date from the dropdown
+// era before the design moved to a 4-column grid of cells.
+// ════════════════════════════════════════════════════════════════════════════
+
 .savemachinestatetemplate-dialog {
-  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0.8em;
+  overflow: hidden;
 
-  .savemachinestatetemplate-dialog-label {
-    display: inline-block;
-    line-height: 4ex;
-    vertical-align: middle;
-    margin-right: 3px;
-    margin-left: 3px;
-  }
-
-  .savemachinestatetemplate-dialog-div-select {
-    width: 100%;
-    //overflow: hidden;
-    position: relative; // For loader + error
-  }
-
+  // ── Header row: home button + date range picker ─────────────────────────
   .savemachinestatetemplate-dialog-dtp-div {
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
-    gap: 25px;
-    width: 100%;
     justify-content: center;
+    gap: 1.5em;
+    padding-bottom: 0.6em;
 
     x-datetimerange {
-      width: auto; // Allow the component to adapt to content
-      min-width: fit-content; // Ensure it fits the content
+      width: auto;
+      min-width: fit-content;
 
       .datetimerange-display {
-        font-size: 20px;
-        padding: 8px;
-        white-space: nowrap; // Prevent text wrapping
-        width: auto; // Allow display to adapt to text
+        font-size: 1.3em;
+        padding: 0.4em 0.5em;
+        white-space: nowrap;
+        width: auto;
+      }
+
+      .datetimerange-rangedisplay {
+        background-color: transparent;
+        color: @color_text_button;
+        border: 1px solid @color_window_border;
+
+        &:hover { background-color: @color_background_alternate; }
+
+        .datetimerange-editable:hover { color: @color_text_button; }
       }
     }
   }
-}
-input[name=dtp_date] {
-  min-width: 200px;
-}
-.savemachinestatetemplate-cells-list {
 
-  display: grid;
-  grid-template-columns: auto auto auto auto;
-  padding-right: 2.1vw;
-  padding-left: 2.1vw;
-  margin-bottom: 1.6vw;
-  margin-top: 1.6vw;
-  row-gap: 3vw;
-  column-gap: 4.85vw;
+  // ── Home button (reset date range to its initial value) ─────────────────
+  .savemachinestatetemplate-home-btn {
+    flex: 0 0 auto;
+    width: 2.2em;
+    height: 2.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: @border_radius_small;
 
-  // Add scrollbar when content is too tall
-  max-height: 50vh; // Limit height to 50% of viewport height
-  overflow-y: auto; // Enable vertical scrolling
-  overflow-x: hidden; // Hide horizontal scrollbar
+    &:hover { background-color: @color_background_alternate; }
 
-  .savemachinestatetemplate-cell-item {
-    list-style-type: none;
+    .savemachinestatetemplate-home-svg {
+      .create_svg_nostroke('periodtoolbar-nowzoom', @box_text_color, @color_background_alternate);
+      width: 1.4em;
+      height: 1.4em;
+    }
+  }
 
-    .savemachinestatetemplate-cell-box {
-      height: 6vw;
-      display: flex;
-      align-items: center;
-      border-radius: @border_radius_small;
-      position: relative;
-      border: 1px solid @color_window_border;
+  // ── Scrollable area containing the cell grid (legacy name from dropdown
+  //    era — actually a vertical scroll container now) ────────────────────
+  .savemachinestatetemplate-dialog-div-select {
+    flex: 1 1 auto;
+    min-height: 0;
+    position: relative; // anchor for loader + error overlays
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 
-      .savemachinestatetemplate-cell-box-color {
-        width: 1.5vw;
-        height: 100%;
-        border-top-left-radius: 4px;
-        border-bottom-left-radius: 4px;
-        position: absolute;
-      }
+  // ── Optional inline label (kept from original markup) ───────────────────
+  .savemachinestatetemplate-dialog-label {
+    display: inline-block;
+    line-height: 1.6em;
+    vertical-align: middle;
+    margin: 0 0.2em;
+  }
 
-      .savemachinestatetemplate-cell-box-text {
-        position: absolute;
+  // ── 4-column grid of state-template cells ───────────────────────────────
+  .savemachinestatetemplate-cells-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-content: start;
+    list-style: none;
+    margin: 0;
+    padding: 2em;
+    gap: 2em;
+
+    .savemachinestatetemplate-cell-item {
+      list-style-type: none;
+
+      .savemachinestatetemplate-cell-box {
         width: 100%;
-        height: 100%;
+        height: 5em;
+        overflow: hidden;
+        display: flex;
         align-items: center;
         justify-content: center;
-        display: flex;
+        border-radius: @border_radius_small;
+        border: 1px solid @color_window_border;
+        border-left: 1.5em solid transparent; // color set per-cell via JS borderLeftColor
+        box-sizing: border-box;
+        cursor: pointer;
+
+        &:hover {
+          background-color: @color_background_alternate;
+          border-color: @color_window_border_light;
+          border-left-color: inherit; // preserve the MST color on hover
+        }
 
         .savemachinestatetemplate-cell-text {
-          font-size: 1.4vw;
-        }
-
-        i {
-          font-size: 3vw;
-        }
-      }
-
-      .savemachinestatetemplate-cell-box-arrow {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-
-        i {
-          font-size: 1.3vw;
-          margin: 0.4em;
+          font-size: 1em;
+          line-height: 1.3;
+          text-align: center;
+          margin: 0 0.5em;
+          flex: 1;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          min-width: 0;
         }
       }
     }
   }
 
-  .savemachinestatetemplate-cell-box:hover {
-    cursor: pointer;
-    background-color: @color_background_alternate;
-  }
-}
-.savemachinestatetemplate-home-btn {
-  width: 3%;
-  cursor: pointer;
-
-  .savemachinestatetemplate-home-svg {
-    .create_svg_nostroke('periodtoolbar-nowzoom', @box_text_color, @color_background_alternate);
-
-    padding: 8px 12px;
-    border-radius: @border_radius_small;
-  }
-}
-x-datetimerange {
-  .datetimerange {
-    .datetimerange-rangedisplay {
-      background-color: transparent;
-      color: @color_text_button;
-      border: 1px solid @color_window_border;
-
-      &:hover {
-        background-color: @color_background_alternate;
-      }
-
-      .datetimerange-editable:hover {
-        color: @color_text_button;
-      }
-    }
+  // ── Datetime picker input width inside the dialog ───────────────────────
+  input[name=dtp_date] {
+    min-width: 200px;
   }
 }
