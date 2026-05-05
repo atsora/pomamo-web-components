@@ -13,6 +13,7 @@ var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
 var pulseService = require('pulseService');
 var pulseCustomDialog = require('pulseCustomDialog');
+var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 var eventBus = require('eventBus');
 
 require('x-machinedisplay/x-machinedisplay');
@@ -205,105 +206,10 @@ require('x-machinedisplay/x-machinedisplay');
      * Open a dialog to collect details then save the reasons
      */
     _getDetailsAndSave() {
-      // Machine display
-      let machineDisplay = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
-        'machine-id': this.element.getAttribute('machine-id')
-      });
-
-      let divMachine = document.createElement('div');
-      divMachine.classList.add('savereason-machine');
-
-      let machineLabel = document.createElement('div');
-      machineLabel.classList.add('savereason-machine-label');
-      machineLabel.innerHTML = this.getTranslation('machineColon', 'Machine: ');
-      divMachine.appendChild(machineLabel);
-      divMachine.appendChild(machineDisplay[0]);
-
-      // Reason label
-      let divlabelReason = document.createElement('div');
-      divlabelReason.classList.add('savereason-details-label');
-      divlabelReason.innerHTML = this.getTranslation('reasonColon', 'Reason: ');
-
-      let divNewReasonSpan = document.createElement('span');
-      divNewReasonSpan.classList.add('savereason-details-span');
-      divNewReasonSpan.innerHTML = this.getTranslation('scrapreasons', 'scrap classification');
-
-      let divNewReason = document.createElement('div');
-      divNewReason.classList.add('savereason-details-input');
-      divNewReason.appendChild(divNewReasonSpan);
-
-      let divReason = document.createElement('div');
-      divReason.classList.add('savereason-details-reason');
-      divReason.appendChild(divlabelReason);
-      divReason.appendChild(divNewReason);
-
-      // Details textarea
-      let textarea = document.createElement('textarea');
-      textarea.name = 'details-comment';
-      textarea.placeholder = 'Details...';
-      textarea.maxLength = 255;
-      textarea.addEventListener('keydown', (event) => {
-        if (event.keyCode === 13) { // Enter key
-          event.preventDefault();
-          let okButton = document.querySelector('#' + this._detailsDialogId + ' .customDialogOk');
-          if (okButton && !okButton.disabled) {
-            okButton.click();
-          }
-        }
-      });
-
-      let divinput = document.createElement('div');
-      divinput.classList.add('savereason-details-input');
-      divinput.appendChild(textarea);
-
-      let divDetails = document.createElement('div');
-      divDetails.classList.add('savereason-details');
-      divDetails.appendChild(divinput);
-
-      // Dialog box container
-      let dialogbox = document.createElement('div');
-      dialogbox.classList.add('savereason-dialog-details');
-      dialogbox.appendChild(divMachine);
-      dialogbox.appendChild(divReason);
-      dialogbox.appendChild(divDetails);
-
-      let reasonDetailsTitle = this.getTranslation('reasonDetailsTitle', 'Reason details');
-
-      this._detailsDialogId = pulseCustomDialog.openDialog($(dialogbox), {
-        title: reasonDetailsTitle,
-        onOk: () => {
-          let details = textarea.value.trim();
-          if (details) {
-            this._savereasons(details);
-            pulseCustomDialog.close('#' + this._detailsDialogId);
-            this._detailsDialogId = null;
-          } else {
-            // Show error if details are empty
-            let pleaseAddComment = this.getTranslation('errorNoDetails', 'Please add a comment');
-            pulseCustomDialog.openDialog(pleaseAddComment, { type: 'Error' });
-          }
-        },
-        onCancel: () => {
-          pulseCustomDialog.close('#' + this._detailsDialogId);
-          this._detailsDialogId = null;
-        },
-        autoClose: false,
-        autoDelete: true,
-        helpName: 'savereason'
-      });
-
-      // Disable OK button initially, enable when text is entered
-      let okBtn = document.querySelector('#' + this._detailsDialogId + ' .customDialogOk');
-      if (okBtn) {
-        okBtn.disabled = true;
-      }
-
-      // Enable/disable OK button based on textarea content
-      textarea.addEventListener('input', () => {
-        if (okBtn) {
-          okBtn.disabled = textarea.value.trim().length === 0;
-        }
-      });
+      let reasonName = this.getTranslation('scrapreasons', 'scrap classification');
+      let range = this.element.getAttribute('range') || '';
+      pulseDetailsPopup.openReasonCommentDialog(this, null, reasonName, range, true, undefined,
+        (_classificationId, details, _reasonData) => this._savereasons(details));
     }
 
 
@@ -465,11 +371,7 @@ require('x-machinedisplay/x-machinedisplay');
 
       let box = document.createElement('div');
       box.classList.add('savescrapreason-cell-box');
-
-      let boxColor = document.createElement('div');
-      boxColor.classList.add('savescrapreason-cell-box-color');
-      boxColor.style.backgroundColor = 'green';
-      box.appendChild(boxColor);
+      box.style.borderLeftColor = '#2e7d32';
 
       let boxText = document.createElement('div');
       boxText.classList.add('savescrapreason-cell-box-text');
@@ -515,11 +417,7 @@ require('x-machinedisplay/x-machinedisplay');
 
       let box = document.createElement('div');
       box.classList.add('savescrapreason-cell-box');
-
-      let boxColor = document.createElement('div');
-      boxColor.classList.add('savescrapreason-cell-box-color');
-      boxColor.style.backgroundColor = reason.NonConformanceColor;
-      box.appendChild(boxColor);
+      box.style.borderLeftColor = reason.NonConformanceColor;
 
       let boxText = document.createElement('div');
       boxText.classList.add('savescrapreason-cell-box-text');

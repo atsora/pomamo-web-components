@@ -309,45 +309,20 @@ require('x-machinedisplay/x-machinedisplay');
     _openStopClassificationForSelection() {
       let ranges = this._getSelectedRanges();
       if (ranges.length === 0) { return; }
-      if ($('.dialog-stopclassification').length > 0) { return; }
 
-      let rangeStrings = ranges.map(range => range.toString(d => d.toISOString()));
-      let rangeString = rangeStrings[0];
-      let dialog = $('<div></div>').addClass('dialog-stopclassification');
-
-      let machid = $(this.element).attr('machine-id');
-      let fullRangeString = this.range ? this.range.toString(d => d.toISOString()) : rangeString;
-      let xstopclassification = pulseUtility.createjQueryElementWithAttribute('x-stopclassification', {
-        'machine-id': machid,
-        'range': rangeString,
-        'ranges': rangeStrings.join('&'),
-        'fullRange': fullRangeString,
-        'noadvanced': true
-      });
-      dialog.append(xstopclassification);
-
-      if (xstopclassification[0] && xstopclassification[0].closeAfterSave) {
-        xstopclassification[0].closeAfterSave(true);
-      }
-
-      pulseCustomDialog.openDialog(dialog, {
-        title: this.getTranslation('stopclassification.title', 'Stops'),
-        onClose: function () {
-          $('.popup-block').fadeOut();
+      pulseDetailsPopup.openChangeStopClassificationDialog(this, ranges[0], {
+        useClickedRange: true,
+        fullRange: this.range,
+        ranges: ranges,
+        noadvanced: true,
+        closeAfterSave: true,
+        onCloseExtra: function () {
           this.removeAllSelections();
           let highlightBar = $(this.element).find('x-highlightperiodsbar');
           if (highlightBar.length) {
             highlightBar.get(0).cleanRanges();
           }
-        }.bind(this),
-        autoClose: false,
-        autoDelete: true,
-        okButton: 'hidden',
-        cancelButton: 'hidden',
-        fullScreenOnSmartphone: true,
-        bigSize: true,
-        helpName: 'savereason',
-        className: 'stopclassification'
+        }
       });
     }
 
@@ -618,44 +593,21 @@ require('x-machinedisplay/x-machinedisplay');
     }
 
     _openStopClassificationForSingleRange(rangeString) {
-      if ($('.dialog-stopclassification').length > 0) { return; }
+      let range = pulseRange.createDateRangeFromString(rangeString);
 
-      let dialog = $('<div></div>').addClass('dialog-stopclassification');
-
-      let machid = $(this.element).attr('machine-id');
-      let fullRangeString = this.range ? this.range.toString(d => d.toISOString()) : rangeString;
-
-      let xstopclassification = pulseUtility.createjQueryElementWithAttribute('x-stopclassification', {
-        'machine-id': machid,
-        'range': rangeString,
-        'ranges': rangeString,
-        'fullRange': fullRangeString,
-        'noadvanced': true
-      });
-      dialog.append(xstopclassification);
-
-      if (xstopclassification[0] && xstopclassification[0].closeAfterSave) {
-        xstopclassification[0].closeAfterSave(true);
-      }
-
-      pulseCustomDialog.openDialog(dialog, {
-        title: this.getTranslation('stopclassification.title', 'Stops'),
-        onClose: function () {
-          $('.popup-block').fadeOut();
+      pulseDetailsPopup.openChangeStopClassificationDialog(this, range, {
+        useClickedRange: true,
+        fullRange: this.range,
+        ranges: [range],
+        noadvanced: true,
+        closeAfterSave: true,
+        onCloseExtra: function () {
           this.removeAllSelections();
           let highlightBar = $(this.element).find('x-highlightperiodsbar');
           if (highlightBar.length) {
             highlightBar.get(0).cleanRanges();
           }
-        }.bind(this),
-        autoClose: false,
-        autoDelete: true,
-        okButton: 'hidden',
-        cancelButton: 'hidden',
-        fullScreenOnSmartphone: true,
-        bigSize: true,
-        helpName: 'savereason',
-        className: 'stopclassification'
+        }
       });
     }
     _openClassifiedReasonsDialog() {

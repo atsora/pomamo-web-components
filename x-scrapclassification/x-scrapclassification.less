@@ -5,56 +5,114 @@
 // === CONTENT & HIDDEN CONTENT ===
 x-scrapclassification {
     display: flex;
-    justify-content: center;
-    margin-top: 30px;
+    flex-direction: column; // column so the single content child stretches to full width
+    flex: 1;
+    width: 100%;
 
     .scrapclassification-content {
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 100%;
-        gap: 30px;
+        gap: 1.5em;
+        padding: 1.5em;
+        background-color: @box_color;
+        border-radius: @border_radius_small;
+        box-sizing: border-box;
 
-        .operation-content {
-            display: flex;
-            gap: 20px;
-            border: 1px solid #202020;
-            padding: 10px 20px;
-        }
-
+        // Common navigator chip (operation + range)
+        .operation-content,
         .range-content {
             display: flex;
-            gap: 20px;
-            border: 1px solid #202020;
-            padding: 10px 20px;
+            align-items: center;
+            gap: 1em;
+            padding: 0.6em 1.2em;
+            min-height: 2.6em;
+            background-color: @color_window;
+            border: 1px solid @color_window_border;
+            border-radius: @border_radius_small;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+
+            &:hover {
+                border-color: @color_window_border_light;
+            }
+
+            .operation-name,
+            .range-display {
+                font-size: 1.1em;
+                font-weight: 600;
+                color: @color_text;
+                min-width: 12em;
+                text-align: center;
+            }
         }
 
-        i {
+        i.btn-prev,
+        i.btn-next {
             cursor: pointer;
+            color: @color_text;
+            padding: 0.25em 0.5em;
+            border-radius: @border_radius_small;
+            transition: color 0.2s ease, background-color 0.2s ease;
 
             &:hover {
                 color: @color_highlight;
+                background-color: @color_background_alternate;
             }
         }
 
         .parts-content {
             display: flex;
-            width: 35%;
-            justify-content: space-between;
+            width: 100%;
+            justify-content: center;
+            gap: 1.5em;
+            flex-wrap: wrap;
 
             .number-parts-content {
                 display: flex;
-                border: 1px solid #202020;
-                padding: 10px 20px;
+                align-items: center;
+                gap: 0.5em;
+                padding: 0.8em 1.4em;
+                background-color: @color_window;
+                border: 1px solid @color_window_border;
+                border-left: 0.7em solid @color_window_border;
+                border-radius: @border_radius_small;
+                box-sizing: border-box;
+                transition: border-color 0.2s ease;
+
+                &:hover {
+                    border-color: @color_window_border_light;
+                }
 
                 .parts-label {
                     white-space: pre;
+                    color: @box_text_color;
+                    font-weight: 600;
                 }
+
+                .parts-value {
+                    font-size: 1.2em;
+                    font-weight: 700;
+                    color: @color_text;
+                }
+            }
+
+            .number-parts {
+                border-left-color: #2e7d32; // green for produced
+            }
+
+            .number-scrap {
+                border-left-color: #c62828; // red for scrap
+            }
+
+            .number-unproduced {
+                border-left-color: #ef6c00; // orange for unproduced
             }
         }
 
         x-savescrapreason {
-            width: 80%;
+            width: 100%;
         }
     }
 }

@@ -424,7 +424,13 @@ var openChangeScrapClassificationDialog = exports.openChangeScrapClassificationD
  *
  * @param {Object} component - component calling openChangeStopClassificationDialog -> must define following attributes : machine-id
  * @param {Range} dtRange - date range
- *
+ * @param {Object} [options]
+ * @param {boolean} [options.useClickedRange] - if true, build x-stopclassification directly from dtRange; else go through x-stopperiods
+ * @param {Range} [options.fullRange] - parent range (defaults to dtRange)
+ * @param {Array<Range>} [options.ranges] - multi-range selection forwarded as the `ranges` attribute (joined by &)
+ * @param {boolean} [options.noadvanced] - hide the advanced options tile in x-stopclassification
+ * @param {boolean} [options.closeAfterSave] - auto-close the dialog after a successful save
+ * @param {Function} [options.onCloseExtra] - called after the default onClose, with `component` as `this`
  */
 var openChangeStopClassificationDialog = exports.openChangeStopClassificationDialog = function (component, dtRange, options) {
   if ($('.dialog-stopclassification').length > 0) {
@@ -443,12 +449,23 @@ var openChangeStopClassificationDialog = exports.openChangeStopClassificationDia
     if (options && options.fullRange) {
       fullRangeString = options.fullRange.toString(d => d.toISOString());
     }
-    let xstopclassification = pulseUtility.createjQueryElementWithAttribute('x-stopclassification', {
+    let attrs = {
       'machine-id': machid,
       'range': rangeString,
       'fullRange': fullRangeString
-    });
+    };
+    if (options && options.ranges && options.ranges.length > 0) {
+      attrs.ranges = options.ranges.map(r => r.toString(d => d.toISOString())).join('&');
+    }
+    if (options && options.noadvanced) {
+      attrs.noadvanced = true;
+    }
+    let xstopclassification = pulseUtility.createjQueryElementWithAttribute('x-stopclassification', attrs);
     dialog.append(xstopclassification);
+
+    if (options && options.closeAfterSave && xstopclassification[0] && xstopclassification[0].closeAfterSave) {
+      xstopclassification[0].closeAfterSave(true);
+    }
   }
   else {
     // Use a provider that fetches ReasonOnlySlots and builds the classifier
@@ -464,11 +481,13 @@ var openChangeStopClassificationDialog = exports.openChangeStopClassificationDia
     title: component.getTranslation('stopclassification.title', 'Stops'),
     onClose: function () {
       $('.popup-block').fadeOut();
+      if (options && typeof options.onCloseExtra === 'function') {
+        options.onCloseExtra.call(component);
+      }
     }.bind(component),
     autoClose: false,
     autoDelete: true,
     okButton: 'hidden',
-    cancelButton: 'hidden',
     fullScreenOnSmartphone: true,
     bigSize: true,
     helpName: 'savereason',

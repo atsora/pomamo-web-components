@@ -175,7 +175,6 @@ require('x-modificationmanager/x-modificationmanager');
         autoDelete: true,
         bigSize: true,
         okButton: 'hidden',
-        cancelButton: 'hidden',
         helpName: 'savemachinestatetemplate',
         className: 'machinestatetemplate'
       });

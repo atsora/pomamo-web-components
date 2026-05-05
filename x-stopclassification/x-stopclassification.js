@@ -606,10 +606,14 @@ require('x-revisionprogress/x-revisionprogress');
             let reasonName = elmt.getAttribute('reason-text');
             let detailsRequired = ('true' == elmt.getAttribute('details-required'));
             let reasonData = elmt.reasondata;
-            if (detailsRequired)
-                this._getDetailsAndSave(classificationId, reasonName, detailsRequired, reasonData);
-            else
+            if (detailsRequired) {
+                let rangeStr = this._getRangesList()[0];
+                pulseDetailsPopup.openReasonCommentDialog(this, classificationId, reasonName, rangeStr, true, reasonData,
+                    (reasId, comment, reasData) => this._saveReason(reasId, comment, reasData));
+            }
+            else {
                 this._saveReason(classificationId, undefined, reasonData);
+            }
         }
 
         /**
@@ -657,94 +661,6 @@ require('x-revisionprogress/x-revisionprogress');
             if (this._closeAfterSave) {
                 pulseCustomDialog.close('.dialog-stopclassification');
                 return;
-            }
-        }
-
-        /**
-         * Open a dialog to collect details if required then save the reason
-         * @param {number} classificationId
-         * @param {string} reasonName
-         * @param {boolean} detailsRequired
-         * @param {Object} [reasonData]
-         */
-        _getDetailsAndSave(classificationId, reasonName, detailsRequired, reasonData) {
-            // Machine
-            let machineDisplay = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
-                'machine-id': this.element.getAttribute('machine-id')
-            });
-            let divMachine = $('<div></div>').addClass('savereason-machine')
-                .append($('<div></div>').addClass('savereason-machine-label').html(this.getTranslation('savereason.machineColon', 'Machine: ')))
-                .append(machineDisplay);
-
-            // Reason
-            let divlabelReason = $('<div></div>').addClass('savereason-details-label').html(this.getTranslation('savereason.reasonColon', 'Reason: '));
-            let divNewReasonSpan = $('<span></span>').addClass('savereason-details-span').html(reasonName);
-            let divNewReason = $('<div></div>').addClass('savereason-details-input').append(divNewReasonSpan);
-            let divReason = $('<div></div>').addClass('savereason-details-reason')
-                .append(divlabelReason).append(divNewReason);
-
-            // Details
-            let divinput = $('<div></div>').addClass('savereason-details-input');
-            let input = $('<textarea name="details-comment" placeholder="Details..."></textarea>');
-            $(input).attr('maxlength', 255);
-            $(input).keydown(function (event) {
-                if (event.keyCode == 13) { // == Enter
-                    $('a.dialog-button-frame-validate').click();
-                }
-            });
-            divinput.append(input);
-            let divDetails = $('<div></div>').addClass('savereason-details').append(divinput)
-
-            let dialogbox = $('<div></div>')
-                .addClass('stopclassification-comment-dialog')
-                .append(divMachine)
-                .append(divReason)
-                .append(divDetails);
-
-            let reasonDetailsTitle = this.getTranslation('savereason.reasonDetailsTitle', 'Reason details');
-
-            this._detailsDialogId = pulseCustomDialog.openDialog(dialogbox, {
-                title: reasonDetailsTitle,
-                onOk: function (x_save, reasId, reasData, inputParam) { // to avoid closure
-                    return function () {
-                        let details = inputParam.val();
-                        if ((details == '') && (detailsRequired)) {
-                            // show error msg -- should never happen if button is disabled
-                            let pleaseAddComment = x_save.getTranslation('savereason.errorNoDetails', 'Please add a comment');
-                            pulseCustomDialog.openDialog(pleaseAddComment, { type: 'Error' });
-                        }
-                        else {
-                            x_save._saveReason(reasId, details, reasData);
-                            pulseCustomDialog.close('#' + x_save._detailsDialogId);
-                            x_save._detailsDialogId = null;
-                        }
-                    }
-                }(this, classificationId, reasonData, input), /* end of validate*/
-                onCancel: function () {
-                    pulseCustomDialog.close('#' + this._detailsDialogId);
-                    this._detailsDialogId = null;
-                }.bind(this),
-                autoClose: false,
-                autoDelete: true,
-                helpName: 'stopclassification'
-            });
-
-            // - Enable / Disable the OK button
-            if (detailsRequired) { // Disable validateButton
-                let okBtn = $('#' + this._detailsDialogId).find('.customDialogOk');
-                $(okBtn)[0].setAttribute('disabled', 'disabled');
-            }
-            var self = this;
-            input.on('keyup paste input', notifyTextChanged);
-            function notifyTextChanged() {
-                if (detailsRequired) { // show / hide validateButton
-                    if (0 == $(this).val().length) {
-                        $('#' + self._detailsDialogId + ' .customDialogOk')[0].setAttribute('disabled', 'disabled');
-                    }
-                    else {
-                        $('#' + self._detailsDialogId + ' .customDialogOk').removeAttr('disabled');
-                    }
-                }
             }
         }
 
