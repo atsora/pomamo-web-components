@@ -73,15 +73,36 @@ x-stopclassification {
             cursor: pointer;
 
             .stopclassification-cell-text {
+              position: relative;
               font-size: 1.3vw;
               line-height: 1.3;
               text-align: center;
               margin: 0 2%;
               flex: 1;
-              overflow: hidden;
-              white-space: nowrap;
-              text-overflow: ellipsis;
               min-width: 0;
+
+              // Multi-line wrap; clip vertically when too tall.
+              // 3 lines × 1.3 line-height ≈ 3.9em max-height → text beyond is hidden.
+              max-height: 3.9em;
+              overflow: hidden;
+              white-space: normal;
+              overflow-wrap: break-word;
+              word-break: break-word;
+
+              // Fade-out positioned on the 3rd line ONLY (top: 2.6em = after 2 lines
+              // of 1.3em line-height). For texts of 1-2 lines, this position is below
+              // the span's actual height — overflow:hidden clips it, so no fade visible.
+              // For 3+ lines (truncated), the fade covers the 3rd line, signaling the cut.
+              &::after {
+                content: '';
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 2.6em;
+                bottom: 0;
+                pointer-events: none;
+                background: linear-gradient(to bottom, transparent 0%, @box_color 100%);
+              }
             }
 
             .stopclassification-icon-back,
@@ -149,6 +170,11 @@ x-stopclassification {
               background-color: @color_background_alternate;
               border-color: @color_window_border_light;
               border-left-color: inherit;
+
+              // Re-tune the fade-out gradient to match the hover background color
+              .stopclassification-cell-text::after {
+                background: linear-gradient(to bottom, transparent 0%, @color_background_alternate 100%);
+              }
             }
           }
         }
