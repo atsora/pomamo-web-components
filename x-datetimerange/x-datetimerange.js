@@ -55,6 +55,7 @@ require('x-datetimepicker/x-datetimepicker');
       self._dateRange = undefined;
       self._lastDispatch = undefined;
       self._nextDispatch = null;
+      self._displayMode = 'range'; // 'range' (default, formatted plage with "In progress") | 'shift' (uses shift-label)
 
       self.methods = {
         'openChangeRange': self.openChangeRange,
@@ -133,6 +134,18 @@ require('x-datetimepicker/x-datetimepicker');
             this._showHideButtons();
           }
           break;
+        case 'display-mode':
+          this._displayMode = newVal || 'range';
+          if (this.isInitialized()) {
+            this._displayRange();
+          }
+          break;
+        case 'shift-label':
+          if (this.isInitialized()) {
+            this._displayRange();
+          }
+          break;
+        // 'dialog-title' is read directly when opening the dialog — no live refresh needed
       } // end switch
     } // end attributeChangedWhenConnectedOnce
 
@@ -355,10 +368,22 @@ require('x-datetimepicker/x-datetimepicker');
     }
 
     _displayRange () {
-      //$(this.element).find('.datetimerange-display').html(pulseUtility.displayDateRange(this._dateRange));
-      let text = pulseUtility.displayDateRange(this._dateRange);
       let disp = $(this.element).find('.datetimerange-display');
-      $(disp).html(text);
+      // Read display-mode directly from attribute so the value is always current
+      // even if the attribute was set before connection / before initialize().
+      let displayMode = this.element.getAttribute('display-mode') || this._displayMode || 'range';
+      if (displayMode === 'shift') {
+        let shiftLabel = this.element.getAttribute('shift-label') || '';
+        if (shiftLabel) {
+          let span = $('<span></span>')
+            .addClass('datetimerange-display-shift')
+            .text(shiftLabel);
+          $(disp).empty().append(span);
+          return;
+        }
+        // fallback to range format if no shift-label
+      }
+      $(disp).html(pulseUtility.displayDateRange(this._dateRange));
     }
     /**
       * Dispatch signal, but not too often
@@ -725,8 +750,11 @@ require('x-datetimepicker/x-datetimepicker');
       // ADD BOUNDS
       this._setBeginEndBound();
 
+      let customTitle = this.element.getAttribute('dialog-title');
       this._settingsDialogId = pulseCustomDialog.openDialog(divinput, {
-        title: isSplit ? this.getTranslation('splitPeriod', 'Split a period') : this.getTranslation('selectPeriod', 'Select a period'),
+        title: customTitle
+          || (isSplit ? this.getTranslation('splitPeriod', 'Split a period')
+                      : this.getTranslation('selectPeriod', 'Select a period')),
         onOk: function () {
           if (this._callback_validate_settings()) {
             pulseCustomDialog.close('.datetimerange-dialog-divinput');
@@ -854,5 +882,6 @@ require('x-datetimepicker/x-datetimepicker');
   }
 
   pulseComponent.registerElement('x-datetimerange', ParamDateTimeRangeComponent, ['period-context', 'datetime-context', 'min-begin', 'max-begin',
-    'min-end', 'max-end', 'range', 'possible-no-end', 'not-editable', 'hide-buttons']);
+    'min-end', 'max-end', 'range', 'possible-no-end', 'not-editable', 'hide-buttons',
+    'display-mode', 'shift-label']);
 })();

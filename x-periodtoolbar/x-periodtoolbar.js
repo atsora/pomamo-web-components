@@ -170,16 +170,26 @@ require('x-datetimepicker/x-datetimepicker');
                              });
                          });*/
 
-      // Normal text display
-      let display = $('<div></div>').addClass('periodtoolbar-display')
-        .addClass('periodtoolbar-editable');
-      display.html(''); // pulseUtility.displayDateRange(this._dateRange));
-      display.click(function () {
-        self._displayToolBarSettingDialog()
+      // Embedded x-datetimerange — replaces the legacy hand-rolled label + dialog.
+      // The embedded component handles both the clickable display and the dialog;
+      // it dispatches dateTimeRangeChangeEvent on the shared period-context after OK.
+      let dtrAttrs = {
+        'hide-buttons': 'true',
+        'display-mode': 'shift',
+        'dialog-title': this.getTranslation('dialogTitle', 'Setting date/time range')
+      };
+      if (this.element.hasAttribute('period-context')) {
+        dtrAttrs['period-context'] = this.element.getAttribute('period-context');
+      }
+      ['min-begin', 'max-begin', 'min-end', 'max-end'].forEach(a => {
+        if (this.element.hasAttribute(a)) {
+          dtrAttrs[a] = this.element.getAttribute(a);
+        }
       });
+      this._embeddedDtr = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', dtrAttrs);
 
       let periodselection_btn = $('<div></div>').addClass('periodtoolbar-li-text')
-        .append(display);
+        .append(this._embeddedDtr);
       // Create DOM - Loader
       let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
@@ -537,47 +547,31 @@ require('x-datetimepicker/x-datetimepicker');
     }
 
     // this._dateRange must be set just before
+    // Pushes the new range to the embedded x-datetimerange (which mirrors the display
+    // and dispatches dateTimeRangeChangeEvent on the shared period-context). The
+    // forcedDisplay parameter is kept for API compat but is now used only as
+    // a one-shot raw HTML override on the embedded display zone.
     _rangeHaveChanged(forcedDisplay) {
-      if (typeof forcedDisplay != 'undefined') { // if not defined, do not update
-        if (forcedDisplay != '') {
-          $(this.element).find('.periodtoolbar-display').html(forcedDisplay);
-        }
-        else { // empty string = default range display
-          let display = pulseUtility.displayDateRange(this._dateRange);
-          if (this._rangeType == 'shift') {
-            let label = this._displayLabel || '';
-            if (label != '') {
-              let html = `
-              <div class="periodtoolbar-display-center">${label}</div>
-            `;
-              $(this.element).find('.periodtoolbar-display').html(html);
-            }
-            else {
-              $(this.element).find('.periodtoolbar-display').html(display);
-            }
+      if (typeof forcedDisplay != 'undefined') {
+        if (this._embeddedDtr && this._dateRange) {
+          // Sync the range attribute (string in the [lower,upper) form expected by x-datetimerange)
+          let stringrange = pulseUtility.convertDateRangeForWebService(this._dateRange);
+          this._embeddedDtr[0].setAttribute('range', stringrange);
 
+          // Sync shift label: when on shift mode and we have a label, show it; otherwise show the range
+          if (this._rangeType == 'shift' && this._displayLabel) {
+            this._embeddedDtr[0].setAttribute('shift-label', this._displayLabel);
           }
-          // (this._dateRange); DO NOT WORK -> need Date, given isostring
           else {
-            $(this.element).find('.periodtoolbar-display').html(display);
+            this._embeddedDtr[0].removeAttribute('shift-label');
           }
-
         }
-      }
 
-      if (this.element.hasAttribute('period-context')) {
-        eventBus.EventBus.dispatchToContext('dateTimeRangeChangeEvent',
-          this.element.getAttribute('period-context'),
-          {
-            daterange: pulseRange.createDateRangeDefaultInclusivity(this._dateRange.lower, this._dateRange.upper),
-            stringrange: this._dateRange
-          });
-      }
-      else {
-        eventBus.EventBus.dispatchToAll('dateTimeRangeChangeEvent', {
-          daterange: pulseRange.createDateRangeDefaultInclusivity(this._dateRange.lower, this._dateRange.upper),
-          stringrange: this._dateRange
-        });
+        // Legacy fallback: if a forcedDisplay is provided, override the displayed text.
+        // Only used by callers that pass a non-empty string (rare).
+        if (forcedDisplay != '') {
+          $(this.element).find('.datetimerange-display').html(forcedDisplay);
+        }
       }
     }
 
@@ -588,229 +582,8 @@ require('x-datetimepicker/x-datetimepicker');
       }
     }
 
-    /**
-     * Set MIN / MAX for begin & end DateTimePicker according to attributes
-     */
-    _setBeginEndBound(beginValue, endValue) {
-      // BEGIN
-      if (this.element.hasAttribute('min-begin')) {
-        $(this._beginDTP)[0].setAttribute('mindatetime',
-          this.element.getAttribute('min-begin'));
-      }
-      else {
-        $(this._beginDTP)[0].removeAttribute('mindatetime');
-      }
-      if (this.element.hasAttribute('max-begin')) {
-        $(this._beginDTP)[0].setAttribute('maxdatetime',
-          this.element.getAttribute('max-begin'));
-      }
-      else if (this.element.hasAttribute('max-end')) {
-        $(this._beginDTP)[0].setAttribute('maxdatetime',
-          this.element.getAttribute('max-end'));
-      }
-      else {
-        $(this._beginDTP)[0].removeAttribute('maxdatetime');
-      }
-      $(this._beginDTP)[0].setAttribute('defaultdatetime',
-        pulseUtility.convertDateForWebService(beginValue));
-
-      // END
-      if (this.element.hasAttribute('min-end')) {
-        $(this._endDTP)[0].setAttribute('mindatetime',
-          this.element.getAttribute('min-end'));
-      }
-      else {
-        if (this.element.hasAttribute('min-begin')) {
-          $(this._endDTP)[0].setAttribute('mindatetime',
-            this.element.getAttribute('min-begin'));
-        }
-        else {
-          $(this._endDTP)[0].removeAttribute('mindatetime');
-        }
-      }
-      if (this.element.hasAttribute('max-end')) {
-        $(this._endDTP)[0].setAttribute('maxdatetime',
-          this.element.getAttribute('max-end'));
-      }
-      else {
-        $(this._endDTP)[0].removeAttribute('maxdatetime');
-      }
-      $(this._endDTP)[0].setAttribute('defaultdatetime',
-        pulseUtility.convertDateForWebService(endValue));
-    } // end _setBeginEndBound
-
-    /**
-     * Callback (called after validate button)
-     */
-    _callback_validate_settings() {
-      if (!this._beginDTP[0].isValid()) {
-        pulseCustomDialog.openDialog(this.getTranslation('startNotValidError', 'Start date/time is not valid'), { type: 'Error' });
-        return false;
-      }
-      if (!this._endDTP[0].isValid()) {
-        pulseCustomDialog.openDialog(this.getTranslation('endNotValidError', 'End date/time is not valid'), { type: 'Error' });
-        return false;
-      }
-      if (null == this._endDTP[0].getISOValue()) {
-        pulseCustomDialog.openDialog(this.getTranslation('endNotValidError', 'End date/time is not valid'), { type: 'Error' });
-        return false;
-      }
-
-      let beginDateTime = new Date(this._beginDTP[0].getISOValue());
-      let endDateTime = new Date(this._endDTP[0].getISOValue());
-
-      // Is min date in the limits?
-      if (this.element.hasAttribute('min-begin') &&
-        this.element.getAttribute('min-begin') !== null) {
-        let minBeginDate = new Date(this.element.getAttribute('min-begin'));
-        if (beginDateTime < minBeginDate) {
-          pulseCustomDialog.openDialog(this.getTranslation('startBeforeMinError', 'Start date/time is before minimum allowed date/time'), { type: 'Error' });
-          return false;
-        }
-      }
-      if (this.element.hasAttribute('max-begin') &&
-        this.element.getAttribute('max-begin') != null) {
-        let maxBeginDate = new Date(this.element.getAttribute('max-begin'));
-        if (beginDateTime > maxBeginDate) {
-          pulseCustomDialog.openDialog(this.getTranslation('startAfterMaxError', 'Start date/time is after maximum allowed date/time'), { type: 'Error' });
-          return false;
-        }
-      }
-      // Is max date in the limits?
-      if (this.element.hasAttribute('min-end') &&
-        this.element.getAttribute('min-end') != null) {
-        let minEndDate = new Date(this.element.getAttribute('min-end'));
-        if ((endDateTime) && (endDateTime < minEndDate)) {
-          pulseCustomDialog.openDialog(this.getTranslation('endBeforeMinError', 'End date/time is before minimum allowed date/time'), { type: 'Error' });
-          return false;
-        }
-      }
-      if (this.element.hasAttribute('max-end') &&
-        this.element.getAttribute('max-end') != null) {
-        let maxEndDate = new Date(this.element.getAttribute('max-end'));
-        if ((endDateTime) && (endDateTime > maxEndDate)) {
-          pulseCustomDialog.openDialog(this.getTranslation('endAfterMaxError', 'End date/time is after maximum allowed date/time'), { type: 'Error' });
-          return false;
-        }
-      }
-
-      // Check the range
-      if (endDateTime) {
-        if (endDateTime < beginDateTime) {
-          pulseCustomDialog.openDialog(this.getTranslation('endBeforeStartError', 'End date/time is before start date/time'), { type: 'Error' });
-          return false;
-        }
-        else {
-          if (beginDateTime < endDateTime) {
-            // Do nothing = it is OK
-          }
-          else {
-            pulseCustomDialog.openDialog(this.getTranslation('emptyPeriodError', 'Empty period'), { type: 'Error' });
-            return false;
-          }
-        }
-      }
-
-      let newDateRange = pulseRange.createDefaultInclusivity(beginDateTime, endDateTime);
-
-      if (undefined == this._dateRange
-        || (!pulseRange.equals(newDateRange, this._dateRange, (a, b) => (a >= b) && (a <= b)))) {
-        this._dateRange = newDateRange;
-        this._rangeType = ''; // to remove "shift" zoom
-        this._rangeHaveChanged('');
-        this._updateButtonsSelection(); //  to show button as they should
-      }
-
-      this._switchToNormalOrLoadedWhenManual();
-
-      return true;
-    } // end _callback_validate_settings
-
-    /**
-     * Display to change date time range - copy datetimerange
-     */
-    _displayToolBarSettingDialog() { // TO Re-do
-      if ($(this.element).hasClass('pulse-component-loading')) {
-        // If any button is disabled, stop allowing clicks
-        return;
-      }
-
-      // Warning message
-      this._warningtext = $('<span></span>').addClass('datetimerange-dialog-span-warning');
-      let warningdiv = $('<div></div>').addClass('datetimerange-dialog-div-warning')
-        .append(this._warningtext);
-
-      // Begin DTP //
-      let begintimepickerOptions = {};
-      begintimepickerOptions.defaultdatetime = pulseUtility.convertDateForWebService(this._dateRange.lower);
-      begintimepickerOptions.nullable = false;
-      if (this.element.hasAttribute('min-begin')) {
-        begintimepickerOptions.mindatetime = this.element.getAttribute('min-begin');
-      }
-      if (this.element.hasAttribute('max-begin')) {
-        begintimepickerOptions.maxdatetime = this.element.getAttribute('max-begin');
-      }
-      else {
-        if (this.element.hasAttribute('max-end')) {
-          begintimepickerOptions.maxdatetime = this.element.getAttribute('max-end');
-        }
-      }
-
-      this._beginDTP = pulseUtility.createjQueryElementWithAttribute('x-datetimepicker',
-        begintimepickerOptions);
-      this._beginDTP[0].addEventListener('change',
-        this.onChangeDateTime.bind(this), false);
-
-      let beginDiv = $('<div"></div>').addClass('datetimepicker-begindiv').append(this._beginDTP);
-
-      // End DTP //
-      let endtimepickerOptions = {};
-      endtimepickerOptions.defaultdatetime = pulseUtility.convertDateForWebService(this._dateRange.upper);
-      endtimepickerOptions.nullable = false;
-      if (this.element.hasAttribute('min-end')) {
-        endtimepickerOptions.mindatetime = this.element.getAttribute('min-end');
-      }
-      else {
-        if (this.element.hasAttribute('min-begin')) {
-          endtimepickerOptions.mindatetime = this.element.getAttribute('min-begin');
-        }
-      }
-      if (this.element.hasAttribute('max-end')) {
-        endtimepickerOptions.maxdatetime = this.element.getAttribute('max-end');
-      }
-
-      this._endDTP = pulseUtility.createjQueryElementWithAttribute('x-datetimepicker',
-        endtimepickerOptions);
-      this._endDTP[0].addEventListener('change',
-        this.onChangeDateTime.bind(this), false);
-      let endDiv = $('<div"></div>').addClass('datetimepicker-enddiv').append(this._endDTP);
-
-      // ADD BOUNDS
-      this._setBeginEndBound(this._dateRange.lower, this._dateRange.upper);
-
-      //
-      let divinputbegin = $('<div></div>').addClass('datetimerange-dialog-divinputbegin')
-        .append(beginDiv);
-      let divinputend = $('<div></div>').addClass('datetimerange-dialog-divinputend')
-        .append(endDiv);
-      let divinput = $('<div></div>').addClass('datetimerange-dialog-divinput')
-        .append(divinputbegin).append(divinputend)
-        .append(warningdiv);
-
-      var self = this;
-      pulseCustomDialog.openDialog(divinput, {
-        title: this.getTranslation('dialogTitle', 'Setting date/time range'),
-        onOk: function () { // Validate
-          if (self._callback_validate_settings()) {
-            //pulseCustomDialogs.closeDialog(divinput);
-          }
-        },
-        autoClose: true,
-        autoDelete: true
-      });
-    }
-
     // END of PRIVATE methods
+    // (Range-setting dialog & validation moved to <x-datetimerange> embedded above.)
 
     /**
      * @override
@@ -971,7 +744,8 @@ require('x-datetimepicker/x-datetimepicker');
 
     displayError(message) {
       // Forward to x-message ?
-      $(this.element).find('.periodtoolbar-display').html('');
+      // Clear the display zone of the embedded x-datetimerange (next setAttribute('range') refills it)
+      $(this.element).find('.datetimerange-display').html('');
       $(this._messageSpan).html(message);
     }
 
@@ -1011,7 +785,8 @@ require('x-datetimepicker/x-datetimepicker');
 
     getShortUrl() { // Return the Web Service URL without path
       // When reloading, remove current text + disable ALL buttons
-      $(this.element).find('.periodtoolbar-display').html('');
+      // (Clears the display zone of the embedded x-datetimerange.)
+      $(this.element).find('.datetimerange-display').html('');
       $(this.element).find('.periodtoolbar-btn').addClass('disabled');
 
       let url = 'RangeAround?RangeType=' + this._rangeType + '&RangeSize=' + this._rangeSize;
@@ -1032,27 +807,8 @@ require('x-datetimepicker/x-datetimepicker');
         this._displayLabel = '';
       }
       this._rangeHaveChanged('');
-      /*if (data.Display && data.Display != '') {
-        let m_dayString = pulseUtility.getDisplayDay(data.DayRange.Begin)
-        this._rangeHaveChanged(m_dayString + ':' + data.Display);
-       // DO NOT DISPLAY SHIFT only ANYMORE = data.RangeDisplay); -- YZ 2016/02
-      }*/
-
-      // Send message
-      if (this.element.hasAttribute('period-context')) {
-        eventBus.EventBus.dispatchToContext('dateTimeRangeChangeEvent',
-          this.element.getAttribute('period-context'),
-          {
-            daterange: pulseRange.createDateRangeDefaultInclusivity(this._dateRange.lower, this._dateRange.upper),
-            stringrange: this._dateRange
-          });
-      }
-      else {
-        eventBus.EventBus.dispatchToAll('dateTimeRangeChangeEvent', {
-          daterange: pulseRange.createDateRangeDefaultInclusivity(this._dateRange.lower, this._dateRange.upper),
-          stringrange: this._dateRange
-        });
-      }
+      // The dateTimeRangeChangeEvent is dispatched by the embedded x-datetimerange
+      // (when its 'range' attribute changes) — no need to dispatch again here.
     }
 
     manageSuccess(data) {
@@ -1158,35 +914,6 @@ require('x-datetimepicker/x-datetimepicker');
         this.start();
     }
 
-    /**
-     * Callback called when datetime is modified
-     * To display warning message or not
-     */
-    onChangeDateTime() {
-      if (!this._beginDTP[0].isValid() || !this._endDTP[0].isValid()) {
-        this._warningtext.html('Please, input valid dates');
-        return;
-      }
-      if (null == this._endDTP[0].getISOValue()) {
-        // Should NEVER happen !
-        this._warningtext.html('Please define END');
-        return;
-      }
-      let begin = new Date(this._beginDTP[0].getISOValue());
-      let end = new Date(this._endDTP[0].getISOValue());
-      if (end < begin) {
-        this._warningtext.html('WARNING ! Begin of period is after end');
-        return;
-      }
-      if (end > begin) { // '==' not implemented
-        this._warningtext.html(''); // == Normal
-        return;
-      }
-      else {
-        this._warningtext.html('WARNING ! Empty period');
-        return;
-      }
-    }
   }
 
   pulseComponent.registerElement('x-periodtoolbar', periodtoolbarComponent, ['period-context', 'displayshiftrange', 'range', 'hide-period-buttons', 'hide-zooms']);

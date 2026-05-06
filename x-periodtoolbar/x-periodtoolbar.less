@@ -10,24 +10,18 @@
 @import "x-datetimerange/x-datetimerange.less"; // For similar display
 @import "x-datetimepicker/x-datetimepicker.less";
 
-.pulse-component-error {
-  .periodtoolbar-display {
-    // LIKE .pulse-message-div {
-    visibility: visible;
-    opacity: 0.8; // == OVERLAY
-    //background: @error_main_color; -> gray ?
-    color: @warn_main_color; // @error_contrasted_color;
-  }
+// Targets the embedded x-datetimerange's display zone (replaces the legacy
+// .periodtoolbar-display selectors that are no longer in the DOM).
+.pulse-component-error x-periodtoolbar .datetimerange-display {
+  visibility: visible;
+  opacity: 0.8;
+  color: @warn_main_color;
 }
 
-.pulse-component-warning {
-  .periodtoolbar-display {
-    // LIKE .pulse-message-div {
-    visibility: visible;
-    opacity: 0.8; // == OVERLAY
-    //background: @warn_main_color; -> gray ?
-    color: @warn_main_color; // @warn_contrasted_color;
-  }
+.pulse-component-warning x-periodtoolbar .datetimerange-display {
+  visibility: visible;
+  opacity: 0.8;
+  color: @warn_main_color;
 }
 
 x-periodtoolbar {
@@ -78,39 +72,44 @@ x-periodtoolbar {
       height: 100%;
       width: 100%;
     }
-
-    .periodtoolbar-display-left {
-      display: inline-block;
-    }
-
-    .periodtoolbar-display-center {
-      display: inline-block;
-    }
-
-    .periodtoolbar-display-right {
-      display: inline-block;
-    }
   }
 
-  .periodtoolbar-display {
-    min-width: 200px;
-    text-align: center;
-    justify-content: center;
-    padding: 0 5px;
-    line-height: @button-icon-size;
-    vertical-align: middle;
-  }
+  // Restore the legacy .periodtoolbar-display look on the embedded x-datetimerange.
+  // The original component had: min-width 200px, centered, no-wrap, tight letter-spacing.
+  x-datetimerange {
+    .datetimerange-rangedisplay {
+      display: flex;
+      border-radius: @border_radius_small;
+    }
 
-  .periodtoolbar-editable {
-    cursor: pointer;
-    display: flex;
-    text-wrap: nowrap;
-    color: @color_text_button;
-    border-radius: @border_radius_small;
-    letter-spacing: -1px;
+    .datetimerange-display {
+      min-width: 200px;
+      padding: 0 5px;
+      line-height: @button-icon-size;
+      text-align: center;
+      justify-content: center;
+      vertical-align: middle;
+      text-wrap: nowrap;
+      white-space: nowrap;
+      letter-spacing: -1px;
+      color: @color_text_button;
+    }
 
-    &:hover {
-      background-color: @color_background_alternate;
+    .datetimerange-editable {
+      cursor: pointer;
+      display: flex;
+      color: @color_text_button;
+      border-radius: @border_radius_small;
+
+      &:hover {
+        background-color: @color_background_alternate;
+      }
+    }
+
+    // Shift label rendered by x-datetimerange when display-mode="shift" + shift-label set.
+    // Keep the same inline display the legacy .periodtoolbar-display-center had.
+    .datetimerange-display-shift {
+      display: inline-block;
     }
   }
 
