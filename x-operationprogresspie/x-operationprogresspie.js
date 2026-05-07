@@ -897,7 +897,7 @@ var eventBus = require('eventBus');
           this._completion = null;
         }
         else {
-          // La donnée reçue peut dépasser 1 (== 100 % )
+          // Received data may exceed 1 (== 100 %)
           this._completion = Math.max(0.0, this._completion = Math.min(1.0, this._data.Completion));
           // Warning : use adjusted Completion if received data are late
 
@@ -966,7 +966,7 @@ var eventBus = require('eventBus');
                     else {
                       // Find End Of Current Seq -> to animate
                       this._animationEndPercent = seq.EndPercent;
-                      // Calcul de backup si on ne peut pas avoir mieux :
+                      // Fallback calculation if better value not available:
                       this._animationEndServerDateTime = new Date(
                         new Date(this._data.ByMachineModule[iMod].Current.Begin).getTime()
                         + seq.StandardDuration * 1000
@@ -1044,7 +1044,7 @@ var eventBus = require('eventBus');
                   if (seq.EndPercent <= this._animationEndPercent) {
                     if (this._completion < 1) { // else division by 0
                       if (this._animationEndPercent < this._completion) { // Animation positive uniquement
-                        this._animationEndPercent = this._completion; // Permet l'affichage de la completion globale
+                        this._animationEndPercent = this._completion; // Enables display of overall completion
                       }
                       else {
                         this._animationEndPercent = seq.EndPercent;

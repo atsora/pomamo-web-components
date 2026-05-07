@@ -63,7 +63,7 @@ require('x-machinedisplay/x-machinedisplay');
       let baseParams = '';
       if (appContext) baseParams += 'AppContext=' + appContext + '&';
 
-      // Récupération du groupe actuel pour comparaison
+      // Fetching current group for comparison
       let currentGroup = this.getConfigOrAttribute('group', '');
 
       let ancestorNb = 1;
@@ -71,8 +71,8 @@ require('x-machinedisplay/x-machinedisplay');
       let accumulatedAncestorsQuery = '';
 
       while ('' != ancestorVal) {
-        // Si l'ancêtre est égal au groupe actuel, on arrête la boucle
-        // On affichera cet élément dans le bloc "Final" ci-dessous
+        // If ancestor equals current group, break the loop
+        // This element will be displayed in the "Final" block below
         if (ancestorVal == currentGroup) {
           break;
         }
@@ -104,16 +104,16 @@ require('x-machinedisplay/x-machinedisplay');
       let divMachine;
 
       // MODIFICATION ICI :
-      // Si c'est le niveau 1 (Home), on veut que ça reste un lien cliquable
-      // pour permettre de "recharger" la page racine même si on y est déjà.
+      // If it's level 1 (Home), we want it to remain a clickable link
+      // to allow "reloading" the root page even if we're already there.
       if (ancestorNb == 1) {
         divMachine = $('<a></a>');
-        // Le lien pointe vers le groupe actuel (effet de reload)
+        // Link points to current group (reload effect)
         let href = baseUrl + '?' + baseParams + 'group=' + currentGroup;
         $(divMachine).attr('href', href);
       }
       else {
-        // Pour les niveaux > 1, le dernier élément reste du texte non cliquable
+        // For levels > 1, the last element remains non-clickable text
         divMachine = $('<div></div>');
       }
 

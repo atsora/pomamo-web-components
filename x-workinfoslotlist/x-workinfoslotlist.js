@@ -133,7 +133,7 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
         //pulseRange.createDateRangeFromString(a.Range);
         let bRange = pulseRange.createDateRangeDefaultInclusivity(b.Begin, b.End);
         //pulseRange.createDateRangeFromString(b.Range);
-        return bRange.lower.getTime() - aRange.lower.getTime(); // Du plus récent au plus ancien
+        return bRange.lower.getTime() - aRange.lower.getTime(); // From most recent to oldest
       });
 
       for (let item of this._data.List) {

@@ -115,7 +115,7 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
     // === GESTION DES DONNÉES ReasonColorSlots ===
     fillTable(classifiedBlocks) {
       this.cleanTable();
-      this._exitSelectionMode(); // S'assure de quitter le mode sélection au rechargement
+      this._exitSelectionMode(); // Ensures to exit selection mode on reload
 
       this._numberOfDisplayedItems = 0;
       this._numberOfSelectableItems = 0;
@@ -164,11 +164,11 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
         };
         tr.attr(attributeTr);
 
-        // Checkbox (Cachée par le CSS par défaut)
+        // Checkbox (Hidden by CSS by default)
         let tdCheck = $('<div></div>').addClass('classifiedreasonslotlist-td-check');
         let chkInput = $("<input type='checkbox'></input>").addClass('table-check');
 
-        // Empêcher le clic direct sur la checkbox de propager l'event au TR
+        // Prevent direct click on checkbox from propagating event to TR
         chkInput.click(function (e) {
           e.stopPropagation();
           this.checkBoxClick(e);
@@ -185,7 +185,7 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
         // --- GESTION DES ÉVÉNEMENTS (CLIC vs LONG PRESS) ---
         this._bindRowEvents(tr, rangeString);
 
-        // Ajout des colonnes au TR
+        // Add columns to TR
         tr.append(desc).append(tdCheck);
         this._table.append(tr);
 
@@ -240,7 +240,7 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
       // 3. GESTION DU CLIC
       tr.on('click', (e) => {
         if (isLongPress) return;
-        if ($(e.target).is('input[type=checkbox]')) return; // Géré par l'event propre à l'input
+        if ($(e.target).is('input[type=checkbox]')) return; // Handled by input's own event
 
         this._handleRowSimpleClick(tr, rangeString);
       });
@@ -281,17 +281,17 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
     _updateDefineReasonButtonState() {
       if (pulseUtility.isNotDefined(this._defineReasonButton)) { return; }
 
-      // Compte le nombre de lignes sélectionnées
+      // Count number of selected rows
       let selectedCount = $(this.element).find('.classifiedreasonslotlist-tr.row-selected').length;
 
-      // 1. Gestion de l'état (Grisé ou Actif) - Code existant
+      // 1. State management (Grayed or Active) - Existing code
       this._defineReasonButton.prop('disabled', selectedCount === 0);
 
-      // 2. Gestion de la visibilité (Caché ou Visible) - AJOUT
+      // 2. Visibility management (Hidden or Visible) - NEW
       if (selectedCount > 0) {
-        this._defineReasonButton.show(); // Affiche si au moins 1 item sélectionné
+        this._defineReasonButton.show(); // Show if at least 1 item selected
       } else {
-        this._defineReasonButton.hide(); // Cache s'il n'y a pas de sélection
+        this._defineReasonButton.hide(); // Hide if no selection
       }
     }
 
@@ -383,7 +383,7 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
       });
       reasonBar.css('cursor', 'pointer');
 
-      // Écoute de l'événement natif envoyé par x-reasonslotbar
+      // Listen to native event sent by x-reasonslotbar
       eventBus.EventBus.addEventListener(this, 'clickOnBarEvent', contextId, this.onBarClickEvent.bind(this));
 
       let reasonBorder = $('<div></div>').addClass('pulse-bar-div').append(reasonBar);
@@ -754,7 +754,7 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
         let rowRange = pulseRange.createDateRangeFromString(rangeString);
 
         if (pulseRange.overlaps(clickedRange, rowRange)) {
-          // 1. Scroll automatique vers la ligne correspondante
+          // 1. Auto-scroll to corresponding row
           row.get(0).scrollIntoView({ behavior: 'smooth', block: 'center' });
 
           // 2. Feedback visuel rapide (clignotement)
@@ -766,7 +766,7 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
             row.css('background-color', originalBg);
           }, 600);
 
-          // 3. Appel de ton action (sélection ou ouverture modale)
+          // 3. Call action (selection or modal opening)
           this._handleRowSimpleClick(row, rangeString);
           return;
         }

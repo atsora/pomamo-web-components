@@ -41,7 +41,7 @@ require('x-tr/x-tr');
 
       let groupId = this.element.getAttribute('group');
 
-      // Hidden template cloned by x-grouparray for each machine in the group.
+      // Hidden template cloned by x-grouplist for each machine in the group.
       let hiddenTemplate = $('\
 <div class="one_machine_cell" id="boxtocloneRunningDialog"> \
   <div class="div-machine"> \
@@ -76,7 +76,7 @@ require('x-tr/x-tr');
   </div> \
 </div>');
 
-      // Main tile: datetime graduation + grouparray (1 column, group-scoped)
+      // Main tile: datetime graduation + grouplist (1 column, group-scoped)
       let tile = $('\
 <div class="tile"> \
   <x-datetimegraduation period-context="runningdialog"></x-datetimegraduation> \

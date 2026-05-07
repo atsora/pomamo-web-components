@@ -115,7 +115,7 @@ require('x-machinedisplay/x-machinedisplay');
     // === GESTION DES DONNÉES ReasonColorSlots ===
     fillTable(unansweredBlocks) {
       this.cleanTable();
-      this._exitSelectionMode(); // S'assure de quitter le mode sélection au rechargement
+      this._exitSelectionMode(); // Ensures exit selection mode on reload
 
       this._numberOfDisplayedItems = 0;
       this._numberOfSelectableItems = 0;
@@ -163,11 +163,11 @@ require('x-machinedisplay/x-machinedisplay');
         };
         tr.attr(attributeTr);
 
-        // Checkbox (Cachée par le CSS par défaut)
+        // Checkbox (Hidden by CSS by default)
         let tdCheck = $('<div></div>').addClass('unansweredreasonslotlist-td-check');
         let chkInput = $("<input type='checkbox'></input>").addClass('table-check');
 
-        // Empêcher le clic direct sur la checkbox de propager l'event au TR
+        // Prevent direct checkbox click from propagating event to TR
         chkInput.click(function (e) {
           e.stopPropagation();
           this.checkBoxClick(e);
@@ -184,7 +184,7 @@ require('x-machinedisplay/x-machinedisplay');
         // --- GESTION DES ÉVÉNEMENTS (CLIC vs LONG PRESS) ---
         this._bindRowEvents(tr, rangeString);
 
-        // Ajout des colonnes au TR
+        // Add columns to TR
         tr.append(desc).append(tdCheck);
         this._table.append(tr);
 
@@ -239,7 +239,7 @@ require('x-machinedisplay/x-machinedisplay');
       // 3. GESTION DU CLIC
       tr.on('click', (e) => {
         if (isLongPress) return;
-        if ($(e.target).is('input[type=checkbox]')) return; // Géré par l'event propre à l'input
+        if ($(e.target).is('input[type=checkbox]')) return; // Handled by input's own event
 
         this._handleRowSimpleClick(tr, rangeString);
       });
@@ -280,17 +280,17 @@ require('x-machinedisplay/x-machinedisplay');
     _updateDefineReasonButtonState() {
       if (pulseUtility.isNotDefined(this._defineReasonButton)) { return; }
 
-      // Compte le nombre de lignes sélectionnées
+      // Count number of selected rows
       let selectedCount = $(this.element).find('.unansweredreasonslotlist-tr.row-selected').length;
 
-      // 1. Gestion de l'état (Grisé ou Actif) - Code existant
+      // 1. State management (Grayed out or Active) - Existing code
       this._defineReasonButton.prop('disabled', selectedCount === 0);
 
-      // 2. Gestion de la visibilité (Caché ou Visible) - AJOUT
+      // 2. Visibility management (Hidden or Visible) - [ADDED]
       if (selectedCount > 0) {
-        this._defineReasonButton.show(); // Affiche si au moins 1 item sélectionné
+        this._defineReasonButton.show(); // Shows if at least 1 item selected
       } else {
-        this._defineReasonButton.hide(); // Cache s'il n'y a pas de sélection
+        this._defineReasonButton.hide(); // Hides if no selection
       }
     }
 
@@ -382,7 +382,7 @@ require('x-machinedisplay/x-machinedisplay');
       });
       reasonBar.css('cursor', 'pointer');
 
-      // Écoute de l'événement natif envoyé par x-reasonslotbar
+      // Listens to native event sent by x-reasonslotbar
       eventBus.EventBus.addEventListener(this, 'clickOnBarEvent', contextId, this.onBarClickEvent.bind(this));
 
       let reasonBorder = $('<div></div>').addClass('pulse-bar-div').append(reasonBar);
@@ -754,10 +754,10 @@ require('x-machinedisplay/x-machinedisplay');
         let rowRange = pulseRange.createDateRangeFromString(rangeString);
 
         if (pulseRange.overlaps(clickedRange, rowRange)) {
-          // 1. Scroll automatique vers la ligne correspondante
+          // 1. Auto-scroll to matching row
           row.get(0).scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-          // 2. Feedback visuel rapide (clignotement)
+          // 2. Quick visual feedback (flash)
           let originalBg = row.css('background-color');
           row.css('transition', 'background-color 0.3s');
           row.css('background-color', '#fff3cd'); // Surlignage jaune clair
@@ -766,7 +766,7 @@ require('x-machinedisplay/x-machinedisplay');
             row.css('background-color', originalBg);
           }, 600);
 
-          // 3. Appel de ton action (sélection ou ouverture modale)
+          // 3. Call your action (selection or modal opening)
           this._handleRowSimpleClick(row, rangeString);
           return;
         }

@@ -232,7 +232,7 @@ var pulseSvg = require('pulseSvg');
 
                     // Slices
                     for (let i = 0; i < val.length; i++) {
-                      // val.Status == "on" "flashing" "off" // fill-opacity = 1 ou moins ou animate
+                      // val.Status == "on" "flashing" "off" // fill-opacity = 1 or less or animate
                       let sliceClasses = 'stacklight-slice' + ' '
                         + 'stacklight-' + val[i].Status + ' '
                         + 'stacklight-color-' + val[i].Color;

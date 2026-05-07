@@ -309,7 +309,7 @@ require('x-revisionprogress/x-revisionprogress');
             'padding': '20px',
             'font-style': 'italic',
             'opacity': '0.7',
-            'cursor': 'default' // Pour ne pas donner l'impression que c'est cliquable
+            'cursor': 'default' // To not give the impression it's clickable
           });
 
         let message = $('<div></div>')
@@ -615,7 +615,7 @@ require('x-revisionprogress/x-revisionprogress');
     }
 
     endLoading() {
-      $(this.element).find('.reasonslotlist').css('display', 'flex'); // Modification ici pour Flex
+      $(this.element).find('.reasonslotlist').css('display', 'flex'); // Modified here for Flex
       super.endLoading();
     }
 

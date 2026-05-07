@@ -299,7 +299,7 @@ var pulseUtility = require('pulseUtility');
         displayedTime = '0' + displayedTime;
       }
 
-      this._timeInput[0].value = displayedTime; // Fonctionne pour LAT, mais pas Paragon Metal
+      this._timeInput[0].value = displayedTime; // Works for LAT, but not Paragon Metal
       //this._timeInput[0].setAttribute('value', displayedTime); //'08:00');
       //this._timeInput[0].defaultValue = displayedTime;
     }

@@ -91,7 +91,7 @@ var pulseConfig = require('pulseConfig');
       //this.removeError();
       // Empty this._content
 
-      // this._databaseIsDisconnected = false;... Surtout pas ! le restart passe ici
+      // this._databaseIsDisconnected = false;... Absolutely not! restart passes here
 
       this.switchToNextContext();
     }
@@ -138,7 +138,7 @@ var pulseConfig = require('pulseConfig');
 
     removeError () {
       // Do nothing
-      //this._databaseIsDisconnected = false; ... Surtout pas ! le restart passe ici
+      //this._databaseIsDisconnected = false; ... Absolutely not! restart passes here
     }
 
     /**

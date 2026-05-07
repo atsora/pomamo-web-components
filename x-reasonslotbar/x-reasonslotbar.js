@@ -764,7 +764,7 @@ require('x-revisionprogress/x-revisionprogress');
         }
       }
       //getModifications
-      // else = do nothing (progress en cours) -> géré par la revision progress
+      // else = do nothing (in-progress) -> handled by the revision progress
     }
 
     // DOM events

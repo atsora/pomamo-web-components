@@ -250,7 +250,7 @@ require('x-revisionprogress/x-revisionprogress');
         this._currentMST_id = data.MachineStateTemplateSlots[0].Id;
         this._current_MST_range = data.MachineStateTemplateSlots[0].Range;
         this._currentMST_category = data.MachineStateTemplateSlots[0].Category;
-        // on pourrait vérifier si c'est bien le "courant"
+        // could check if it's really the "current" one
       }
       else {
         this._currentMST_display = '';
@@ -350,7 +350,7 @@ require('x-revisionprogress/x-revisionprogress');
         }
       }
       //getModifications
-      // else = do nothing (progress en cours) -> géré par la revision progress
+      // else = do nothing (in-progress) -> handled by the revision progress
     }
 
     /**

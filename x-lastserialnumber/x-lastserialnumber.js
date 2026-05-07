@@ -355,7 +355,7 @@ require('x-revisionprogress/x-revisionprogress');
         this.start(); // or this.switchToContext('Reload');
       }
       //getModifications
-      // else = do nothing (progress en cours) -> gere par la revision progress
+      // else = do nothing (in-progress) -> handled by the revision progress
     }
 
     /**

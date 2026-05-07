@@ -73,7 +73,7 @@ var eventBus = require('eventBus');
         let pointCx = margin.left + percentMax * (width - margin.left - margin.right) - offsetRight;
         let pointCy = height - margin.bottom;
 
-        // Déterminer quels coins doivent être arrondis
+        // Determine which corners should be rounded
         let isFirstSubSegment = (segmentNumber == 0 && colorNumber == 0);
         let isLastSubSegmentOfSegment = (colorNumber == (subSegmentCount - 1));
         let isLastSegment = (segmentNumber == (segments.length - 1));

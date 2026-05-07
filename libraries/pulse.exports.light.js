@@ -26,7 +26,6 @@ require('x-modificationmanager/x-modificationmanager'); // Is it useful ? -- RR 
 
 require('x-machineselection/x-machineselection');
 /* machineselection already includes :
-require('x-grouparray/x-grouparray');
 require('x-machinedisplay/x-machinedisplay');
 require('x-freetext/x-freetext');
 */

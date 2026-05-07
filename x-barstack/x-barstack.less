@@ -61,8 +61,8 @@ x-barstack {
     }
 
     x-redstacklightbar {
-      // Le SVG est position:absolute par défaut → hors flux → align-items n'a aucun effet.
-      // On le remet dans le flux (relative) pour que le flex parent puisse le centrer.
+      // SVG is position:absolute by default → out of flow → align-items has no effect.
+      // We put it back in flow (relative) so flex parent can center it.
       .redstacklightbar-content {
         display: flex !important;
         align-items: center !important;
@@ -94,6 +94,27 @@ x-barstack {
     height: 100% !important;
   }
 
+  // Per-child min-heights when the host opts-in via auto-min-height attribute.
+  // Each child contributes its nominal share — the host's natural min-content
+  // becomes the sum of these, achieving the same plancher as the previous JS
+  // implementation without any script.
+  //
+  // Values calibrated on operationstatus (reason group ≈ 1.067em),
+  // then bumped ×1.4 for legibility, keeping flex ratios 25:40:10.
+  &[auto-min-height] {
+    > x-shiftslotbar,
+    > x-machinestatebar,
+    > x-observationstatebar,
+    > x-operationcyclebar,
+    > x-operationslotbar,
+    > x-isofileslotbar       { min-height: 0.875em; }
+    > .barstack-reason-group { min-height: 1.4em; }
+    > x-reasonslotbar,
+    > x-runningslotbar,
+    > x-productionstatebar   { min-height: 1.4em; }
+    > x-cncvaluebar          { min-height: 0.35em; }
+  }
+
   // Collapse thin bars that have no data (component hides content via jQuery .hide() → inline style)
   // :has() detects the inline style="display: none" set by the component itself
   x-shiftslotbar:has(.pulse-bar-content[style*="display: none"]),
@@ -104,6 +125,7 @@ x-barstack {
   x-isofileslotbar:has(.pulse-bar-content[style*="display: none"]),
   x-cncvaluebar:has(.pulse-bar-content[style*="display: none"]) {
     flex: 0 0 0 !important;
+    min-height: 0 !important;
     overflow: hidden;
   }
 

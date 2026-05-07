@@ -42,7 +42,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
    * changes the selected machine.
    * Responds to `askForMachineIdSignal` to re-broadcast the currently active id.
    *
-   * Hides the `#grouparray` panel when only one machine is present (CSS hook).
+   * Hides the `#machine-tabs-panel` panel when only one machine is present (CSS hook).
    *
    * Attributes:
    *   machine-context - event bus context for machine selection signals
@@ -238,8 +238,8 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
         }
       });
 
-      // Show/hide #grouparray panel when only one machine
-      const panel = document.getElementById('grouparray');
+      // Show/hide #machine-tabs-panel when only one machine
+      const panel = document.getElementById('machine-tabs-panel');
       if (panel) {
         if (this._machineIdsArray.length <= 1) {
           panel.classList.add('hidden-content');

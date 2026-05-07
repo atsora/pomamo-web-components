@@ -306,9 +306,9 @@ svg {
 
 /*
 .detailed-main:after {
-  content: ""; // Important, sinon l'élément n'est pas généré.
+  content: ""; // Important, otherwise the element is not generated.
   display: table;
-  clear: both; // Pour empecher les suivants de s'afficher par dessus
+  clear: both; // Prevents following elements from rendering over it
 }*/
 .detailed-title {
   display: inline-block;
@@ -825,7 +825,7 @@ svg {
       transform: translate(-50%, -50%);
 
       white-space: nowrap;
-      /* interdiction de passer à la ligne */
+      /* prevent line wrapping */
     }
   }
 }
@@ -850,7 +850,7 @@ svg {
       transform: translate(-50%, -50%);
 
       white-space: nowrap;
-      /* interdiction de passer à la ligne */
+      /* prevent line wrapping */
     }
   }
 }
@@ -863,7 +863,7 @@ svg {
   }
 
   >div {
-    // To avoid propagation, for example inside x-grouparray
+    // To avoid propagation, for example inside cloned per-machine templates
     min-height: 50px; // was 150px; // To display loader and message
 
     >.pulse-message-div {
@@ -882,7 +882,7 @@ svg {
 
     >div {
 
-      // To avoid propagation, for example inside x-grouparray
+      // To avoid propagation, for example inside cloned per-machine templates
       >.pulse-message-div {
         position: absolute;
         min-height: 50px;
@@ -900,7 +900,7 @@ svg {
   }
 
   >ol {
-    // To avoid propagation, for example inside x-grouparray
+    // To avoid propagation, for example inside cloned per-machine templates
     min-height: 100px; // To display loader and message
 
     >.pulse-message-div {
@@ -922,7 +922,7 @@ svg {
 
   //min-height: 150px; // To display loader and message
   >div {
-    // To avoid propagation, for example inside x-grouparray
+    // To avoid propagation, for example inside cloned per-machine templates
     min-height: 50px; // To display loader and message
     position: relative; // To avoid message to be outside the xtag
 
@@ -942,7 +942,7 @@ svg {
 
   >ol {
 
-    // To avoid propagation, for example inside x-grouparray
+    // To avoid propagation, for example inside cloned per-machine templates
     //min-height: 150px; // To display loader and message
     >.pulse-message-div {
       position: absolute;
@@ -1521,7 +1521,7 @@ x-machinedisplay.pulse-component-warning {
       // center;
       position: absolute;
       top: 50%;
-      /* poussé de la moitié de hauteur du référent */
+      /* shifted by half the referent's height */
       left: 50%;
       -webkit-transform: translateX(-50%) translateY(-50%) translateZ(0);
       -ms-transform: translateX(-50%) translateY(-50%) translateZ(0);
@@ -1549,7 +1549,7 @@ x-machinedisplay.pulse-component-warning {
       // center;
       position: absolute;
       top: 50%;
-      /* poussé de la moitié de hauteur du référent */
+      /* shifted by half the referent's height */
       left: 50%;
       -webkit-transform: translateX(-50%) translateY(-50%) translateZ(0);
       -ms-transform: translateX(-50%) translateY(-50%) translateZ(0);

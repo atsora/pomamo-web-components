@@ -95,7 +95,7 @@ require('x-freetext/x-freetext');
       // (synchronous early emit + post-Machine/Groups reconcile).
       self._machinesFromGroupsInflight = null;
 
-      // Dialog preview state (resolved internally, no longer delegated to x-grouparray)
+      // Dialog preview state (resolved internally)
       self._previewResolvedMachineIds = [];
       self._previewLoading = false;
 
@@ -401,10 +401,8 @@ require('x-freetext/x-freetext');
       pulseSvg.inlineBackgroundSvg(this._useMachineButton);
 
       this._useMachineButton.click(function () {
-        let grouparrays = $(this._previewList).find('x-grouparray');
-        if (grouparrays.length > 0) {
-          let machinesList = grouparrays[0].getMachinesList();
-          this._machineSelectionArray = machinesList.split(',');
+        if (this._previewResolvedMachineIds.length > 0) {
+          this._machineSelectionArray = this._previewResolvedMachineIds.slice();
           this._changeSelectionInMachineList();
         }
         this._switchToMachineSelection();
@@ -416,7 +414,7 @@ require('x-freetext/x-freetext');
       this._dialogId = pulseCustomDialog.openDialog(this._dialogPage1, {
         title: this._uniquemachine ? this.getTranslation('selectMachine', 'Select a machine') : this.getTranslation('selectMachines', 'Select machines'),
         autoClose: false,
-        className: 'machineselection', // Indispensable pour notre CSS
+        className: 'machineselection', // Required for our CSS
         onOpen: function () {
           this._loadSelection();
         }.bind(this),
@@ -468,10 +466,10 @@ require('x-freetext/x-freetext');
         helpName: 'machineselection'
       });
 
-      // CORRECTION VITALE : this._dialogPage1 au lieu de this._dialogId
+      // VITAL FIX: this._dialogPage1 instead of this._dialogId
       pulseCustomDialog.addPage(this._dialogPage1, this._dialogPage2);
 
-      // Ces deux méthodes peuvent de nouveau s'exécuter normalement :
+      // These two methods can now run normally again:
       this._fillMachinesList();
       this._switchToGroupSelection();
     }
@@ -1069,7 +1067,8 @@ require('x-freetext/x-freetext');
     /**
      * Persists the current selection to `pulseConfig` (keys `machine` and `group`) and dispatches
      * `configChangeEvent` for both keys. In `in-report` mode, writes to element attributes instead.
-     * In group mode, resolves the actual machine list from the preview `x-grouparray`.
+     * In group mode, the actual machine list comes from `_previewResolvedMachineIds`
+     * (resolved internally by `_resolvePreviewMachines`).
      */
     _storeSelection() {
       if (false == this._useMachineSelection) {

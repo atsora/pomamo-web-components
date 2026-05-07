@@ -258,7 +258,7 @@ var convertDateForWebService = exports.convertDateForWebService = function (date
  * @memberof module:pulseUtility
  * @function convertDateForWebService
  *
- * @param {string|Date} date - date to send to the web service ou day string
+ * @param {string|Date} date - date to send to the web service or day string
  * @return {string} Day string for the web service = YYYY-MM-DD
  */
 //var convertDayForWebService =

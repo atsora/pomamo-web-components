@@ -48,7 +48,6 @@ require('x-workinfoslotlist/x-workinfoslotlist');
 
 
 //openRunningDialog = SAME AS running view
-require('x-grouparray/x-grouparray');
 require('x-machinedisplay/x-machinedisplay');
 require('x-productionmachiningstatus/x-productionmachiningstatus');
 require('x-lastworkinformation/x-lastworkinformation');

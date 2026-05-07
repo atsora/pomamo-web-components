@@ -195,7 +195,7 @@ function hexToRGB(hex)
         let xRadius = 50;
         let yRadius = 15;
         let sliceHeight = 50;
-        let borderHeight = 45; // Trait droit sur les cotes < sliceHeight
+        let borderHeight = 45; // Straight line on sides < sliceHeight
         let firstSliceY = yRadius + sliceHeight - borderHeight;
 
         // CREATE SVG
@@ -220,7 +220,7 @@ function hexToRGB(hex)
 
         // Slices
         for (let i = 0; i < val.length; i++) {
-          // val.Status == "on" "flashing" "off" // fill-opacity = 1 ou moins ou animate
+          // val.Status == "on" "flashing" "off" // fill-opacity = 1 or less or animate
           let sliceClasses = 'stacklight-slice' + ' '
             + 'stacklight-' + val[i].Status + ' '
             + 'stacklight-color-' + val[i].Color;

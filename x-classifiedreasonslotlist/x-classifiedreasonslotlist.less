@@ -34,8 +34,8 @@ x-classifiedreasonslotlist {
   .row-selected {
     font-weight: bold;
     color: @color_highlight;
-    border-color: @color_highlight !important; /* Met en valeur la bordure si sélectionné */
-    background-color: fade(@color_highlight, 5%); /* Léger fond pour marquer la sélection */
+    border-color: @color_highlight !important; /* Highlights the border if selected */
+    background-color: fade(@color_highlight, 5%); /* Light background to mark selection */
 
     .overwrite-required {
       color: @color_highlight;
@@ -63,12 +63,12 @@ x-classifiedreasonslotlist {
     flex: 1 1 auto;
     min-height: 0;
     margin: 0 10px;
-    padding: 10px; /* Un peu d'espace pour les ombres/bordures intérieures */
+    padding: 10px; /* Some space for inner shadows/borders */
     position: relative;
     background-color: @color_background;
     color: @color_text;
-    /* On peut retirer la bordure globale si les lignes ont déjà leurs propres bordures,
-       mais je la laisse pour conserver ton design d'origine de la box */
+    /* Can remove global border if rows already have their own borders,
+       but keeping it to preserve the original box design */
     border: 1px solid @color_window_border;
     border-radius: @border_radius_small;
   }
@@ -116,11 +116,11 @@ x-classifiedreasonslotlist {
     align-items: center;
     justify-content: space-between;
 
-    /* Hauteur fixe et padding (verticalement centré grâce à align-items: center) */
-    box-sizing: border-box; /* S'assure que la bordure ne modifie pas les 54px */
+    /* Fixed height and padding (vertically centered via align-items: center) */
+    box-sizing: border-box; /* Ensures border doesn't change the 54px */
     height: 54px;
     padding: 0 15px;
-    margin-bottom: 8px; /* Écarte les lignes pour qu'elles aient l'air de vrais boutons cliquables */
+    margin-bottom: 8px; /* Separates rows to look like real clickable buttons */
 
     /* Bordures grises tout autour + Bordure gauche couleur + Arrondis */
     border: 1px solid @color_window_border;
@@ -147,7 +147,7 @@ x-classifiedreasonslotlist {
     flex: 1 1 auto;
     cursor: pointer;
     position: relative;
-    /* Empêche le texte de casser la ligne de 54px si c'est trop long */
+    /* Prevents text from breaking the 54px line if too long */
     overflow: hidden;
 
     x-revisionprogress {
@@ -172,13 +172,13 @@ x-classifiedreasonslotlist {
     order: 9;
     min-width: fit-content;
     min-height: fit-content;
-    display: none; /* Caché par défaut */
+    display: none; /* Hidden by default */
     transition: opacity 0.3s ease;
   }
 
   .classifiedreasonslotlist-table.selection-mode {
     .classifiedreasonslotlist-td-check {
-      display: flex; /* Apparaît en mode sélection */
+      display: flex; /* Appears in selection mode */
       animation: fadeIn 0.3s;
     }
   }

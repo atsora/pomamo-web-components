@@ -188,6 +188,45 @@ const Chart = require('chart.js/auto');
 
       this.element.appendChild(this._content);
 
+      // Recover from external size changes (e.g. nav panel opens on mobile and
+      // squeezes the host to 0px). When the host shrinks to 0, Chart.js's
+      // internal state freezes and resize() alone doesn't bring it back at the
+      // right dimensions — we have to destroy + redraw.
+      //
+      // The tricky part: nav open/close is a 200ms transition, so size
+      // observations fire continuously. If we redraw mid-transition, the chart
+      // gets baked at an intermediate size. We wait until the size has been
+      // STABLE for 250ms before acting, so the redraw happens after the layout
+      // has settled.
+      this._cameFromZero = false;
+      this._stableTimer = null;
+      this._resizeObserver = new ResizeObserver(() => {
+        if (!this.element) return;
+        const w = this.element.clientWidth;
+        if (w === 0) {
+          this._cameFromZero = true;
+          if (this._stableTimer) {
+            clearTimeout(this._stableTimer);
+            this._stableTimer = null;
+          }
+          return;
+        }
+        if (this._stableTimer) clearTimeout(this._stableTimer);
+        this._stableTimer = setTimeout(() => {
+          this._stableTimer = null;
+          if (!this._chartInstance || !this.element || this.element.clientWidth === 0) return;
+          if (this._cameFromZero) {
+            this._cameFromZero = false;
+            this._chartInstance.destroy();
+            this._chartInstance = undefined;
+            this._draw();
+          } else {
+            this._chartInstance.resize();
+          }
+        }, 250);
+      });
+      this._resizeObserver.observe(this.element);
+
       if (this.element.hasAttribute('range')) {
         this._parseDate(this.element.getAttribute('range'));
       }
@@ -196,6 +235,15 @@ const Chart = require('chart.js/auto');
     }
 
     clearInitialization() {
+      if (this._resizeObserver) {
+        this._resizeObserver.disconnect();
+        this._resizeObserver = undefined;
+      }
+      if (this._stableTimer) {
+        clearTimeout(this._stableTimer);
+        this._stableTimer = null;
+      }
+      this._cameFromZero = false;
       if (this._chartInstance) {
         this._chartInstance.destroy();
         this._chartInstance = undefined;

@@ -436,7 +436,7 @@ this.restoreDeleteWhenDisconnect ():
         }
       }
       //getModifications
-      // else = do nothing (progress en cours) -> gere par la revision progress
+      // else = do nothing (in-progress) -> handled by the revision progress
     }
 
     // Callback events

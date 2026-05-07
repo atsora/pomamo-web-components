@@ -57,20 +57,20 @@ x-groupgrid {
     width: 100%;
     overflow: hidden;
 
-    /* Les lignes s'étirent toujours pour remplir la hauteur */
+    /* Rows always stretch to fill height */
     grid-auto-rows: 1fr;
 
-    /* --- LOGIQUE DE MATRICE INTELLIGENTE (grid personnélisée non native au fonctionnement des grids) --- */
-    /* Cette logique est maintenant native au composant */
+    /* --- INTELLIGENT MATRIX LOGIC (custom grid not native to grid functioning) --- */
+    /* This logic is now native to the component */
 
-    /* Par défaut (sécurité) */
+    /* By default (safety) */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 
     .groupgrid-item {
       max-height: 60vh;
     }
 
-    /* 1 élément : Plein écran */
+    /* 1 element: Full screen */
     &[data-count="1"] {
       grid-template-columns: 1fr;
       .groupgrid-item {
@@ -78,70 +78,70 @@ x-groupgrid {
       }
     }
 
-    /* 2 éléments : 2 colonnes (1x2) */
-    /* 2 éléments : 2 colonnes */
+    /* 2 elements: 2 columns (1x2) */
+    /* 2 elements: 2 columns */
     &[data-count="2"] { grid-template-columns: 1fr 1fr; }
 
-    /* 3 éléments : 3 colonnes (1x3) */
+    /* 3 elements: 3 columns (1x3) */
     &[data-count="3"] { grid-template-columns: repeat(3, 1fr); }
 
-    /* 4 éléments : 2 colonnes (2x2) */
+    /* 4 elements: 2 columns (2x2) */
     &[data-count="4"] { grid-template-columns: repeat(2, 1fr); }
 
-    /* 5 et 6 éléments : 3 colonnes (2x3) */
+    /* 5 and 6 elements: 3 columns (2x3) */
     &[data-count="5"],
     &[data-count="6"] { grid-template-columns: repeat(3, 1fr); }
 
-    /* 7 et 8 éléments : 4 colonnes (2x4) */
+    /* 7 and 8 elements: 4 columns (2x4) */
     &[data-count="7"],
     &[data-count="8"] { grid-template-columns: repeat(4, 1fr); }
 
-    /* 9 éléments : 3 colonnes (3x3) - Carré parfait */
+    /* 9 elements: 3 columns (3x3) - Perfect square */
     &[data-count="9"] { grid-template-columns: repeat(3, 1fr); }
 
-    /* 10, 11, 12 éléments : 4 colonnes (3x4) */
+    /* 10, 11, 12 elements: 4 columns (3x4) */
     &[data-count="10"],
     &[data-count="11"],
     &[data-count="12"] { grid-template-columns: repeat(4, 1fr); }
 
-    /* 13 à 16 éléments : 4 colonnes (4x4) */
+    /* 13 to 16 elements: 4 columns (4x4) */
     &[data-count="13"],
     &[data-count="14"],
     &[data-count="15"],
     &[data-count="16"] { grid-template-columns: repeat(4, 1fr); }
 
-    /* 17 à 25 éléments : 5 colonnes (4x5 → 5x5) */
+    /* 17 to 25 elements: 5 columns (4x5 → 5x5) */
     &[data-count="17"], &[data-count="18"], &[data-count="19"], &[data-count="20"],
     &[data-count="21"], &[data-count="22"], &[data-count="23"], &[data-count="24"],
     &[data-count="25"] { grid-template-columns: repeat(5, 1fr); }
 
-    /* 26 à 36 éléments : 6 colonnes (5x6 → 6x6) */
+    /* 26 to 36 elements: 6 columns (5x6 → 6x6) */
     &[data-count="26"], &[data-count="27"], &[data-count="28"], &[data-count="29"],
     &[data-count="30"], &[data-count="31"], &[data-count="32"], &[data-count="33"],
     &[data-count="34"], &[data-count="35"],
     &[data-count="36"] { grid-template-columns: repeat(6, 1fr); }
 
-    /* 37 à 49 éléments : 7 colonnes (6x7 → 7x7) */
+    /* 37 to 49 elements: 7 columns (6x7 → 7x7) */
     &[data-count="37"], &[data-count="38"], &[data-count="39"], &[data-count="40"],
     &[data-count="41"], &[data-count="42"], &[data-count="43"], &[data-count="44"],
     &[data-count="45"], &[data-count="46"], &[data-count="47"], &[data-count="48"],
     &[data-count="49"] { grid-template-columns: repeat(7, 1fr); }
 
-    /* 50 à 64 éléments : 8 colonnes (7x8 → 8x8) */
+    /* 50 to 64 elements: 8 columns (7x8 → 8x8) */
     &[data-count="50"], &[data-count="51"], &[data-count="52"], &[data-count="53"],
     &[data-count="54"], &[data-count="55"], &[data-count="56"], &[data-count="57"],
     &[data-count="58"], &[data-count="59"], &[data-count="60"], &[data-count="61"],
     &[data-count="62"], &[data-count="63"],
     &[data-count="64"] { grid-template-columns: repeat(8, 1fr); }
 
-    /* 65 à 81 éléments : 9 colonnes (8x9 → 9x9) */
+    /* 65 to 81 elements: 9 columns (8x9 → 9x9) */
     &[data-count="65"], &[data-count="66"], &[data-count="67"], &[data-count="68"],
     &[data-count="69"], &[data-count="70"], &[data-count="71"], &[data-count="72"],
     &[data-count="73"], &[data-count="74"], &[data-count="75"], &[data-count="76"],
     &[data-count="77"], &[data-count="78"], &[data-count="79"], &[data-count="80"],
     &[data-count="81"] { grid-template-columns: repeat(9, 1fr); }
 
-    /* 82 à 100 éléments : 10 colonnes (9x10 → 10x10) */
+    /* 82 to 100 elements: 10 columns (9x10 → 10x10) */
     &[data-count="82"], &[data-count="83"], &[data-count="84"], &[data-count="85"],
     &[data-count="86"], &[data-count="87"], &[data-count="88"], &[data-count="89"],
     &[data-count="90"], &[data-count="91"], &[data-count="92"], &[data-count="93"],
@@ -154,7 +154,7 @@ x-groupgrid {
     width: 100%;
     height: 100%;
     min-height: 0;
-    display: flex; /* Sera écrasé par le JS (display:none) si caché */
+    display: flex; /* Will be overridden by JS (display:none) if hidden */
     flex-direction: column;
   }
 }

@@ -507,7 +507,7 @@ var eventBus = require('eventBus');
           // Resize displayed text
           let textLength = display.getComputedTextLength();
           if (textLength > width) {
-            //display.setAttribute('textLength', width); // Etend le texte sur toute la largeur
+            //display.setAttribute('textLength', width); // Stretches text across full width
             //display.setAttribute('lengthAdjust','spacing');
 
             if (width < 25 || textToDisplay.length < 6) {

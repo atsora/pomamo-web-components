@@ -34,7 +34,7 @@ require('x-machinedisplay/x-machinedisplay');
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class SaveScrapReasonComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
-    // Ajout : prise en compte de la valeur à la perte de focus
+    // [ADDED]: handling value on focus loss
     /**
      * Constructor
      *

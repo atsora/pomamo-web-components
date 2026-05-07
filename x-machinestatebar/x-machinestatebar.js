@@ -542,7 +542,7 @@ require('x-revisionprogress/x-revisionprogress');
             // Resize displayed text
             let textLength = display.getComputedTextLength();
             if (textLength > width) {
-              //display.setAttribute('textLength', width); // Etend le texte sur toute la largeur
+              //display.setAttribute('textLength', width); // Stretches text across full width
               //display.setAttribute('lengthAdjust','spacing');
 
               if (width < 25 || textToDisplay.length < 6) {
@@ -719,7 +719,7 @@ require('x-revisionprogress/x-revisionprogress');
         }
       }
       //getModifications
-      // else = do nothing (progress en cours) -> gere par la revision progress
+      // else = do nothing (in-progress) -> handled by the revision progress
     }
 
     // DOM events

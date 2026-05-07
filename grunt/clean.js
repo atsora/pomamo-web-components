@@ -33,7 +33,7 @@ module.exports = {
       src: ['about/live']
     }]
   },
-  jsdoc: { /* Doc auto générée */
+  jsdoc: { /* Auto-generated documentation */
     files: [{
       dot: true,
       src: ['about/jsdoc']

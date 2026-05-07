@@ -52,7 +52,7 @@ const locales = {
       self._mainDiv = undefined;
       self._content = undefined;
       self._range = undefined;
-      self._resizeObserver = undefined; // Ajout pour la gestion du redimensionnement
+      self._resizeObserver = undefined; // Added for resize management
 
       self.methods = {
         load: self.load // Should be... loadDTG
@@ -248,16 +248,16 @@ const locales = {
       // --- NOUVELLE GESTION DU RESIZE ---
       var self = this;
 
-      // 1. Sur changement de taille globale de la fenêtre
+      // 1. On global window size change
       $(window).resize(function () {
         self._draw();
       });
 
-      // 2. Sur changement de la div elle-même (ex: affichage de la popup)
+      // 2. On div itself change (e.g: popup display)
       if (typeof ResizeObserver === 'function') {
         this._resizeObserver = new ResizeObserver(entries => {
           for (let entry of entries) {
-            // Dès qu'on a une vraie largeur (fin du display:none)
+            // As soon as we have real width (end of display:none)
             if (entry.contentRect.width > 0) {
               window.requestAnimationFrame(() => {
                 self._draw();
@@ -267,7 +267,7 @@ const locales = {
         });
         this._resizeObserver.observe(this._mainDiv[0]);
       } else {
-        // Fallback de sécurité si vieux navigateur (remplace ton vieux hack)
+        // Fallback for old browser (replaces old hack)
         setTimeout(function () {
           self.load();
         }, 500);
@@ -280,7 +280,7 @@ const locales = {
     }
 
     clearInitialization() {
-      // Déconnecter l'observer proprement pour éviter les fuites mémoire
+      // Properly disconnect observer to avoid memory leaks
       if (this._resizeObserver) {
         this._resizeObserver.disconnect();
         this._resizeObserver = undefined;
