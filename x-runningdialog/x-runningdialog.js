@@ -58,7 +58,7 @@ require('x-tr/x-tr');
       </div> \
     </div> \
   </div> \
-  <x-barstack period-context="runningdialog" motion-context="motion_machine"></x-barstack> \
+  <x-barstack period-context="runningdialog" motion-context="motion_machine" auto-min-height></x-barstack> \
   <div class="div-percent"> \
     <x-motionpercentage motion-context="motion_machine" period-context="runningdialog"></x-motionpercentage> \
     <x-motiontime motion-context="motion_machine" period-context="runningdialog"></x-motiontime> \

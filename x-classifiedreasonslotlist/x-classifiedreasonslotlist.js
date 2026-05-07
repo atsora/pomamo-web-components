@@ -180,13 +180,29 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
         let tdRange = $('<div></div>').html(displayedRange)
           .addClass('classifiedreasonslotlist-td-range');
 
-        let desc = $('<div></div>').addClass('classifiedreasonslotlist-td-desc').append(tdRange);
+        // API "Display" (e.g. "Break", "Maintenance", "Unclassified") shown on
+        // the right of the range to give context on the current classification.
+        let tdDisplay = $('<div></div>')
+          .text(item.Display || '')
+          .addClass('classifiedreasonslotlist-td-display');
+
+        let desc = $('<div></div>').addClass('classifiedreasonslotlist-td-desc')
+          .append(tdRange)
+          .append(tdDisplay);
 
         // --- GESTION DES ÉVÉNEMENTS (CLIC vs LONG PRESS) ---
         this._bindRowEvents(tr, rangeString);
 
-        // Add columns to TR
-        tr.append(desc).append(tdCheck);
+        // Add columns to TR. When the slot still requires classification
+        // (OverwriteRequired), insert a warning icon just before tdCheck —
+        // visual cue that the user is expected to take action.
+        tr.append(desc);
+        if (item.OverwriteRequired) {
+          let tdOverwriteIcon = $('<div></div>').addClass('classifiedreasonslotlist-overwrite-icon');
+          tr.append(tdOverwriteIcon);
+          pulseSvg.inlineBackgroundSvg(tdOverwriteIcon[0]);
+        }
+        tr.append(tdCheck);
         this._table.append(tr);
 
         this._numberOfSelectableItems++;
@@ -243,6 +259,14 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
         if ($(e.target).is('input[type=checkbox]')) return; // Handled by input's own event
 
         this._handleRowSimpleClick(tr, rangeString);
+      });
+
+      // 4. SUPPRESSION DU MENU CONTEXTUEL NATIF
+      // Long-press on touch devices (and right-click on desktop) trigger the
+      // browser's native context menu, which would surface alongside our own
+      // long-press handler that shows the selection checkbox. Cancel it.
+      tr.on('contextmenu', (e) => {
+        e.preventDefault();
       });
     }
 

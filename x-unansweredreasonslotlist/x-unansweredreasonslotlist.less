@@ -34,8 +34,10 @@ x-unansweredreasonslotlist {
   .row-selected {
     font-weight: bold;
     color: @color_highlight;
-    border-color: @color_highlight !important; /* Highlights border if selected */
-    background-color: fade(@color_highlight, 5%); /* Light background to mark selection */
+    border-color: @color_highlight !important;
+    /* Highlights border if selected */
+    background-color: fade(@color_highlight, 5%);
+    /* Light background to mark selection */
 
     .overwrite-required {
       color: @color_highlight;
@@ -49,7 +51,7 @@ x-unansweredreasonslotlist {
   .unansweredreasonslotlist-bar {
     padding: 0 @margin_graduation;
 
-/*     x-reasonslotbar {
+    /*     x-reasonslotbar {
       pointer-events: none;
     } */
 
@@ -63,7 +65,8 @@ x-unansweredreasonslotlist {
     flex: 1 1 auto;
     min-height: 0;
     margin: 0 10px;
-    padding: 10px; /* Some space for inner shadows/borders */
+    padding: 10px;
+    /* Some space for inner shadows/borders */
     position: relative;
     background-color: @color_background;
     color: @color_text;
@@ -106,7 +109,8 @@ x-unansweredreasonslotlist {
       border-color: @color_window_border_light;
     }
   }
-  .unansweredreasonslotlist-define-button{
+
+  .unansweredreasonslotlist-define-button {
     display: none;
   }
 
@@ -117,10 +121,12 @@ x-unansweredreasonslotlist {
     justify-content: space-between;
 
     /* Fixed height and padding (vertically centered via align-items: center) */
-    box-sizing: border-box; /* Ensures border doesn't change 54px height */
+    box-sizing: border-box;
+    /* Ensures border doesn't change 54px height */
     height: 54px;
     padding: 0 15px;
-    margin-bottom: 8px; /* Spaces rows to look like real clickable buttons */
+    margin-bottom: 8px;
+    /* Spaces rows to look like real clickable buttons */
 
     /* Bordures grises tout autour + Bordure gauche couleur + Arrondis */
     border: 1px solid @color_window_border;
@@ -130,6 +136,7 @@ x-unansweredreasonslotlist {
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-touch-callout: none; // Suppress iOS Safari callout on long-press
     transition: background-color 0.2s ease, border-color 0.2s ease;
 
     &:hover {
@@ -152,6 +159,7 @@ x-unansweredreasonslotlist {
 
     x-revisionprogress {
       top: 0;
+
       .pulse-revisionprogress-content {
         background: gray;
         opacity: 0.8;
@@ -172,21 +180,31 @@ x-unansweredreasonslotlist {
     order: 9;
     min-width: fit-content;
     min-height: fit-content;
-    display: none; /* Hidden by default */
+    display: none;
+    /* Hidden by default */
     transition: opacity 0.3s ease;
   }
 
   .unansweredreasonslotlist-table.selection-mode {
     .unansweredreasonslotlist-td-check {
-      display: flex; /* Shows in selection mode */
+      display: flex;
+      /* Shows in selection mode */
       animation: fadeIn 0.3s;
     }
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
+
   /* --------------------------------------------------- */
 
   input {
@@ -259,3 +277,59 @@ x-unansweredreasonslotlist {
   }
 }
 
+// Mobile — mirror x-classifiedreasonslotlist mobile rules: drop oversized
+// button overrides, halve the reason+highlight bars, scale rows down.
+@media (max-width: 685px) {
+  x-unansweredreasonslotlist {
+    .fixed-header {
+      padding: 5px 0;
+    }
+
+    .unansweredreasonslotlist-define-button,
+    .unansweredreasonslotlist-showall-button {
+      padding: 0.4em 0;
+      font-size: unset;
+    }
+
+    .scrollable-content {
+      margin: 0;
+    }
+
+    // Halve the visual height of the reason bar + highlight bar. Both bars
+    // render their inner SVG with preserveAspectRatio="none", so overriding
+    // the SVG height in CSS lets the browser rescale all rects uniformly
+    // without re-running the JS init.
+    .unansweredreasonslotlist-bar {
+
+      x-reasonslotbar,
+      x-reasonslotbar svg {
+        height: 25px !important;
+      }
+
+      x-highlightperiodsbar,
+      x-highlightperiodsbar svg {
+        height: 3px !important;
+      }
+    }
+
+    .unansweredreasonslotlist-tr {
+      height: 3.5em;
+      padding: 0 0.6em;
+      margin-bottom: 0.3em;
+    }
+
+    .unansweredreasonslotlist-td-range {
+      font-size: 1em;
+      letter-spacing: -1px;
+    }
+
+    input {
+      width: 2em;
+      height: 2em;
+
+      &:checked::after {
+        font-size: 2em;
+      }
+    }
+  }
+}

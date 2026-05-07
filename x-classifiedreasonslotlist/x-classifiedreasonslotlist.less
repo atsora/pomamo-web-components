@@ -34,8 +34,10 @@ x-classifiedreasonslotlist {
   .row-selected {
     font-weight: bold;
     color: @color_highlight;
-    border-color: @color_highlight !important; /* Highlights the border if selected */
-    background-color: fade(@color_highlight, 5%); /* Light background to mark selection */
+    border-color: @color_highlight !important;
+    /* Highlights the border if selected */
+    background-color: fade(@color_highlight, 5%);
+    /* Light background to mark selection */
 
     .overwrite-required {
       color: @color_highlight;
@@ -49,7 +51,7 @@ x-classifiedreasonslotlist {
   .classifiedreasonslotlist-bar {
     padding: 0 @margin_graduation;
 
-/*     x-reasonslotbar {
+    /*     x-reasonslotbar {
       pointer-events: none;
     } */
 
@@ -63,7 +65,8 @@ x-classifiedreasonslotlist {
     flex: 1 1 auto;
     min-height: 0;
     margin: 0 10px;
-    padding: 10px; /* Some space for inner shadows/borders */
+    padding: 10px;
+    /* Some space for inner shadows/borders */
     position: relative;
     background-color: @color_background;
     color: @color_text;
@@ -106,7 +109,8 @@ x-classifiedreasonslotlist {
       border-color: @color_window_border_light;
     }
   }
-  .classifiedreasonslotlist-define-button{
+
+  .classifiedreasonslotlist-define-button {
     display: none;
   }
 
@@ -117,10 +121,12 @@ x-classifiedreasonslotlist {
     justify-content: space-between;
 
     /* Fixed height and padding (vertically centered via align-items: center) */
-    box-sizing: border-box; /* Ensures border doesn't change the 54px */
+    box-sizing: border-box;
+    /* Ensures border doesn't change the 54px */
     height: 54px;
     padding: 0 15px;
-    margin-bottom: 8px; /* Separates rows to look like real clickable buttons */
+    margin-bottom: 8px;
+    /* Separates rows to look like real clickable buttons */
 
     /* Bordures grises tout autour + Bordure gauche couleur + Arrondis */
     border: 1px solid @color_window_border;
@@ -130,6 +136,7 @@ x-classifiedreasonslotlist {
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-touch-callout: none; // Suppress iOS Safari callout on long-press
     transition: background-color 0.2s ease, border-color 0.2s ease;
 
     &:hover {
@@ -147,11 +154,15 @@ x-classifiedreasonslotlist {
     flex: 1 1 auto;
     cursor: pointer;
     position: relative;
-    /* Prevents text from breaking the 54px line if too long */
+    /* Range on the left, API Display on the right */
+    display: flex;
+    align-items: center;
+    gap: 1em;
     overflow: hidden;
 
     x-revisionprogress {
       top: 0;
+
       .pulse-revisionprogress-content {
         background: gray;
         opacity: 0.8;
@@ -165,6 +176,33 @@ x-classifiedreasonslotlist {
     white-space: nowrap;
     overflow: hidden;
     font-size: 1.9em;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .classifiedreasonslotlist-td-display {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 1.5em;
+    font-weight: 500;
+    opacity: 0.85;
+    flex: 0 1 auto;
+    min-width: 0;
+    text-align: right;
+  }
+
+  /* OverwriteRequired indicator — shown to the left of the long-press
+     checkbox when the slot still needs to be classified. Passive visual cue:
+     pointer-events:none disables the .create_svg_nostroke hover background
+     and lets the row's own hover state cover the icon area cleanly. */
+  .classifiedreasonslotlist-overwrite-icon {
+    width: 2em;
+    height: 2em;
+    flex-shrink: 0;
+    margin-right: 0.5em;
+    pointer-events: none;
+    .create_svg_nostroke('dialog-warning', @color_missing_value_highlight);
   }
 
   /* --- GESTION DES CHECKBOXES ET DU MODE SELECTION --- */
@@ -172,21 +210,31 @@ x-classifiedreasonslotlist {
     order: 9;
     min-width: fit-content;
     min-height: fit-content;
-    display: none; /* Hidden by default */
+    display: none;
+    /* Hidden by default */
     transition: opacity 0.3s ease;
   }
 
   .classifiedreasonslotlist-table.selection-mode {
     .classifiedreasonslotlist-td-check {
-      display: flex; /* Appears in selection mode */
+      display: flex;
+      /* Appears in selection mode */
       animation: fadeIn 0.3s;
     }
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
+
   /* --------------------------------------------------- */
 
   input {
@@ -235,12 +283,15 @@ x-classifiedreasonslotlist {
     background-color: fade(@color_red, 70%);
   }
 }
+
 .dialog-savereason x-classifiedreasonslotlist {
   height: 100%;
 }
+
 .dialog-savereason-page2 {
   padding: 10px;
 }
+
 .classifiedreasonslotlist-header-label {
   margin-bottom: 10px;
   font-weight: bold;
@@ -254,5 +305,73 @@ x-classifiedreasonslotlist {
 
   x-classifiedreasonslotlist .scrollable-content {
     margin-top: 0;
+  }
+}
+
+// Mobile — drop the oversized desktop button overrides and scale the row
+// content (height, fonts, icons, checkbox) down by ~0.7× so a phone viewport
+// can show several rows without horizontal pressure.
+@media (max-width: 685px) {
+  x-classifiedreasonslotlist {
+    .fixed-header {
+      padding: 5px 0;
+    }
+
+    .classifiedreasonslotlist-define-button,
+    .classifiedreasonslotlist-showall-button {
+      padding: 0.4em 0;
+      font-size: unset;
+    }
+
+    .scrollable-content {
+      margin: 0;
+    }
+
+    // Halve the visual height of the reason bar + highlight bar. Both bars
+    // render their inner SVG with preserveAspectRatio="none", so overriding
+    // the SVG height in CSS lets the browser rescale all rects uniformly
+    // without re-running the JS init.
+    .classifiedreasonslotlist-bar {
+
+      x-reasonslotbar,
+      x-reasonslotbar svg {
+        height: 25px !important;
+      }
+
+      x-highlightperiodsbar,
+      x-highlightperiodsbar svg {
+        height: 3px !important;
+      }
+    }
+
+    .classifiedreasonslotlist-tr {
+      height: 3.5em;
+      padding: 0 0.6em;
+      margin-bottom: 0.3em;
+    }
+
+    .classifiedreasonslotlist-td-range {
+      font-size: 1em;
+      letter-spacing: -1px;
+    }
+
+    .classifiedreasonslotlist-td-display {
+      font-size: 1em;
+    }
+
+    .classifiedreasonslotlist-overwrite-icon {
+      width: 1.5em;
+      height: 1.5em;
+      margin-right: 0.4em;
+    }
+
+    input {
+      width: 2em;
+      height: 2em;
+
+      &:checked::after {
+        font-size: 2em;
+      }
+    }
   }
 }

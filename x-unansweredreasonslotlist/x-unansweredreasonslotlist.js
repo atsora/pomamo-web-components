@@ -243,6 +243,14 @@ require('x-machinedisplay/x-machinedisplay');
 
         this._handleRowSimpleClick(tr, rangeString);
       });
+
+      // 4. SUPPRESSION DU MENU CONTEXTUEL NATIF
+      // Long-press on touch devices (and right-click on desktop) trigger the
+      // browser's native context menu, which would surface alongside our own
+      // long-press handler that shows the selection checkbox. Cancel it.
+      tr.on('contextmenu', (e) => {
+        e.preventDefault();
+      });
     }
 
     _handleLongPress(tr) {

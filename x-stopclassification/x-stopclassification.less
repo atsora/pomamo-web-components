@@ -16,6 +16,7 @@
 // === CONTENT & HIDDEN CONTENT ===
 x-stopclassification {
   flex: 1;
+  min-height: 0;
 
   .stopclassification-content {
     width: 100%;
@@ -48,7 +49,7 @@ x-stopclassification {
           &.stopclassification-cell-item--advanced {
             .stopclassification-cell-box {
               border-left: 1px solid @color_window_border;
-              padding: 1em;
+              padding-right: 1em;
             }
           }
 
@@ -177,6 +178,41 @@ x-stopclassification {
               }
             }
           }
+        }
+      }
+    }
+  }
+
+  // Mobile — single-column list of reason buttons (vw-based sizing collapses below ~700px)
+  .stopclassification-content .stopclassification-panel .stopclassification-cells-list {
+    @media (max-width: 685px) {
+      grid-template-columns: 1fr;
+      gap: 0.4em;
+      padding: 0.4em;
+
+      .stopclassification-cell-item .stopclassification-cell-box {
+        height: 3em;
+
+        .stopclassification-cell-text {
+          font-size: 1em;
+        }
+
+        .stopclassification-icon-back,
+        .stopclassification-icon-options {
+          width: 1.5em;
+          height: 1.5em;
+        }
+
+        .stopclassification-icon-comment {
+          height: auto;
+          width: 2.5em;
+          align-self: stretch;
+          aspect-ratio: auto;
+        }
+
+        &.stopclassification-cell-box--group::after {
+          border-bottom: 1.2em solid @color_window_hover;
+          border-left: 1.4em solid transparent;
         }
       }
     }
