@@ -71,43 +71,39 @@ var pulseSvg = require('pulseSvg');
       //this._content.attr('tooltip', 'group details');
       pulseUtility.addToolTip(this._content, 'group details');
 
-      // Click
+      // Click: drill into newgroupid, appending the current group as the next
+      // ancestor. Selection changes (via machineselection) reset the chain
+      // separately via x-groupsingroup's onConfigChange → reload-without-ancestors,
+      // so we don't need any multi-select special handling here.
+      // Note: after a drill-in on the current group (ancestor1=X), continuing to
+      // a child yields ancestor1=X&ancestor2=X. ancestor1 renders as the home icon
+      // (no name) and ancestor2 as the X machinedisplay — no visual duplication.
       $(this._content).click(
         function (e) {
           let url = window.location.href;
           let newgroupid = $(this.element).attr('group');
           let currentgroupids = pulseConfig.getArray('group');
 
-          // Focus mode: clicking zoom-in on a currently selected group (single drill-in
-          // or one element of a multi-selection comparison) drops the comparison and
-          // starts a fresh ancestor chain rooted at newgroupid.
-          let isFocusOnSelection = currentgroupids.includes(newgroupid);
-
           url = pulseUtility.removeURLParameter(url, 'group');
           url = pulseUtility.changeURLParameter(url, 'machine', '');
-          if (isFocusOnSelection) {
-            url = pulseUtility.removeURLParameterContaining(url, 'ancestor');
-          }
 
           if (url.includes('?')) url += '&';
           else url += '?';
           url += 'group=' + newgroupid;
 
-          if (isFocusOnSelection) {
-            url += '&ancestor1=' + newgroupid;
+          let ancestorNb = 1;
+          while (url.includes('ancestor' + ancestorNb)) {
+            ancestorNb++;
           }
-          else {
-            // Continue chain: append currentgroupids[0] as next ancestor.
-            // Note: after a drill-in (ancestor1=X), continuing to a child produces
-            // ancestor1=X&ancestor2=X — this looks duplicated in the URL but is
-            // intentional: ancestor1 renders as the home icon (no name) and
-            // ancestor2 renders the X machinedisplay name in the breadcrumb.
-            let ancestorNb = 1;
-            while (url.includes('ancestor' + ancestorNb)) {
-              ancestorNb++;
-            }
-            url += '&ancestor' + ancestorNb + '=' + currentgroupids[0];
-          }
+          // When zooming on a tile that is itself one of the currently selected
+          // groups (drill-in on a multi-selection sibling, or self-zoom on the
+          // single selection), the ancestor must be that group, not the first
+          // of the selection — otherwise multi-select [A, ALL] + zoom on ALL
+          // would wrongly produce ancestor=A.
+          let ancestorValue = currentgroupids.includes(newgroupid)
+            ? newgroupid
+            : currentgroupids[0];
+          url += '&ancestor' + ancestorNb + '=' + ancestorValue;
 
           window.location.href = url;
         }.bind(this));

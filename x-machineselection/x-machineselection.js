@@ -271,10 +271,15 @@ require('x-freetext/x-freetext');
       this._groups = data.GroupCategories;
       this._machinesFromService = data.MachineList;
       this._storeDisplays();
-      this._loadSelection();
+      // _fillCategoryList must run before _loadSelection: the latter calls
+      // _changeSelectionInCategoryList, which looks up input[groupid=...] in
+      // the dialog and splices missing groups out of _groupSelectionArray as
+      // self-healing. Without the categories built, the currently-zoomed group
+      // gets wrongly evicted from the selection.
       this._fillCategoryList();
-      this._fillSummaryDisplay();
       this._fillMachinesList();
+      this._loadSelection();
+      this._fillSummaryDisplay();
       this._resolveAndEmit('url');
     }
 
@@ -1123,14 +1128,27 @@ require('x-freetext/x-freetext');
         else
           pulseConfig.set(this._configGroups, joinedGroups, true);
 
-        eventBus.EventBus.dispatchToAll('configChangeEvent',
-          { 'config': this._configMachines });
-        eventBus.EventBus.dispatchToAll('configChangeEvent',
-          { 'config': this._configGroups });
+        // Selection change resets the navigation chain entirely: rewrite the
+        // URL with the new group/machine and drop every ancestor param, then
+        // hard-reload. Without rewriting the URL, the old params still win over
+        // localStorage (pulseConfig.get prioritizes URL), so the new selection
+        // would be ignored after reload.
+        let url = window.location.href;
+        url = pulseUtility.removeURLParameter(url, 'group');
+        url = pulseUtility.removeURLParameter(url, 'machine');
+        url = pulseUtility.removeURLParameterContaining(url, 'ancestor');
+        let separator = url.includes('?') ? '&' : '?';
+        if (joinedGroups && joinedGroups !== joinedMachines) {
+          url += separator + 'group=' + joinedGroups;
+          separator = '&';
+        }
+        if (joinedMachines) {
+          url += separator + 'machine=' + joinedMachines;
+        }
 
         $('.legend-content').resize();
-
-        this._resolveAndEmit('user');
+        window.location.href = url;
+        return;
       }
       else {
         this.element.setAttribute('pulse-machines', joinedMachines);
