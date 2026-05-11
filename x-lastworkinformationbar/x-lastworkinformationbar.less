@@ -1,0 +1,35 @@
+/*
+ * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ * Copyright (C) 2025 Atsora Solutions
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+// === IMPORTS ===
+@import "pulsewebcomponents-common.less";
+
+// === CONTENT ===
+x-lastworkinformationbar {
+  &.pulse-lastbar {
+    .pulse-cellbar-main .pulse-cellbar-cell-missing {
+      cursor: default;
+
+      &::after {
+        content: ': Missing';
+      }
+    }
+  }
+
+  // No-operation signal: when the API reports MonitoredMachineOperationBar=='None',
+  // the component adds this class on the host. CSS hides it. No !important needed
+  // because the component never sets inline display.
+  &.lwi-no-operation {
+    display: none;
+  }
+}
+
+// Optional helper for pages that wrap the component in a .pulse-bar-div and want
+// the wrapper to collapse when the component signals no operation. Pages opt in
+// by adding this rule themselves; we do not impose it globally.
+//
+// .pulse-bar-div:has(> x-lastworkinformationbar.lwi-no-operation) { display: none; }

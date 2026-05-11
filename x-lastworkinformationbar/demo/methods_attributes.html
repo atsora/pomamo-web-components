@@ -1,0 +1,29 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2025 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="attributes">
+  <div class="demo-sub-title attribute-title">Attributes</div>
+
+  <div class="demo-sub-content attribute-content">
+
+    <div class="attribute-name context optional integer"><code>machine-id</code></div>
+    <div class="attribute-description">Id of the machine to display in this widget.</div>
+
+    <div class="attribute-name optional string"><code>machine-context</code></div>
+    <div class="attribute-description">Event bus context for receiving `machineIdChangeSignal` messages.</div>
+
+    <div class="attribute-name config optional string"><code>path</code></div>
+    <div class="attribute-description">Base URL of the web service (typically set via x-checkpath configuration).</div>
+
+    <div class="attribute-name optional string"><code>status-context</code></div>
+    <div class="attribute-description">Event bus context to dispatch `workinformationStatusChange` (used to display icons under the machine name in machineTab).</div>
+
+    <div class="attribute-name optional string"><code>period-context</code></div>
+    <div class="attribute-description">Event bus context for `dateTimeRangeChangeEvent`.</div>
+
+  </div>
+</div>

@@ -1,0 +1,57 @@
+<!--
+Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2025 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <label>Machine18</label>
+  <div class="machine-component" id="machine18">
+    <div class="pulse-bar-div">
+      <x-lastworkinformationbar machine-id=18 path='http://localhost:8082/'></x-lastworkinformationbar>
+    </div>
+  </div>
+
+  <label>Machine19</label>
+  <div class="machine-component" id="machine19">
+    <div class="pulse-bar-div">
+      <x-lastworkinformationbar machine-id=19 path="http://localhost:8082/"></x-lastworkinformationbar>
+    </div>
+  </div>
+
+  <label>Machine20</label>
+  <div class="machine-component" id="machine20">
+    <div class="pulse-bar-div">
+      <x-lastworkinformationbar machine-id=20 path="http://localhost:8082/"></x-lastworkinformationbar>
+    </div>
+  </div>
+
+  <label>Error: gateway timeout</label>
+  <div class="machine-component" id="error_gateway_timeout">
+    <div class="pulse-bar-div">
+      <x-lastworkinformationbar machine-id=24 path="http://localhost:8082/"></x-lastworkinformationbar>
+    </div>
+  </div>
+
+  <label>Error: machine Id has incorrect value</label>
+  <div class="machine-component" id="error_machineid">
+    <div class="pulse-bar-div">
+      <x-lastworkinformationbar machine-id='not id' path="http://localhost:8082/"></x-lastworkinformationbar>
+    </div>
+  </div>
+
+  <label>Error: MonitoredMachineOperationBar = None - the component adds the lwi-no-operation class and hides itself</label>
+  <div class="machine-component" id="error_monitoredmachineoperationbar">
+    <div class="pulse-bar-div">
+      <x-lastworkinformationbar machine-id=25 path="http://localhost:8082/"></x-lastworkinformationbar>
+    </div>
+  </div>
+
+  <label>Error: SlotMissing = true</label>
+  <div class="machine-component" id="error_slotmissing">
+    <div class="pulse-bar-div">
+      <x-lastworkinformationbar machine-id=23 path="http://localhost:8082/"></x-lastworkinformationbar>
+    </div>
+  </div>
+</div>

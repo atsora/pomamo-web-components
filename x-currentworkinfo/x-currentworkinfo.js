@@ -207,6 +207,7 @@ var pulseComponent = require('pulsecomponent');
         return;
       }
 
+      // seems wrong but does not impact at the time : potential risk
       $(this.element).show();
 
       super.manageSuccess(data);

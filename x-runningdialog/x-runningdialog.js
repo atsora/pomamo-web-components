@@ -52,7 +52,7 @@ require('x-tr/x-tr');
       </div> \
       <div class="div-current-right"> \
         <x-productionmachiningstatus bar-style="false"></x-productionmachiningstatus> \
-        <x-lastworkinformation cancel-bar-style="true"></x-lastworkinformation> \
+        <x-lastworkinformation></x-lastworkinformation> \
         <x-lastshift></x-lastshift> \
         <x-currentcncvalue></x-currentcncvalue> \
       </div> \
