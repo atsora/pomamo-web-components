@@ -25,7 +25,8 @@ require('x-machinedisplay/x-machinedisplay');
    *  - The final element (current group, when not at root): rendered as a non-clickable `<div>`
    *    with an `<x-machinedisplay>` inside.
    *  - If at root level (ancestorNb == 1): final element is a re-clickable `<a>` (reload effect).
-   *  - Loop stops when an ancestor value matches the current `group` config.
+   *  - Self-referencing URLs (?group=X&ancestor1=X), produced by drill-in zooms on a container
+   *    group, render both the home link for X and the non-clickable X name.
    *
    * Attributes/Configs:
    *   group       - current group id (used for comparison and final element display)
@@ -47,7 +48,6 @@ require('x-machinedisplay/x-machinedisplay');
 
     /**
      * Builds the breadcrumb DOM by iterating `ancestor1`, `ancestor2`, ... configs.
-     * Stops when an ancestor equals the current `group` or when no more ancestors exist.
      * Appends the final current-group element as non-clickable (or re-clickable at root).
      */
     validateParameters () {}
@@ -66,16 +66,18 @@ require('x-machinedisplay/x-machinedisplay');
       // Fetching current group for comparison
       let currentGroup = this.getConfigOrAttribute('group', '');
 
+      // Read ancestors directly from URL (not pulseConfig) to avoid stale
+      // page-specific localStorage values (e.g. when home click strips ancestor1
+      // from URL but localStorage still has it).
       let ancestorNb = 1;
-      let ancestorVal = this.getConfigOrAttribute(('ancestor' + ancestorNb), '');
+      let ancestorVal = pulseUtility.getURLParameter(window.location.href, 'ancestor' + ancestorNb) || '';
       let accumulatedAncestorsQuery = '';
 
       while ('' != ancestorVal) {
-        // If ancestor equals current group, break the loop
-        // This element will be displayed in the "Final" block below
-        if (ancestorVal == currentGroup) {
-          break;
-        }
+        // Note: we do not break when ancestorVal == currentGroup.
+        // Self-referencing URLs like ?group=X&ancestor1=X are intentional
+        // (e.g. drill-in to view a group's children on managementinformationterminal):
+        // we still want to render X as the home link AND the current group name in the final block.
 
         let divMachine = $('<a></a>')
           .addClass('ancestors-machine-div')
@@ -96,14 +98,13 @@ require('x-machinedisplay/x-machinedisplay');
 
         accumulatedAncestorsQuery += 'ancestor' + ancestorNb + '=' + ancestorVal + '&';
         ancestorNb++;
-        ancestorVal = this.getConfigOrAttribute(('ancestor' + ancestorNb), '');
+        ancestorVal = pulseUtility.getURLParameter(window.location.href, 'ancestor' + ancestorNb) || '';
       }
 
-      // --- ÉLÉMENT FINAL (Groupe Actuel) ---
+      // --- Final element (current group) ---
 
       let divMachine;
 
-      // MODIFICATION ICI :
       // If it's level 1 (Home), we want it to remain a clickable link
       // to allow "reloading" the root page even if we're already there.
       if (ancestorNb == 1) {
@@ -127,7 +128,9 @@ require('x-machinedisplay/x-machinedisplay');
         pulseSvg.inlineBackgroundSvg(divMachine);
       }
       else {
-        let xtag = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {});
+        let xtag = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
+          'group': currentGroup
+        });
         divMachine.append(xtag);
       }
 

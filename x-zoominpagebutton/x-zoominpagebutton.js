@@ -74,31 +74,42 @@ var pulseSvg = require('pulseSvg');
       // Click
       $(this._content).click(
         function (e) {
-          console.log('--- [DEBUG] CLICK sur ZoomIn ---');
-          // Go to same page with new groupid
           let url = window.location.href;
-          console.log('[DEBUG] Click URL base:', url);
           let newgroupid = $(this.element).attr('group');
-          console.log('[DEBUG] Target Group ID:', newgroupid);
-          let currentgroupids = pulseConfig.getArray('group')//pulseUtility.getURLParameterValues(url, 'group'); == not enough
-          console.log('[DEBUG] Current Groups from Config:', currentgroupids);
-          // Remove current group
+          let currentgroupids = pulseConfig.getArray('group');
+
+          // Focus mode: clicking zoom-in on a currently selected group (single drill-in
+          // or one element of a multi-selection comparison) drops the comparison and
+          // starts a fresh ancestor chain rooted at newgroupid.
+          let isFocusOnSelection = currentgroupids.includes(newgroupid);
+
           url = pulseUtility.removeURLParameter(url, 'group');
-          // Remove machine, because not known
           url = pulseUtility.changeURLParameter(url, 'machine', '');
-          // Add new group
+          if (isFocusOnSelection) {
+            url = pulseUtility.removeURLParameterContaining(url, 'ancestor');
+          }
+
           if (url.includes('?')) url += '&';
           else url += '?';
           url += 'group=' + newgroupid;
-          // Manage ancestor(s)
-          let ancestorNb = 1;
-          while (url.includes('ancestor' + ancestorNb)) {
-            ancestorNb++;
-          }
-          url += '&ancestor' + ancestorNb + '=' + currentgroupids[0];
-          // Display new page
-          window.location.href = url;
 
+          if (isFocusOnSelection) {
+            url += '&ancestor1=' + newgroupid;
+          }
+          else {
+            // Continue chain: append currentgroupids[0] as next ancestor.
+            // Note: after a drill-in (ancestor1=X), continuing to a child produces
+            // ancestor1=X&ancestor2=X — this looks duplicated in the URL but is
+            // intentional: ancestor1 renders as the home icon (no name) and
+            // ancestor2 renders the X machinedisplay name in the breadcrumb.
+            let ancestorNb = 1;
+            while (url.includes('ancestor' + ancestorNb)) {
+              ancestorNb++;
+            }
+            url += '&ancestor' + ancestorNb + '=' + currentgroupids[0];
+          }
+
+          window.location.href = url;
         }.bind(this));
 
       // Initialization OK => switch to the next context
