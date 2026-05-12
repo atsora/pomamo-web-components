@@ -7,13 +7,38 @@
 @import "pulsewebcomponents-common.less";
 
 x-detailsatdialog {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  min-height: 500px;
+  min-height: 30em;
+  overflow: hidden;
 
   .detailsatdialog-title {
-    font-size: 150%;
+    font-size: 101%;
     text-align: center;
+    margin-bottom: 0.5em;
+    line-height: normal;
+  }
+
+  .detailsatdialog-subtitle {
+    font-size: 0.8em;
+  }
+
+  x-datetimerange {
+    font-size: 0.8em;
+    line-height: normal;
+
+    .datetimerange-display {
+      padding: 0;
+    }
+
+    .datetimerange-toolbar {
+      margin: 0;
+    }
+
+    .datetimerange-li-btn {
+      margin: 0;
+    }
   }
 
   x-datetimegraduation {
@@ -41,14 +66,86 @@ x-detailsatdialog {
   }
 
   .pulse-bar-div {
-    border-radius: 2px;
+    border-radius: 0.12em;
     margin: 0 @margin_graduation;
+    line-height: normal;
   }
 
   .detailsatdialog-content {
     color: @color_text_alternate;
-    margin: 0 @margin_graduation;
+    margin: 0;
+    padding: 0.5em @margin_graduation;
+    border: 1px solid @color_window_border;
+    border-radius: @border_radius_small;
     overflow-y: auto;
-    padding: 5px;
+    flex: 1;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1em 0.5em;
+
+    .detailed-main {
+      margin: 0;
+      gap: 1em 0.5em;
+    }
+
+    .detailed-content {
+      gap: 0.2em 0;
+    }
+
+    .detailedreasonat,
+    .detailedmodeat {
+      margin: 0;
+      gap: 1em 0.5em;
+    }
+
+    .detailed-module-content {
+      margin: 0;
+    }
+
+    .detailed-range {
+      padding: 0;
+      width: 25em;
+      flex-shrink: 0;
+    }
+
+    .detailed-data span,
+    .detailed-machinemodule span,
+    .detailed-module-data span {
+      padding: 0.3em 0.5em;
+    }
+
+    .detailed-single-data {
+      padding: 0.3em 0.5em;
+    }
+
+    .detailed-module-data .detailedcncvaluesat-field,
+    .detailed-module-data .detailedcncvaluesat-value {
+      padding: 0;
+    }
+  }
+}
+
+@media (max-width: 685px) {
+  x-detailsatdialog .detailsatdialog-content {
+    font-size: 0.85em;
+    padding: 0.3em 0.6em;
+
+    .detailed-title {
+      width: 7em;
+      max-width: none;
+      flex-shrink: 0;
+    }
+
+    .detailed-content {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .detailed-range {
+      width: auto;
+      flex-shrink: 1;
+    }
   }
 }

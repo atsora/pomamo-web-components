@@ -121,6 +121,7 @@ var openDetails = exports.openDetails = function (component, fullRange, cellRang
 
   pulseCustomDialog.openDialog(dialog, {
     title: pulseConfig.pulseTranslate('dialog.details', 'Details'),
+    okButton: 'hidden',
     onOk: function () { },
     onClose: function () {
       // Special for popup on a dialog (Reason '+2' display) :
