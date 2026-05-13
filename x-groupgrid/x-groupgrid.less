@@ -60,91 +60,17 @@ x-groupgrid {
     /* Rows always stretch to fill height */
     grid-auto-rows: 1fr;
 
-    /* --- INTELLIGENT MATRIX LOGIC (custom grid not native to grid functioning) --- */
-    /* This logic is now native to the component */
-
-    /* By default (safety) */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    /* Columns are driven purely by available width.
+       Min is 18.75rem (300px) minus one gap (0.8rem) so each tile occupies ~300px effective width including its share of gap. */
+    grid-template-columns: repeat(auto-fit, minmax(17.95rem, 1fr));
 
     /* 1 element: Full screen */
     &[data-count="1"] {
       grid-template-columns: 1fr;
       .groupgrid-item {
-        max-height: 100%;
+        max-height: 100% !important;
       }
     }
-
-    /* Responsive: cap = max-cols (per data-count), reflows down if tile < 300px wide.
-       Formula accounts for gap (0.8rem): each column's "ideal" width is (100% - gap*(N-1)) / N. */
-    /* 2 elements: max 2 columns */
-    &[data-count="2"] { grid-template-columns: repeat(auto-fit, minmax(max(300px, ~"calc((100% - 0.8rem) / 2)"), 1fr)); }
-
-    /* 3 elements: max 3 columns */
-    &[data-count="3"] { grid-template-columns: repeat(auto-fit, minmax(max(300px, ~"calc((100% - 1.6rem) / 3)"), 1fr)); }
-
-    /* 4 elements: max 2 columns (2x2) */
-    &[data-count="4"] { grid-template-columns: repeat(auto-fit, minmax(max(300px, ~"calc((100% - 0.8rem) / 2)"), 1fr)); }
-
-    /* 5 and 6 elements: max 3 columns */
-    &[data-count="5"],
-    &[data-count="6"] { grid-template-columns: repeat(auto-fit, minmax(max(300px, ~"calc((100% - 1.6rem) / 3)"), 1fr)); }
-
-    /* 7 and 8 elements: max 4 columns */
-    &[data-count="7"],
-    &[data-count="8"] { grid-template-columns: repeat(auto-fit, minmax(max(300px, ~"calc((100% - 2.4rem) / 4)"), 1fr)); }
-
-    /* 9 elements: max 3 columns (3x3 perfect square) */
-    &[data-count="9"] { grid-template-columns: repeat(auto-fit, minmax(max(300px, ~"calc((100% - 1.6rem) / 3)"), 1fr)); }
-
-    /* 10, 11, 12 elements: max 4 columns */
-    &[data-count="10"],
-    &[data-count="11"],
-    &[data-count="12"] { grid-template-columns: repeat(auto-fit, minmax(max(300px, ~"calc((100% - 2.4rem) / 4)"), 1fr)); }
-
-    /* 13 to 16 elements: max 4 columns */
-    &[data-count="13"],
-    &[data-count="14"],
-    &[data-count="15"],
-    &[data-count="16"] { grid-template-columns: repeat(auto-fit, minmax(max(300px, ~"calc((100% - 2.4rem) / 4)"), 1fr)); }
-
-    /* 17 to 25 elements: max 5 columns */
-    &[data-count="17"], &[data-count="18"], &[data-count="19"], &[data-count="20"],
-    &[data-count="21"], &[data-count="22"], &[data-count="23"], &[data-count="24"],
-    &[data-count="25"] { grid-template-columns: repeat(auto-fit, minmax(max(300px, ~"calc((100% - 3.2rem) / 5)"), 1fr)); }
-
-    /* 26 to 36 elements: max 6 columns */
-    &[data-count="26"], &[data-count="27"], &[data-count="28"], &[data-count="29"],
-    &[data-count="30"], &[data-count="31"], &[data-count="32"], &[data-count="33"],
-    &[data-count="34"], &[data-count="35"],
-    &[data-count="36"] { grid-template-columns: repeat(auto-fit, minmax(max(300px, ~"calc((100% - 4rem) / 6)"), 1fr)); }
-
-    /* 37 to 49 elements: max 7 columns */
-    &[data-count="37"], &[data-count="38"], &[data-count="39"], &[data-count="40"],
-    &[data-count="41"], &[data-count="42"], &[data-count="43"], &[data-count="44"],
-    &[data-count="45"], &[data-count="46"], &[data-count="47"], &[data-count="48"],
-    &[data-count="49"] { grid-template-columns: repeat(auto-fit, minmax(max(300px, ~"calc((100% - 4.8rem) / 7)"), 1fr)); }
-
-    /* 50 to 64 elements: max 8 columns */
-    &[data-count="50"], &[data-count="51"], &[data-count="52"], &[data-count="53"],
-    &[data-count="54"], &[data-count="55"], &[data-count="56"], &[data-count="57"],
-    &[data-count="58"], &[data-count="59"], &[data-count="60"], &[data-count="61"],
-    &[data-count="62"], &[data-count="63"],
-    &[data-count="64"] { grid-template-columns: repeat(auto-fit, minmax(max(300px, ~"calc((100% - 5.6rem) / 8)"), 1fr)); }
-
-    /* 65 to 81 elements: max 9 columns */
-    &[data-count="65"], &[data-count="66"], &[data-count="67"], &[data-count="68"],
-    &[data-count="69"], &[data-count="70"], &[data-count="71"], &[data-count="72"],
-    &[data-count="73"], &[data-count="74"], &[data-count="75"], &[data-count="76"],
-    &[data-count="77"], &[data-count="78"], &[data-count="79"], &[data-count="80"],
-    &[data-count="81"] { grid-template-columns: repeat(auto-fit, minmax(max(300px, ~"calc((100% - 6.4rem) / 9)"), 1fr)); }
-
-    /* 82 to 100 elements: max 10 columns */
-    &[data-count="82"], &[data-count="83"], &[data-count="84"], &[data-count="85"],
-    &[data-count="86"], &[data-count="87"], &[data-count="88"], &[data-count="89"],
-    &[data-count="90"], &[data-count="91"], &[data-count="92"], &[data-count="93"],
-    &[data-count="94"], &[data-count="95"], &[data-count="96"], &[data-count="97"],
-    &[data-count="98"], &[data-count="99"],
-    &[data-count="100"] { grid-template-columns: repeat(auto-fit, minmax(max(300px, ~"calc((100% - 7.2rem) / 10)"), 1fr)); }
   }
 
   .groupgrid-item {
@@ -161,7 +87,12 @@ x-groupgrid {
   .groupgrid-item {
     max-height: 60vh;
   }
-  &[data-count="2"] { grid-template-columns: 1fr 1fr; }
+  &[data-count="2"] { grid-template-columns: 1fr 1fr;
+      .groupgrid-item {
+        max-height: 100% !important;
+      }
+
+  }
   &[data-count="3"] { grid-template-columns: repeat(3, 1fr); }
   &[data-count="4"] { grid-template-columns: repeat(2, 1fr); }
   &[data-count="5"],
