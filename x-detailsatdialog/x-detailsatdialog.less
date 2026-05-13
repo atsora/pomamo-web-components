@@ -10,7 +10,7 @@ x-detailsatdialog {
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 30em;
+  min-height: 0;
   overflow: hidden;
 
   .detailsatdialog-title {
@@ -127,7 +127,7 @@ x-detailsatdialog {
   }
 }
 
-@media (max-width: 685px) {
+@media @all-phones-media {
   x-detailsatdialog .detailsatdialog-content {
     font-size: 0.85em;
     padding: 0.3em 0.6em;

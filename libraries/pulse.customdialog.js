@@ -33,7 +33,6 @@ var pulseCustomDialog = function () {
     var previousButton = data['attributes']['previousButton']; // can be null, "hidden"
     var nextButton = data['attributes']['nextButton']; // can be null, "hidden"
     var okButton = data['attributes']['okButton']; // can be null, "hidden"
-    var multiPage = data['attributes']['multiPage']; // can be "auto" / null, "on", "off"
 
     // First and/or last page?
     $('#' + dialogId).toggleClass('customDialogFirstPage', currentPage == 0);
@@ -54,10 +53,6 @@ var pulseCustomDialog = function () {
       display: anyButtonVisible ? '' : 'none',
       margin: anyButtonVisible ? '' : '0'
     });
-
-    // Multipage state
-    $('#' + dialogId).toggleClass('customDialogMultiPageOn', multiPage == 'on');
-    $('#' + dialogId).toggleClass('customDialogMultiPageOff', multiPage == 'off');
 
     // Set current page
     for (var i = 0; i < pageCount; i++)
@@ -282,7 +277,6 @@ var pulseCustomDialog = function () {
    * Attributes:
    * - title
    * - cancelButton / previousButton / nextButton / okButton: can be set to "hidden"
-   * - multipage: can be set to "auto" (default), "on", "off"
    * - onOpen, onOk, onCancel, onClose: functions that can be triggered
    * - autoClose: true / false (default), close automatically the dialog
    * - autoDelete: true / false (default), remove automatically the html associated to the dialog

@@ -752,7 +752,8 @@ x-machineselection {
 ////////// ////////// ////////// ////////// //////////
 
 // === MEDIA QUERIES ===
-@media (min-width: 686px) {
+// Pas un téléphone : split 60/40
+@media @not-phones-media {
 
   .machineSelectionDialogPart1 {
     width: 60% !important;
@@ -776,7 +777,7 @@ x-machineselection {
   }
 }
 
-@media (max-width: 685px) {
+@media @all-phones-media {
 
   .reorderButton {
     display: none !important;

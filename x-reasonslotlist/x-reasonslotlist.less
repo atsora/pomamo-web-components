@@ -221,8 +221,8 @@ x-reasonslotlist {
 // OVERRIDES MULTIPAGE (Heart of the Responsive logic)
 ////////// ////////// ////////// ////////// //////////
 
-/* SUR BUREAU : ON FORCE L'AFFICHAGE CÔTE A CÔTE DE LA MODALE */
-@media (min-width: 686px) {
+/* PAS UN TÉLÉPHONE : ON FORCE L'AFFICHAGE CÔTE A CÔTE DE LA MODALE */
+@media @not-phones-media {
 
   .customDialog.dialog-savereason .customDialogContent,
   .customDialog.customeDialog-savereason .customDialogContent {
@@ -254,7 +254,7 @@ x-reasonslotlist {
 }
 
 /* SUR TELEPHONE : ON LAISSE PULSECUSTOMDIALOG GERER NATURELLEMENT LES 2 PAGES */
-@media (max-width: 685px) {
+@media @all-phones-media {
   .customDialog.dialog-savereason .customDialogContent > div:not(.customDialogCurrentPage),
   .customDialog.customeDialog-savereason .customDialogContent > div:not(.customDialogCurrentPage) {
     display: none !important;

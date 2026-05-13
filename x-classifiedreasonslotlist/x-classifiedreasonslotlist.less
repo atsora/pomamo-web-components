@@ -298,7 +298,7 @@ x-classifiedreasonslotlist {
 }
 
 // === MEDIA QUERIES ===
-@media (max-width: 920px) {
+@media @all-phones-media {
   .classifiedreasonslotlist .datetimerange-rangedisplay {
     display: block;
   }
@@ -311,7 +311,7 @@ x-classifiedreasonslotlist {
 // Mobile — drop the oversized desktop button overrides and scale the row
 // content (height, fonts, icons, checkbox) down by ~0.7× so a phone viewport
 // can show several rows without horizontal pressure.
-@media (max-width: 685px) {
+@media @all-phones-media {
   x-classifiedreasonslotlist {
     .fixed-header {
       padding: 5px 0;

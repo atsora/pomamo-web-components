@@ -88,19 +88,22 @@
 }
 
 /* --- AFFICHAGE TELEPHONE (PLEIN ECRAN 100vw / 100vh) --- */
-@media (max-width: 685px) {
+@media @all-phones-media {
   .customDialogWindow {
     min-width: 0;
     border: none;
     margin: 0;
     border-radius: 0; /* Remove rounded corners for fullscreen */
     width: 100vw !important; /* Force full width */
-    height: 100vh !important; /* Force full height */
+    height: 100vh !important; /* fallback */
+    height: 100dvh !important; /* dynamic viewport — excludes mobile address bar */
     max-height: 100vh !important;
+    max-height: 100dvh !important;
 
     &.bigSize, &.fullSize, &.smallSize {
       width: 100vw !important;
       height: 100vh !important;
+      height: 100dvh !important;
     }
   }
 
@@ -235,7 +238,7 @@
   .create_svg('dialog-ok', @color_text, @color_green);
 }
 
-@media (max-width: 685px) {
+@media @all-phones-media {
   /* multipage on */
   .customDialogCancel {
     display: none;
@@ -276,8 +279,8 @@
   }
 }
 
-@media (min-width: 686px) {
-  /* multipage off */
+@media @not-phones-media {
+  /* multipage off — everything that's not a phone */
   .customDialogPrevious,
   .customDialogNext {
     display: none;
@@ -286,33 +289,6 @@
   .customDialogOk {
     display: inline-block;
   }
-}
-
-/* force multipage on */
-.customDialogMultiPageOn .customDialogCancel { display: none; }
-.customDialogMultiPageOn .customDialogPrevious { display: inline-block; }
-.customDialogMultiPageOn.customDialogFirstPage .customDialogCancel { display: inline-block; }
-.customDialogMultiPageOn.customDialogFirstPage .customDialogPrevious { display: none; }
-.customDialogMultiPageOn .customDialogNext { display: inline-block; }
-.customDialogMultiPageOn .customDialogOk { display: none; }
-.customDialogMultiPageOn.customDialogLastPage .customDialogNext { display: none; }
-.customDialogMultiPageOn.customDialogLastPage .customDialogOk { display: inline-block; }
-
-.customDialogMultiPageOn .customDialogContent>div {
-  display: none !important;
-}
-.customDialogMultiPageOn div.customDialogCurrentPage {
-  display: flex !important;
-}
-
-/* force multipage off */
-.customDialogMultiPageOff .customDialogPrevious,
-.customDialogMultiPageOff .customDialogNext { display: none; }
-.customDialogMultiPageOff .customDialogCancel,
-.customDialogMultiPageOff .customDialogOk { display: inline-block; }
-
-.customDialogMultiPageOff .customDialogContent>div {
-  display: flex !important;
 }
 
 /* hide buttons */

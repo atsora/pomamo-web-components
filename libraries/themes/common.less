@@ -41,6 +41,24 @@
 @border_radius: 12px;
 @border_radius_small: 6px;
 
+// Responsive breakpoints
+// Two-level mobile model:
+//   - phone media (<=685): phone portrait + small phones landscape
+//   - phone tablet media (<=1000 + landscape + coarse): phones landscape 685-932 (tablets landscape are 1024+)
+//     pointer: coarse filters out desktop users who zoom their browser to <=1000.
+// iPad portrait (744-820) and all tablets landscape (1024+) fall to desktop styles.
+@breakpoint_mobile_max: 1000px;
+@breakpoint_mobile_small_max: 685px;
+
+// Composable media query strings (usage: @media @all-phones-media)
+@phone-media: ~"(max-width: @{breakpoint_mobile_small_max})";
+@phone-tablet-media: ~"(max-width: @{breakpoint_mobile_max}) and (orientation: landscape) and (pointer: coarse)";
+@all-phones-media: ~"(max-width: @{breakpoint_mobile_small_max}), (max-width: @{breakpoint_mobile_max}) and (orientation: landscape) and (pointer: coarse)";
+// Exact inverse of @all-phones-media (De Morgan expansion).
+// Catches: tablette landscape + desktop (>1000), iPad portrait (686+ portrait),
+// desktop zoomed in landscape 686-1000 with mouse (pointer: fine).
+@not-phones-media: ~"(min-width: 1001px), (min-width: 686px) and (orientation: portrait), (min-width: 686px) and (pointer: fine)";
+
 
 /***************
 * COMMON STYLE *
