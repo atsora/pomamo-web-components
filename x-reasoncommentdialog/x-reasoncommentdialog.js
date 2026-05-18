@@ -34,6 +34,12 @@ require('x-datetimerange/x-datetimerange');
     constructor (...args) {
       const self = super(...args);
       self._textarea = null;
+      // Expose getDetails() on the host element so callers can read the comment
+      // via `rcdlg[0].getDetails()`. pulseComponent.registerElement only forwards
+      // methods listed in `self.methods` onto the custom element.
+      self.methods = {
+        getDetails: self.getDetails
+      };
       return self;
     }
 

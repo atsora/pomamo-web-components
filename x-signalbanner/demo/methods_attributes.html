@@ -1,0 +1,44 @@
+<!--
+Copyright (C) 2009-2026 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="attributes">
+  <div class="demo-sub-title attribute-title">Attributes</div>
+
+  <div class="demo-sub-content attribute-content">
+
+    <div class="attribute-name mandatory string"><code>group-id</code></div>
+    <div class="attribute-description">Group id passed to the <code>/Signal/</code> endpoint
+      as <code>?GroupId=&lt;value&gt;</code>. Use a single id, a composite key
+      (e.g. <code>"1_23_53"</code>), or the special value <code>"ALL"</code>.
+    </div>
+
+    <div class="attribute-name optional integer"><code>refresh-rate</code></div>
+    <div class="attribute-description">Polling interval in seconds. Defaults to 30s.
+    </div>
+
+    <div class="attribute-name config optional string"><code>path</code></div>
+    <div class="attribute-description">Base URL of the REST API. Read from configuration
+      (typically filled by <code>x-checkpath</code>) or from the attribute for tests.
+    </div>
+
+  </div>
+
+  <div class="demo-sub-title attribute-title">Endpoint &amp; response shape</div>
+  <div class="demo-sub-content attribute-content">
+    <pre><code>GET /Signal/?GroupId=&lt;group-id&gt;
+
+{
+  "Messages": [
+    {
+      "Message": "Maintenance scheduled at 14:00",
+      "BgColor": "#FFC107",
+      "FgColor": "#000000"        // optional, auto-contrast if empty
+    }
+  ]
+}</code></pre>
+    The <code>Message</code> text is used as the dismiss key (per-session).
+  </div>
+</div>

@@ -10,15 +10,13 @@
 var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
 var pulseConfig = require('pulseConfig');
+var pulseLogin = require('pulseLogin');
 var pulseRange = require('pulseRange');
 
 require('x-machinedisplay/x-machinedisplay');
 require('x-datetimerange/x-datetimerange');
 require('x-datetimegraduation/x-datetimegraduation');
-require('x-reasonslotbar/x-reasonslotbar');
-require('x-bartimeselection/x-bartimeselection');
-require('x-cncalarmbar/x-cncalarmbar');
-require('x-redstacklightbar/x-redstacklightbar');
+require('x-barstack/x-barstack');
 
 /**
  * Build a custom tag <x-detailsatdialog> used as the content of a
@@ -75,56 +73,53 @@ require('x-redstacklightbar/x-redstacklightbar');
         'range': fullRange.lower.toISOString() + ';' + fullRange.upper.toISOString()
       });
 
-      let barHeight = 30;
-      let xReasonBar = pulseUtility.createjQueryElementWithAttribute('x-reasonslotbar', {
-        'machine-id': machineid,
-        'period-context': 'details',
-        'height': barHeight,
-        'range': fullRange.toString(d => d.toISOString()),
-        'showoverwriterequired': false
-      });
-      let middlebar = $('<div></div>').addClass('pulse-bar-div').append(xReasonBar);
-
       let configArray = pulseConfig.getArray('showcoloredbar.showdetails');
       if (configArray.length == 0) {
         console.warn('No details defined');
       }
-      else {
-        for (let iConfig = 0; iConfig < configArray.length; iConfig++) {
-          if (configArray[iConfig] == 'x-cncalarmbar') {
-            middlebar.append(pulseUtility.createjQueryElementWithAttribute('x-cncalarmbar', {
-              'machine-id': machineid,
-              'period-context': 'details',
-              'range': fullRange.toString(d => d.toISOString())
-            }));
-          }
-          else if (configArray[iConfig] == 'x-redstacklightbar') {
-            middlebar.append(pulseUtility.createjQueryElementWithAttribute('x-redstacklightbar', {
-              'machine-id': machineid,
-              'period-context': 'details',
-              'range': fullRange.toString(d => d.toISOString())
-            }));
-          }
-          else {
-            content.append(pulseUtility.createjQueryElementWithAttribute(configArray[iConfig], {
-              'machine-id': machineid,
-              'when': whenIso,
-              'datetime-context': 'details',
-              'range': fullRange.toString(d => d.toISOString()),
-              'period-context': 'details'
-            }));
-          }
+
+      // Wire the legacy `showcoloredbar.showdetails` array to the per-context
+      // flags read by x-barstack. Only the bar tags (cncalarm/redstacklight)
+      // need translation; x-detailed* components are appended to `content`.
+      // Write at rolespages level so the flags take precedence over role-wide
+      // showcoloredbar overrides (e.g. roles.dev which disables cncalarm).
+      if (typeof PULSE_DEFAULT_CONFIG !== 'undefined') {
+        const role = pulseLogin.getRole();
+        if (role) {
+          PULSE_DEFAULT_CONFIG.rolespages = PULSE_DEFAULT_CONFIG.rolespages || {};
+          PULSE_DEFAULT_CONFIG.rolespages[role] = PULSE_DEFAULT_CONFIG.rolespages[role] || {};
+          PULSE_DEFAULT_CONFIG.rolespages[role].details = PULSE_DEFAULT_CONFIG.rolespages[role].details || {};
+          PULSE_DEFAULT_CONFIG.rolespages[role].details.showcoloredbar = PULSE_DEFAULT_CONFIG.rolespages[role].details.showcoloredbar || {};
+          PULSE_DEFAULT_CONFIG.rolespages[role].details.showcoloredbar.cncalarm = (configArray.indexOf('x-cncalarmbar') >= 0);
+          PULSE_DEFAULT_CONFIG.rolespages[role].details.showcoloredbar.redstacklight = (configArray.indexOf('x-redstacklightbar') >= 0);
         }
       }
 
-      let xSelBar = pulseUtility.createjQueryElementWithAttribute('x-bartimeselection', {
-        'height': barHeight,
-        'range': fullRange.lower.toISOString() + ';' + fullRange.upper.toISOString(),
+      for (let iConfig = 0; iConfig < configArray.length; iConfig++) {
+        const tag = configArray[iConfig];
+        if (tag === 'x-cncalarmbar' || tag === 'x-redstacklightbar') continue;
+        content.append(pulseUtility.createjQueryElementWithAttribute(tag, {
+          'machine-id': machineid,
+          'when': whenIso,
+          'datetime-context': 'details',
+          'range': fullRange.toString(d => d.toISOString()),
+          'period-context': 'details'
+        }));
+      }
+
+      let barHeight = 30;
+      let xBarstack = pulseUtility.createjQueryElementWithAttribute('x-barstack', {
+        'machine-id': machineid,
         'period-context': 'details',
+        'main-bar': 'reason',
+        'range': fullRange.lower.toISOString() + ';' + fullRange.upper.toISOString(),
+        'when': whenIso,
         'datetime-context': 'details',
-        'when': whenIso
+        'mainbar-showoverwriterequired': 'false'
       });
-      middlebar.append(xSelBar);
+      let middlebar = $('<div></div>').addClass('pulse-bar-div')
+        .css('height', barHeight + 'px')
+        .append(xBarstack);
       title.append(xGraduation).append(middlebar);
 
       this.switchToNextContext();

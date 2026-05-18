@@ -23,11 +23,10 @@ var pulseComponent = require('pulsecomponent');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-require('x-reasonslotbar/x-reasonslotbar');
+require('x-barstack/x-barstack');
 
 require('x-savereason/x-savereason');
 require('x-datetimerange/x-datetimerange');
-require('x-highlightperiodsbar/x-highlightperiodsbar');
 require('x-revisionprogress/x-revisionprogress');
 
 
@@ -101,7 +100,7 @@ require('x-revisionprogress/x-revisionprogress');
             eventBus.EventBus.removeEventListenerBySignal(this, 'dateTimeRangeChangeEvent');
             eventBus.EventBus.addEventListener(this,
               'dateTimeRangeChangeEvent',
-              'RSL' + newVal,
+              'reasonslotlist',
               this.onDateTimeRangeChange.bind(this));
           }
 
@@ -430,7 +429,7 @@ require('x-revisionprogress/x-revisionprogress');
       let datetimerangeDiv = $('<div></div>').addClass('reasonslotlist-datetimerange');
       let xdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
         'range': this.range.toString(d => d.toISOString()),
-        'period-context': 'RSL' + this.element.getAttribute('machine-id')
+        'period-context': 'reasonslotlist'
       });
       datetimerangeDiv.append(xdatetimerange);
 
@@ -439,22 +438,15 @@ require('x-revisionprogress/x-revisionprogress');
         .append(datetimerangeDiv)
         .append(`<div class="reasonslotlist-header-label">2. ${this.getTranslation('sectionPeriodTitle', 'Select one or more periods')}</div>`);
 
-      let reasonBar = pulseUtility.createjQueryElementWithAttribute('x-reasonslotbar', {
+      let xBarstack = pulseUtility.createjQueryElementWithAttribute('x-barstack', {
         'machine-id': this.element.getAttribute('machine-id'),
-        'period-context': 'RSL' + this.element.getAttribute('machine-id'),
-        'height': 15,
+        'period-context': 'reasonslotlist',
+        'main-bar': 'reason',
         'range': this.range.toString(d => d.toISOString()),
-        'showoverwriterequired': false,
-        'click-to-change-reason': false
+        'mainbar-showoverwriterequired': 'false',
+        'mainbar-click-to-change-reason': 'false'
       });
-      let reasonBorder = $('<div></div>').addClass('pulse-bar-div').append(reasonBar);
-      let highlightBar = pulseUtility.createjQueryElementWithAttribute('x-highlightperiodsbar', {
-        'period-context': 'RSL' + this.element.getAttribute('machine-id'),
-        'height': 6,
-        'range': this.range.toString(d => d.toISOString())
-      });
-      let barDiv = $('<div></div>').addClass('reasonslotlist-bar')
-        .append(reasonBorder).append(highlightBar);
+      let barDiv = $('<div></div>').addClass('reasonslotlist-bar').append(xBarstack);
       fixedHeaderDiv.append(barDiv);
 
       this._allIdleCheckbox = $("<input type='checkbox' id='reasonslotlist-allidle-checkbox' name='idle' value='AllIdle'>");
@@ -511,7 +503,7 @@ require('x-revisionprogress/x-revisionprogress');
 
       eventBus.EventBus.addEventListener(this,
         'dateTimeRangeChangeEvent',
-        'RSL' + this.element.getAttribute('machine-id'),
+        'reasonslotlist',
         this.onDateTimeRangeChange.bind(this));
 
       let modifMgr = $('body').find('x-modificationmanager');
@@ -587,7 +579,7 @@ require('x-revisionprogress/x-revisionprogress');
       let xdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange',
         {
           'range': this.range.toString(d => d.toISOString()),
-          'period-context': 'RSL' + this.element.getAttribute('machine-id')
+          'period-context': 'reasonslotlist'
         });
       datetimerangeDiv.append(xdatetimerange);
 

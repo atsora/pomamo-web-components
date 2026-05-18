@@ -50,6 +50,21 @@ x-reasonslotlist {
   }
 
   .reasonslotlist-bar {
+    x-barstack {
+      height: auto;
+
+      > x-reasonslotbar,
+      > .barstack-reason-group {
+        flex: 0 0 15px;
+        min-height: 15px;
+      }
+
+      > x-highlightperiodsbar {
+        flex: 0 0 6px;
+        min-height: 6px;
+      }
+    }
+
     x-reasonslotbar {
       pointer-events: none;
     }

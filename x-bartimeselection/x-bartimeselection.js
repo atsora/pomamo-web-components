@@ -65,8 +65,18 @@ var eventBus = require('eventBus');
     get content () { return this._content; }
 
     /**
-     * Reads and clamps the `height` attribute, applies it to `.bartimeselection-content` and `.bartimeselection`.
-     * Repositions the overlay to match the nearest `.middle-bar` offset.
+     * True when the component is mounted as an overlay inside an x-barstack
+     * `.barstack-reason-group`. In that mode, sizing and positioning are CSS-driven.
+     */
+    _isInBarstack () {
+      return this.element.closest('.barstack-reason-group') != null;
+    }
+
+    /**
+     * Reads and clamps the `height` attribute. In standalone mode applies it
+     * to `.bartimeselection-content` and `.bartimeselection` and aligns the
+     * overlay with the nearest `.middle-bar`. In barstack mode the CSS
+     * (`height: 100% !important` on the wrapper) drives sizing.
      */
     _setHeight () {
       if (!pulseUtility.isNumeric(this.element.getAttribute('height'))) {
@@ -82,11 +92,28 @@ var eventBus = require('eventBus');
         }
       }
 
+      if (this._isInBarstack()) {
+        return;
+      }
+
       if ((this._content != undefined) && (this._content != null)) {
         $(this._content).height(this._height);
       }
       $(this.element).find('.bartimeselection').offset($(this.element).closest('.middle-bar').offset());
       $(this.element).find('.bartimeselection').height(this._height);
+    }
+
+    /**
+     * Effective height used for SVG sizing. In barstack mode use the
+     * post-layout height of `.bartimeselection-content`, since the CSS
+     * stretches it to 100% of the reason group.
+     */
+    _effectiveHeight () {
+      if (this._isInBarstack() && this._content != null && this._content.length > 0) {
+        let h = this._content[0].offsetHeight;
+        if (h > 0) return h;
+      }
+      return this._height;
     }
 
     /*_drawEmpty() { // To clean the bar
@@ -116,11 +143,13 @@ var eventBus = require('eventBus');
         this._barwidth = 1200; // Default -- Must be enough to avoid large red line
       }
 
+      let effectiveHeight = this._effectiveHeight();
+
       let svg = document.createElementNS(pulseSvg.get_svgNS(), 'svg');
       //svg.setAttribute('width', this._barwidth); // NO ! for auto-adapt
-      svg.setAttribute('height', this._height);
+      svg.setAttribute('height', effectiveHeight);
       svg.setAttribute('viewBox', '0 0 '
-        + this._barwidth + ' ' + this._height);
+        + this._barwidth + ' ' + effectiveHeight);
       svg.setAttribute('preserveAspectRatio', 'none');
 
       svg.setAttribute('class', 'bartimeselection-svg');
@@ -151,10 +180,14 @@ var eventBus = require('eventBus');
         let line = document.createElementNS(pulseSvg.get_svgNS(), 'line');
         line.setAttribute('stroke', 'red');     // color
         line.setAttribute('stroke-width', '2'); // width
+        // Keep stroke-width in CSS pixels regardless of the viewBox scaling.
+        // Without this, an early `_draw()` with an incomplete layout (small `_barwidth`)
+        // makes the SVG stretch and the red line appears very thick until a click rebuilds it.
+        line.setAttribute('vector-effect', 'non-scaling-stroke');
         line.setAttribute('x1', position);
         line.setAttribute('y1', '0');
         line.setAttribute('x2', position);
-        line.setAttribute('y2', this._height);
+        line.setAttribute('y2', effectiveHeight);
         svg.appendChild(line);
       }
     }

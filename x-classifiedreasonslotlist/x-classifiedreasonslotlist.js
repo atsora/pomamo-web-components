@@ -11,10 +11,9 @@ var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 
-require('x-reasonslotbar/x-reasonslotbar');
+require('x-barstack/x-barstack');
 require('x-savereason/x-savereason');
 require('x-reasonslotlist/x-reasonslotlist');
-require('x-highlightperiodsbar/x-highlightperiodsbar');
 require('x-revisionprogress/x-revisionprogress');
 require('x-stopclassification/x-stopclassification');
 require('x-tr/x-tr');
@@ -81,14 +80,11 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
             eventBus.EventBus.removeEventListenerBySignal(this, 'dateTimeRangeChangeEvent');
             eventBus.EventBus.addEventListener(this,
               'dateTimeRangeChangeEvent',
-              'RSL' + newVal,
+              'classifiedreasonslotlist',
               this.onDateTimeRangeChange.bind(this));
 
-            // Update children contexts
-            let contextId = 'RSL' + newVal;
-            $(this.element).find('x-reasonslotbar').attr('machine-id', newVal).attr('period-context', contextId);
-            $(this.element).find('x-highlightperiodsbar').attr('period-context', contextId);
-            $(this.element).find('x-datetimegraduation').attr('period-context', contextId);
+            // Update machine-id on the barstack (which forwards to children)
+            $(this.element).find('x-barstack').attr('machine-id', newVal);
           }
 
           let modifMgr = $('body').find('x-modificationmanager');
@@ -386,38 +382,31 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
 
       $(this.element).empty();
 
-      let contextId = 'RSL' + this.element.getAttribute('machine-id');
+      let contextId = 'classifiedreasonslotlist';
       eventBus.EventBus.addEventListener(this, 'dateTimeRangeChangeEvent', contextId, this.onDateTimeRangeChange.bind(this));
 
       let fixedHeaderDiv = $('<div></div>').addClass('fixed-header');
 
       let datetimeGraduation = pulseUtility.createjQueryElementWithAttribute('x-datetimegraduation', {
         'range': this.range.toString(d => d.toISOString()),
-        'period-context': 'RSL' + this.element.getAttribute('machine-id')
+        'period-context': contextId
       });
       fixedHeaderDiv.append(datetimeGraduation);
 
-      let reasonBar = pulseUtility.createjQueryElementWithAttribute('x-reasonslotbar', {
+      let xBarstack = pulseUtility.createjQueryElementWithAttribute('x-barstack', {
         'machine-id': this.element.getAttribute('machine-id'),
-        'period-context': 'RSL' + this.element.getAttribute('machine-id'),
-        'height': 50,
+        'period-context': contextId,
+        'main-bar': 'reason',
         'range': this.range.toString(d => d.toISOString()),
-        'showoverwriterequired': false,
-        'click': 'dispatch'
+        'mainbar-showoverwriterequired': 'false',
+        'mainbar-click': 'dispatch'
       });
-      reasonBar.css('cursor', 'pointer');
+      xBarstack.css('cursor', 'pointer');
 
       // Listen to native event sent by x-reasonslotbar
       eventBus.EventBus.addEventListener(this, 'clickOnBarEvent', contextId, this.onBarClickEvent.bind(this));
 
-      let reasonBorder = $('<div></div>').addClass('pulse-bar-div').append(reasonBar);
-      let highlightBar = pulseUtility.createjQueryElementWithAttribute('x-highlightperiodsbar', {
-        'period-context': 'RSL' + this.element.getAttribute('machine-id'),
-        'height': 6,
-        'range': this.range.toString(d => d.toISOString())
-      });
-      let barDiv = $('<div></div>').addClass('classifiedreasonslotlist-bar')
-        .append(reasonBorder).append(highlightBar);
+      let barDiv = $('<div></div>').addClass('classifiedreasonslotlist-bar').append(xBarstack);
       fixedHeaderDiv.append(barDiv);
 
       let divdata = $('<div></div>').addClass('classifiedreasonslotlist-data');

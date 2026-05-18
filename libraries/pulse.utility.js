@@ -1231,23 +1231,23 @@ var eraseCookie =
  * @function changePageName
  */
 exports.changePageName = function (href, newPageName) {
-  //let href = window.location.href; // ".../pagename.html?xxx"
   let splitUrl = href.split('?');
   if (splitUrl.length < 1) {
-    return href; // No change
+    return href;
   }
-  let posPt = splitUrl[0].lastIndexOf('.');
   let posSlash = splitUrl[0].lastIndexOf('/');
-  if ((posPt != -1) && (posSlash != -1)) { // Found both
-    let crtPage = (splitUrl[0].slice(posSlash + 1, posPt));
-    // Replace only the filename (between last / and .)
-    let beforePage = splitUrl[0].substring(0, posSlash + 1);
-    let afterHtml = splitUrl[0].substring(posPt);
-    splitUrl[0] = beforePage + newPageName + afterHtml;
-
-    return splitUrl.join('?');
+  if (posSlash === -1) {
+    return href;
   }
-  return href;
+  let beforePage = splitUrl[0].substring(0, posSlash + 1);
+  let afterSlash = splitUrl[0].substring(posSlash + 1);
+  // Only consider a dot AFTER the last slash as the extension separator.
+  // Avoids matching dots in the hostname (e.g. "demo2.atsora.eu") and falls
+  // back to ".html" for extensionless routes (e.g. "/webapp/" or "/webapp/home").
+  let posPt = afterSlash.lastIndexOf('.');
+  let afterHtml = (posPt !== -1) ? afterSlash.substring(posPt) : '.html';
+  splitUrl[0] = beforePage + newPageName + afterHtml;
+  return splitUrl.join('?');
 }
 
 /** get current page

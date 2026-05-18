@@ -1,0 +1,39 @@
+<!--
+Copyright (C) 2009-2026 Lemoine Automation Technologies
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+
+  <label>Multi-message with navigation (group-id="1_23_53", 4 messages)</label>
+  <div>
+    <x-signalbanner group-id="1_23_53" refresh-rate="60"></x-signalbanner>
+  </div>
+
+  <label>Single message (group-id="42", arrows + counter hidden)</label>
+  <div>
+    <x-signalbanner group-id="42" refresh-rate="60"></x-signalbanner>
+  </div>
+
+  <label>Empty response (group-id="99", banner hidden)</label>
+  <div>
+    <x-signalbanner group-id="99" refresh-rate="60"></x-signalbanner>
+  </div>
+
+  <label>Auto-contrast (group-id="contrast", BgColor only — FgColor computed from luminance)</label>
+  <div>
+    <x-signalbanner group-id="contrast" refresh-rate="60"></x-signalbanner>
+  </div>
+
+  <label>All groups (group-id="ALL")</label>
+  <div>
+    <x-signalbanner group-id="ALL" refresh-rate="60"></x-signalbanner>
+  </div>
+
+  <label>Error: no group-id attribute</label>
+  <div>
+    <x-signalbanner refresh-rate="60"></x-signalbanner>
+  </div>
+
+</div>

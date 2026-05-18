@@ -51,9 +51,20 @@ x-classifiedreasonslotlist {
   .classifiedreasonslotlist-bar {
     padding: 0 @margin_graduation;
 
-    /*     x-reasonslotbar {
-      pointer-events: none;
-    } */
+    x-barstack {
+      height: auto;
+
+      > x-reasonslotbar,
+      > .barstack-reason-group {
+        flex: 0 0 50px;
+        min-height: 50px;
+      }
+
+      > x-highlightperiodsbar {
+        flex: 0 0 6px;
+        min-height: 6px;
+      }
+    }
 
     x-highlightperiodsbar {
       border-top: 1px solid transparent;
@@ -90,8 +101,11 @@ x-classifiedreasonslotlist {
     border: none;
     border-radius: @border_radius_small;
     border: 1px solid @color_window_border;
-    padding: 8px 16px;
-    font-size: 2em;
+    // Fluid font + padding — scales with the *smaller* viewport dimension (vmin),
+    // so a phone in portrait (small width, tall height) still gets the compact size.
+    // Bounds in em (popup base font ≈ 14px): mobile (1em, ~minimal padding) → desktop (2em, 8×16px).
+    padding: clamp(0.4em, 1.5vmin, 0.6em) clamp(0em, 3vmin, 1.2em);
+    font-size: clamp(1em, 4vmin, 2em);
     width: 30%;
     font-weight: bold;
     cursor: pointer;
@@ -317,21 +331,31 @@ x-classifiedreasonslotlist {
       padding: 5px 0;
     }
 
-    .classifiedreasonslotlist-define-button,
-    .classifiedreasonslotlist-showall-button {
-      padding: 0.4em 0;
-      font-size: unset;
-    }
+    // Button sizing now handled by clamp() on the main rule — keep this block only
+    // for the non-button mobile overrides below.
 
     .scrollable-content {
       margin: 0;
     }
 
-    // Halve the visual height of the reason bar + highlight bar. Both bars
-    // render their inner SVG with preserveAspectRatio="none", so overriding
-    // the SVG height in CSS lets the browser rescale all rects uniformly
-    // without re-running the JS init.
+    // Halve the visual height of the reason bar + highlight bar on phone.
+    // Two-step override: the inner SVG (rescaled by preserveAspectRatio="none")
+    // AND the flex sizing on x-barstack — otherwise the host stays at the
+    // desktop flex-basis (50px / 6px) and a gap appears below the smaller SVG.
     .classifiedreasonslotlist-bar {
+
+      x-barstack {
+        > x-reasonslotbar,
+        > .barstack-reason-group {
+          flex: 0 0 25px !important;
+          min-height: 25px !important;
+        }
+
+        > x-highlightperiodsbar {
+          flex: 0 0 3px !important;
+          min-height: 3px !important;
+        }
+      }
 
       x-reasonslotbar,
       x-reasonslotbar svg {

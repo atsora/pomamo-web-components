@@ -887,15 +887,7 @@ exports.goToFirstPage = function (role) {
   let firstPageConfig = getRoleConfig('firstPage', role);
   let targetPage = firstPageConfig.found ? firstPageConfig.value : 'home';
 
-  // Primary behavior: replace current page name in URL.
   let newfullURL = pulseUtility.changePageName(window.location.href, targetPage);
-
-  // Fallback for extensionless routes (for example "/login") where changePageName keeps URL unchanged.
-  if (newfullURL == window.location.href) {
-    let pathname = window.location.pathname;
-    let basePath = pathname.substring(0, pathname.lastIndexOf('/') + 1);
-    newfullURL = basePath + targetPage + '.html';
-  }
 
   // Keep path/mainpath parameters if present.
   let tmpPath = pulseUtility.getURLParameterValues(window.location.href, 'path');

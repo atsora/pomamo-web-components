@@ -14,8 +14,10 @@
 @import "x-reasonslotbar/x-reasonslotbar.less";
 @import "x-cncalarmbar/x-cncalarmbar.less";
 @import "x-redstacklightbar/x-redstacklightbar.less";
+@import "x-bartimeselection/x-bartimeselection.less";
 @import "x-runningslotbar/x-runningslotbar.less";
 @import "x-cncvaluebar/x-cncvaluebar.less";
+@import "x-highlightperiodsbar/x-highlightperiodsbar.less";
 
 x-barstack {
   .bar-rounded-shadow; // border-radius: @border_radius_small + overflow: hidden
@@ -51,7 +53,8 @@ x-barstack {
     }
 
     x-cncalarmbar,
-    x-redstacklightbar {
+    x-redstacklightbar,
+    x-bartimeselection {
       position: absolute;
       inset: 0;
       // Reset the component's own offset hack (height:0; top:-17px)
@@ -72,6 +75,20 @@ x-barstack {
         top: auto !important;
       }
     }
+
+    x-bartimeselection {
+      // Stretch the inner wrappers to fill the reason group height
+      // (CSS overrides the inline height set by the component in standalone mode).
+      .bartimeselection,
+      .bartimeselection-content {
+        height: 100% !important;
+        width: 100%;
+      }
+      .bartimeselection-svg {
+        height: 100%;
+        pointer-events: initial; // capture clicks for time selection
+      }
+    }
   }
 
   // Standalone reasonslotbar / runningslotbar / productionstatebar (no overlays in the bar list)
@@ -82,8 +99,9 @@ x-barstack {
     min-height: 0;
   }
 
-  // Value bar
-  x-cncvaluebar {
+  // Below-bars: cncvaluebar + highlightperiodsbar — small ratio, under main bar
+  x-cncvaluebar,
+  x-highlightperiodsbar {
     flex: 10 1 0;
     min-height: 0;
   }
@@ -112,7 +130,8 @@ x-barstack {
     > x-reasonslotbar,
     > x-runningslotbar,
     > x-productionstatebar   { min-height: 1.4em; }
-    > x-cncvaluebar          { min-height: 0.35em; }
+    > x-cncvaluebar,
+    > x-highlightperiodsbar  { min-height: 0.35em; }
   }
 
   // Collapse thin bars that have no data (component hides content via jQuery .hide() → inline style)
