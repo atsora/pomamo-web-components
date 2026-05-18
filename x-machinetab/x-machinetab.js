@@ -11,6 +11,7 @@ var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
 var pulseConfig = require('pulseConfig');
 var pulseService = require('pulseService');
+var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 var state = require('state');
 
@@ -115,13 +116,39 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       this._messageDiv = $('<div></div>').addClass('pulse-message-div').append(this._messageSpan);
       this._listContainer.append(this._messageDiv);
 
-      // Click delegation — one handler for all tab items
+      // Click delegation — one handler for all tab items.
+      // No-op when the clicked cell is already the active machine.
       this._listContainer.on('click', '.machinetab-machine-cell', (e) => {
         let machineId = Number($(e.currentTarget).closest('.group-single').attr('machine-id'));
-        if (!isNaN(machineId)) {
+        if (!isNaN(machineId) && machineId !== this._activeMachineId) {
           this._activateTab(machineId);
         }
       });
+
+      // Mobile chevrons: prev/next navigation between machines. Hidden on desktop
+      // via CSS; visible only inside @all-phones-media. SVG icons are inlined
+      // from images/previous.svg and images/next.svg (same pattern as periodtoolbar).
+      this._chevronPrev = $('<div></div>')
+        .addClass('machinetab-chevron machinetab-chevron-prev')
+        .attr('role', 'button')
+        .attr('tabindex', '0')
+        .attr('aria-label', this.getTranslation('previousMachine', 'Previous machine'));
+      this._chevronNext = $('<div></div>')
+        .addClass('machinetab-chevron machinetab-chevron-next')
+        .attr('role', 'button')
+        .attr('tabindex', '0')
+        .attr('aria-label', this.getTranslation('nextMachine', 'Next machine'));
+      this._chevronPrev.on('click', (e) => {
+        e.stopPropagation();
+        this._navigateAdjacent(-1);
+      });
+      this._chevronNext.on('click', (e) => {
+        e.stopPropagation();
+        this._navigateAdjacent(1);
+      });
+      this._listContainer.append(this._chevronPrev).append(this._chevronNext);
+      pulseSvg.inlineBackgroundSvg(this._chevronPrev);
+      pulseSvg.inlineBackgroundSvg(this._chevronNext);
 
       // Late-arrival sync: render immediately if machineselection already resolved
       try {
@@ -146,6 +173,8 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       this._listContainer = undefined;
       this._messageDiv = undefined;
       this._messageSpan = undefined;
+      this._chevronPrev = undefined;
+      this._chevronNext = undefined;
       this._machineIdsArray = [];
       this._activeMachineId = null;
       super.clearInitialization();
@@ -333,11 +362,26 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       $(this._listContainer).find('.group-single').each(function () {
         let cell = $(this).find('.machinetab-machine-cell');
         if (Number($(this).attr('machine-id')) === machineId) {
+          $(this).addClass('active');
           cell.addClass('active');
         } else {
+          $(this).removeClass('active');
           cell.removeClass('active');
         }
       });
+    }
+
+    // Navigate to the prev (-1) or next (+1) machine in the list, with wrap-around.
+    // Used by the mobile chevron buttons.
+    _navigateAdjacent(direction) {
+      if (!this._machineIdsArray || this._machineIdsArray.length <= 1) return;
+      let len = this._machineIdsArray.length;
+      let currentIdx = this._machineIdsArray.findIndex(
+        id => Number(id) === this._activeMachineId);
+      if (currentIdx === -1) currentIdx = 0;
+      let newIdx = (currentIdx + direction + len) % len;
+      let newId = Number(this._machineIdsArray[newIdx]);
+      this._activateTab(newId);
     }
 
     // ─── CURRENT REASON POLLING ──────────────────────────────────────────────

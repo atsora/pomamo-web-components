@@ -6,22 +6,23 @@ SPDX-License-Identifier: Apache-2.0
 
 <div class="static-tests">
 
-  <label>Multi-message with navigation (group-id="1_23_53", 4 messages)</label>
+  <label>Multi-message stacked (group-id="1_23_53", 4 messages)</label>
   <div>
     <x-signalbanner group-id="1_23_53" refresh-rate="60"></x-signalbanner>
   </div>
 
-  <label>Single message (group-id="42", arrows + counter hidden)</label>
+  <label>Single message (group-id="42")</label>
   <div>
     <x-signalbanner group-id="42" refresh-rate="60"></x-signalbanner>
   </div>
 
-  <label>Empty response (group-id="99", banner hidden)</label>
-  <div>
+  <label>Empty response (group-id="99", banner takes no space)</label>
+  <div style="border: 1px dashed #888; padding: 4px;">
     <x-signalbanner group-id="99" refresh-rate="60"></x-signalbanner>
+    <span style="font-size: 0.8em; opacity: 0.6;">(dashed box shows that nothing is rendered)</span>
   </div>
 
-  <label>Auto-contrast (group-id="contrast", BgColor only — FgColor computed from luminance)</label>
+  <label>Auto-contrast (group-id="contrast", BgColor only — FgColor computed)</label>
   <div>
     <x-signalbanner group-id="contrast" refresh-rate="60"></x-signalbanner>
   </div>

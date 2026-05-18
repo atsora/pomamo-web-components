@@ -6,130 +6,48 @@
 
 // === CONTENT ===
 x-signalbanner {
-  display: flex;
-  width: 100%;
+  display: block;
   box-sizing: border-box;
 
   .xsignalbanner-container {
     display: flex;
-    flex: 1;
+    flex-direction: column;
     min-width: 0;
   }
 
-  @keyframes xsignalbanner-slidedown {
-    from { transform: translateY(-100%); opacity: 0; }
-    to   { transform: translateY(0); opacity: 0.95; }
-  }
-
-  .xsignalbanner-content {
-    position: relative;
+  .xsignalbanner-stack {
     display: flex;
     flex-direction: column;
-    flex: 1;
     min-width: 0;
-    gap: 6px;
-    padding: 10px 16px;
-    padding-right: 40px;
-    border-radius: 4px;
-    opacity: 0.95;
-    box-shadow: inset 0 0 10px @bar_rounded_border;
+  }
+
+  .xsignalbanner-row {
+    display: flex;
+    align-items: center;
+    padding: 2px 10px;
+    font-size: 0.85em;
+    line-height: normal;
     background-color: @color_blue;
     color: @color_text;
-    animation-name: xsignalbanner-slidedown;
-    animation-duration: 0.3s;
-  }
-
-  .xsignalbanner-close-corner {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-  }
-
-  .xsignalbanner-message-area {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    min-height: 1.5em;
-    line-height: normal;
-  }
-
-  .xsignalbanner-text {
-    display: block;
-    flex: 1;
     word-break: break-word;
-  }
-
-  .xsignalbanner-footer {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    justify-content: flex-end;
-  }
-
-  .xsignalbanner-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-    color: inherit;
-    opacity: 0.85;
-    border-radius: 3px;
-    width: 26px;
-    height: 26px;
-    box-shadow: none;
-
-    &::after { content: none; }
-
-    &:hover {
-      opacity: 1;
-      background-color: rgba(255, 255, 255, 0.15);
-    }
-
-    svg {
-      width: 14px;
-      height: 14px;
-      display: block;
-    }
-  }
-
-  .xsignalbanner-indicator {
-    font-size: 0.85em;
-    font-weight: bold;
-    min-width: 32px;
-    text-align: center;
-    line-height: normal;
-    opacity: 0.9;
   }
 
   .xsignalbanner-error {
     display: flex;
-    flex: 1;
     align-items: center;
-    padding: 8px 12px;
-    border-radius: 4px;
+    padding: 2px 10px;
+    font-size: 0.85em;
+    line-height: normal;
     background-color: @color_red;
     color: @color_text;
-    opacity: 0.9;
-    line-height: normal;
   }
 }
 
-// Mobile responsive
-@media @all-phones-media {
-  x-signalbanner {
-    .xsignalbanner-content {
-      padding: 8px 12px;
-      gap: 4px;
-    }
-    .xsignalbanner-footer {
-      gap: 6px;
-    }
-    .xsignalbanner-btn {
-      width: 24px;
-      height: 24px;
-    }
-  }
+// When dropped inside a Pulse page's main area (which has `padding: 0.8rem`),
+// escape that padding so the banner is flush with `.pulse-mainarea-full`
+// edges. The reintroduced bottom margin preserves the original top spacing
+// of the content below — when the banner is empty (h=0), the layout
+// matches what it was before the banner existed.
+.pulse-mainarea-inner > x-signalbanner {
+  margin: -0.8rem -0.8rem 0.8rem -0.8rem;
 }

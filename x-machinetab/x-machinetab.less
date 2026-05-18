@@ -81,6 +81,11 @@ x-machinetab {
     border-left: 1em solid transparent;
     clip-path: polygon(0 1em, 1em 0%, 100% 0%, 100% 100%, 1em 100%, 0 4.5em);
 
+    // Already-selected machine: no click affordance (click is a no-op).
+    &.active {
+      cursor: default;
+    }
+
     .machinetab-icons {
       order: 2;
       display: flex;
@@ -117,5 +122,85 @@ x-machinetab {
     font-size: 14px;
     font-weight: normal;
     text-align: center;
+  }
+
+  // Mobile chevrons: same visual pattern as x-periodtoolbar prev/next buttons
+  // (.create_svg_nostroke from common.less inlines previous.svg / next.svg).
+  // Hidden on desktop, surfaced inside @all-phones-media.
+  .machinetab-chevron {
+    display: none;
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: @border_radius_small;
+    box-sizing: content-box;
+    touch-action: manipulation;
+  }
+  .machinetab-chevron-prev {
+    .create_svg_nostroke('previous', @box_text_color, @color_background_alternate);
+  }
+  .machinetab-chevron-next {
+    .create_svg_nostroke('next', @box_text_color, @color_background_alternate);
+  }
+}
+
+// Phone display: horizontal layout — the component itself becomes a
+// delimited section (background + border) containing
+// [chevron-prev | active cell | chevron-next]. Margin around the
+// component creates breathing room with neighbours; the inner side
+// is flush — no padding on the section itself.
+@media @all-phones-media {
+  x-machinetab {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    padding: 0;
+    margin: 0.4em auto;
+    width: fit-content;
+    max-width: 100%;
+    min-width: 90%;
+    background-color: @box_color;
+    border: 1px solid @color_window_border;
+    border-radius: @cellbar-corner-radius;
+    box-sizing: border-box;
+    cursor: default;
+
+    .machinetab-chevron {
+      display: block;
+      flex: 0 0 auto;
+    }
+    .machinetab-chevron-prev { order: -1; }
+    .machinetab-chevron-next { order: 9999; }
+
+    .group-single {
+      display: none;
+      order: 1;
+      margin: 0;
+    }
+    .group-single.active {
+      display: block;
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .machinetab-machine-cell {
+      clip-path: none;
+      border-left-width: 0;
+      height: auto;
+      min-height: 2.2em;
+      padding: 0.2em 0.6em;
+      cursor: default;
+
+      // Active cell on mobile: horizontal layout (machine name + icons side by side).
+      // Background color is overridden at page level.
+      &.active {
+        flex-direction: row;
+        justify-content: center;
+        gap: 0.75em;
+      }
+    }
   }
 }
