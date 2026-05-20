@@ -1077,41 +1077,31 @@ require('x-freetext/x-freetext');
      */
     _storeSelection() {
       if (false == this._useMachineSelection) {
-        // Build machine list in group click order:
-        // - single-machine groups: use stored MachineId directly (preserves click order)
-        // - multi-machine groups: pull from `_previewResolvedMachineIds` (resolved internally
-        //   by `_resolvePreviewMachines`, with cache reuse and AJAX fallback)
-
-        // Collect direct machine IDs for single-machine groups (from stored MachineId or group ID)
-        const singleMachineIdSet = new Set();
-        for (const groupId of this._groupSelectionArray) {
-          const display = this._groupDisplays.get(groupId.toString());
+        if (this._groupSelectionArray.length > 1) {
+          // Multi-group: the backend applies cross-group semantics (intersection)
+          // on MachinesFromGroups?GroupIds=A,B,... — _previewResolvedMachineIds
+          // already holds that resolved set. Reconstructing the list from
+          // single-machine groups would yield a UNION instead, which is wrong
+          // whenever the intersection is smaller. Trust the preview directly.
+          this._machineSelectionArray = this._previewResolvedMachineIds
+            .filter(id => id !== '')
+            .slice();
+        }
+        else {
+          // Single-group: safe to use the stored MachineId for a single-machine
+          // group, or the preview-resolved list for a multi-machine group.
+          const groupId = this._groupSelectionArray[0];
+          const display = groupId !== undefined ? this._groupDisplays.get(groupId.toString()) : undefined;
           if (display && display.singlemachine) {
             const machId = display.machineid !== undefined ? display.machineid.toString() : groupId.toString();
-            singleMachineIdSet.add(machId);
+            this._machineSelectionArray = [machId];
+          }
+          else {
+            this._machineSelectionArray = this._previewResolvedMachineIds
+              .filter(id => id !== '')
+              .slice();
           }
         }
-
-        // Multi-machine pool: every preview-resolved id that isn't already covered by
-        // a single-machine group (those are reinserted in click order below).
-        let multiMachinePool = this._previewResolvedMachineIds
-          .filter(id => id !== '' && !singleMachineIdSet.has(id));
-
-        // Build ordered machine list following _groupSelectionArray click order
-        const orderedMachines = [];
-        for (const groupId of this._groupSelectionArray) {
-          const display = this._groupDisplays.get(groupId.toString());
-          if (display && display.singlemachine) {
-            // Use stored MachineId; fall back to group ID (often equal for single-machine groups)
-            const machId = display.machineid !== undefined ? display.machineid.toString() : groupId.toString();
-            orderedMachines.push(machId);
-          } else {
-            // Multi-machine group: insert all remaining pool machines at this position
-            orderedMachines.push(...multiMachinePool.splice(0));
-          }
-        }
-
-        this._machineSelectionArray = orderedMachines;
       }
       else {
         this._groupSelectionArray = [].concat(this._machineSelectionArray);

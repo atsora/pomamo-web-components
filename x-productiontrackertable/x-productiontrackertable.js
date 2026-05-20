@@ -151,6 +151,11 @@ var eventBus = require('eventBus');
       this._messageSpan = undefined;
       this._content = undefined;
 
+      if (this._resizeObserver) {
+        this._resizeObserver.disconnect();
+        this._resizeObserver = undefined;
+      }
+
       this._resetAllData();
 
       super.clearInitialization();
@@ -279,35 +284,76 @@ var eventBus = require('eventBus');
       this._resetAllData();
     }
 
+    /**
+     * SVG-like ratio scaling: measure the table's natural dimensions at a reference font (16px),
+     * compute the scale factor that makes it fit the wrapper, then apply the scaled font.
+     *
+     * Modes:
+     * - 'contain' (default, attribute `fit-mode` absent or 'contain'): aspect-fit (preserveAspectRatio="meet").
+     *   The most limiting of width or height drives the scale; the other dimension may have empty space.
+     * - 'scroll-y' (attribute `fit-mode="scroll-y"`): scale by width only. Height may overflow → vertical scroll
+     *   inside `.productiontrackertable-content` (overflow: auto).
+     *
+     * Width: requires the table to have a stable natural ratio. With `white-space: nowrap` on cells
+     * (set in component LESS) and content-sized columns, the natural ratio is stable across font sizes.
+     */
     _resize () {
-      if (this._table != undefined) {
-        // Height
-        let parentHeight = $(this.element).parent().height();
-        let hourlyActuals = $(this._table).find('.hourly-actual');
-        let nbRows = hourlyActuals.length + 3; // header = +/- 3 rows
-        let lineH = 35;
-        let coeffHeight = 1;
-        if (parentHeight < nbRows * lineH) {
-          coeffHeight = parentHeight / (nbRows * lineH);
-        }
+      if (!this._table) return;
+      const wrapperH = this.element.clientHeight;
+      const wrapperW = this.element.clientWidth;
+      if (wrapperH === 0 || wrapperW === 0) return;
 
-        // width
-        let parentWidth = $(this.element).parent().width();
-        let vw = $('body').width();
-        let tmpVM;
-        let showreservecapacity = this.getConfigOrAttribute('showreservecapacity', false);
-        if (showreservecapacity == 'true') {
-          tmpVM = Math.round(10000 * coeffHeight * 1.5 * parentWidth / vw)
-            / 10000;
+      const BASE = 16;
+      // Auto-detect mode: 'contain' inside .appcontext-live (cell is height-bounded),
+      // else 'scroll-y' (page mode: scale by width, height grows; outer 60vh cap triggers scroll).
+      // Explicit `fit-mode` attribute still wins.
+      const fitModeAttr = this.element.getAttribute('fit-mode');
+      const fitMode = fitModeAttr || (this.element.closest('.appcontext-live') ? 'contain' : 'scroll-y');
+
+      // Pass 1: measure at reference font, apply initial scale with safety margin.
+      this._table.css('font-size', BASE + 'px');
+      const natW = this._table[0].scrollWidth;
+      const natH = this._table[0].scrollHeight;
+      if (natW === 0 || natH === 0) return;
+
+      const scale1 = fitMode === 'scroll-y'
+        ? wrapperW / natW
+        : Math.min(wrapperW / natW, wrapperH / natH);
+      let font = Math.max(1, Math.min(BASE * 1.9, BASE * scale1 * 0.95));
+      this._table.css('font-size', font + 'px');
+
+      // Pass 2: verify the rendered grid actually fits. If it still overflows, tighten.
+      // Subtract 1px from wrapper dimensions to absorb subpixel rounding (scrollWidth/Height return integers).
+      if (fitMode !== 'scroll-y') {
+        const realW = this._table[0].scrollWidth;
+        const realH = this._table[0].scrollHeight;
+        if (realW > 0 && realH > 0) {
+          const overflowScale = Math.min((wrapperW - 1) / realW, (wrapperH - 1) / realH);
+          if (overflowScale < 1) {
+            font = Math.max(1, font * overflowScale);
+            this._table.css('font-size', font + 'px');
+          }
         }
-        else {
-          tmpVM = Math.round(10000 * coeffHeight * 2 * parentWidth / vw)
-            / 10000;
-        }
-        let tmpREM = Math.round(10000 * coeffHeight * 0.2500) / 10000;  // default = 0.2500
-        this._table.css('font-size', 'clamp(0.5rem, ' + tmpREM + 'rem + '
-          + tmpVM + 'vw, 1.9rem)');
       }
+    }
+
+    /**
+     * Observe the wrapper dimensions so the table re-scales on layout changes
+     * (subgroup count change, viewport resize, etc).
+     */
+    _ensureResizeObserver () {
+      if (this._resizeObserver) return;
+      if (typeof ResizeObserver === 'undefined') return;
+      this._resizeObserver = new ResizeObserver(() => {
+        // Defer to next frame to avoid loops with our own font-size mutation.
+        if (this._resizePending) return;
+        this._resizePending = true;
+        requestAnimationFrame(() => {
+          this._resizePending = false;
+          this._resize();
+        });
+      });
+      this._resizeObserver.observe(this.element);
     }
 
     _draw () {
@@ -598,8 +644,9 @@ var eventBus = require('eventBus');
           }
         } // end for
 
-        // Resize text according to parent size AND nb of displayed lines
+        // Resize text according to wrapper dimensions (SVG-like aspect-ratio fit)
         this._resize();
+        this._ensureResizeObserver();
 
       } // end if (this._data)
     } // end _draw

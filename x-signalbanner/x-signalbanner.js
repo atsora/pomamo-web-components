@@ -9,7 +9,7 @@
 
 var pulseComponent = require('pulsecomponent');
 var pulseConfig = require('pulseConfig');
-var eventBus = require('eventBus');
+var pulseLogin = require('pulseLogin');
 
 (function () {
 
@@ -24,8 +24,12 @@ var eventBus = require('eventBus');
    *                            string (e.g. "1_23_53" or "ALL").
    *   from-machine-selection - (presence-only) when set, the component ignores
    *                            `group-id` and auto-derives it from the current
-   *                            `x-machineselection` resolved ids, joined by "_".
-   *                            Re-subscribes via the `machineListChanged` event bus.
+   *                            `x-machineselection` state: prefers the raw `group`
+   *                            pulseConfig key, falling back to `machine` when the
+   *                            user picked individual machines (same fallback logic
+   *                            as x-machineselection itself). The framework's
+   *                            built-in `configChangeEvent` wiring re-starts the
+   *                            polling whenever either key changes.
    *   refresh-rate          - (optional) polling interval in seconds (default 30)
    *
    * Expected response shape:
@@ -48,7 +52,6 @@ var eventBus = require('eventBus');
       self._stack = undefined;
       self._errorDiv = undefined;
       self._resolvedGroupId = '';
-      self._machineListenerOwner = null;
 
       return self;
     }
@@ -78,13 +81,10 @@ var eventBus = require('eventBus');
       this._container.append(this._stack).append(this._errorDiv);
       $(this.element).append(this._container);
 
-      this._registerMachineListenerIfNeeded();
-
       this.switchToNextContext();
     }
 
     clearInitialization () {
-      this._unregisterMachineListener();
       $(this.element).empty();
       this._container = undefined;
       this._stack = undefined;
@@ -92,37 +92,36 @@ var eventBus = require('eventBus');
       super.clearInitialization();
     }
 
+    // Auto-wired by the framework after `initialize()` (see state.js → AutoPathInitialState).
+    // Restart the polling cycle whenever the upstream machine/group selection moves.
+    onConfigChange (event) {
+      if (!this._isAutoMode()) return;
+      const key = event && event.target && event.target.config;
+      if (key === 'group' || key === 'machine') {
+        this.start();
+      }
+    }
+
     _isAutoMode () {
       return this.element.hasAttribute('from-machine-selection');
     }
 
-    _registerMachineListenerIfNeeded () {
-      if (!this._isAutoMode() || this._machineListenerOwner) return;
-      this._machineListenerOwner = {};
-      eventBus.EventBus.addGlobalEventListener(this._machineListenerOwner,
-        'machineListChanged',
-        this._onMachineListChanged.bind(this));
-    }
-
-    _unregisterMachineListener () {
-      if (!this._machineListenerOwner) return;
-      eventBus.EventBus.removeEventListenerBySignal(this._machineListenerOwner,
-        'machineListChanged');
-      this._machineListenerOwner = null;
-    }
-
-    _onMachineListChanged (event) {
-      const ids = (event && event.target && event.target.ids) || [];
-      const next = ids.map(s => String(s).trim()).filter(s => s !== '').join('_');
-      if (next === this._resolvedGroupId) return;
-      this._resolvedGroupId = next;
-      this.start();
-    }
-
     _computeResolvedGroupId () {
       if (this._isAutoMode()) {
-        const ids = pulseConfig.getArray('machine', []) || [];
-        return ids.map(s => String(s).trim()).filter(s => s !== '').join('_');
+        // Prefer raw group ids (what x-machineselection persists in the `group`
+        // config when the user picked groups). Fall back to `machine` when no
+        // groups are stored — that's the case when the user picked individual
+        // machines, mirroring x-machineselection's own internal fallback
+        // (joinedGroups = joinedMachines when groups are empty).
+        const groups = pulseConfig.getString('group', '');
+        let raw;
+        if (groups && groups.trim() !== '') {
+          raw = groups.split(',');
+        }
+        else {
+          raw = pulseConfig.getArray('machine', []) || [];
+        }
+        return raw.map(s => String(s).trim()).filter(s => s !== '').join('_');
       }
       const explicit = this.element.getAttribute('group-id');
       return (explicit || '').trim();
@@ -133,7 +132,7 @@ var eventBus = require('eventBus');
 
       if (this._resolvedGroupId === '') {
         if (this._isAutoMode()) {
-          // No machine selected yet — wait silently for machineListChanged.
+          // No selection yet — wait silently for configChangeEvent.
           this.switchToKey('Error',
             () => this._hideAll(),
             () => this.removeError());
@@ -182,7 +181,12 @@ var eventBus = require('eventBus');
     }
 
     getShortUrl () {
-      return 'Signal/?GroupId=' + encodeURIComponent(this._resolvedGroupId);
+      let url = 'Signal/?GroupId=' + encodeURIComponent(this._resolvedGroupId);
+      const role = pulseLogin.getRole();
+      if (role) {
+        url += '&RoleKey=' + encodeURIComponent(role);
+      }
+      return url;
     }
 
     refresh (data) {

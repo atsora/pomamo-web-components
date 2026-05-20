@@ -162,7 +162,7 @@ var pulseUtility = require('pulseUtility');
           if (pulseUtility.isNotDefined(machine) || machine == '') {
             return ''; // Should never happen !
           }
-          url += '?GroupIds' + machine;
+          url += '?GroupIds=' + machine;
           return url;
         }
         else {

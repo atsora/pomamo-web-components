@@ -21,17 +21,19 @@ x-productiontrackertable {
 
     .productiontrackertable-table {
       display: grid;
-      grid-template-columns: 1fr repeat(4, auto);
-      column-gap: 2px;
-      row-gap: 2px;
+      // Content-sized columns + nowrap = stable natural ratio for the SVG-like fit in _resize()
+      grid-template-columns: auto repeat(4, auto);
+      column-gap: 0.1em;
+      row-gap: 0.1em;
       justify-items: stretch;
       align-items: stretch;
+      white-space: nowrap;
 
       //font-size: 1.5ex; -> NEVER !!!
       //font-size: clamp(1rem, 0.2500rem + 3.3333vw, 2rem); -> in js code
 
       &.with-reserve-capacity {
-        grid-template-columns: 1fr repeat(7, auto);
+        grid-template-columns: auto repeat(7, auto);
       }
 
       .header {

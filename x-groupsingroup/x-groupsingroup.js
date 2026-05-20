@@ -82,24 +82,6 @@ var eventBus = require('eventBus');
       if (pulseUtility.isNotDefined(boxtocloneid))
         boxtocloneid = 'boxtoclone';
 
-      // Calculate height to fit container
-      let row_height = null;
-      let nbRowToDisplay = 1;
-      if (this._groupIdsArray.length > 0) {
-        nbRowToDisplay = Math.trunc(Math.sqrt(this._groupIdsArray.length));
-        if (3 == this._groupIdsArray.length) {
-          nbRowToDisplay = 2;  // To display 2 on first row when total = 3
-        }
-        row_height = 100.0 / nbRowToDisplay + '%';
-      }
-      let column_width = null; // defined below
-      let minColumns = Math.trunc(this._groupIdsArray.length / nbRowToDisplay);
-      let maxColumns = Math.ceil(this._groupIdsArray.length / nbRowToDisplay)
-      let nbOfMaxSizedRows = this._groupIdsArray.length % minColumns;
-      if (3 == this._groupIdsArray.length) {
-        nbOfMaxSizedRows = 1;
-      }
-
       // Update the component with data returned by the web service
       function groupIdIsInList (groupId, List) {
         for (let i = 0; i < List.length; i++) {
@@ -126,6 +108,7 @@ var eventBus = require('eventBus');
 
       if (0 == this._groupIdsArray.length) {
         //$(this._messageSpan).html('No machines or group to display');
+        $(this._content).attr('data-count', 0);
 
         console.warn('No machines or group to display in x-groupsingroup');
         // Delayed display :
@@ -173,25 +156,10 @@ var eventBus = require('eventBus');
             li.append(copy);
           }
 
-          // Set height / width
-          let nbColumnToDisplay = minColumns;
-          if (i < nbOfMaxSizedRows * maxColumns)
-            nbColumnToDisplay = maxColumns;
-          column_width = 100.0 / nbColumnToDisplay + '%';
-
-          // Version 'bourrin' = format table
-          //column_width = 100.0 / maxColumns + '%';
-
-          if (null != column_width)
-            $(li).css({
-              'width': column_width
-            });
-          if (null != row_height)
-            $(li).css({
-              'height': row_height
-            });
           $(this._content).append(li);
         }
+
+        $(this._content).attr('data-count', this._groupIdsArray.length);
       }
       //$(this.element).find('.disableDeleteWhenDisconnect').removeClass('disableDeleteWhenDisconnect'); // too early
 
