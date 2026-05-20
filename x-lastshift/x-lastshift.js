@@ -14,15 +14,16 @@ var pulseUtility = require('pulseUtility');
 (function () {
 
   /**
-   * `<x-lastshift>` — displays the last shift name for a machine.
+   * `<x-lastshift>` — displays the current shift label for one machine.
    *
-   * Polls `GetLastShift?MachineId=<id>` at `update` attribute ms or `currentRefreshSeconds` config interval.
-   * Renders `data.Shift.Display` into `.lastshift-shiftlabel`, or empty string if no shift data.
+   * Polls `GetLastShift?MachineId=<id>` (interval = `update` attribute in ms
+   * when set, otherwise `refreshingRate.currentRefreshSeconds` * 1000,
+   * default 10 s) and renders `data.Shift.Display` into
+   * `.lastshift-shiftlabel`. Renders an empty label when no shift is active.
    *
-   * Attributes:
-   *   machine-id - (required) integer machine id; restart triggered on change
-   *   update     - optional polling interval in ms (overrides config)
-   *
+   * @element x-lastshift
+   * @attr {number} machine-id (required) machine id
+   * @attr {number} update     polling interval in ms (overrides the config)
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class LastShiftComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

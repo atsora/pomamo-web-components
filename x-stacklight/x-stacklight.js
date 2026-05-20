@@ -31,17 +31,17 @@ function hexToRGB(hex)
 (function () {
 
   /**
-   * `<x-stacklight>` — renders an SVG stacklight tower for a machine.
+   * `<x-stacklight>` — SVG stack-light tower for one machine.
    *
-   * Polls `CncValue/Current?FieldIds=126&MachineId=<id>` (field 126 = stacklight).
-   * `manageSuccess()` checks data staleness against `maximumElapsedTimeCurrentCncvalue`;
-   * stale data shows 'N/A' via `NotAvailable`. Fresh data is passed to `refresh(data)`.
-   * `refresh(data)` draws an SVG tower: top ellipse + one path per light slice,
-   * each styled with `stacklight-<status>` and `stacklight-color-<Color>` CSS classes.
+   * Polls `CncValue/Current?FieldIds=126&MachineId=<id>` (field 126 is the
+   * stack-light). Data older than
+   * `maximumElapsedTimeCurrentCncvalue` is treated as not-available and
+   * the tower switches to an 'N/A' state. Fresh data is rendered as a
+   * top ellipse plus one path per light slice, decorated with
+   * `stacklight-<status>` and `stacklight-color-<Color>` classes.
    *
-   * Attributes:
-   *   machine-id - (required) integer machine id; restart triggered on change
-   *
+   * @element x-stacklight
+   * @attr {number} machine-id (required) machine id
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class StacklightComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

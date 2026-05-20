@@ -16,11 +16,20 @@ var pulseCustomDialog = require('pulseCustomDialog');
 (function () {
 
   /**
-   * `<x-loginchangepassword>` — form widget for changing the current user's password.
+   * `<x-loginchangepassword>` — form to change the current user's password.
    *
-   * Renders old password, new password, and confirmation fields with a submit button.
-   * Submits the password change via the Pulse REST API and shows success or error feedback.
+   * Renders a disabled user field (pre-filled from `pulseLogin.getLogin()`,
+   * or from the `PulseLogin` debug attribute) and three password inputs
+   * (old / new / confirm) with a "Change" button. On submit, posts to
+   * `<path>ChangePassword` with `{ Login, OldPassword, NewPassword }` via
+   * `pulseService.postAjax`. On success: clears the stored login through
+   * `pulseLogin.cleanLoginRole`, shows an info dialog (`pulseCustomDialog`),
+   * navigates to the login page via `pulseConfig.goToPageLogin` and closes
+   * the dialog after 3 s. Error messages from the server, mismatched
+   * confirmations, and request failures are surfaced via `displayError`.
    *
+   * @element x-loginchangepassword
+   * @attr {string} PulseLogin  debug override for the prefilled user name
    * @extends pulseComponent.PulseInitializedComponent
    */
   class LoginChangePasswordComponent extends pulseComponent.PulseInitializedComponent {

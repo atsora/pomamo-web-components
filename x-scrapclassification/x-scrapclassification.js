@@ -20,17 +20,19 @@ require('x-savescrapreason/x-savescrapreason');
 (function () {
 
   /**
-   * `<x-scrapclassification>` — displays and allows editing of scrap reason for a machine cycle.
+   * `<x-scrapclassification>` — current scrap count for one machine with
+   * an inline "edit scrap reason" dialog.
    *
-   * Fetches `Scrap/At/Get?MachineId=<id>&At=<range>&NextPeriod=<n>` once per request.
-   * Renders the current scrap count and reason, with a button to open `x-savescrapreason` dialog.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Fetches `Scrap/At/Get?MachineId=<id>&At=<range>&NextPeriod=<n>` and
+   * renders the produced / scrap / unproduced counts; the edit button
+   * mounts an `x-savescrapreason` to record a reason. Reacts to
+   * `dateTimeRangeChangeEvent` on `period-context` and to
+   * `machineIdChangeSignal` on `machine-context`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-scrapclassification
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class ScrapClassificationComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

@@ -16,17 +16,23 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-currenticonunansweredreason>` — icon indicator for unanswered stop reasons on a machine.
+   * `<x-currenticonunansweredreason>` — warning icon when one machine has
+   * unanswered stop reasons in a given range.
    *
-   * Polls `ReasonUnanswered?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
-   * Displays a warning icon when the machine has stops without an assigned reason in the period.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls `ReasonUnanswered?MachineId=<id>&Range=<range>` at
+   * `currentRefreshSeconds + 1` interval and renders a `.pulse-icon-missing-reason`
+   * div (with optional tooltip) when `data.IsUnansweredPeriod` is true. Switches
+   * to `Reload` on a `modificationEvent` of kind `reason` for the same machine
+   * once `pendingModifications == 0`. Reacts to `dateTimeRangeChangeEvent` on
+   * `period-context` (or globally) and to `reasonStatusChange` on
+   * `status-context`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-currenticonunansweredreason
+   * @attr {number}  machine-id      (required) machine id
+   * @attr {boolean} active          `'true'` adds the `.active` class on the inner content
+   * @attr {string}  range           ISO datetime range `begin;end`
+   * @attr {string}  period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string}  status-context  event-bus context for `reasonStatusChange`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CurrentIconUnansweredReasonComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

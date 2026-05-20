@@ -14,17 +14,16 @@ var pulseComponent = require('pulsecomponent');
 (function () {
 
   /**
-   * `<x-currenttool>` — displays the current tool number for a machine.
+   * `<x-currenttool>` — current tool number for one machine.
    *
-   * Polls `CncValue/Current?MachineId=<id>&FieldIds=119` at `currentRefreshSeconds + 1` seconds.
-   * `manageSuccess()` intercepts stale data (delay > `maximumElapsedTimeCurrentTool` = 2 min)
-   * and shows '--' via `NotAvailable` context. Otherwise delegates to `refresh(data)`.
-   * `refresh(data)` renders `'T' + value` from the first machine module's first field, or empty.
-   * `displayTextAndTooltip(text, tooltip)` manages a lazily created `<span>`.
+   * Polls `CncValue/Current?MachineId=<id>&FieldIds=119` (field 119 = Tool) at
+   * `currentRefreshSeconds + 1` interval and renders `'T' + value` from the
+   * first machine module's first field into a lazily created `<span>`. When the
+   * value is older than 2 minutes, switches to the `NotAvailable` context and
+   * shows `--` instead.
    *
-   * Attributes:
-   *   machine-id - (required) integer machine id; restart triggered on change
-   *
+   * @element x-currenttool
+   * @attr {number} machine-id  (required) machine id
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CurrentToolComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

@@ -17,16 +17,20 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-partproductionstatuspie>` — SVG donut showing current part production status and machining progress.
+   * `<x-partproductionstatuspie>` — donut SVG showing the current
+   * part-production status (actual vs. goal) and the time-to-next-event
+   * for one machine.
    *
-   * Polls `Operation/ProductionMachiningStatus?MachineId=<id>` at `currentRefreshSeconds` interval.
-   * Renders a pie chart with segments for actual vs. goal part count, with live timer between polls.
-   * Listens to `machineIdChangeSignal` on `machine-context`.
+   * Polls `Operation/ProductionMachiningStatus?MachineId=<id>` (interval =
+   * `refreshingRate.currentRefreshSeconds`, default 10 s) and renders an
+   * SVG pie with segments for actual vs. goal part count plus a dashed
+   * inner ring driven by an internal 1 s timer
+   * (`_dashTimeRefreshTimer`). Reacts to `machineIdChangeSignal` on
+   * `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-partproductionstatuspie
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class PartProductionStatusPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

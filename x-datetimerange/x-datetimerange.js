@@ -4,10 +4,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * Definition of tag x-datetimerange is used to display datetime range.
- * This tag allow <em>zoom in</em> and <em>zoom out</em> through current datetime range.
- * It is also possible to go to previous or next period.
- *
  * @module x-datetimerange
  * @requires module:pulseComponent
  */
@@ -24,17 +20,32 @@ require('x-datetimepicker/x-datetimepicker');
 (function () {
 
   /**
-   * `<x-datetimerange>` — datetime range display and navigation widget.
+   * `<x-datetimerange>` — datetime-range display + zoom/prev/next navigation.
    *
-   * Renders the current begin/end datetime range with zoom-in, zoom-out, previous, and next period buttons.
-   * Dispatches `dateTimeRangeChangeEvent` on `period-context` when the range changes.
-   * When `noteditable` is set, renders the range as read-only text.
+   * Renders the current begin/end of `range` with buttons to zoom in/out and to
+   * step to the previous/next period of the same duration. Two display modes:
+   * `range` (default, formatted plage with an "In progress" marker for an open
+   * upper bound) and `shift` (uses `shift-label`). Clicking the range opens a
+   * change-range dialog with two `<x-datetimepicker>` (bounded by `min-begin`,
+   * `max-begin`, `min-end`, `max-end`). Dispatches `dateTimeRangeChangeEvent`
+   * on `period-context` whenever the range changes; reacts to
+   * `askForDateTimeRangeEvent` on the same context to re-emit the current
+   * range, and to `dateTimeChangeEvent` on `datetime-context` for red-line
+   * updates.
    *
-   * Attributes:
-   *   range          - ISO date range string `begin;end`
-   *   noteditable    - (optional) if `'true'`, disables navigation controls
-   *   period-context - event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-datetimerange
+   * @attr {string}  range            ISO datetime range `begin;end`
+   * @attr {boolean} not-editable     disables navigation controls and read-only renders the range
+   * @attr {boolean} possible-no-end  allows the end bound to be empty
+   * @attr {string}  min-begin        ISO datetime bound for the begin input
+   * @attr {string}  max-begin        ISO datetime bound for the begin input
+   * @attr {string}  min-end          ISO datetime bound for the end input
+   * @attr {string}  max-end          ISO datetime bound for the end input
+   * @attr {string}  period-context   event-bus context for `dateTimeRangeChangeEvent` (and `askForDateTimeRangeEvent`)
+   * @attr {string}  datetime-context event-bus context for `dateTimeChangeEvent`
+   * @fires dateTimeRangeChangeEvent  `{ daterange }` on every range change
+   * @method openChangeRange          programmatically opens the change-range dialog
+   * @method getRangeString           current range as `begin;end` ISO string
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class ParamDateTimeRangeComponent extends pulseComponent.PulseParamInitializedComponent {

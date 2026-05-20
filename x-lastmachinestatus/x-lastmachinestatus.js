@@ -28,24 +28,31 @@ require('x-stopclassification/x-stopclassification');
 (function () {
 
   /**
-   * `<x-lastmachinestatus>` — bar-style display of the current and past machine reason status.
+   * `<x-lastmachinestatus>` — cell-bar showing the current reason status and a
+   * "past data" cell for one machine.
    *
-   * Polls `GetLastMachineStatusV2?RequiredNumber=False&Id=<id>[&Begin=<date>][&Cache=No]`.
-   * Renders a cell-bar layout: current reason cell + past data cell.
-   * Integrates with `x-modificationmanager` and `x-revisionprogress` for pending reason modifications.
+   * Polls `GetLastMachineStatusV2?RequiredNumber=False&Id=<id>[&Begin=<date>][&Cache=No]`
+   * (interval = `refreshingRate.currentRefreshSeconds`, default 10 s) and
+   * renders two cells: a current reason cell (label + reason text, with
+   * `pulse-cellbar-cell-missing` and a question-mark badge when
+   * `OverwriteRequired` or `ReasonTooOld`) and a past-data cell flagged when
+   * `RequiredReason` is true. Clicking the current cell opens either
+   * `pulseDetailsPopup.openChangeReasonDialog` or
+   * `openChangeStopClassificationDialog` depending on the `lastmachinestatus`
+   * config (`'reasonslotlist'` vs default `'stopclassification'`); clicking
+   * the past cell opens the reason history dialog. Pending revisions of
+   * `kind: 'reason'` for the current machine append an `x-revisionprogress`
+   * in the current cell and trigger a `Reload` once `pendingModifications === 0`.
+   * Reacts to `dateTimeRangeChangeEvent` on `period-context` (updates the
+   * `Begin=` parameter) and to `machineIdChangeSignal` on `machine-context`.
    *
-   * `refresh(data)`: updates reason text/color, missing flags, dispatches `reasonStatusChange`.
-   * Clicking current: opens stop-classification or reason-slot-list dialog depending on
-   *   `lastmachinestatus` config (`'reasonslotlist'` or default `'stopclassification'`).
-   * Clicking past: opens a reason history dialog via `pulseDetailsPopup`.
-   * `onDateTimeRangeChange` updates `_beginDate` and restarts the component.
-   *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   period-context  - (optional) event bus context for `dateTimeRangeChangeEvent`
-   *   machine-context - (optional) event bus context for machine selection changes
-   *   status-context  - (optional) event bus context to dispatch `reasonStatusChange`
-   *
+   * @element x-lastmachinestatus
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
+   * @attr {string} status-context  event-bus context for the status dispatches
+   * @fires reasonStatusChange         `{ status: boolean }` — on `status-context`
+   * @fires reasonStatusCurrentChange  `{ status: boolean }` — on `status-context`, when the current cell is in error
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class LastMachineStatusComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

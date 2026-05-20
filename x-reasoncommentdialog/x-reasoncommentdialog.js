@@ -13,30 +13,32 @@ var pulseUtility = require('pulseUtility');
 require('x-machinedisplay/x-machinedisplay');
 require('x-datetimerange/x-datetimerange');
 
-/**
- * Build a custom tag <x-reasoncommentdialog> used as the content of a
- * pulseCustomDialog to collect a comment (details) for a reason
- * classification. Used by x-savereason and x-stopclassification.
- *
- * Attributes:
- *   machine-id       - machine id (for x-machinedisplay + period context)
- *   range            - ISO range string for the period being classified
- *   reason-name      - HTML label of the reason being commented
- *   details-required - 'true' disables the parent dialog Ok button until
- *                      the textarea has content
- *
- * Public API (for the opener):
- *   getDetails()     - returns the current textarea value (string)
- */
 (function () {
 
+  /**
+   * `<x-reasoncommentdialog>` — dialog body to collect a comment for a
+   * reason classification.
+   *
+   * Renders four labelled rows inside its host: machine
+   * (`x-machinedisplay`), period (`x-datetimerange` in read-only mode),
+   * reason name, and a 255-char `<textarea>` placeholder "Details...".
+   * Pressing Enter on the textarea clicks the parent dialog's
+   * `.dialog-button-frame-validate`. When `details-required === 'true'`,
+   * disables the parent dialog's `.customDialogOk` button until the
+   * textarea is non-empty.
+   *
+   * @element x-reasoncommentdialog
+   * @attr {number}  machine-id       machine id, forwarded to `x-machinedisplay` and used to build the period context
+   * @attr {string}  range            ISO range `begin;end` for the period being classified
+   * @attr {string}  reason-name      HTML label of the reason
+   * @attr {boolean} details-required `'true'` disables the parent dialog OK button while the textarea is empty
+   * @method getDetails               current textarea value (string)
+   * @extends pulseComponent.PulseInitializedComponent
+   */
   class ReasonCommentDialogComponent extends pulseComponent.PulseInitializedComponent {
     constructor (...args) {
       const self = super(...args);
       self._textarea = null;
-      // Expose getDetails() on the host element so callers can read the comment
-      // via `rcdlg[0].getDetails()`. pulseComponent.registerElement only forwards
-      // methods listed in `self.methods` onto the custom element.
       self.methods = {
         getDetails: self.getDetails
       };

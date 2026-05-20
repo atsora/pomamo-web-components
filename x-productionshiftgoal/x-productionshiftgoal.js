@@ -4,8 +4,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * Definition of tag x-productionshiftgoal used to display the goal production of the current shift.
- *
  * @module x-productionshiftgoal
  * @requires module:pulseComponent
  * @requires module:pulseUtility
@@ -18,18 +16,24 @@ var eventBus = require('eventBus');
 
 (function () {
   /**
-   * `<x-productionshiftgoal>` — displays and allows editing of the production target for the current shift.
+   * `<x-productionshiftgoal>` — current-shift production goal with inline
+   * edit (+ / − / Validate) for one machine.
    *
-   * Polls `Operation/OperationCurrentShiftTarget?GroupId=<machine-id>` at `currentRefreshSeconds` interval.
-   * Renders: current target quantity with +/- increment buttons and a "Validate" button.
-   * Dispatches `textChangeEvent` on `textchange-context` with last-update timestamp.
-   * Listens to `machineIdChangeSignal` on `machine-context`.
+   * Polls `Operation/OperationCurrentShiftTarget?GroupId=<machine-id>`
+   * (interval = `refreshingRate.currentRefreshSeconds`, default 10 s) and
+   * renders the current target with +/- step buttons and a "Validate"
+   * action that POSTs the updated value back to the same endpoint.
+   * Dispatches `textChangeEvent` on `textchange-context` carrying the
+   * last-update timestamp. Reacts to `machineIdChangeSignal` on
+   * `machine-context` and to `dateTimeRangeChangeEvent` on
+   * `period-context`.
    *
-   * Attributes:
-   *   machine-id        - (required) integer machine / group id
-   *   machine-context   - event bus context for `machineIdChangeSignal`
-   *   textchange-context - event bus context for `textChangeEvent`
-   *
+   * @element x-productionshiftgoal
+   * @attr {number} machine-id         (required) machine or group id
+   * @attr {string} machine-context    event-bus context for `machineIdChangeSignal`
+   * @attr {string} period-context     event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} textchange-context event-bus context for `textChangeEvent`
+   * @fires textChangeEvent            `{ text: string }` — on `textchange-context`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ProductionShiftGoalComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

@@ -4,8 +4,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * Standalone component to classify a stop over a single selected range
- *
  * @module x-stopclassification
  * @requires module:pulseComponent
  * @requires module:pulseUtility
@@ -28,17 +26,29 @@ require('x-revisionprogress/x-revisionprogress');
 (function () {
 
   /**
-   * `<x-stopclassification>` — stop reason classification form for a single machine time range.
+   * `<x-stopclassification>` — single-range stop-reason classification
+   * form for one machine.
    *
-   * Fetches available reasons from `ReasonSelection/Post?MachineId=<id>&Range=<range>` once.
-   * Similar to `x-savereason` but constrained to a single open/closed range.
-   * Renders a reason list with a confirm button; integrates `x-revisionprogress` for save tracking.
-   * Uses `pulseLogin` to restrict editing based on user role.
+   * Fetches the allowed reasons via
+   * `ReasonSelection/Post?MachineId=<id>&Range=<range>` and renders a
+   * reason list with a confirm button, an `x-datetimerange`, and an
+   * `x-stopperiods` view of nearby stops; integrates an
+   * `x-revisionprogress` while a pending revision is being processed.
+   * Imperative selection API: `addRange / addRanges / removeRange /
+   * cleanRanges / setRange` operate on the internal range list;
+   * `closeAfterSave` toggles auto-closing the host dialog after a
+   * successful save; `hideAdvancedOptions` hides the secondary controls.
    *
-   * Attributes:
-   *   machine-id - (required) integer machine id
-   *   range      - ISO date range string for the stop slot to classify
-   *
+   * @element x-stopclassification
+   * @attr {number} machine-id (required) machine id
+   * @attr {string} range      ISO datetime range `begin;end` of the stop slot
+   * @method addRange              set the active range
+   * @method addRanges             set several ranges at once
+   * @method removeRange           remove a matching range
+   * @method cleanRanges           clear all queued ranges
+   * @method setRange              alias for `addRange`
+   * @method closeAfterSave        toggle auto-close after a successful save
+   * @method hideAdvancedOptions   hide the secondary classification controls
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
     class StopClassificationComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

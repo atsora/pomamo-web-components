@@ -16,16 +16,17 @@ var pulseUtility = require('pulseUtility');
 (function () {
 
   /**
-   * `<x-taskslist>` — displays the list of task instances retrieved via GraphQL.
+   * `<x-taskslist>` — list of task instances sourced from GraphQL.
    *
-   * Queries the `graphql` endpoint with `{ allTaskInstances }` at `currentRefreshSeconds` interval.
-   * Renders each task instance with its status and details.
-   * Listens to `machineIdChangeSignal` on `machine-context`.
+   * Polls a GraphQL endpoint with `{ allTaskInstances(machineId: $machineId) { … } }`
+   * (refresh = `refreshingRate.currentRefreshSeconds`, default 10 s) and
+   * renders one `<li>` per task instance with its status, name and
+   * timing inside a `.taskslist-content > <ol>`. Reacts to
+   * `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   machine-id      - (optional) integer machine id to filter tasks
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-taskslist
+   * @attr {number} machine-id      machine id used to filter the GraphQL query
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class TasksListComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

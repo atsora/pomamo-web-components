@@ -21,21 +21,25 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-cncvaluebar>` — timeline bar showing CNC field value color slots for a machine over a period.
+   * `<x-cncvaluebar>` — horizontal SVG timeline of CNC field-value colour slots
+   * for one machine over a time range.
    *
-   * Polls `CncValueColor?MachineId=<id>&Range=<range>&FieldId=<id>` at `currentRefreshSeconds` interval.
-   * Renders colored segments on a horizontal bar; clicking a segment opens the CNC value details popup.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls `CncValueColor?MachineId=<id>&Range=<range>[&FieldId=<id>]` with an
+   * adaptive refresh (same scheme as `<x-cncalarmbar>`). Renders one coloured
+   * `<rect>` per `Blocks[]` entry; clicking a slot delegates to
+   * `pulseDetailsPopup.clickOnBar` for the `cncvalue` detail popup. Hides itself
+   * automatically when the range spans more than `cncvaluebar.daysbeforehide`
+   * days (default 7) or when the server returns no blocks. Reacts to
+   * `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal`
+   * on `machine-context`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   field-id        - (optional) CNC field id to filter the query
-   *   height          - (optional) integer pixel height of the bar
-   *   period-context  - (optional) event bus context for `dateTimeRangeChangeEvent`
-   *   range           - (optional) ISO date range string `begin;end`
-   *   showdetails     - (optional) details page to open on click (from config)
-   *   showpopup       - (optional) popup details to open on click (from config)
-   *
+   * @element x-cncvaluebar
+   * @attr {number} machine-id       (required) machine id
+   * @attr {number} field-id         CNC field id to filter the query
+   * @attr {number} height           bar height in px (default 10, min 0)
+   * @attr {string} range            ISO datetime range `begin;end`
+   * @attr {string} period-context   event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context  event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CncValueBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

@@ -19,15 +19,23 @@ require('x-datetimepicker/x-datetimepicker');
 (function () {
 
   /**
-   * `<x-milestonesadd>` — form widget for adding a milestone (named event) to the database.
+   * `<x-milestonesadd>` — form to create a new milestone for one machine.
    *
-   * Renders a text input, a `x-datetimepicker` for the timestamp, and a submit button.
-   * On submit, POSTs to the Pulse REST API to create the milestone.
-   * Requires `machine-id` attribute. Used in the running-view or other operator pages.
+   * Renders a machine label, an `x-datetimepicker`, a short-description
+   * input and an "ADD" button. Clicking the button calls
+   * `MilestonesSave?GroupId=<machine-id>&At=<iso>&Message=<text>` via
+   * `pulseService.runAjaxSimple`. On success: dispatches
+   * `milestonesChangeEvent` globally, clears the input, and closes any
+   * surrounding `x-milestonesadd` `pulseCustomDialog`. On error/failure,
+   * opens an error dialog with the server message (or a generic fallback).
+   * Reacts to `machineIdChangeSignal` on `machine-context` (updates
+   * `machine-id`). `displayError` disables the form, `removeError`
+   * re-enables it.
    *
-   * Attributes:
-   *   machine-id - (required) integer machine id for the milestone
-   *
+   * @element x-milestonesadd
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
+   * @fires milestonesChangeEvent   dispatched globally after a successful save
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class MilestonesAddComponent extends pulseComponent.PulseParamInitializedComponent {

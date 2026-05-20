@@ -14,16 +14,15 @@ var pulseComponent = require('pulsecomponent');
 (function () {
 
   /**
-   * `<x-currentisofile>` — displays the current ISO file (CNC program) name for a machine.
+   * `<x-currentisofile>` — current ISO file (CNC program) name for one machine.
    *
-   * Polls `IsoFile/Current?MachineId=<id>` at `currentRefreshSeconds + 1` seconds.
-   * `manageSuccess()` intercepts `TooOld === true` and transitions to `NotAvailable` state showing 'N/A'.
-   * Otherwise delegates to `refresh(data)` which renders `data.IsoFiles` or '--'.
-   * `displayTextAndTooltip(text, tooltip)` manages a lazily created `<span>` inside the content div.
+   * Polls `IsoFile/Current?MachineId=<id>` at `currentRefreshSeconds + 1`
+   * interval and renders `data.IsoFiles` (or `--` when missing) into a lazily
+   * created `<span>`. When the response has `TooOld === true`, switches to the
+   * `NotAvailable` context and shows the `noDataTooOld` translation instead.
    *
-   * Attributes:
-   *   machine-id - (required) integer machine id; restart triggered on change
-   *
+   * @element x-currentisofile
+   * @attr {number} machine-id  (required) machine id
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CurrentIsoFileComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

@@ -18,17 +18,21 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-operationprogresspie>` — SVG donut/pie showing the current operation progress and schedule.
+   * `<x-operationprogresspie>` — donut/pie SVG showing the current
+   * operation progress and the time-to-next-event for one machine.
    *
-   * Polls `OperationProgress?MachineId=<id>` at `currentRefreshSeconds` interval.
-   * Renders a two-ring SVG: outer ring for operation state, inner ring for elapsed time ratio.
-   * Includes a live countdown timer updated every second between server polls.
-   * Listens to `machineIdChangeSignal` on `machine-context`.
+   * Polls `OperationProgress?MachineId=<id>` (interval =
+   * `refreshingRate.currentRefreshSeconds`, default 10 s) and renders a
+   * two-ring SVG: outer ring for the operation state, inner dashed ring
+   * for the elapsed/remaining ratio. Drives an internal 1 s timer
+   * (`_dashTimeRefreshTimer`) to advance the dashed ring between polls
+   * and tracks the server-time offset (`_diffServerTimeMinusNowMSec`).
+   * Reacts to `machineIdChangeSignal` on `machine-context` (updates
+   * `machine-id`).
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-operationprogresspie
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class OperationProgressPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

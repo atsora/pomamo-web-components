@@ -14,18 +14,19 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-motiontime>` — displays the motion duration driven by the event bus.
+   * `<x-motiontime>` — motion-duration label driven by the event bus.
    *
-   * No REST requests — purely event-driven.
-   * Listens to `motionChangeEvent` on `motion-context[_machine-id]` to read `MotionSeconds`.
-   * Also listens to `machineIdChangeSignal` on `machine-context` for dynamic machine tracking.
-   * Renders the duration as `D'd' HH:MM` or `H:MM` (seconds are discarded).
+   * Performs no AJAX. Listens to `motionChangeEvent` on
+   * `<motion-context>[_<machine-id>]` and renders `event.target.MotionSeconds`
+   * as `Dd HH:MM` (with days, hours zero-padded only with days) or `H:MM`
+   * (seconds dropped). Empty when `MotionPercent` is undefined. Reacts to
+   * `machineIdChangeSignal` on `machine-context` (updates `machine-id`,
+   * re-binding the motion listener).
    *
-   * Attributes:
-   *   motion-context  - (required) event bus context key for motion data
-   *   machine-id      - (optional) appended to motion-context as suffix (`_<id>`)
-   *   machine-context - (optional) event bus context for machine selection changes
-   *
+   * @element x-motiontime
+   * @attr {string} motion-context  (required) base event-bus context for `motionChangeEvent`
+   * @attr {number} machine-id      machine id, appended to `motion-context` as `_<id>`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class MotionTimeComponent extends pulseComponent.PulseParamInitializedComponent {

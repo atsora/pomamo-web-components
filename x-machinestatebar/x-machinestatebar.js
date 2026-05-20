@@ -22,21 +22,27 @@ require('x-revisionprogress/x-revisionprogress');
 (function () {
 
   /**
-   * `<x-machinestatebar>` — timeline bar showing machine state template slots for a machine over a period.
+   * `<x-machinestatebar>` — timeline bar showing machine state template
+   * slots for one machine over a date range.
    *
-   * Polls `MachineStateTemplateSlots?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
-   * Renders colored segments for each machine state; clicking opens the state details popup or classification form.
-   * Integrates `x-revisionprogress` for optimistic update tracking after edits.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls `MachineStateTemplateSlots?MachineId=<id>&Range=<range>` and
+   * renders one colored SVG segment per slot proportional to the range.
+   * Clicks open the details view through `pulseDetailsPopup`
+   * (`showdetails` / `showpopup` configs select an in-place details page or
+   * a floating popup). Pending revisions of `kind: 'MST'` for the current
+   * machine append an `x-revisionprogress` over the affected sub-range and
+   * trigger a reload once `pendingModifications === 0`. Reacts to
+   * `dateTimeRangeChangeEvent` on `period-context` (dispatches
+   * `askForDateTimeRangeEvent` if the range is missing) and to
+   * `machineIdChangeSignal` on `machine-context`. Height comes from the
+   * `height` attribute, otherwise `tagConfig` / default.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   height          - (optional) integer pixel height of the bar
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *   range           - (optional) ISO date range string `begin;end`
-   *   showdetails     - (optional) details page to open on click (from config)
-   *   showpopup       - (optional) popup details to open on click (from config)
-   *
+   * @element x-machinestatebar
+   * @attr {number} machine-id      (required) machine id
+   * @attr {number} height          pixel height of the bar
+   * @attr {string} range           ISO datetime range `begin;end`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class MachineStateBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

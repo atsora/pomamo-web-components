@@ -13,24 +13,21 @@ var pulseConfig = require('pulseConfig');
 var pulseSvg = require('pulseSvg');
 var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 
-/**
- * Build a custom tag <x-showrunningdialogbutton> — icon button that opens the running detail dialog.
- *
- * Requires `group` or `machine-id` attribute. Visibility is controlled by the `showRunningButton`
- * config and updated live via `onConfigChange`.
- *
- * Attributes:
- *   group      - group id used to open the running dialog
- *   machine-id - machine id used to open the running dialog (fallback if no group)
- */
 (function () {
 
   /**
-   * `<x-showrunningdialogbutton>` — clickable icon that opens a running-view popup.
+   * `<x-showrunningdialogbutton>` — icon button that opens an
+   * `x-runningdialog` for a given group or machine.
    *
-   * Shown/hidden via `pulseConfig.getBool('showRunningButton')`.
-   * Calls `pulseDetailsPopup.openRunningDialog(groupId)` on click.
+   * Renders a `.show-running-btn` with an inlined SVG icon and a
+   * tooltip. Visibility tracks `pulseConfig.getBool('showRunningButton')`
+   * — updated live through `onConfigChange`. Clicking calls
+   * `pulseDetailsPopup.openRunningDialog(groupId)` using `group` when
+   * present, otherwise `machine-id`.
    *
+   * @element x-showrunningdialogbutton
+   * @attr {string} group      group id (preferred)
+   * @attr {number} machine-id fallback machine id when `group` is absent
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class ShowRunningDialogButtonComponent extends pulseComponent.PulseParamInitializedComponent {

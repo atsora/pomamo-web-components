@@ -19,12 +19,22 @@ require('x-loginpassword/x-loginpassword');
 (function () {
 
   /**
-   * `<x-loginconnection>` — login form component for authenticating against the Pulse web service.
+   * `<x-loginconnection>` — login panel exposing username/password plus
+   * available OAuth2 sign-in methods.
    *
-   * Fetches available authentication methods from `User/AuthenticationMethods` on first load.
-   * Renders username/password inputs (via `x-loginpassword`) and handles credential submission
-   * through `pulseLogin`. Redirects to the appropriate page on successful authentication.
+   * Fetches `User/AuthenticationMethods` once. Always nests an
+   * `x-loginpassword` (shown only when `UserPasswordAuthentication` is true)
+   * and renders one row per entry in `OAuth2Methods`: an image
+   * `images/login-<AuthenticationKind>.svg`, the "Connect with <name>"
+   * label and an optional user input (when `LoginRequired`). Clicking a row
+   * stores the picked method through `pulseLogin.storeAuthentication`,
+   * substitutes `{{login}}` and `{{state}}` placeholders in
+   * `AuthenticationUrl` when required, and navigates to it. When username/
+   * password is disabled and a single OAuth2 method is configured, that
+   * method is clicked automatically.
    *
+   * @element x-loginconnection
+   * @attr {string} PulseLogin debug override for `_getLogin()`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class LoginConnectionComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

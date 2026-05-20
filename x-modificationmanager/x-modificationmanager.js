@@ -136,12 +136,24 @@ var pulseRange = require('pulseRange');
 
 
   /**
-   * `<x-modificationmanager>` — singleton component tracking pending REST modifications and their revision status.
+   * `<x-modificationmanager>` — invisible tracker for pending modification
+   * revisions.
    *
-   * Manages a list of `SingleModification` instances; each polls its revision until it reaches a terminal state.
-   * Used internally by other components (e.g. `x-saveserialnumber`) to display a progress bar during saves.
-   * Dispatches `modificationEvent` on the event bus when the revision status changes.
+   * Holds a `Map<revisionId, SingleModification>` populated through
+   * `addModification(revisionid, kind, machineid, ranges)`. Each
+   * `SingleModification` polls
+   * `GetPendingModificationsFromRevision?Id=<revisionid>` once per second
+   * (giving up after ~150 consecutive failures) and dispatches
+   * `modificationEvent` globally whenever the pending count changes,
+   * including the terminal state where `pendingModifications === 0`.
+   * `getModifications(kind, machineId, range?)` returns the entries
+   * matching a kind/machine pair and optionally overlapping a range.
    *
+   * @element x-modificationmanager
+   * @method addModification    register a new revision to track
+   * @method removeModification drop a revision (called internally on terminal state)
+   * @method getModifications   current modifications filtered by kind/machine[/range]
+   * @fires modificationEvent    `{ revisionid, machineid, kind, ranges, initModifications, pendingModifications }` — dispatched globally on register and every status change
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class ModificationManagerComponent extends pulseComponent.PulseParamInitializedComponent {

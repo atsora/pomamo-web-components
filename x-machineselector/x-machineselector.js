@@ -18,15 +18,17 @@ var eventBus = require('eventBus');
 
 (function () {
   /**
-   * `<x-machineselector>` — `<select>` dropdown populated from the full machine list.
+   * `<x-machineselector>` — single `<select>` dropdown of all machines.
    *
-   * Fetches `Machine/Groups?MachineList=true` once on init.
-   * Stores machines in an internal `Map([id] → { display, sortpriority })`.
-   * Selecting an option dispatches `machineIdChangeSignal` on the `machine-context` attribute context.
+   * Fetches `Machine/Groups?MachineList=true` once and stores the response
+   * as a `Map<id-as-string, { display, sortpriority }>`. The select is
+   * populated from that map; index 0 is auto-selected on first fill, and
+   * each option click re-dispatches the current selection via
+   * `machineIdChangeSignal` on the `machine-context` event-bus context.
    *
-   * Attributes:
-   *   machine-context - (required) event bus context to dispatch machine selection changes
-   *
+   * @element x-machineselector
+   * @attr {string} machine-context (required) event-bus context for `machineIdChangeSignal`
+   * @fires machineIdChangeSignal   `{ newMachineId: number }` — on `machine-context`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class MachineSelectorComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

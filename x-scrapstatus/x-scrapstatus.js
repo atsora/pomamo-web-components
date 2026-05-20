@@ -19,18 +19,18 @@ require('x-scrapclassification/x-scrapclassification');
 (function () {
 
   /**
-   * `<x-scrapstatus>` — displays the current shift scrap count and provides a button to open the
-   * scrap classification declaration dialog.
+   * `<x-scrapstatus>` — current-shift scrap count and "Scrap Declaration"
+   * button for one machine.
    *
-   * Polls `GetLastMachineStatusV2?Id=<machine-id>` at `currentRefreshSeconds` interval.
-   * Renders: a "Shift scrap" label, a numeric scrap value span, and a "Scrap Declaration" button
-   * that calls `pulseDetailsPopup.openChangeScrapClassificationDialog()` on click.
-   * Listens to `machineIdChangeSignal` when `machine-context` attribute is set.
+   * Polls `GetLastMachineStatusV2?Id=<machine-id>` (interval =
+   * `refreshingRate.currentRefreshSeconds`, default 10 s) and renders a
+   * "Shift scrap" label, a numeric span and a button that calls
+   * `pulseDetailsPopup.openChangeScrapClassificationDialog()`. Reacts to
+   * `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-scrapstatus
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
     class ScrapStatusComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

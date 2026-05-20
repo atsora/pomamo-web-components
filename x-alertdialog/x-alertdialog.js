@@ -10,22 +10,18 @@
 var pulseComponent = require('pulsecomponent');
 var pulseSvg = require('pulseSvg');
 
-/**
- * Build a custom tag <x-alertdialog> to display a simple alert dialog content.
- *
- * Renders an icon (SVG inlined from background) and an HTML message side-by-side.
- * Intended to be used as the content of a `pulseCustomDialog`.
- *
- * Attributes:
- *   type    - 'Information' | 'Warning' | 'Error' | 'Question' (default: 'Information')
- *             Controls the CSS class applied to the icon: `customDialogIcon<type>`
- *   message - HTML string to display as the dialog body
- */
 (function () {
 
   /**
-   * `<x-alertdialog>` — static alert dialog content with icon and message.
+   * `<x-alertdialog>` — static dialog body with an icon and a message side-by-side.
    *
+   * Renders a `<div class="alertdialog-icon">` (SVG inlined from background via
+   * `pulseSvg.inlineBackgroundSvg`) followed by a `<div class="alertdialog-message">`
+   * containing the raw `message` HTML.
+   *
+   * @element x-alertdialog
+   * @attr {string} type     `'Information'` | `'Warning'` | `'Error'` | `'Question'` (default `'Information'`); drives the icon class `customDialogIcon<type>`
+   * @attr {string} message  HTML string rendered as the message body
    * @extends pulseComponent.PulseInitializedComponent
    */
   class AlertDialogComponent extends pulseComponent.PulseInitializedComponent {

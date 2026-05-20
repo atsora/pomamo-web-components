@@ -14,17 +14,21 @@ var pulseSvg = require('pulseSvg');
 (function () {
 
   /**
-   * `<x-zoominpagebutton>` — icon button that drills down into a sub-group.
+   * `<x-zoominpagebutton>` — icon button that drills down from a tile
+   * into one of its sub-groups.
    *
-   * Fetches `Machine/GroupZoomIn?GroupId=...` to check if the group has children.
-   * Hidden if the group is dynamic or has no children; shown otherwise.
-   * On click, navigates to the same page with the target group as `group` parameter,
-   * pushing the current group as an `ancestorN` parameter.
+   * Fetches `Machine/GroupZoomIn?GroupId=<group>&Details=true` to decide
+   * whether the button is shown: hidden when the group is dynamic
+   * (`Dynamic === true`) or has no children, shown otherwise. Clicking
+   * navigates to the current URL with the picked group as the `group`
+   * query parameter, clearing the `machine` parameter and pushing the
+   * previously-selected group as the next `ancestor<N>` parameter (the
+   * ancestor is the picked group itself when it was part of the previous
+   * selection, otherwise the first id of that selection).
    *
-   * Attributes:
-   *   group      - target group id to zoom into
-   *   machine-id - fallback if no `group` attribute
-   *
+   * @element x-zoominpagebutton
+   * @attr {string} group      target group id to zoom into
+   * @attr {number} machine-id fallback when `group` is absent
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class ZoomInPageButtonComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
@@ -71,13 +75,8 @@ var pulseSvg = require('pulseSvg');
       //this._content.attr('tooltip', 'group details');
       pulseUtility.addToolTip(this._content, 'group details');
 
-      // Click: drill into newgroupid, appending the current group as the next
-      // ancestor. Selection changes (via machineselection) reset the chain
-      // separately via x-groupsingroup's onConfigChange → reload-without-ancestors,
-      // so we don't need any multi-select special handling here.
-      // Note: after a drill-in on the current group (ancestor1=X), continuing to
-      // a child yields ancestor1=X&ancestor2=X. ancestor1 renders as the home icon
-      // (no name) and ancestor2 as the X machinedisplay — no visual duplication.
+      // Click: drill into newgroupid, appending the previously-selected
+      // group as the next ancestor.
       $(this._content).click(
         function (e) {
           let url = window.location.href;

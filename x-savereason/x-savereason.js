@@ -21,17 +21,27 @@ require('x-datetimerange/x-datetimerange');
 (function () {
 
   /**
-   * `<x-savereason>` — form widget for assigning a stop reason to a machine time slot.
+   * `<x-savereason>` — form to assign a stop reason to one or more time
+   * slots for a single machine.
    *
-   * Fetches available reasons from `ReasonSelection/Post?MachineId=<id>&Range=<range>` once.
-   * Renders a categorized reason list with a confirm button; on confirm POSTs the reason assignment.
-   * Shows machine name via `x-machinedisplay` and the slot range via `x-datetimerange`.
-   * Integrates with `pulseLogin` to check operator permissions.
+   * Fetches the allowed reasons for the slot via
+   * `ReasonSelection/Post?MachineId=<id>&Range=<range>` and renders a
+   * categorised reason list, an `x-machinedisplay` and an
+   * `x-datetimerange`. Confirming POSTs the assignment(s) back; when
+   * tracked, the returned revision is registered with a sibling
+   * `x-modificationmanager`. Imperative selection API:
+   * `addReason / removeReason / cleanReasons` operate on the internal
+   * `{ range, reason, mode }` list; `closeAfterSave` toggles
+   * auto-closing the host dialog after a successful save.
    *
-   * Attributes:
-   *   machine-id - (required) integer machine id
-   *   range      - ISO date range string for the slot to classify
-   *
+   * @element x-savereason
+   * @attr {number} machine-id (required) machine id
+   * @attr {string} range      ISO datetime range `begin;end` for a single slot
+   * @attr {string} ranges     `&`-joined ISO ranges when several slots are classified at once
+   * @method addReason         queue a `{ range, reason, mode }` entry
+   * @method removeReason      drop a matching entry
+   * @method cleanReasons      clear all queued entries
+   * @method closeAfterSave    toggle auto-close after a successful save
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class SaveReasonComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

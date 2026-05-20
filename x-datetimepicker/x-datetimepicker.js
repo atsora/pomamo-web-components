@@ -13,20 +13,26 @@ var pulseUtility = require('pulseUtility');
 (function () {
 
   /**
-   * `<x-datetimepicker>` — interactive date-time selector widget.
+   * `<x-datetimepicker>` — date + time selector wrapping native
+   * `<input type="date">` and `<input type="time">`.
    *
-   * Renders date and time input fields for selecting an ISO datetime value.
-   * Exposes `getISOValue()` to retrieve the current value programmatically.
+   * Applies `defaultdatetime`, clamps to `mindatetime` / `maxdatetime`, and
+   * adjusts the time-input step (`60` or `1`) based on `showseconds`. When
+   * `nullable` is set, shows a "no value" checkbox tied to `novaluetext` that
+   * clears the inputs. Dispatches a `change` event on the host element when the
+   * value changes.
    *
-   * Attributes:
-   *   defaultdatetime - (optional) initial ISO datetime string
-   *   mindatetime     - (optional) minimum selectable datetime (ISO string)
-   *   maxdatetime     - (optional) maximum selectable datetime (ISO string)
-   *   showseconds     - (optional) if present, shows seconds in time input
-   *   nullable        - (optional) if present, allows clearing the value
-   *   novaluetext     - (optional) placeholder text when no value is set
-   *   disabled        - (optional) disables the input fields
-   *
+   * @element x-datetimepicker
+   * @attr {string}  defaultdatetime  initial ISO datetime string
+   * @attr {string}  mindatetime      minimum selectable ISO datetime
+   * @attr {string}  maxdatetime      maximum selectable ISO datetime
+   * @attr {boolean} showseconds      show seconds in the time input
+   * @attr {boolean} nullable         allow clearing the value via a "no value" checkbox
+   * @attr {string}  novaluetext      label rendered next to the nullable checkbox
+   * @attr {boolean} disabled         disable both inputs
+   * @method isValid                  `true` when the current value is a valid ISO datetime
+   * @method getISOValue              current ISO datetime
+   * @method getValueAsIs             raw value (may be empty when nullable+unchecked)
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class DateTimePickerComponent extends pulseComponent.PulseParamInitializedComponent {

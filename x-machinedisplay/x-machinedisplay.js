@@ -15,17 +15,20 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-machinedisplay>` — displays the name of a machine or group.
+   * `<x-machinedisplay>` — renders the display name of a single machine or
+   * group.
    *
-   * Fetches `Machine/Name?MachineId=<id>` or `Machine/Name?GroupId=<group>` once on init.
-   * Renders `data.Display` (fallback `data.Name`) into `.machinedisplay-data`.
-   * Listens to `machineIdChangeSignal` on `machine-context` to track dynamic machine selection.
+   * Fetches `Machine/Name?MachineId=<id>` (preferred) or
+   * `Machine/Name?GroupId=<group>` and writes `data.Display` (falling back
+   * to `data.Name`) into a `<span class="machinedisplay-data">`. The
+   * `group` value may also come from the config when the attribute is
+   * absent. Reacts to `machineIdChangeSignal` on `machine-context` to
+   * update `machine-id`.
    *
-   * Attributes:
-   *   machine-id      - integer machine id (takes priority over group)
-   *   group           - group id (used if machine-id absent)
-   *   machine-context - (optional) event bus context for machine selection changes
-   *
+   * @element x-machinedisplay
+   * @attr {number} machine-id      machine id (takes priority over `group`)
+   * @attr {string} group           group id (used when `machine-id` is absent)
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class MachineDisplayComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

@@ -19,17 +19,24 @@ require('x-revisionprogress/x-revisionprogress');
 (function () {
 
   /**
-   * `<x-lastmachinestatetemplate>` — displays the current machine state template (MST) for a machine.
+   * `<x-lastmachinestatetemplate>` — current machine state template (MST) for
+   * one machine, with optimistic update progress.
    *
-   * Polls `MachineStateTemplateSlots?MachineId=<id>` at `currentRefreshSeconds` interval.
-   * Renders the current MST label and color; clicking opens the `x-savemachinestatetemplate` dialog.
-   * Used inside `x-setupmachine`; integrates with `x-revisionprogress` for optimistic updates.
-   * Listens to `machineIdChangeSignal` on `machine-context` and `modificationEvent` for revision tracking.
+   * Polls `MachineStateTemplateSlots?MachineId=<id>` (refresh interval =
+   * `refreshingRate.barSlowUpdateMinutes`, default 10 min). When the current
+   * MST `Category !== 2`, renders a label "Scheduled status: …" and uses
+   * `_orderUsingSince()` to push the surrounding `.group-single` parent down
+   * via CSS `order`. When `Category === 2`, hides the label and mounts an
+   * `x-setupmachine` child instead. Clicking the label opens a
+   * `x-savemachinestatetemplate` dialog (period-context `savemst<machineId>`).
+   * Tracks pending modifications via `modificationEvent`: appends an
+   * `x-revisionprogress` while a `kind: 'MST'` revision overlaps the current
+   * range, then reloads when `pendingModifications === 0`. Reacts to
+   * `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-lastmachinestatetemplate
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class LastMachineStateTemplateComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

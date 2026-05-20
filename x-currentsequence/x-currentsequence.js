@@ -12,26 +12,19 @@ var pulseUtility = require('pulseUtility');
 var pulseComponent = require('pulsecomponent');
 //var pulseRange = require('pulseRange');
 
-/**
- * Build a custom tag <x-currentsequence> to display the current sequence for a machine.
- *
- * Attributes:
- *   machine-id - (required) integer machine id
- */
 (function () {
 
   /**
-   * `<x-currentsequence>` — displays the current operation sequence name for a machine.
+   * `<x-currentsequence>` — current operation-sequence name for one machine.
    *
-   * Polls `Operation/CurrentSequence/?MachineId=<id>` at `currentRefreshSeconds + 1` seconds.
-   * Renders the `Display` of the first machine module's `Sequence`, or '-' if data is too old.
-   * Supports single-module data only — multi-module case not handled.
+   * Polls `Operation/CurrentSequence/?MachineId=<id>` at
+   * `currentRefreshSeconds + 1` interval and renders the `Display` of the first
+   * machine module's `Sequence` into a lazily created `<span>`. Shows the
+   * `noDataTooOld` translation (`'-'`) when `data.TooOld` is true. Only the
+   * single-module case is handled.
    *
-   * `displayTextAndTooltip(text, tooltip)` manages a lazily created `<span>` inside the content div.
-   *
-   * Attributes:
-   *   machine-id - (required) integer machine id; restart triggered on change
-   *
+   * @element x-currentsequence
+   * @attr {number} machine-id  (required) machine id
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CurrentSequenceComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

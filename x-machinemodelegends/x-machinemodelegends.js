@@ -13,16 +13,15 @@ var pulseSvg = require('pulseSvg');
 (function () {
 
   /**
-   * `<x-machinemodelegends>` — legend panel for machine mode categories.
+   * `<x-machinemodelegends>` — legend panel listing machine-mode categories.
    *
-   * Fetches `MachineModeCategoryLegend` and renders one legend block with:
-   *  - a titled section (`pulse-legend-title`)
-   *  - one `pulse-legend-element` per item (SVG icon via `pulseSvg.getMachineModeClass` + label)
-   *  - 4 empty filler divs for flexbox alignment
+   * Fetches `MachineModeCategoryLegend` once and renders a single legend
+   * group: a "Machine mode" title, then one `.pulse-legend-element` per
+   * item built from a per-mode SVG icon (`pulseSvg.getMachineModeClass(item.Id)`
+   * + `pulseSvg.inlineBackgroundSvg`) plus the display label, followed by
+   * 4 filler divs for flex alignment. Always reports `isVisible === true`.
    *
-   * After render, triggers a `.legend-content` resize event.
-   * `isVisible` is always true so the legend always fetches regardless of scroll position.
-   *
+   * @element x-machinemodelegends
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class machinemodelegendsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

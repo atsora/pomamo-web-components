@@ -29,17 +29,21 @@ this.restoreDeleteWhenDisconnect ():
 (function () {
 
   /**
-   * `<x-setupmachine>` — setup panel for editing machine state template and operation for the current cycle.
+   * `<x-setupmachine>` — current MST + operation editor for one machine.
    *
-   * Polls `CurrentMachineStateTemplateOperation?MachineId=<id>` at `currentRefreshSeconds` interval.
-   * Renders the current MST and operation with inline editing controls.
-   * Integrates `x-datetimepicker` for time selection and `x-revisionprogress` for optimistic update tracking.
-   * Listens to `machineIdChangeSignal` on `machine-context`.
+   * Polls `MachineStateTemplate/Setup?MachineId=<id>` (interval =
+   * `refreshingRate.barSlowUpdateMinutes`) and renders the current MST
+   * and operation with inline `x-datetimepicker` controls plus a
+   * "Validate" button that POSTs the change via `pulseService`. The
+   * returned revision is registered with the sibling
+   * `x-modificationmanager`; pending revisions of `kind: 'MST'` for the
+   * current machine inject an `x-revisionprogress` and trigger a reload
+   * once `pendingModifications === 0`. Reacts to `machineIdChangeSignal`
+   * on `machine-context`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-setupmachine
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class SetupMachineComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

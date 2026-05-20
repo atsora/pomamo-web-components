@@ -5,9 +5,6 @@
 /**
  * @module x-checkversion
  * @requires module:pulseComponent
- *
- * Invisible background component that polls the server for software version changes.
- * When a version change is detected, reloads (live mode) or shows a notification.
  */
 var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
@@ -17,14 +14,15 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-checkversion>` — invisible version-change watcher.
+   * `<x-checkversion>` — invisible watcher that detects server-side version changes.
    *
-   * Polls `PulseVersions/Get` every hour.
-   * On first response, stores the `Versions` baseline.
-   * On subsequent responses, if versions have changed:
-   *  - **live mode**: reloads the page immediately, appending `pulseVersion` to the URL.
-   *  - **other modes**: dispatches a `showMessageSignal` notification with a reload link.
+   * Polls `PulseVersions/Get` every hour and stores the first `Versions` response
+   * as baseline. When a later response differs, rewrites the current URL with the
+   * new `pulseVersion` parameter and either reloads (when the app context is
+   * `live`) or dispatches `showMessageSignal` with a reload link.
    *
+   * @element x-checkversion
+   * @fires showMessageSignal  `{ id: 'Version', message, level: 'info', clickToClose: false, reloadURL }` when version changes (non-live context)
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class checkversionComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

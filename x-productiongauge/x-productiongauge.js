@@ -17,12 +17,6 @@ var pulseUtility = require('pulseUtility');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-productiongauge> to display a production performance gauge. This tag gets following attributes:
- *  machine-id : Integer
- *  machine-context : String
- *  display-mode : 'ratio' (35/70) or 'percent' (50%) - defaults to 'percent'
- */
 (function () {
 
   // Create a circular gauge
@@ -162,27 +156,31 @@ var eventBus = require('eventBus');
   }
 
   /**
-   * `<x-productiongauge>` — circular gauge showing production performance ratio for a machine.
+   * `<x-productiongauge>` — circular gauge showing production ratio
+   * (actual / target parts) for one machine.
    *
-   * Two endpoint modes depending on whether `period-context` provides a date range:
-   *  - With range: `Operation/PartProductionRange?GroupId=<id>&Range=<range>` — historical parts.
-   *  - Without range (live): `Operation/ProductionMachiningStatus?MachineId=<id>` — current shift.
+   * Switches endpoint based on whether a range is in play:
+   *  - with range: `Operation/PartProductionRange?GroupId=<id>&Range=<range>`
+   *    (historical),
+   *  - without range: `Operation/ProductionMachiningStatus?MachineId=<id>`
+   *    (current shift).
    *
-   * The gauge background is drawn once in `initialize()` using `createCircularGauge()` with a
-   * red→orange→yellow / green gradient split at `thresholdtargetproduction` config (default 80%).
-   * On each `refresh()`, only the needle SVG path is updated (`_drawNeedle()`).
-   * When the production target changes, the full gauge is redrawn via `_redrawGauge()`.
+   * The gauge background is drawn once via `createCircularGauge()` with a
+   * red→orange→yellow / green gradient split at `thresholdtargetproduction`
+   * (default 80 %); `refresh()` only updates the needle path
+   * (`_drawNeedle()`), and `_redrawGauge()` repaints the background when
+   * the target changes or the `thresholdsupdated` config-change fires.
+   * `_textDisplay` shows `actual/target` (`display-mode="ratio"`) or
+   * `percent%` (default `'percent'`), decorated with `production-poor` /
+   * `production-medium` / `production-good`. Reacts to
+   * `dateTimeRangeChangeEvent` on `period-context` and to
+   * `machineIdChangeSignal` on `machine-context`.
    *
-   * `_textDisplay` shows `actual/target` (ratio mode) or `percent%` (percent mode, default), styled
-   * with `production-poor` / `production-medium` / `production-good` CSS classes.
-   * Reacts to `thresholdsupdated` config change event to redraw with new threshold values.
-   *
-   * Attributes:
-   *   machine-id     - (required) integer machine id or group id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *   display-mode   - `'percent'` (default) or `'ratio'`
-   *   period-context - event bus context for date range events
-   *
+   * @element x-productiongauge
+   * @attr {number} machine-id      (required) machine or group id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} display-mode    `'percent'` (default) or `'ratio'`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ProductionGaugeComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

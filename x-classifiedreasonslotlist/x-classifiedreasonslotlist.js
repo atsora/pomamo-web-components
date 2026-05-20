@@ -24,18 +24,30 @@ require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
 (function () {
 
   /**
-   * `<x-classifiedreasonslotlist>` — list of manual or overwrite reason slots for a machine in a period.
+   * `<x-classifiedreasonslotlist>` — scrollable list of classified reason slots
+   * (manual or overwrite) for a machine over a time range.
    *
-   * Fetches `Reason/ManualOrOverwriteSlots/?MachineId=<id>&Range=<range>` once per period change.
-   * Renders a list of classified reason slots with color indicators and durations.
-   * Includes stop-classification editing via `x-stopclassification` and `x-savereason` dialogs.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Fetches `Reason/ManualOrOverwriteSlots/?MachineId=<id>&Range=<range>` on
+   * each `machine-id` / `range` change. Renders a fixed header (an
+   * `<x-datetimegraduation>` plus an `<x-barstack main-bar="reason">`) followed
+   * by a scrollable table of slot rows; each row shows the range, a coloured
+   * left border, a `Display` label, and an optional warning icon when
+   * `OverwriteRequired`. Long-press (or single click in selection-mode) toggles
+   * a checkbox and highlights the row on the bar; tapping a row outside
+   * selection-mode opens a stop-classification dialog. A "Define reason" button
+   * opens the same dialog for the multi-row selection, and "Advanced" /
+   * "Unanswered only" buttons open broader reason dialogs.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
+   * Reloads itself when a `modificationEvent` of kind `reason` for the same
+   * machine completes (`pendingModifications == 0`) and overlaps the current
+   * range; in-flight modifications render an inline `<x-revisionprogress>` on
+   * each matching row.
    *
+   * @element x-classifiedreasonslotlist
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} range           ISO datetime range string (alternative to receiving it via the event bus)
+   * @method removeAllSelections    clear all row selections and the highlight bar
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class ReasonSlotListComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

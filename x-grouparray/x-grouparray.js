@@ -17,36 +17,41 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-grouparray>` — paginated grid of machine items with optional page rotation.
+   * `<x-grouparray>` — paginated grid of machine items with optional page
+   * rotation, built by cloning a DOM template per machine.
    *
-   * Machine source resolution priority:
-   *  1. No `group` config, `machine` config present → renders directly, transitions to `Loaded`.
-   *  2. `group` config → fetches `MachinesFromGroups?GroupIds=<group>` via REST.
-   *     Static groups (`Dynamic=false` or `forcestaticlist='true'`) transition to `Loaded` StaticState.
-   *     Dynamic groups keep polling on `refreshRate`.
+   * Source resolution: when only `machine` is configured (no `group`), the
+   * id list is used as-is and the component switches to a static `Loaded`
+   * context. With a `group`, fetches `MachinesFromGroups?GroupIds=<group>`;
+   * static groups (`Dynamic=false` or `forcestaticlist='true'`) freeze in
+   * `Loaded`, dynamic groups keep polling.
    *
-   * Grid layout: items are rendered as `<li class="group-single">` inside an `<ol class="group-main">`.
-   * `column` and `row` configs control per-page item count; items get class `li-page-N` for rotation.
-   * Page rotation: when `allowpagerotation='true'`, cycles visible pages on a `rotation`-second timer.
-   * The `#pulse-pagination` element is updated with `current / total` page count.
-   * When `#grouparray` panel contains only one machine, it is hidden via `hidden-content` class.
+   * Renders one `<li class="group-single">` per machine inside an
+   * `<ol class="group-main">`, cloning the element identified by `templateid`
+   * (default `'boxtoclone'`) and stamping `machine-id`. Items get a
+   * `li-page-N` class derived from `column`/`row`; when `allowpagerotation`
+   * is `'true'` the visible page cycles every `rotation` seconds and
+   * `#pulse-pagination` is updated with `current / total`. A single-machine
+   * list hides the `#grouparray` panel via `hidden-content`. When
+   * `donotwarngroupreload !== 'true'` a `groupIsReloaded` event is dispatched
+   * after every rebuild; when `textchange-context` is set, the last-update
+   * timestamp is dispatched on `textChangeEvent`.
    *
-   * Dispatches `groupIsReloaded` after each list rebuild (suppressed when `donotwarngroupreload='true'`).
-   * Optionally dispatches `textChangeEvent` on `textchange-context` with last-update timestamp.
-   *
-   * Attributes:
-   *   templateid          - id of the DOM element to clone per machine (default `'boxtoclone'`)
-   *   machine             - comma-separated machine id list (takes priority over group)
-   *   group               - group id(s)
-   *   column              - number of columns per page
-   *   row                 - number of rows per page (default `2`)
-   *   allowpagerotation   - `'true'` enables automatic page cycling
-   *   rotation            - page rotation delay in seconds (default `90`)
-   *   refreshrate         - explicit refresh interval in seconds (fallback when no rotation)
-   *   donotwarngroupreload - `'true'` suppresses `groupIsReloaded` dispatch
-   *   forcestaticlist     - `'true'` treats dynamic groups as static (stops polling)
-   *   textchange-context  - event bus context for `textChangeEvent` dispatch
-   *
+   * @element x-grouparray
+   * @attr {string}  templateid           id of the DOM element to clone per machine (default `'boxtoclone'`)
+   * @attr {string}  machine              comma-separated machine id list (takes priority over `group`)
+   * @attr {string}  group                group id(s)
+   * @attr {number}  column               number of columns per page
+   * @attr {number}  row                  number of rows per page (default `2`)
+   * @attr {boolean} allowpagerotation    `'true'` enables automatic page cycling
+   * @attr {number}  rotation             page rotation delay in seconds (default `90`)
+   * @attr {number}  refreshrate          fallback refresh interval in seconds when no rotation
+   * @attr {boolean} donotwarngroupreload `'true'` suppresses the `groupIsReloaded` dispatch
+   * @attr {boolean} forcestaticlist      `'true'` treats dynamic groups as static (stops polling)
+   * @attr {string}  textchange-context   event-bus context for the `textChangeEvent` dispatch
+   * @fires groupIsReloaded                `{ newMachinesList: string }` — after each list rebuild
+   * @fires textChangeEvent                `{ text: string }` — last-update timestamp on `textchange-context`
+   * @method getMachinesList               current machine id list, comma-separated
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class GroupComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
@@ -234,7 +239,7 @@ var eventBus = require('eventBus');
 
       //$(this.element).find('.disableDeleteWhenDisconnect').removeClass('disableDeleteWhenDisconnect'); // too early
 
-      // Warn fieldlegend : machine list has changed
+      // Announce that the machine list has changed
       if ('false' == this.getConfigOrAttribute('donotwarngroupreload', 'false')) {
         eventBus.EventBus.dispatchToAll('groupIsReloaded', {
           newMachinesList: this._machineIdsArray.join(',')

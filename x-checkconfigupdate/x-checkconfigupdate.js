@@ -5,9 +5,6 @@
 /**
  * @module x-checkconfigupdate
  * @requires module:pulseComponent
- *
- * Invisible background component that polls the server for config changes.
- * When a change is detected, reloads the page (live mode) or shows a notification (other modes).
  */
 var pulseComponent = require('pulsecomponent');
 var pulseConfig = require('pulseConfig');
@@ -16,17 +13,16 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-checkconfigupdate>` — invisible config-change watcher.
+   * `<x-checkconfigupdate>` — invisible watcher that detects server-side config changes.
    *
-   * Polls `Config/LastUpdate` at a configurable interval (default: every 5 minutes).
-   * On first response, stores the `UpdateDateTime` baseline.
-   * On subsequent responses, if the timestamp has changed:
-   *  - **live mode**: immediately reloads the page via `window.open`.
-   *  - **other modes**: dispatches a `showMessageSignal` notification with a reload link.
+   * Polls `Config/LastUpdate` periodically and stores the first `UpdateDateTime`
+   * response as a baseline. When a later response differs, either reloads the page
+   * (when the current app context is `live`) or dispatches `showMessageSignal` with
+   * a reload link.
    *
-   * Attributes:
-   *   refreshSeconds - polling interval in seconds (default: 300)
-   *
+   * @element x-checkconfigupdate
+   * @attr {number} refreshSeconds  polling interval in seconds (default 300)
+   * @fires showMessageSignal       `{ id, message, level: 'info', clickToClose: false, reloadURL }` when the config changes (non-live context)
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class checkconfigupdateComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

@@ -18,11 +18,25 @@ var pulseUtility = require('pulseUtility');
 (function () {
 
   /**
-   * `<x-loginpassword>` — username/password input widget used by `x-loginconnection`.
+   * `<x-loginpassword>` — username + password form with a "Login" button.
    *
-   * Renders username and password fields. Used as a sub-component of the login form.
-   * Exposes the entered credentials to the parent component via DOM access.
+   * Renders user, password, "Stay connected" checkbox, message area and
+   * "Login" button. On submit (button click or Enter on the password input):
    *
+   * - When `useLogin` config is false, accepts the local pairs
+   *   `dev` / `devPassword` and `Support|support` / `supportPassword` to
+   *   stub a role without an HTTP call.
+   *   Otherwise posts `{ Login, Password }` to `<path>UserPermissions/Post`
+   *   via `pulseService.postAjax`.
+   * - On success, stores the returned RefreshDTO through
+   *   `pulseLogin.storeLoginRoleFromRefreshDTO` (session cookie when "Stay
+   *   connected" is unchecked) and navigates with
+   *   `pulseConfig.goToFirstPage(role)`. A response without `Role` shows an
+   *   info dialog and redirects back to the login page.
+   * - On error/timeout, clears the login and shows the server message or a
+   *   generic "Invalid user name or password".
+   *
+   * @element x-loginpassword
    * @extends pulseComponent.PulseInitializedComponent
    */
   class LoginPasswordComponent extends pulseComponent.PulseInitializedComponent {

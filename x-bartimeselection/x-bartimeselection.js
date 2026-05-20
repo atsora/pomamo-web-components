@@ -21,24 +21,24 @@ var eventBus = require('eventBus');
   var defaultHeight = 30;
 
   /**
-   * `<x-bartimeselection>` — overlays a vertical red line on a bar at a specific datetime.
+   * `<x-bartimeselection>` — vertical red line overlay positioned at a specific
+   * datetime within a time range.
    *
-   * Renders an SVG line at the position corresponding to `when` within the given `range`.
-   * Clicking on the bar computes the click time, dispatches `dateTimeChangeEvent` on
-   * `datetime-context`, and updates the `when` attribute to move the red line.
+   * Draws an SVG `<line>` at the X position matching `when` mapped onto `range`.
+   * A click on the SVG computes the clicked datetime from the X offset, updates
+   * the `when` attribute, and dispatches `dateTimeChangeEvent` on the event-bus
+   * `datetime-context`. Listens to `dateTimeRangeChangeEvent` on `period-context`
+   * (or globally if unset) to keep its internal range in sync. Purely event- and
+   * attribute-driven — no AJAX. When mounted inside an `.barstack-reason-group`,
+   * sizing is CSS-driven (height: 100% of the wrapper).
    *
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` (or globally if not set)
-   * to keep `_range` in sync with the parent bar's time window.
-   *
-   * No REST requests — purely event-driven and attribute-driven rendering.
-   *
-   * Attributes:
-   *   height           - bar height in px (default 30, min 5)
-   *   when             - ISO datetime of the red line position
-   *   range            - ISO datetime range string matching the parent bar's range
-   *   period-context   - (optional) event bus context for `dateTimeRangeChangeEvent`
-   *   datetime-context - event bus context to dispatch `dateTimeChangeEvent` on click
-   *
+   * @element x-bartimeselection
+   * @attr {number} height            bar height in px (default 30, min 5; ignored in barstack mode)
+   * @attr {string} when              ISO datetime of the red line position
+   * @attr {string} range             ISO datetime range string
+   * @attr {string} period-context    (optional) event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} datetime-context  event-bus context for `dateTimeChangeEvent` on click
+   * @fires dateTimeChangeEvent       `{ when: string }` on click, dispatched on `datetime-context`
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class BarTimeSelectionComponent extends pulseComponent.PulseParamInitializedComponent {
@@ -64,10 +64,7 @@ var eventBus = require('eventBus');
 
     get content () { return this._content; }
 
-    /**
-     * True when the component is mounted as an overlay inside an x-barstack
-     * `.barstack-reason-group`. In that mode, sizing and positioning are CSS-driven.
-     */
+    /** True when the component is mounted inside a `.barstack-reason-group` (CSS-driven sizing). */
     _isInBarstack () {
       return this.element.closest('.barstack-reason-group') != null;
     }

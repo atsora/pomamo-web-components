@@ -22,21 +22,27 @@ require('x-revisionprogress/x-revisionprogress');
 (function () {
 
   /**
-   * `<x-observationstatebar>` — timeline bar showing observation state slots for a machine over a period.
+   * `<x-observationstatebar>` — timeline bar showing observation-state slots
+   * for one machine over a date range.
    *
-   * Polls `ObservationStateSlots?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
-   * Renders colored segments for each observation state; clicking opens the state details popup.
-   * Integrates `x-revisionprogress` for optimistic update tracking after edits.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls `ObservationStateSlots?MachineId=<id>&Range=<range>` and renders
+   * one colored SVG segment per slot proportional to the range. Clicks open
+   * the details view through `pulseDetailsPopup` (`showdetails` / `showpopup`
+   * configs select an in-place details page or a floating popup). Pending
+   * modifications matching the current machine append an
+   * `x-revisionprogress` over the affected sub-range and trigger a reload
+   * once their `pendingModifications === 0`. Reacts to
+   * `dateTimeRangeChangeEvent` on `period-context` (dispatches
+   * `askForDateTimeRangeEvent` if the range is missing) and to
+   * `machineIdChangeSignal` on `machine-context`. Height comes from the
+   * `height` attribute, otherwise `tagConfig` / default.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   height          - (optional) integer pixel height of the bar
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *   range           - (optional) ISO date range string `begin;end`
-   *   showdetails     - (optional) details page to open on click (from config)
-   *   showpopup       - (optional) popup details to open on click (from config)
-   *
+   * @element x-observationstatebar
+   * @attr {number} machine-id      (required) machine id
+   * @attr {number} height          pixel height of the bar
+   * @attr {string} range           ISO datetime range `begin;end`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ObservationStateBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

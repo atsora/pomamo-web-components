@@ -23,17 +23,22 @@ require('x-milestonesadd/x-milestonesadd');
 (function () {
 
   /**
-   * `<x-milestonesmanager>` — displays and manages milestones (named events) for a machine or group.
+   * `<x-milestonesmanager>` — table of milestones for one machine or group
+   * with inline add/remove and a range filter.
    *
-   * Fetches `MilestonesGet?GroupId=<id>` with an optional date range filter.
-   * Renders a list of milestones with timestamps and delete buttons.
-   * Includes an `x-milestonesadd` sub-component for adding new milestones.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `milestonesChangeEvent` globally.
+   * Renders a header (machine label + `x-datetimerange` bound to an
+   * internal `milestones-context-<rand>` context) and a table whose rows
+   * come from `MilestonesGet?GroupId=<id>[&Range=<range>]&Cache=No`. Each
+   * row shows machine name, day, message, and a remove button which calls
+   * `MilestonesRemove?Id=<id>`. The "+" header button opens an
+   * `x-milestonesadd` inside a `pulseCustomDialog`. Reacts to
+   * `dateTimeRangeChangeEvent` on its own range context, to
+   * `milestonesChangeEvent` globally (after adds), and to
+   * `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   machine-id     - (required) integer machine or group id
-   *   period-context - event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-milestonesmanager
+   * @attr {number} machine-id      (required) machine or group id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class MilestonesManagerComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

@@ -18,28 +18,33 @@ require('x-clock/x-clock');
 (function () {
 
   /**
-   * `<x-production>` — displays actual vs. target production count for a machine.
+   * `<x-production>` — actual vs. target production count for one machine,
+   * with optional percent / actual-only display modes.
    *
-   * REST endpoint switches based on context:
-   *  - No range (live): `Operation/ProductionMachiningStatus?MachineId=<id>` → uses `NbPiecesDoneDuringShift` / `GoalNowShift`.
-   *  - With range (historical): `Operation/PartProductionRange?GroupId=<id>&Range=<range>` → uses `NbPieces` / `Goal`.
+   * Switches endpoint based on whether a range is in play:
+   *  - no range (live): `Operation/ProductionMachiningStatus?MachineId=<id>`,
+   *    using `NbPiecesDoneDuringShift` / `GoalNowShift`;
+   *  - with range: `Operation/PartProductionRange?GroupId=<id>&Range=<range>`,
+   *    using `NbPieces` / `Goal`.
    *
-   * Renders: "Actual [clock]: N / Target [clock]: N", or a percentage span depending on `productionpercent` config.
-   * Color-codes the actual value by efficiency thresholds (`thresholdredproduction`, `thresholdtargetproduction`).
-   * Forwards `WorkInformations` to `x-workinfo` via `operationChangeEvent` on `machine-id` context.
+   * Renders an "Actual [clock]: N / Target [clock]: N" cellbar (the clocks
+   * are `x-clock` children), and color-codes the actual value against
+   * `thresholdredproduction` / `thresholdtargetproduction` efficiency
+   * thresholds. `_applyProductionDisplayFromConfig()` honours the
+   * `productionpercent` config: `'true'` shows a percent span only,
+   * `'actualonly'` shows the actual count only, otherwise actual + target.
+   * When the `manual-display` attribute is set, the display-mode switching
+   * is skipped (host code owns the layout). Forwards `WorkInformations` to
+   * any sibling `x-workinfo` via `operationChangeEvent` on the `machine-id`
+   * context. Reacts to `dateTimeRangeChangeEvent` on `period-context` and
+   * to `machineIdChangeSignal` on `machine-context`.
    *
-   * `_applyProductionDisplayFromConfig()` switches between three modes:
-   *  - `'true'` (percent): shows percent span only.
-   *  - `'actualonly'`: shows actual count only.
-   *  - default: shows actual + separator + target.
-   * When `manual-display` attribute is present, layout management is delegated to external code.
-   *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   period-context  - (optional) event bus context for `dateTimeRangeChangeEvent`
-   *   machine-context - (optional) event bus context for machine selection changes
-   *   manual-display  - (optional) if present, skips internal display mode management
-   *
+   * @element x-production
+   * @attr {number}  machine-id      (required) machine id
+   * @attr {string}  period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string}  machine-context event-bus context for `machineIdChangeSignal`
+   * @attr {boolean} manual-display  skip internal display-mode management
+   * @fires operationChangeEvent     `{ WorkInformations: ... }` — on the `machine-id` context
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class productionComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

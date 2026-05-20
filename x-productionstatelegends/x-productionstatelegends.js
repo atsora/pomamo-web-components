@@ -14,14 +14,19 @@ var pulseUtility = require('pulseUtility');
 (function () {
 
   /**
-   * `<x-productionstatelegends>` — legend panel for production state categories.
+   * `<x-productionstatelegends>` — legend panel listing production-state
+   * categories.
    *
-   * Identical structure to `x-reasongroups` but uses production state data from `ProductionStateLegend`.
-   * Each item: colored square SVG + display label + alternate compact label (RTD use).
-   * Tooltip on each element shows all individual production states within the category.
-   * Includes 4 empty alignment divs and triggers `.legend-content` resize.
-   * `isVisible` is always true so the legend always fetches.
+   * Fetches `ProductionStateLegend` once and renders a single legend
+   * group: a "Production state" title, then one `.pulse-legend-element`
+   * per item built from a colored square SVG
+   * (`pulseSvg.createColoredLegend`) plus a display label and a compact
+   * alternate label (CSS class `productionstatelegends-label-alt-<rgb>`).
+   * Each element carries a tooltip listing all individual states within
+   * the category. Followed by 4 filler divs for flex alignment. Always
+   * reports `isVisible === true`.
    *
+   * @element x-productionstatelegends
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class ProductionStateLegendsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

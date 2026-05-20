@@ -24,32 +24,31 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
 (function () {
 
   /**
-   * `<x-machinetab>` — machine switcher tab strip, stateless renderer.
+   * `<x-machinetab>` — stateless machine-switcher tab strip.
    *
-   * Listens to `machineListChanged` from `x-machineselection` (single source of truth)
-   * to rebuild its tab list. Renders one tab item per machine directly in the DOM
-   * (no nested group renderer).
+   * Performs no AJAX of its own for the tab list: it rebuilds from the ids
+   * carried by the global `machineListChanged` event. Each tab is a
+   * `.group-single` containing a `.machinetab-machine-cell` made of an
+   * `x-machinedisplay` and an icon row (`x-currenticonunansweredreason`,
+   * `x-currenticonworkinformation`, `x-currenticonnextstop`,
+   * `x-currenticoncncalarm`); icon visibility is driven by the
+   * `componentsToDisplay` config (and `showcoloredbar.cncalarm` for the
+   * CNC-alarm icon). On its own timer (`refreshingRate.currentRefreshSeconds`,
+   * default 10 s), polls `CurrentReason?MachineId=<id>` per tab and tints
+   * the cell's left border with `data.Reason.Color`. Clicking a cell — or
+   * the mobile prev/next chevrons (wrap-around) — dispatches
+   * `machineIdChangeSignal` on `machine-context`; the same event from other
+   * sources syncs the `.active` class. Responds to `askForMachineIdSignal`
+   * by re-broadcasting `requestMachineIdSignal` with the active id. Adds
+   * the `hidden-content` class on `#machine-tabs-panel` when at most one
+   * machine is present.
    *
-   * Each item contains:
-   *  - a colored mode bar (polled from `CurrentReason?MachineId=<id>`)
-   *  - `x-machinedisplay` for the machine name
-   *  - icon row: `x-currenticonunansweredreason`, `x-currenticonworkinformation`,
-   *    `x-currenticonnextstop`, `x-currenticoncncalarm` (visibility driven by
-   *    `componentsToDisplay` config)
-   *
-   * Clicking an item dispatches `machineIdChangeSignal` on `machine-context` so all
-   * page components switch to the selected machine.
-   * Responds to `machineIdChangeSignal` to sync active state when another source
-   * changes the selected machine.
-   * Responds to `askForMachineIdSignal` to re-broadcast the currently active id.
-   *
-   * Hides the `#machine-tabs-panel` panel when only one machine is present (CSS hook).
-   *
-   * Attributes:
-   *   machine-context - event bus context for machine selection signals
-   *   period-context  - (optional) forwarded to icon components
-   *   status-context  - (optional) forwarded to icon components
-   *
+   * @element x-machinetab
+   * @attr {string} machine-context (required) event-bus context for machine signals
+   * @attr {string} period-context  forwarded to icon children
+   * @attr {string} status-context  forwarded to icon children
+   * @fires machineIdChangeSignal   `{ newMachineId: number }` — on `machine-context`, on click / chevron nav
+   * @fires requestMachineIdSignal  `{ machineId: number }` — on `machine-context`, replies to `askForMachineIdSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class MachineTabComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
@@ -98,7 +97,6 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
           this.onAskForMachineId.bind(this));
       }
 
-      // Connect to source of truth (x-machineselection)
       if (eventBus.EventBus.addGlobalEventListener) {
         eventBus.EventBus.addGlobalEventListener(this,
           'machineListChanged', this.onMachineListChanged.bind(this));
@@ -150,7 +148,8 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       pulseSvg.inlineBackgroundSvg(this._chevronPrev);
       pulseSvg.inlineBackgroundSvg(this._chevronNext);
 
-      // Late-arrival sync: render immediately if machineselection already resolved
+      // Late-arrival sync: pull the already-resolved id list from an
+      // x-machineselection sibling if it emitted machineListChanged before us.
       try {
         let machineSel = document.querySelector('x-machineselection');
         if (machineSel && typeof machineSel.isReady === 'function' && machineSel.isReady()) {
@@ -160,7 +159,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
             this._renderList();
           }
         }
-      } catch (e) { /* no machineselection on this page */ }
+      } catch (e) { /* no x-machineselection on the page */ }
 
       this.switchToNextContext();
     }
@@ -208,7 +207,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
     }
 
     validateParameters() {
-      // No validation: source of truth (x-machineselection) drives state.
+      // No validation: the id list is pushed via machineListChanged.
       this.switchToNextContext();
     }
 
@@ -227,7 +226,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
     }
 
     /**
-     * Stateless: no AJAX. Render is driven by `machineListChanged` events.
+     * Stateless: no AJAX. Render is driven by `machineListChanged`.
      */
     _runAlternateGetData() {
       this.switchToContext('Loaded');
@@ -235,7 +234,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
     }
 
     /**
-     * Source-of-truth callback: x-machineselection has resolved a new list of machine ids.
+     * `machineListChanged` callback: rebuild the tab strip from the new id list.
      */
     onMachineListChanged(event) {
       let ids = (event.target && event.target.ids) || event.ids || [];

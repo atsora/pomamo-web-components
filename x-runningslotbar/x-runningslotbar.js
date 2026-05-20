@@ -20,21 +20,25 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-runningslotbar>` — timeline bar showing machine running/not-running slots over a period.
+   * `<x-runningslotbar>` — timeline bar showing running / not-running
+   * slots for one machine over a date range.
    *
-   * Polls `RunningSlots?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
-   * Renders green/red/yellow segments for each running state; clicking opens the running details popup.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls `RunningSlots?MachineId=<id>&Range=<range>` and renders one
+   * SVG segment per slot, color-coded by activity state
+   * (running / not-running / unknown). Clicks open the running details
+   * view through `pulseDetailsPopup` (`showdetails` / `showpopup`
+   * configs). Reacts to `dateTimeRangeChangeEvent` on `period-context`
+   * (dispatches `askForDateTimeRangeEvent` if missing) and to
+   * `machineIdChangeSignal` on `machine-context`. Height comes from the
+   * `height` attribute, otherwise `tagConfig` / default.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   height          - (optional) integer pixel height of the bar
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *   motion-context  - event bus context for motion updates
-   *   range           - (optional) ISO date range string `begin;end`
-   *   showdetails     - (optional) details page to open on click (from config)
-   *   showpopup       - (optional) popup details to open on click (from config)
-   *
+   * @element x-runningslotbar
+   * @attr {number} machine-id      (required) machine id
+   * @attr {number} height          pixel height of the bar
+   * @attr {string} range           ISO datetime range `begin;end`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} motion-context  event-bus context for `motionChangeEvent`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class RunningSlotBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

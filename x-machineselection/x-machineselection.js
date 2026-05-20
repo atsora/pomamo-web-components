@@ -22,29 +22,35 @@ require('x-freetext/x-freetext');
 
 (function () {
   /**
-   * `<x-machineselection>` — interactive dialog widget for selecting machines or groups.
+   * `<x-machineselection>` — dialog widget for selecting machines and/or groups.
    *
-   * Fetches `Machine/Groups?Zoom=true&MachineList=true` once to populate the available groups and
-   * individual machines. The selection dialog (`pulseCustomDialog`) has two pages:
-   *  - Page 1: group tree (checkboxes) or flat machine list, with a search bar.
-   *  - Page 2: current selection list with drag-and-drop / up-down reordering, and a live preview
-   *    panel rendering one `<x-machinedisplay>` per resolved machine when group selection is active.
-   *    Resolution is internal: single-machine groups from `_groupDisplays`, multi-machine groups via
-   *    the `_resolvedGroupCache` or a `MachinesFromGroups` AJAX call.
+   * Renders an inline summary and an "edit" button that opens a two-page dialog
+   * (`pulseCustomDialog`): a category tree of groups or a flat searchable machine
+   * list on page 1, the ordered selection plus a live machine preview on page 2.
+   * Resolves groups into machine ids internally (locally from the boot
+   * `Machine/Groups` fetch, cached, or via `MachinesFromGroups` AJAX) and dedupes
+   * the result. Dynamic groups are re-polled every `dynamicGroupRefreshSeconds`
+   * (default 30s).
    *
-   * Mode switching: "by group" (default) → `_groupSelectionArray` stored; "by machine" →
-   * `_machineSelectionArray` stored. On OK: writes to `pulseConfig` (key `machine` and `group`),
-   * then dispatches `configChangeEvent` for both keys so the rest of the page reacts.
+   * In default mode the selection is persisted to `pulseConfig` (keys `machine`
+   * and `group`) and the resolved machine ids are emitted on the global event bus
+   * as `machineListChanged`. In `in-report` mode the selection is written to the
+   * `pulse-machines` / `pulse-groups` attributes on the element instead.
    *
-   * In `in-report` mode: writes `pulse-machines` / `pulse-groups` attributes instead of config.
-   *
-   * Exposed `methods`: `changeMachineSelection`, `fillExternalSummaryDisplay`, `getMachinesArray`,
-   * `getGroupsArray`, `getMachinesString`, `getGroupsString`.
-   *
-   * Attributes:
-   *   unique-machine - `'true'` restricts selection to a single machine
-   *   in-report      - activates report mode (attributes instead of config)
-   *
+   * @element x-machineselection
+   * @attr {string}  unique-machine     `'true'` restricts selection to a single machine
+   * @attr {boolean} in-report          output to attributes instead of `pulseConfig`
+   * @attr {string}  pulse-machines     (in-report output) selected machine ids, comma-separated
+   * @attr {string}  pulse-groups       (in-report output) selected group ids, comma-separated
+   * @fires machineListChanged          `{ ids: string[], source?: 'url'|'url-early'|'user'|'group-poll', error?: 'network' }`
+   * @method changeMachineSelection     opens the selection dialog
+   * @method fillExternalSummaryDisplay writes the current selection summary into a given element
+   * @method getMachinesArray           copy of the current machine id selection
+   * @method getGroupsArray             copy of the current group id selection
+   * @method getMachinesString          current machine ids, comma-separated
+   * @method getGroupsString            current group ids, comma-separated
+   * @method getResolvedMachineIds      copy of the resolved machine ids (after group → machine)
+   * @method isReady                    `true` once the first resolution completed
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class MachineSelectionComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
@@ -283,10 +289,7 @@ require('x-freetext/x-freetext');
       this._resolveAndEmit('url');
     }
 
-    /**
-     * Opens the machine-selection dialog (creates it on first call via `_createDialogIfNotDone`).
-     * Exposed as a public method via `methods`.
-     */
+    /** Opens the machine-selection dialog (creates it on first call via `_createDialogIfNotDone`). */
     changeMachineSelection() {
       this._createDialogIfNotDone();
 
@@ -1545,7 +1548,6 @@ require('x-freetext/x-freetext');
 
     /**
      * Fills an external DOM element with the same display names as `_fillSummaryDisplay()`.
-     * Exposed as a public method via `methods`.
      *
      * @param {jQuery|HTMLElement} summary - Target container to fill.
      */

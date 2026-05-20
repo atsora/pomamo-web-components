@@ -20,32 +20,36 @@ var state = require('state');
 
 // Visibility contract:
 // This component NEVER sets inline `display` on `this.element` or any ancestor.
-// State "no operation tracked for this machine" is signaled by adding the class
-// `lwi-no-operation` on the host. CSS in x-lastworkinformationbar.less hides
-// the host when this class is present. Pages that wrap the host in
-// `.pulse-bar-div` may opt-in to collapse the wrapper via:
-//   .pulse-bar-div:has(> x-lastworkinformationbar.lwi-no-operation) { display: none; }
+// State "no operation tracked for this machine" is signaled by adding the
+// class `lwi-no-operation` on the host; CSS hides it from there.
 
 (function () {
 
   /**
-   * `<x-lastworkinformationbar>` — bar-style display of the last work information for a machine.
+   * `<x-lastworkinformationbar>` — cell-bar of current work-information cells
+   * and a "Past Data" cell for one machine.
    *
-   * Polls `GetLastWorkInformationV3/<machine-id>` at `currentRefreshSeconds` interval.
-   * Renders a cell-bar layout with current work info cells and a "Past Data" cell.
-   * Uses a custom `Loaded` (StaticState) context to stop polling when the machine
-   * has no operation tracking.
+   * Polls `GetLastWorkInformationV3/<machine-id>` (interval =
+   * `refreshingRate.currentRefreshSeconds`, default 10 s) and renders one
+   * `.pulse-cellbar-first` per work-information item plus a
+   * `.pulse-cellbar-last` past-data cell. Missing values are flagged with
+   * `pulse-cellbar-cell-missing` and a `missing` attribute; the past cell
+   * carries the same class when `DataMissing` is true. When `SlotMissing` is
+   * true, inserts a single placeholder cell using the `noOperation`
+   * translation. When the response carries `MonitoredMachineOperationBar ===
+   * 'None'`, adds the `lwi-no-operation` class on the host (CSS hides it)
+   * and switches to a `Loaded` `StaticState` to stop polling. Clicking the
+   * past cell opens `pulseDetailsPopup.openChangeWorkInfoDialog`; clicks on
+   * the current cells are no-ops. Reacts to `machineIdChangeSignal` on
+   * `machine-context` and to `dateTimeRangeChangeEvent` on `period-context`
+   * (tracks the range, used by the past dialog).
    *
-   * `manageSuccess()` adds `lwi-no-operation` class on the host if `MonitoredMachineOperationBar`
-   * is 'None'; otherwise removes it and delegates to `refresh(data)`.
-   * Clicking "Past Data" opens a change-work-info dialog via `pulseDetailsPopup`.
-   *
-   * Attributes:
-   *   machine-id        - (required) integer machine id; restart on change
-   *   machine-context   - (optional) event bus context for machine selection changes
-   *   status-context    - (optional) event bus context to dispatch `workinformationStatusChange`
-   *   period-context    - (optional) event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-lastworkinformationbar
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
+   * @attr {string} status-context  event-bus context for `workinformationStatusChange`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @fires workinformationStatusChange `{ status: boolean | null }` — on `status-context`; `null` on error / no-operation, `true` when any cell or the past cell is missing
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class LastWorkInformationBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

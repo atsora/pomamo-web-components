@@ -20,19 +20,21 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-shiftslotbar>` — timeline bar showing shift slots over a period.
+   * `<x-shiftslotbar>` — timeline bar showing shift slots over a date
+   * range.
    *
-   * Polls `GetListOfShiftSlot?Begin=<begin>&End=<end>` at `currentRefreshSeconds` interval.
-   * Renders colored segments for each shift; clicking opens the shift details popup.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context`.
+   * Polls `GetListOfShiftSlot?Begin=<begin>&End=<end>` and renders one
+   * SVG segment per shift proportional to the range. Clicks open the
+   * shift details view through `pulseDetailsPopup` (`showdetails` /
+   * `showpopup` configs). Reacts to `dateTimeRangeChangeEvent` on
+   * `period-context` (dispatches `askForDateTimeRangeEvent` if the range
+   * is missing). Height comes from the `height` attribute, otherwise
+   * `tagConfig` / default.
    *
-   * Attributes:
-   *   height         - (optional) integer pixel height of the bar
-   *   period-context - event bus context for `dateTimeRangeChangeEvent`
-   *   range          - (optional) ISO date range string `begin;end`
-   *   showdetails    - (optional) details page to open on click (from config)
-   *   showpopup      - (optional) popup details to open on click (from config)
-   *
+   * @element x-shiftslotbar
+   * @attr {number} height         pixel height of the bar
+   * @attr {string} range          ISO datetime range `begin;end`
+   * @attr {string} period-context event-bus context for `dateTimeRangeChangeEvent`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ShiftSlotBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

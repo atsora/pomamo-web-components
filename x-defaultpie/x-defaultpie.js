@@ -20,21 +20,20 @@ require('x-reasonslotpie/x-reasonslotpie');
 (function () {
 
   /**
-   * `<x-defaultpie>` — adaptive pie dispatcher: renders the correct pie component based on server config.
+   * `<x-defaultpie>` — dispatcher that creates the right pie sub-component
+   * based on the server's `Machine/Pie` config.
    *
-   * Polls `Machine/Pie?GroupId=<group-or-machine-id>`. The response `data.PieType` determines which
-   * sub-component to instantiate (`x-<PieType>`). Supported types:
-   *   - `cycleprogresspie`, `operationprogresspie`, `partproductionstatuspie`, `reasonslotpie`
+   * Polls `Machine/Pie?GroupId=<group-or-machine-id>` and instantiates an
+   * `<x-<PieType>>` (`cycleprogresspie`, `operationprogresspie`,
+   * `partproductionstatuspie`, or `reasonslotpie`) with the same `machine-id`
+   * and `textchange-context` forwarded. When `data.Permanent` is true, switches
+   * to a `Loaded` `StaticState` to stop polling.
    *
-   * When `data.Permanent` is true, transitions to `Loaded` (StaticState) to stop polling.
-   * Passes `machine-id` and `textchange-context` attributes to the created sub-component.
-   *
-   * Attributes:
-   *   machine-id        - integer machine id (takes priority over group)
-   *   group             - group id (used if machine-id absent)
-   *   machine-context   - (optional) event bus context for machine selection changes
-   *   textchange-context - (optional) forwarded to the sub-component
-   *
+   * @element x-defaultpie
+   * @attr {number} machine-id          machine id (takes priority over `group`)
+   * @attr {string} group               group id (alternative to `machine-id`)
+   * @attr {string} machine-context     event-bus context for `machineIdChangeSignal`
+   * @attr {string} textchange-context  forwarded to the chosen sub-component
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class DefaultPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

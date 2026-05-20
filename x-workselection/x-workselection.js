@@ -13,17 +13,20 @@ var pulseSvg = require('pulseSvg');
 (function () {
 
   /**
-   * `<x-workselection>` — search-as-you-type dropdown for selecting a work order / component / operation.
+   * `<x-workselection>` — search-as-you-type picker for a work order /
+   * component / operation.
    *
-   * Polls `WorkSelection?Search=<text>` on each input change, displaying matching entries in a list.
-   * Selecting an entry dispatches `workSelectionChangeEvent` on `work-context`.
-   * Optionally filters by machine id via `machine-id` attribute.
+   * Renders a search input + button and a result list. On each query
+   * fetches `WorkSelection?Search=<text>[&MachineId=<id>]` and lists the
+   * matches; selecting an entry dispatches `workSelectionChangeEvent`
+   * on `work-context` with the picked record. The `search` attribute
+   * sets the initial query.
    *
-   * Attributes:
-   *   machine-id   - (optional) integer machine id to filter results
-   *   work-context - event bus context for `workSelectionChangeEvent`
-   *   search       - initial search string
-   *
+   * @element x-workselection
+   * @attr {number} machine-id   machine id used to scope the search
+   * @attr {string} work-context event-bus context for `workSelectionChangeEvent`
+   * @attr {string} search       initial search string
+   * @fires workSelectionChangeEvent `{ … selected record … }` — on `work-context`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class WorkSelectionComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

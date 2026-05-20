@@ -15,16 +15,17 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-sequencebar>` — bar showing the currently running sequence progress for a machine.
+   * `<x-sequencebar>` — current-sequence progress bar for one machine.
    *
-   * Polls `CycleProgress?MachineId=<id>&IncludeEvents=false` at `currentRefreshSeconds` interval.
-   * Renders a horizontal bar with the current sequence name and elapsed/expected time indicators.
-   * Listens to `machineIdChangeSignal` on `machine-context`.
+   * Polls `CycleProgress?MachineId=<id>&IncludeEvents=false` (interval =
+   * `refreshingRate.currentRefreshSeconds`, default 10 s) and renders a
+   * horizontal bar with the current sequence name and elapsed / expected
+   * time indicators. Reacts to `machineIdChangeSignal` on
+   * `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-sequencebar
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class SequenceBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

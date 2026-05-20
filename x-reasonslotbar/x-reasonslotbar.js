@@ -29,19 +29,28 @@ require('x-revisionprogress/x-revisionprogress');
 (function () {
 
   /**
-   * `<x-reasonslotbar>` — timeline bar showing reason color slots for a machine over a period.
+   * `<x-reasonslotbar>` — timeline bar showing reason color slots for one
+   * machine over a date range.
    *
-   * Polls `ReasonColorSlots?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
-   * Renders colored segments for each reason slot; clicking opens the stop classification or reason details popup.
-   * Integrates `x-revisionprogress` for optimistic update tracking after reason edits.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls `ReasonColorSlots?MachineId=<id>&Range=<range>` (with
+   * `&ShowOverwriteRequired=true` driven by the
+   * `showoverwriterequired` config) and renders one colored SVG segment
+   * per slot proportional to the range. Clicks open either the
+   * stop-classification dialog or the reason-slot-list dialog via
+   * `pulseDetailsPopup`. Pending revisions of `kind: 'reason'` on the
+   * current machine append an `x-revisionprogress` over the affected
+   * sub-range and trigger a reload once `pendingModifications === 0`.
+   * Reacts to `dateTimeRangeChangeEvent` on `period-context` (dispatches
+   * `askForDateTimeRangeEvent` if missing) and to `machineIdChangeSignal`
+   * on `machine-context`. Height comes from the `height` attribute,
+   * otherwise `tagConfig` / default.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   height          - (optional) integer pixel height of the bar
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *   range           - (optional) ISO date range string `begin;end`
-   *
+   * @element x-reasonslotbar
+   * @attr {number} machine-id      (required) machine id
+   * @attr {number} height          pixel height of the bar
+   * @attr {string} range           ISO datetime range `begin;end`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ReasonSlotBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

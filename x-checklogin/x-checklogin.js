@@ -16,19 +16,18 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-checklogin>` — invisible authentication guard component.
+   * `<x-checklogin>` — invisible authentication guard.
    *
-   * On `validateParameters`:
-   *  - If not on a login page and app is `PulseWebApp`: redirects to login if role/context is missing.
-   *  - Checks login validity: empty login → redirect to login; expired token → redirect to login.
-   *  - Schedules a 60-second timer to re-check validity while the session is active.
+   * On `validateParameters`, redirects to the login page when the current app
+   * context/role is missing (PulseWebApp only), when the stored login is empty,
+   * or when the access token has expired. While the session is active,
+   * re-checks token expiration every 60 seconds. Listens to
+   * `AuthorizationErrorEvent` to POST `User/RenewToken` (single in-flight call
+   * via `_pendingRefreshToken`) and to `TokenHasChangedEvent` (kind
+   * `AccessToken`) to re-validate the new token. No DOM, no polling — switches
+   * to `Loaded` immediately.
    *
-   * Listens to:
-   *  - `AuthorizationErrorEvent` — triggers a token refresh via `User/RenewToken` (POST).
-   *  - `TokenHasChangedEvent` (AccessToken kind) — re-validates token expiration.
-   *
-   * No DOM is rendered (`pulse-nodisplay`). No REST polling (transitions to `Loaded` immediately).
-   *
+   * @element x-checklogin
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class CheckLoginComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

@@ -17,18 +17,21 @@ const Chart = require('chart.js/auto');
 (function () {
 
   /**
-   * `<x-productiontrackergraph>` — Chart.js graph showing production tracking data over a period.
+   * `<x-productiontrackergraph>` — Chart.js graph of actual vs. goal
+   * production over a date range, hourly bins.
    *
-   * Polls `ProductionTracker?GroupId=<group>&Range=<range>` at `currentRefreshSeconds` interval.
-   * Renders a line or bar chart with actual vs. goal production quantities using Chart.js.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls `ProductionTracker?GroupId=<group>&Range=<range>` and renders a
+   * Chart.js chart (`chart.js/auto`) with one dataset per series (actual,
+   * goal) bucketed into hourly labels (`_hourlyLabels`, `_hourlyData`).
+   * Reacts to `dateTimeRangeChangeEvent` on `period-context` and to
+   * `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   group           - (optional) group id for filtering
-   *   machine-id      - (optional) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-productiontrackergraph
+   * @attr {string} group           group id
+   * @attr {number} machine-id      machine id
+   * @attr {string} range           ISO datetime range `begin;end`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ProductionTrackerGraphComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

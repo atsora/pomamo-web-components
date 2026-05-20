@@ -18,21 +18,24 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-runningslotpie>` — SVG pie chart showing the distribution of machine running/not-running time over a period.
+   * `<x-runningslotpie>` — SVG pie showing the distribution of running /
+   * not-running time for one machine over a date range.
    *
-   * Polls `RunningSlots?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
-   * Renders a pie with segments for running, idle, and off-time. Optionally dispatches elapsed-time
-   * or percentage text via `textChangeEvent` on `textchange-context`.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls `RunningSlots?MachineId=<id>&Range=<range>` and renders an SVG
+   * pie with segments for running, idle and off-time aggregates. When
+   * `textchange-context` is set, dispatches `textChangeEvent` with the
+   * elapsed-time label or a percentage (`'showPercent'` / `'DEMO'`
+   * switch text format). Reacts to `dateTimeRangeChangeEvent` on
+   * `period-context` and to `machineIdChangeSignal` on `machine-context`.
    *
-   * Attributes:
-   *   machine-id         - (required) integer machine id
-   *   machine-context    - event bus context for `machineIdChangeSignal`
-   *   period-context     - event bus context for `dateTimeRangeChangeEvent`
-   *   range              - (optional) ISO date range string `begin;end`
-   *   motion-context     - event bus context for motion updates
-   *   textchange-context - event bus context for `textChangeEvent` (special values: `'showPercent'`, `'DEMO'`)
-   *
+   * @element x-runningslotpie
+   * @attr {number} machine-id         (required) machine id
+   * @attr {string} range              ISO datetime range `begin;end`
+   * @attr {string} period-context     event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} motion-context     event-bus context for `motionChangeEvent`
+   * @attr {string} textchange-context base context for `textChangeEvent` (`'showPercent'`/`'DEMO'` toggle text mode)
+   * @attr {string} machine-context    event-bus context for `machineIdChangeSignal`
+   * @fires textChangeEvent            `{ text: string }` — on the resolved `textchange-context`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class RunningSlotPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

@@ -3,15 +3,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * Code Review : 2014 nov
  * @module x-workinfoslotlist
  * @requires module:pulseComponent
  * @requires module:pulseUtility
  * @requires module:pulseRange
- * @requires module:pulseCustomDialog
- * @requires module:x-savereason
  * @requires module:x-datetimerange
- * @requires module:x-reasonslotbar
  * @requires module:x-highlightperiodsbar
  */
 
@@ -33,17 +29,21 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
 (function () {
 
   /**
-   * `<x-workinfoslotlist>` — list of operation slots (work info) for a machine over a period.
+   * `<x-workinfoslotlist>` — scrollable list of operation slots (work
+   * info) for one machine over a date range.
    *
-   * Fetches `GetListOfOperationSlotV2?Id=<machine-id>&Begin=<begin>&End=<end>` once per period change.
-   * Renders a scrollable list of operation slots with work order, component, and operation labels.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Fetches `GetListOfOperationSlotV2?Id=<machine-id>&Begin=<begin>&End=<end>`
+   * and renders one row per operation slot with work order, component and
+   * operation labels. An embedded `x-operationslotbar` provides a visual
+   * summary, and `x-highlightperiodsbar` shows the currently-hovered
+   * slot. Reacts to `dateTimeRangeChangeEvent` on `period-context` and
+   * to `machineIdChangeSignal` on `machine-context`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-workinfoslotlist
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} range           ISO datetime range `begin;end`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class ReasonSlotListComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

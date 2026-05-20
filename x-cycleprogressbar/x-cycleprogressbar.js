@@ -16,17 +16,29 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-cycleprogressbar>` — animated bar showing the current machine cycle progress.
+   * `<x-cycleprogressbar>` — horizontal SVG bar for the current cycle's
+   * progress, with a next-stop indicator.
    *
-   * Polls `CycleProgress?MachineId=<id>&IncludeEvents=true` at `currentRefreshSeconds` interval.
-   * Renders a horizontal bar indicating the elapsed fraction of the expected cycle time.
-   * Changes color based on whether the cycle is on-time, delayed, or stopped.
-   * Listens to `machineIdChangeSignal` on `machine-context`.
+   * Polls `CycleProgress?MachineId=<id>&IncludeEvents=true` at
+   * `currentRefreshSeconds` interval. Renders a coloured `<rect>` filled to
+   * `data.Completion` plus vertical separator lines for each sequence
+   * (`Machining` / `NonMachining` / `Stop` / `OptionalStop`) and a "next stop"
+   * message + duration text. Status classes (`activeevent` / `comingevent`,
+   * severity name, `threshold1` / `threshold2` for the configurable seconds
+   * thresholds) are applied to both the fill rect and the next-stop block. The
+   * resolved next-stop state (time, threshold, severity, event kind) is also
+   * dispatched as `nextStopStatusChange` on `status-context`. Clock drift is
+   * corrected via `pulseConfig.diffServerTimeMinusNowMSec`. Reacts to
+   * `machineIdChangeSignal` on `machine-context`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-cycleprogressbar
+   * @attr {number}  machine-id      (required) machine id
+   * @attr {number}  height          bar height in px (default 30, min 5)
+   * @attr {number}  threshold1      seconds threshold for the first warning class (default 600)
+   * @attr {number}  threshold2      seconds threshold for the urgent warning class (default 180)
+   * @attr {string}  machine-context event-bus context for `machineIdChangeSignal`
+   * @attr {string}  status-context  event-bus context where `nextStopStatusChange` is dispatched
+   * @fires nextStopStatusChange     `{ untilNextStopMSec, thresholdClass, severity, eventKind }`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CycleProgressBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

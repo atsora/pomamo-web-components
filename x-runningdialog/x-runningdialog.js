@@ -5,9 +5,6 @@
 /**
  * @module x-runningdialog
  * @requires module:pulseComponent
- *
- * Mirrors the running page layout inside a dialog for a single group.
- * All bars are config-driven via `x-barstack` with `period-context="runningdialog"`.
  */
 
 var pulseComponent = require('pulsecomponent');
@@ -30,6 +27,24 @@ require('x-tr/x-tr');
 
 (function () {
 
+  /**
+   * `<x-runningdialog>` — dialog body that renders the running-view of one
+   * group.
+   *
+   * Builds a header with `x-periodtoolbar` (period-context
+   * `"runningdialog"`) and an `x-clock`, then a tile with
+   * `x-datetimegraduation` and an `x-grouplist` whose `templateid` points
+   * at a hidden template containing `x-machinedisplay`,
+   * `x-reasonbutton`, `x-productionmachiningstatus`,
+   * `x-lastworkinformation`, `x-lastshift`, `x-currentcncvalue`,
+   * `x-barstack` (period-context `"runningdialog"`,
+   * motion-context `"motion_machine"`), `x-motionpercentage` and
+   * `x-motiontime`.
+   *
+   * @element x-runningdialog
+   * @attr {string} group (required) group id
+   * @extends pulseComponent.PulseInitializedComponent
+   */
   class RunningDialogComponent extends pulseComponent.PulseInitializedComponent {
     constructor (...args) {
       const self = super(...args);

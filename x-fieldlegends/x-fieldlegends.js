@@ -15,18 +15,20 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-fieldlegends>` — legend panel for CNC value fields.
+   * `<x-fieldlegends>` — legend panel for CNC value fields covering one or
+   * more machines.
    *
-   * Fetches `CncValueLegend/Get?MachineIds=<ids>` once on init.
-   * Renders one legend group per `data.Items` entry: field title + colored square SVGs + labels.
-   * Appends 4 filler divs for flexbox alignment and triggers `.legend-content` resize.
-   * Listens to `machineListChanged` globally to update `machine-ids` when the machine list changes.
-   * `isVisible` always returns `true`.
+   * Fetches `CncValueLegend/Get?MachineIds=<ids>` (prefers `machine-ids` over
+   * `machine-id`) and renders one group per returned field — a field title
+   * plus a colored square SVG (built via `pulseSvg.createColoredLegend`) and
+   * label per legend entry, followed by 4 filler divs for flex alignment.
+   * Listens to `machineListChanged` globally to refresh `machine-ids`. Always
+   * reports `isVisible === true`, and stays silent (no error banner, no AJAX)
+   * when no machine is selected.
    *
-   * Attributes:
-   *   machine-id  - single machine id (used if machine-ids absent)
-   *   machine-ids - comma-separated machine id list (takes priority)
-   *
+   * @element x-fieldlegends
+   * @attr {number} machine-id  single machine id (used when `machine-ids` is absent)
+   * @attr {string} machine-ids comma-separated machine id list (takes priority)
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class fieldlegendsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
@@ -133,10 +135,9 @@ var eventBus = require('eventBus');
         this.switchToNextContext();
         return;
       }
-      // No machines selected: silent wait — the renderer (x-grouplist/x-groupgrid)
-      // already shows "No machine in selection". Don't fire a second error here,
-      // and don't trigger a CncValueLegend AJAX with empty MachineIds (which the
-      // backend rejects, surfacing the global "please contact support team" banner).
+      // No machine selected: stay silent (no banner, no empty-MachineIds AJAX
+      // which the backend rejects) and let the surrounding UI report the lack
+      // of selection.
       this.switchToKey('Error', () => this.displayError(''), () => this.removeError());
     }
 

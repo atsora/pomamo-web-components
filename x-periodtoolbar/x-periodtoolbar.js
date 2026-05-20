@@ -4,10 +4,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * Definition of tag x-periodtoolbar used to display datetime range.
- * This tag allow <em>zoom in</em> and <em>zoom out</em> through current datetime range.
- * It is also possible to go to previous or next period.
- *
  * @module x-periodtoolbar
  * @requires module:pulseComponent
  * @requires module:pulseUtility
@@ -29,17 +25,25 @@ require('x-datetimepicker/x-datetimepicker');
 (function () {
 
   /**
-   * `<x-periodtoolbar>` — toolbar with navigation buttons for selecting and browsing time periods.
+   * `<x-periodtoolbar>` — toolbar to pick and navigate a date range
+   * (home / day / week / month / custom, previous / next, zoom in/out).
    *
-   * When `displayshiftrange` is enabled, polls `RangeAround?RangeType=<type>&RangeSize=<n>&Around=<now>`
-   * to obtain shift boundaries; otherwise computes a rolling window locally.
-   * Renders previous/next/zoom navigation buttons and dispatches `dateTimeRangeChangeEvent` on `period-context`.
-   * Includes a `x-datetimepicker` for manual date selection.
+   * When `displayshiftrange === 'true'` (or a shift-aligned range type is
+   * chosen), fetches `GetRangeAround?RangeType=<type>&RangeSize=<n>&Around=<now>`
+   * to compute the boundaries; otherwise builds a rolling window locally.
+   * Renders the row of buttons plus an `x-datetimepicker` for manual
+   * selection. Dispatches `dateTimeRangeChangeEvent` on `period-context`
+   * after every change; replies to `askForDateTimeRangeEvent` on the same
+   * context with the current range. The `hide-period-buttons` /
+   * `hide-zooms` attributes drop the corresponding button groups.
    *
-   * Attributes:
-   *   period-context     - event bus context for `dateTimeRangeChangeEvent`
-   *   displayshiftrange  - (optional) if `'true'`, aligns range to shift boundaries from the server
-   *
+   * @element x-periodtoolbar
+   * @attr {string}  period-context      event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string}  range               initial ISO range `begin;end`
+   * @attr {boolean} displayshiftrange   align ranges to shift boundaries from the server
+   * @attr {boolean} hide-period-buttons hide day/week/month buttons
+   * @attr {boolean} hide-zooms          hide the zoom-in/out buttons
+   * @fires dateTimeRangeChangeEvent     `{ daterange: DateRange, stringrange: any }` — on `period-context`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class periodtoolbarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

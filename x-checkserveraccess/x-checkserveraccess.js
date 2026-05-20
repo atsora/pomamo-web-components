@@ -14,21 +14,26 @@ var pulseConfig = require('pulseConfig');
 (function () {
 
   /**
-   * `<x-checkserveraccess>` — invisible server-health watchdog component.
+   * `<x-checkserveraccess>` — invisible server-health watchdog.
    *
-   * Polls `Data/Computer/GetLctr?Cache=No` periodically. On success, clears the `NO_SERVER`
-   * message and fires `serverProbablyAvailable` to resume all other components.
-   * Then transitions to `Stop` context to pause polling until the next disconnection event.
+   * Polls `Data/Computer/GetLctr?Cache=No` at `refreshingRate.currentRefreshSeconds`
+   * (default 10 s). When the server responds, clears the `NO_SERVER` message,
+   * hides any maintenance overlay, dispatches `serverProbablyAvailable`, and
+   * switches to the `Stop` context until the next disconnection event re-arms it.
    *
-   * Listens globally to:
-   *  - `serverProbablyDisconnected` — arms a 1-minute countdown; triggers `displayErrorAndStopAll()` after.
-   *  - `databaseProbablyDisconnected` — immediately shows a DB error and stops all components.
-   *  - `pulseMaintenance` — shows a maintenance overlay and stops all components.
+   * Reacts to global events: `serverProbablyDisconnected` (arms a 1-minute
+   * countdown before calling `displayErrorAndStopAll`), `databaseProbablyDisconnected`
+   * (immediately stops everything with a DB error), and `pulseMaintenance`
+   * (shows the maintenance overlay and stops everything).
    *
-   * `displayErrorAndStopAll()` sends `showMessageSignal` (server or DB error) and `serverProbablyOffStopRefresh`.
+   * `transientErrorDelay` is tuned to fire slightly before the freeze threshold
+   * so the watchdog re-probes ahead of other components.
    *
-   * No DOM is rendered (`pulse-nodisplay`).
-   *
+   * @element x-checkserveraccess
+   * @fires showMessageSignal              `{ id: 'NO_SERVER', message, level: 'error', clickToClose: false }` on detected outage
+   * @fires clearMessageSignal             `{ id: 'NO_SERVER' }` on recovery
+   * @fires serverProbablyAvailable        `{}` on recovery
+   * @fires serverProbablyOffStopRefresh   `{}` when an outage is confirmed
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CheckServerAccessComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

@@ -15,16 +15,24 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-currenticonnextstop>` — icon showing whether the machine has an imminent programmed stop.
+   * `<x-currenticonnextstop>` — icon showing whether one machine has an active
+   * or imminent programmed stop event.
    *
-   * Polls `CycleProgress?MachineId=<id>&Light=true&IncludeEvents=true` at `currentRefreshSeconds` interval.
-   * Displays a stop icon when the cycle progress data indicates a next stop event is approaching.
-   * Listens to `machineIdChangeSignal` on `machine-context`.
+   * Polls `CycleProgress?MachineId=<id>&Light=true&IncludeEvents=true` at
+   * `currentRefreshSeconds + 1` interval. Renders a `.pulse-icon-next-stop` div
+   * tagged with CSS classes derived from the response: the event kind
+   * (`activeevent` / `comingevent`), the severity name, and a threshold
+   * (`threshold1` / `threshold2`) when the time until the next stop drops below
+   * the `threshold1` / `threshold2` config seconds (defaults 600 / 180). Clock
+   * drift is corrected via `pulseConfig.diffServerTimeMinusNowMSec`. Listens to
+   * `nextStopStatusChange` on `status-context`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-currenticonnextstop
+   * @attr {number}  machine-id      (required) machine id
+   * @attr {boolean} active          `'true'` adds the `.active` class on the inner content
+   * @attr {string}  status-context  event-bus context for `nextStopStatusChange`
+   * @attr {number}  threshold1      seconds threshold for the first warning class (default 600)
+   * @attr {number}  threshold2      seconds threshold for the urgent warning class (default 180)
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CurrentIconNextStopComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

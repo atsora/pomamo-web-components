@@ -18,21 +18,27 @@ var pulseUtility = require('pulseUtility');
   var revisionProgressMaxId = 0; // Global variable to generate unique id
 
   /**
-   * `<x-revisionprogress>` — animated progress bar tracking a pending REST modification revision.
+   * `<x-revisionprogress>` — animated SVG progress bar tracking one pending
+   * modification revision.
    *
-   * Renders a horizontal bar that fills as the server processes a revision (e.g. after saving a reason
-   * or a machine state template). Used by `x-lastmachinestatetemplate`, `x-setupmachine`, etc.
-   * Polls the revision status via `x-modificationmanager` and updates the bar width accordingly.
+   * Listens to `modificationEvent` globally and only reacts to events
+   * matching `revision-id`; updates `_percent` from
+   * `(initModifications - pendingModifications) / initModifications` and
+   * animates the bar fill towards that value. The bar covers either the
+   * full host width (no `range` attribute) or the sub-range
+   * `revision-range` projected over `range`; the projection is refreshed
+   * on `dateTimeRangeChangeEvent` (on `period-context` or globally).
+   * `kind`, `revision-id` and `revision-range` are forwarded to whoever
+   * inspects the element via attributes.
    *
-   * Attributes:
-   *   range          - (optional) ISO date range string for the total bar width; defaults to 100%
-   *   period-context - (optional) event bus context for `dateTimeRangeChangeEvent` to resize the bar
-   *   revision-id    - revision id of the pending modification
-   *   kind           - kind of the modified data (e.g. `'reason'`, `'serialnumber'`)
-   *   revision-range - date range of the modified data
-   *   steps          - (optional, for tests) initial steps value
-   *   remaining      - (optional, for tests) initial remaining value
-   *
+   * @element x-revisionprogress
+   * @attr {string} range          ISO datetime range `begin;end` for the full bar width
+   * @attr {string} period-context event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {number} revision-id    revision id of the pending modification
+   * @attr {string} kind           modification kind (e.g. `'reason'`, `'MST'`, `'serialnumber'`)
+   * @attr {string} revision-range datetime range of the modified data
+   * @attr {number} steps          test-only initial steps value
+   * @attr {number} remaining      test-only initial remaining value
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class RevisionProgressComponent extends pulseComponent.PulseParamInitializedComponent {

@@ -6,19 +6,6 @@
 /**
  * @module x-grouplist
  * @requires module:pulseComponent
- *
- * Stateless renderer driven by the `x-machineselection` source of truth.
- * Listens to two events:
- *   - `machineListChanged` (global) — emitted by x-machineselection with the resolved machine
- *      ids; the component clones its `templateid` per machine into a single-column list.
- *   - `updateVisibleMachines` (page context) — emitted by the rotation engine in common_page;
- *      the component shows/hides items and exposes `--visible-count` as a CSS custom property
- *      so page CSS can compute row heights (e.g. calc(100% / var(--visible-count))).
- *
- * Attributes:
- *   templateid           - id of the element to clone per machine (default `'boxtoclone'`)
- *   forcestaticlist      - if `'true'`, disables rotation engine integration (sidebar use)
- *   no-rotation          - if present, disables rotation engine integration
  */
 var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
@@ -27,6 +14,30 @@ var eventBus = require('eventBus');
 
 (function () {
 
+  /**
+   * `<x-grouplist>` — stateless single-column renderer for a list of machines.
+   *
+   * Performs no AJAX of its own. Rebuilds its list from the ids carried by the
+   * global `machineListChanged` event, cloning the element identified by
+   * `templateid` (default `'boxtoclone'`) once per machine into a
+   * `.group-single` row. Re-uses existing rows and marks them with
+   * `disableDeleteWhenDisconnect` during reordering so the framework keeps the
+   * `_webComponent` reference alive (removed 500ms later); activates the first
+   * `x-machinetab` if none is active. On the `updateVisibleMachines` event
+   * (context `'PAGE'`), shows/hides rows based on the carried id list and sets
+   * the `--visible-count` CSS custom property so styles can compute row
+   * heights. Listening to `updateVisibleMachines` is skipped when
+   * `forcestaticlist === 'true'` or the `no-rotation` attribute is present.
+   * Shows a "No machine in selection" / "Server unreachable" message when the
+   * resolved id list is empty.
+   *
+   * @element x-grouplist
+   * @attr {string}  templateid      id of the element to clone per machine (default `'boxtoclone'`)
+   * @attr {boolean} forcestaticlist `'true'` opts out of the `updateVisibleMachines` listener
+   * @attr {boolean} no-rotation     presence opts out of the `updateVisibleMachines` listener
+   * @method getMachinesList         current machine id list, comma-separated
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class GroupComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     constructor(...args) {
       const self = super(...args);
@@ -54,7 +65,7 @@ var eventBus = require('eventBus');
       return this._content;
     }
 
-    /** Returns true if this instance should NOT connect to the rotation engine */
+    /** True when the `updateVisibleMachines` listener should be skipped. */
     _isStandalone() {
       if (this.element.hasAttribute('no-rotation')) return true;
       let forceStatic = this.getConfigOrAttribute('forcestaticlist', 'false');
@@ -123,7 +134,7 @@ var eventBus = require('eventBus');
     }
 
     /**
-     * Source-of-truth callback: x-machineselection has resolved a new list of machine ids.
+     * `machineListChanged` callback: rebuild the list from the new id list.
      */
     onMachineListChanged(event) {
       let ids = (event.target && event.target.ids) || event.ids || [];
@@ -132,8 +143,8 @@ var eventBus = require('eventBus');
     }
 
     /**
-     * Rotation engine callback: shows/hides items based on `visibleIds`.
-     * Also exposes `--visible-count` for CSS height calculations.
+     * `updateVisibleMachines` callback: show/hide rows based on the carried
+     * id list and update the `--visible-count` CSS custom property.
      */
     onUpdateVisibility(event) {
       if (this._isStandalone()) return;
@@ -193,18 +204,16 @@ var eventBus = require('eventBus');
       this._messageDiv = $('<div></div>').addClass('pulse-message-div').append(this._messageSpan);
       $(this._content).append(this._messageDiv);
 
-      // Connect to source of truth (x-machineselection)
       if (eventBus.EventBus.addGlobalEventListener) {
         eventBus.EventBus.addGlobalEventListener(this, 'machineListChanged', this.onMachineListChanged.bind(this));
       }
 
-      // Connect to rotation engine (unless standalone)
       if (!this._isStandalone() && eventBus.EventBus.addEventListener) {
         eventBus.EventBus.addEventListener(this, 'updateVisibleMachines', 'PAGE', this.onUpdateVisibility);
       }
 
-      // Late-arrival sync: if x-machineselection already resolved before we initialized,
-      // pull the current ids synchronously to render immediately (no flicker).
+      // Late-arrival sync: pull the already-resolved id list from an
+      // x-machineselection sibling if it emitted machineListChanged before us.
       try {
         let machineSel = document.querySelector('x-machineselection');
         if (machineSel && typeof machineSel.isReady === 'function' && machineSel.isReady()) {
@@ -213,7 +222,7 @@ var eventBus = require('eventBus');
             this._buildItems(initIds);
           }
         }
-      } catch (e) { /* no machineselection on this page */ }
+      } catch (e) { /* no x-machineselection on the page */ }
 
       this.switchToNextContext();
     }
@@ -227,7 +236,7 @@ var eventBus = require('eventBus');
     }
 
     validateParameters() {
-      // No validation: source of truth drives state. Render placeholder until events arrive.
+      // No validation: the id list is pushed via machineListChanged.
       this.switchToNextContext();
     }
 
@@ -246,7 +255,7 @@ var eventBus = require('eventBus');
     }
 
     /**
-     * Stateless: no AJAX. Render is driven by `machineListChanged` events.
+     * Stateless: no AJAX. Render is driven by `machineListChanged`.
      * Short-circuits the framework's data-fetch lifecycle.
      */
     _runAlternateGetData() {

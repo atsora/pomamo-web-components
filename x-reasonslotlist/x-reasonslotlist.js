@@ -4,7 +4,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * Code Review : 2014 nov
  * @module x-reasonslotlist
  * @requires module:pulseComponent
  * @requires module:pulseUtility
@@ -33,18 +32,27 @@ require('x-revisionprogress/x-revisionprogress');
 (function () {
 
   /**
-   * `<x-reasonslotlist>` — list of reason slots for a machine in a period with stop-classification editing.
+   * `<x-reasonslotlist>` — scrollable list of reason slots for one machine
+   * in a date range, with per-slot reason editing.
    *
-   * Fetches `ReasonOnlySlots?MachineId=<id>&Range=<range>&SelectableOption=true` once per period change.
-   * Renders a scrollable list of reason slots with color indicators, durations, and reason labels.
-   * Allows editing each slot via `x-savereason` dialog opened through `pulseCustomDialog`.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Fetches `ReasonOnlySlots?MachineId=<id>&Range=<range>&SelectableOption=true`
+   * and renders one row per slot with a color indicator, duration and
+   * reason label. Selecting one or more rows opens an `x-savereason`
+   * dialog (via `pulseCustomDialog`) to change the reason; when a single
+   * slot is in range the list step is skipped and the dialog opens
+   * directly. Display mode (`only-overwrite-required` / `force-all` /
+   * default) filters which slots are listed. Pending revisions of
+   * `kind: 'reason'` for the current machine append an
+   * `x-revisionprogress` over the affected sub-range. Reacts to
+   * `dateTimeRangeChangeEvent` on `period-context` and to
+   * `machineIdChangeSignal` on `machine-context`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-reasonslotlist
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} range           ISO datetime range `begin;end`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @method removeAllSelections    clear the selection from the slot list
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class ReasonSlotListComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

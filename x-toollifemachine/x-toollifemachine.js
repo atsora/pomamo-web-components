@@ -25,17 +25,19 @@ this.restoreDeleteWhenDisconnect ():
 (function () {
 
   /**
-   * `<x-toollifemachine>` — displays the tool life status for all tools on a machine.
+   * `<x-toollifemachine>` — tool-life summary for one machine.
    *
-   * Polls `ToolLivesByMachine?MachineId=<id>&MaxExpirationTime=<seconds>` at `currentRefreshSeconds` interval.
-   * Renders a list of tools with their remaining life percentage and expiration time.
-   * Highlights tools approaching expiration based on configurable thresholds.
-   * Listens to `machineIdChangeSignal` on `machine-context`.
+   * Polls `ToolLivesByMachine?MachineId=<id>&MaxExpirationTime=<seconds>`
+   * (interval = `refreshingRate.currentRefreshSeconds`, default 10 s) and
+   * renders one row per tool — number, label, remaining-life percentage,
+   * expiration time — bucketed and styled by the
+   * `toollabelname` / `toollabelsselections` configs (also driving the
+   * "expired-only" filter). Reacts to `machineIdChangeSignal` on
+   * `machine-context`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-toollifemachine
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ToolLifeMachineComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

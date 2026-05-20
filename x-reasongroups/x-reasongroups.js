@@ -14,14 +14,16 @@ var pulseUtility = require('pulseUtility');
 (function () {
 
   /**
-   * `<x-reasongroups>` — legend panel for reason groups.
+   * `<x-reasongroups>` — legend panel listing reason groups.
    *
-   * Fetches `ReasonGroupLegend` and renders one legend block per reason group:
-   * a colored square SVG + display label + optional alternate label (for RTD compact display).
-   * Tooltip on each element shows all individual reason groups within the category.
-   * Includes 4 empty alignment divs and triggers `.legend-content` resize.
-   * `isVisible` is always true so the legend always fetches.
+   * Fetches `ReasonGroupLegend` once and renders a single legend group:
+   * a title, then one `.pulse-legend-element` per item built from a
+   * colored square SVG (`pulseSvg.createColoredLegend`) plus the display
+   * label and a compact alternate label, with a tooltip listing the
+   * individual reasons in the category. Followed by 4 filler divs for
+   * flex alignment. Always reports `isVisible === true`.
    *
+   * @element x-reasongroups
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class reasongroupsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

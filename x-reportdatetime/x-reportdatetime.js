@@ -17,23 +17,37 @@ require('x-datetimepicker/x-datetimepicker');
 (function () {
 
   /**
-   * `<x-reportdatetime>` — date/datetime range selector widget for report pages.
+   * `<x-reportdatetime>` — date / datetime range selector with preset
+   * shortcuts.
    *
-   * Fetches time range presets from the server via `Time/PastRange/<n>_<unit>` or date-range endpoints.
-   * Renders date/datetime pickers and preset buttons (e.g. "last day", "last week") for report filtering.
-   * Used by report web app pages to select the report period.
+   * Renders a type combo (`From... to...` / `Since...` / `Past` /
+   * `Current`), a `Past` numeric input + unit combo, a `Current` preset
+   * combo and a pair of `x-datepicker` / `x-datetimepicker` (selected by
+   * `dataType`). Resolves preset ranges via
+   * `Time/PastRange/<n>_<unit>` or `Time/CurrentRange/<key>`; for the
+   * explicit / since modes the user picks dates directly and no AJAX is
+   * issued (`_runAlternateGetData()` short-circuits). The component
+   * mirrors the selection into hidden parameter inputs
+   * (`mindatename`, `maxdatename`, `webappname`) and exposes
+   * `isValid` / `getValueAsIs` / `getMinValueAsIs` /
+   * `getMaxValueAsIs` / `getWebAppRange`. Always reports
+   * `isVisible === true`.
    *
-   * Attributes:
-   *   groupDisplayForm - display form type (e.g. `'DATERANGE'`)
-   *   groupName        - (optional) parameter group name
-   *   dataType         - `'DATE'` or `'DATETIME'`
-   *   webapp           - preset value (e.g. `'Last_1_day'`)
-   *   webappname       - display name for the preset
-   *   mindate          - (optional) minimum selectable date
-   *   mindatename      - (optional) parameter name for minimum date
-   *   maxdate          - (optional) maximum selectable date
-   *   maxdatename      - (optional) parameter name for maximum date
-   *
+   * @element x-reportdatetime
+   * @attr {string} groupDisplayForm display form type (e.g. `'DATERANGE'`)
+   * @attr {string} groupName        parameter group name
+   * @attr {string} dataType         `'DATE'` or `'DATETIME'`
+   * @attr {string} webapp           preset value (e.g. `'past_1_day'`)
+   * @attr {string} webappname       parameter name for the preset
+   * @attr {string} mindate          initial minimum date
+   * @attr {string} mindatename      parameter name for the minimum date
+   * @attr {string} maxdate          initial maximum date
+   * @attr {string} maxdatename      parameter name for the maximum date
+   * @method isValid              `true` when both pickers carry a valid range
+   * @method getValueAsIs         value matching the `mindatename` or `maxdatename` request
+   * @method getMinValueAsIs      current minimum value (`YYYY-MM-DD[ HH:mm:ss]`)
+   * @method getMaxValueAsIs      current maximum value (`YYYY-MM-DD[ HH:mm:ss]`)
+   * @method getWebAppRange       current preset encoded as a single string
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class ReportDateTimeComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

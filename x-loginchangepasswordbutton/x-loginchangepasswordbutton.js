@@ -16,22 +16,20 @@ var pulseSvg = require('pulseSvg');
 
 require('x-loginchangepassword/x-loginchangepassword');
 
-/**
- * Build a custom tag <x-loginchangepasswordbutton> — button that opens the change-password dialog.
- *
- * Only shown when `loginchangepasswordbutton.changepasswordallowed` config is not 'false'
- * AND a login is currently set (`pulseLogin.getLoginForWebService()` is non-empty).
- *
- * No observed attributes.
- */
 (function () {
 
   /**
-   * `<x-loginchangepasswordbutton>` — change-password button with conditional visibility.
+   * `<x-loginchangepasswordbutton>` — button that opens the
+   * change-password dialog.
    *
-   * Visibility is controlled by `_showHide()` which checks both the config flag and the
-   * current login state. Opens an `<x-loginchangepassword>` dialog on click.
+   * Visibility is set on init by `_showHide()`: hidden when
+   * `loginchangepasswordbutton.changepasswordallowed === 'false'` or when
+   * `pulseLogin.getLoginForWebService()` returns an empty login; shown
+   * otherwise. Clicking opens a `pulseCustomDialog` containing an
+   * `x-loginchangepassword` (auto-close, auto-delete, no OK/Cancel buttons,
+   * `helpName: 'loginchange'`).
    *
+   * @element x-loginchangepasswordbutton
    * @extends pulseComponent.PulseInitializedComponent
    */
   class LoginChangePasswordButtonComponent extends pulseComponent.PulseInitializedComponent {

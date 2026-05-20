@@ -11,29 +11,18 @@ var pulseComponent = require('pulsecomponent');
 var pulseConfig = require('pulseConfig');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-checkcurrenttime> to check server/client time synchronization.
- *
- * Invisible component. On each poll, computes the difference between server UTC time
- * and local `Date.now()`, stores it in `pulseConfig` as `diffServerTimeMinusNowMSec`,
- * and emits a warning notification if the discrepancy exceeds `seconds` threshold.
- *
- * Attributes:
- *   seconds - allowed clock drift in seconds before warning (default: 30)
- */
 (function () {
 
   /**
-   * `<x-checkcurrenttime>` — invisible server/client clock drift monitor.
+   * `<x-checkcurrenttime>` — invisible server/client clock-drift monitor.
    *
-   * Polls `CurrentTime/` once per day (86 400 000 ms).
-   * Stores `diffServerTimeMinusNowMSec` globally in `pulseConfig` so other components
-   * can apply server-time corrections.
-   * Dispatches `showMessageSignal` if `|drift| > seconds`.
+   * Polls `CurrentTime/` once per day, computes `serverUtc - now`, and stores it
+   * globally in `pulseConfig` as `diffServerTimeMinusNowMSec`. Dispatches a
+   * non-dismissible `showMessageSignal` warning when `|drift| > seconds * 1000`.
    *
-   * Attributes:
-   *   seconds - maximum allowed absolute drift (default: 30)
-   *
+   * @element x-checkcurrenttime
+   * @attr {number} seconds      maximum allowed absolute drift in seconds (default 30)
+   * @fires showMessageSignal    `{ id: 'Current Time', message, level: 'warning', clickToClose: false }` on drift threshold
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CheckCurrentTimeComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

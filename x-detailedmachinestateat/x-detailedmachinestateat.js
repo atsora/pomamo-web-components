@@ -16,18 +16,20 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-detailedmachinestateat>` — detail panel showing the machine state template slot at a given time.
+   * `<x-detailedmachinestateat>` — detail panel showing the machine-state-template
+   * slot active at a given point in time for one machine.
    *
    * Fetches `MachineStateTemplateSlots?MachineId=<id>&Range=<single-point-range>&NoPeriodExtension=false`
-   * once per `when` value.
-   * Listens to `dateTimeChangeEvent` and `machineIdChangeSignal` to update attributes.
+   * on each `machine-id` / `when` change and renders the slot range and
+   * template display. Reacts to `dateTimeChangeEvent` on `datetime-context`
+   * (updates `when`) and to `machineIdChangeSignal` on `machine-context`
+   * (updates `machine-id`).
    *
-   * Attributes:
-   *   machine-id       - (required) integer machine id
-   *   when             - (required) ISO datetime string
-   *   datetime-context - event bus context for `dateTimeChangeEvent`
-   *   machine-context  - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-detailedmachinestateat
+   * @attr {number} machine-id       (required) machine id
+   * @attr {string} when             (required) ISO datetime
+   * @attr {string} datetime-context event-bus context for `dateTimeChangeEvent`
+   * @attr {string} machine-context  event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class DetailedMachineStateAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

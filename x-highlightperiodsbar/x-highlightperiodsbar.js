@@ -17,16 +17,25 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-highlightperiodsbar>` — SVG overlay bar that highlights specific time periods within a range.
+   * `<x-highlightperiodsbar>` — SVG overlay bar that highlights arbitrary
+   * sub-ranges within a parent date range.
    *
-   * Renders colored rectangles on a timeline bar to mark highlighted periods (e.g. shifts, breaks).
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` to re-render when the range changes.
+   * Imperative API: periods are pushed in via `addRange` / `removeRange` /
+   * `cleanRanges` (sorted by lower bound, deduped) and drawn as
+   * `.highlight-fill-color` rectangles inside `.highlightperiodsbar-svg`
+   * proportional to the current range. An open-ended upper bound (`null`) is
+   * clamped to "now". Reacts to `dateTimeRangeChangeEvent` on `period-context`
+   * (or globally when absent) to refresh the range and clear the previous
+   * periods. Height comes from the `height` attribute,
+   * `tagConfig.highlightperiodsbar.height`, or defaults to 5px (min 2px).
    *
-   * Attributes:
-   *   height         - (optional) integer pixel height of the bar
-   *   range          - ISO date range string `[begin,end]` or `begin;end`
-   *   period-context - event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-highlightperiodsbar
+   * @attr {number} height         pixel height of the bar
+   * @attr {string} range          ISO datetime range `[begin,end]` or `begin;end`
+   * @attr {string} period-context event-bus context for `dateTimeRangeChangeEvent`
+   * @method addRange              add one period (`DateRange` or ISO range string)
+   * @method removeRange           remove a matching period
+   * @method cleanRanges           clear all periods and redraw
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class HighlightPeriodsBarComponent extends pulseComponent.PulseParamInitializedComponent {

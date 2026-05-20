@@ -15,15 +15,18 @@ var pulseSvg = require('pulseSvg');
 (function () {
 
   /**
-   * `<x-currentcncvalue>` — displays the current CNC field value for a machine.
+   * `<x-currentcncvalue>` — current CNC field value for one machine.
    *
-   * Polls `CncValue/Current?MachineId=<id>&FieldIds=<id>` at `currentRefreshSeconds` interval.
-   * Renders the numeric or text value of the specified CNC field with its label.
+   * Polls `CncValue/Current?MachineId=<id>[&FieldIds=<id>]` at
+   * `currentRefreshSeconds + 1` interval and renders the value with its label
+   * and unit. Number / float / boolean / string values are rendered as text;
+   * stack-light values (`{ Lights: [...] }`) are rendered as a custom SVG with
+   * one slice per light. When the latest value is older than 2 minutes, the
+   * component switches to a `NotAvailable` state and displays an "N/A" label.
    *
-   * Attributes:
-   *   machine-id - (required) integer machine id
-   *   field-id   - (optional) CNC field id to filter the query
-   *
+   * @element x-currentcncvalue
+   * @attr {number} machine-id  (required) machine id
+   * @attr {number} field-id    CNC field id to filter the query
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CurrentCncValueComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

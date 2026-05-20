@@ -20,20 +20,22 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-cncalarmbar>` — timeline bar showing CNC alarm color slots for a machine over a period.
+   * `<x-cncalarmbar>` — horizontal SVG timeline of CNC alarm colour slots for one
+   * machine over a time range.
    *
-   * Polls `CncAlarm/Color?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
-   * Renders colored segments on a horizontal bar; clicking a segment opens the alarm details popup.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls `CncAlarm/Color?MachineId=<id>&Range=<range>` with an adaptive refresh
+   * (`barDailyRefreshSeconds` scaled to the range duration, clamped by
+   * `barMinimumRefreshSeconds`; switches to `barPastChangingDataRefreshMinutes`
+   * once the period is complete). Renders one coloured `<rect>` per `Blocks[]`
+   * entry plus transparent fillers for gaps. Reacts to `dateTimeRangeChangeEvent`
+   * on `period-context` and `machineIdChangeSignal` on `machine-context`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   height          - (optional) integer pixel height of the bar
-   *   period-context  - (optional) event bus context for `dateTimeRangeChangeEvent`
-   *   range           - (optional) ISO date range string `begin;end`
-   *   showdetails     - (optional) details page to open on click (from config)
-   *   showpopup       - (optional) popup details to open on click (from config)
-   *
+   * @element x-cncalarmbar
+   * @attr {number} machine-id       (required) machine id
+   * @attr {number} height           bar height in px (default 7, min 2)
+   * @attr {string} range            ISO datetime range `begin;end`
+   * @attr {string} period-context   event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context  event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CncAlarmBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

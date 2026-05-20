@@ -148,20 +148,25 @@ var eventBus = require('eventBus');
   }
 
   /**
-   * `<x-performancegauge>` — circular SVG gauge showing machine utilization performance vs. target.
+   * `<x-performancegauge>` — circular SVG gauge showing utilization vs.
+   * target for one machine over a date range.
    *
-   * Polls `UtilizationTarget/Get?MachineId=<id>` once to fetch the target percentage, then polls
-   * `MachineUtilization?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval for actual data.
-   * Renders a `createCircularGauge` SVG donut with the utilization ratio overlaid on the target arc.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Fetches `UtilizationTarget/Get?MachineId=<id>` once per `machine-id`
+   * change to obtain the target percentage, then polls
+   * `MachineUtilization?MachineId=<id>&Range=<range>` (interval =
+   * `refreshingRate.currentRefreshSeconds`). Renders a circular gauge via
+   * `createCircularGauge()` with a red→orange→yellow→green gradient split
+   * at the target, overlaid by an arc representing the current utilization.
+   * Reacts to `dateTimeRangeChangeEvent` on `period-context` (or globally)
+   * and to `machineIdChangeSignal` on `machine-context`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   radius          - (optional) integer pixel radius of the gauge
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *   range           - (optional) ISO date range string `begin;end`
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-performancegauge
+   * @attr {number} machine-id      (required) machine id
+   * @attr {number} radius          gauge radius in px
+   * @attr {string} range           ISO datetime range `begin;end`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} motion-context  event-bus context for `motionChangeEvent` dispatch
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class PerformanceGaugeComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

@@ -15,18 +15,21 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-productiontrackertable>` — table showing production tracking data over a period.
+   * `<x-productiontrackertable>` — tabular summary of actual vs. goal
+   * production over a date range, hourly buckets.
    *
-   * Polls `ProductionTracker?GroupId=<group>&Range=<range>` at `currentRefreshSeconds` interval.
-   * Renders a tabular summary with actual vs. goal production quantities per shift or period.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls `ProductionTracker?GroupId=<group>&Range=<range>` and bins the
+   * response into `_hourlyData` (`Map<range, { actual, target, isStatic }>`).
+   * Renders one row per bucket with the actual and target counts. Reacts
+   * to `dateTimeRangeChangeEvent` on `period-context` and to
+   * `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   group           - (optional) group id for filtering
-   *   machine-id      - (optional) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-productiontrackertable
+   * @attr {string} group           group id
+   * @attr {number} machine-id      machine id
+   * @attr {string} range           ISO datetime range `begin;end`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ProductionTrackerTableComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

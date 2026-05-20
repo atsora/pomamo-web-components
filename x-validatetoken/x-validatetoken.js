@@ -15,12 +15,16 @@ var pulseUtility = require('pulseUtility');
 (function () {
 
   /**
-   * `<x-validatetoken>` — validates a user authentication token or two-factor code.
+   * `<x-validatetoken>` — submits an authentication code for validation.
    *
-   * Calls `User/ValidateAuthenticationCode` via `pulseService` to verify the submitted token.
-   * Renders a token input field and a confirm button. On success, stores the validated session
-   * via `pulseLogin` and redirects to the appropriate page.
+   * Calls `User/ValidateAuthenticationCode` via `pulseService` with the
+   * value of the `code` attribute and (on success) stores the returned
+   * session through `pulseLogin` before navigating with
+   * `pulseConfig.goToFirstPage(role)`. Errors are surfaced in the
+   * `.pulse-message` span.
    *
+   * @element x-validatetoken
+   * @attr {string} code authentication code to validate
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class ValidateTokenComponent extends pulseComponent.PulseParamInitializedComponent {

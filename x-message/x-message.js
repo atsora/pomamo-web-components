@@ -16,27 +16,31 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-message>` — floating notification panel driven entirely by the event bus.
+   * `<x-message>` — floating notification stack driven by the event bus.
    *
-   * Listens globally to:
-   *  - `showMessageSignal` — creates or updates a message alert with the given info.
-   *  - `clearMessageSignal` — removes the message with the matching `id`.
+   * Listens globally to `showMessageSignal` (creates or updates a
+   * `.message-alert`, keyed by `id`) and `clearMessageSignal` (removes the
+   * alert with the matching `id`). On init, if `pulseConfig.get('loginError')`
+   * is non-empty, a single error alert with id `LOGIN_ERROR` is rendered
+   * and the config entry is cleared.
    *
-   * Message info shape:
+   * The payload of `showMessageSignal` supports:
    * ```js
    * {
-   *   id:          string,   // deduplication key; updating replaces text in-place
-   *   message:     string,   // HTML content; `\n` converted to `<br>`
-   *   time:        number,   // seconds before auto-dismiss (omit for permanent)
-   *   level:       string,   // 'error' | 'warning' | 'info' | 'default'
-   *   clickToClose: boolean, // if true, shows a close button and binds click-to-remove
-   *   reloadURL:   string,   // if set, appends a reload `<a>` link
-   *   internalLAT: string,   // hidden debug span (visible in DOM, not styled)
+   *   id?: string,            // dedup key; same id updates the existing alert
+   *   message?: string,       // HTML; `\n` becomes `<br>`
+   *   time?: number,          // seconds before auto-dismiss (omit = permanent)
+   *   level?: 'error' | 'warning' | 'info' | 'default',
+   *   clickToClose?: boolean, // adds a close button + click-to-remove
+   *   reloadURL?: string,     // appends a "Reload" `<a>`
+   *   internalLAT?: string    // extra hidden span carried as debug payload
    * }
    * ```
    *
-   * On init, also checks `loginError` config and displays it if set.
-   *
+   * @element x-message
+   * @method showMessage     create or update one alert
+   * @method clearMessage    remove the alert with the given id
+   * @method clearAllMessage remove every alert
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class MessageComponent extends pulseComponent.PulseParamInitializedComponent {

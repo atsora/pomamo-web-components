@@ -4,24 +4,38 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// x-barstack
-// Layout component: reads pulseConfig with its period-context to determine
-// which bars to create. Forwards context attributes to children.
-// No 'bars' or 'hidden-bars' attribute needed — config drives everything.
-//
-// Attributes:
-//   period-context   — page context used for config lookup + forwarded to bars
-//   motion-context   — forwarded to motion-sensitive bars only
-//   machine-context  — forwarded to all bars (optional)
-//   machine-id       — forwarded to all bars
-//   main-bar         — static override: 'reason' | 'running' | 'production'
-//   range            — forwarded to every child (popups with a fixed range)
-//   when             — forwarded to x-bartimeselection only
-//   datetime-context — forwarded to x-bartimeselection only
-//
-// `mainbar-*` attributes on x-barstack are forwarded to the main bar with the
-// `mainbar-` prefix stripped (e.g. `mainbar-click-to-change-reason="false"`
-// becomes `click-to-change-reason="false"` on x-reasonslotbar).
+/**
+ * `<x-barstack>` — layout container that builds a vertical stack of bar
+ * components driven by `pulseConfig` keys (`showcoloredbar.*`, `showproductionbar`,
+ * `showcoloredbar.running`) read under the current `period-context`. Each context
+ * attribute is forwarded to the children that accept it.
+ *
+ * Stack order: thin info bars (shift / machinestate / observationstate /
+ * operationcycle / operationslot / isofileslot) on top, then a main-bar group
+ * (reason or running or production, plus overlay bars `cncalarm` /
+ * `redstacklight` / `timeselection` wrapped together when any overlay is
+ * enabled), then the below-bars (`cncvalue`, `highlightperiods`).
+ *
+ * Two main-bar modes: with `main-bar` set, a single fixed bar is rendered;
+ * without it, both `x-reasonslotbar` and `x-productionstatebar` are always
+ * created and `_applySwitch()` toggles visibility based on `showproductionbar`.
+ *
+ * `mainbar-*` attributes on `<x-barstack>` are forwarded to the main bar with
+ * the prefix stripped (e.g. `mainbar-click-to-change-reason` →
+ * `click-to-change-reason`).
+ *
+ * @element x-barstack
+ * @attr {string} period-context   config-lookup key; forwarded to every bar
+ * @attr {string} motion-context   forwarded only to motion-sensitive bars (reason/running/production)
+ * @attr {string} machine-context  forwarded to every bar (optional)
+ * @attr {string} machine-id       forwarded to every bar
+ * @attr {string} main-bar         static override: `'reason'` | `'running'` | `'production'`
+ * @attr {string} range            forwarded to every child
+ * @attr {string} when             forwarded only to `<x-bartimeselection>`
+ * @attr {string} datetime-context forwarded only to `<x-bartimeselection>`
+ * @attr {string} mainbar-*        forwarded to the main bar with the `mainbar-` prefix stripped
+ * @extends HTMLElement
+ */
 
 var pulseConfig = require('pulseConfig');
 
@@ -155,7 +169,7 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
       const hasOverlay = overlayTags.length > 0;
 
       if (mainBar !== null) {
-        // Static single-bar mode (e.g. machinedashboard with main-bar="reason")
+        // Static single-bar mode
         const tag = mainBar === 'reason' ? 'x-reasonslotbar'
                   : mainBar === 'running' ? 'x-runningslotbar'
                   : 'x-productionstatebar';
@@ -204,9 +218,9 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
     }
 
     /**
-     * Toggle display between x-reasonslotbar and x-productionstatebar
-     * without rebuilding the component. Called by the page when
-     * showproductionbar config changes.
+     * Toggles display between `x-reasonslotbar` and `x-productionstatebar`
+     * without rebuilding, based on the current `showproductionbar` config.
+     * No-op when `main-bar` is set or when running mode is active.
      */
     _applySwitch() {
       const periodContext = this.getAttribute('period-context');

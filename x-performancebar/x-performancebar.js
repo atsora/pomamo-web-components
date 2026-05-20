@@ -179,23 +179,27 @@ var eventBus = require('eventBus');
   }
 
   /**
-   * `<x-performancebar>` — horizontal bar gauge showing machine utilization percentage for a time range.
+   * `<x-performancebar>` — horizontal gauge bar showing utilization
+   * percentage for one machine over a date range.
    *
-   * Fetches `Utilization/Get?MachineId=<id>&Range=<range>` and also (once per machine) fetches
-   * `UtilizationTarget/Get?MachineId=<id>` to obtain the performance target percentage.
-   * The gauge is drawn by `_draw()` using `createHorizontalGauge()`: a color gradient (red→orange→yellow→green)
-   * split at the target percentage when available, with a triangular cursor at the current utilization position.
-   * Dispatches `motionChangeEvent` on `motion-context` after each refresh (also on error/failure with empty payload).
-   * Listens to `dateTimeRangeChangeEvent` (on `period-context` or globally) to update the time range.
+   * Polls `Utilization/Get?MachineId=<id>&Range=<range>` and (once per
+   * `machine-id` change) `UtilizationTarget/Get?MachineId=<id>` to read the
+   * performance target. `_draw()` calls `createHorizontalGauge()` to render
+   * a red→orange→yellow→green gradient split at the target when known,
+   * with a triangular cursor at the current utilization position.
+   * Dispatches `motionChangeEvent` on `motion-context` after every
+   * refresh (empty payload on error/failure). Reacts to
+   * `dateTimeRangeChangeEvent` on `period-context` (or globally) and to
+   * `machineIdChangeSignal` on `machine-context`.
    *
-   * Attributes:
-   *   machine-id     - (required) integer machine id
-   *   height         - bar height in pixels (default from `performancebar.height` config or 60)
-   *   period-context - event bus context for date range events
-   *   range          - `'begin;end'` date range string (alternative to period-context)
-   *   motion-context - event bus context for dispatching `motionChangeEvent`
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-performancebar
+   * @attr {number} machine-id      (required) machine id
+   * @attr {number} height          bar height in px (default = `performancebar.height` config or 60)
+   * @attr {string} range           ISO datetime range `begin;end`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} motion-context  event-bus context for the `motionChangeEvent` dispatch
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
+   * @fires motionChangeEvent       `{ MotionPercent?: number, MotionSeconds?: number, ... }` — on `motion-context`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class PerformanceBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

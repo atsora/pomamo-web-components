@@ -18,19 +18,20 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-detailedalarmsat>` — detail panel listing CNC alarms active at a given point in time.
+   * `<x-detailedalarmsat>` — detail panel listing the CNC alarms active at a
+   * given point in time for one machine.
    *
-   * Fetches `CncAlarm/At?MachineId=<id>&At=<when>` once per `when` value.
-   * Optionally includes ignored alarms when `showIgnoredAlarm` config is `'true'`.
-   * Listens to `dateTimeChangeEvent` (on `datetime-context`) and `machineIdChangeSignal`
-   * (on `machine-context`) to update attributes dynamically.
+   * Fetches `CncAlarm/At?MachineId=<id>&At=<when>` (extended with
+   * `&IncludeIgnored=true` when `showIgnoredAlarm` config is `'true'`) on each
+   * `machine-id` / `when` change and renders one row per alarm. Reacts to
+   * `dateTimeChangeEvent` on `datetime-context` (updates `when`) and to
+   * `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   machine-id       - (required) integer machine id
-   *   when             - (required) ISO datetime string for the alarm query
-   *   datetime-context - event bus context for `dateTimeChangeEvent`
-   *   machine-context  - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-detailedalarmsat
+   * @attr {number} machine-id       (required) machine id
+   * @attr {string} when             (required) ISO datetime
+   * @attr {string} datetime-context event-bus context for `dateTimeChangeEvent`
+   * @attr {string} machine-context  event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class DetailedAlarmsAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

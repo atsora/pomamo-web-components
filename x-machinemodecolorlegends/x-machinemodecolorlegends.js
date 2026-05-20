@@ -13,12 +13,15 @@ var pulseSvg = require('pulseSvg');
 (function () {
 
   /**
-   * `<x-machinemodecolorlegends>` — legend panel for machine mode colors.
+   * `<x-machinemodecolorlegends>` — legend panel listing machine-mode colors.
    *
-   * Identical structure to `x-machinemodelegends` but uses colored square SVGs
-   * (via `pulseSvg.createColoredLegend(item.Color)`) instead of mode-class icons.
-   * Fetches `MachineModeColorLegend/Get`.
+   * Fetches `MachineModeColorLegend/Get` once and renders a single legend
+   * group: a "Machine mode" title, then one `.pulse-legend-element` per
+   * item built from a colored square SVG (`pulseSvg.createColoredLegend(item.Color)`)
+   * plus the display label, followed by 4 filler divs for flex alignment.
+   * Always reports `isVisible === true`.
    *
+   * @element x-machinemodecolorlegends
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class machinemodecolorlegendsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

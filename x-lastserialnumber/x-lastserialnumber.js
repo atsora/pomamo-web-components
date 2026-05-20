@@ -22,28 +22,28 @@ require('x-saveserialnumber/x-saveserialnumber');
 require('x-cyclesinperiod/x-cyclesinperiod');
 require('x-revisionprogress/x-revisionprogress');
 
-/*
- *This tag is used to display current serial number of given machine. It can take following attribute:
- *  - machine-id : id of given machine
- *  - update : time slot between two update of web component
- */
 (function () {
 
   /**
-   * `<x-lastserialnumber>` — bar-style display of the last cycle serial number for a machine.
+   * `<x-lastserialnumber>` — cell-bar showing the last-cycle serial number and
+   * a "Past Data" cell for one machine.
    *
-   * Polls `GetLastCycleWithSerialNumberV2/<machine-id>` at `currentRefreshSeconds` interval.
-   * Renders a cell-bar layout with a current serial number cell and a "Past Data" cell.
-   * Integrates with `x-modificationmanager` and `x-revisionprogress` for pending modifications.
+   * Polls `GetLastCycleWithSerialNumberV2/<machine-id>` (interval =
+   * `refreshingRate.currentRefreshSeconds`, default 10 s). The current cell
+   * shows the serial number, "Missing" (`SerialNumber === '0'`, with
+   * `pulse-cellbar-cell-missing`) or "No Cycle" (`SerialNumber === '-1'`,
+   * with `pulse-cellbar-cell-nodata`); the past-data cell is flagged with
+   * `pulse-cellbar-cell-missing` when `DataMissing` is true. Clicking the
+   * current cell opens an `x-saveserialnumber` dialog (via
+   * `pulseCustomDialog`); clicking the past cell opens an `x-cyclesinperiod`
+   * + `x-datetimerange` dialog over the last 12 hours. Pending revisions of
+   * `kind: 'serialnumber'` for the current machine append an
+   * `x-revisionprogress`; once `pendingModifications === 0` the component
+   * restarts. Reacts to `machineIdChangeSignal` on `machine-context`.
    *
-   * `refresh(data)`: updates current/past cells. SerialNumber '0' = missing, '-1' = no cycle.
-   * Clicking current opens an `x-saveserialnumber` dialog.
-   * Clicking past opens an `x-cyclesinperiod` dialog with an `x-datetimerange` picker.
-   *
-   * Attributes:
-   *   machine-id      - (required) integer machine id; restart on change
-   *   machine-context - (optional) event bus context for machine selection changes
-   *
+   * @element x-lastserialnumber
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class LastSerialNumberComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

@@ -21,16 +21,19 @@ require('x-machinedisplay/x-machinedisplay');
 (function () {
 
   /**
-   * `<x-savescrapreason>` — form widget for assigning a scrap reason to a machine cycle.
+   * `<x-savescrapreason>` — form to record a scrap reason and quantity
+   * for a machine cycle.
    *
-   * Fetches available scrap reasons from `ReasonScrapSelection/Name?MachineId=<id>` once.
-   * Renders a scrap reason dropdown and quantity input with a confirm button.
-   * On confirm, POSTs the scrap reason assignment via `pulseService`.
+   * Fetches the allowed scrap reasons via
+   * `ReasonScrapSelection/Name?MachineId=<id>` and renders a scrap-reason
+   * dropdown plus a quantity input. Confirming POSTs the assignment via
+   * `pulseService` and surfaces errors with `pulseCustomDialog` /
+   * `pulseDetailsPopup`. Shows the target machine through an embedded
+   * `x-machinedisplay`.
    *
-   * Attributes:
-   *   machine-id - (required) integer machine id
-   *   range      - (optional) ISO date range string for the cycle slot
-   *
+   * @element x-savescrapreason
+   * @attr {number} machine-id (required) machine id
+   * @attr {string} range      ISO datetime range `begin;end` of the cycle slot
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class SaveScrapReasonComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

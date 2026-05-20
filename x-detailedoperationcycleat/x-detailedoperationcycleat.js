@@ -15,17 +15,19 @@ var eventBus = require('eventBus');
 
 (function () {
   /**
-   * `<x-detailedoperationcycleat>` — detail panel showing the operation cycle at a given point in time.
+   * `<x-detailedoperationcycleat>` — detail panel showing the operation cycle
+   * active at a given point in time for one machine.
    *
-   * Fetches `OperationCycleAt?MachineId=<id>&At=<when>` once per `when` value.
-   * Listens to `dateTimeChangeEvent` and `machineIdChangeSignal` to update attributes.
+   * Fetches `OperationCycleAt?MachineId=<id>&At=<when>` on each `machine-id` /
+   * `when` change and renders the cycle's begin/end and operation display.
+   * Reacts to `dateTimeChangeEvent` on `datetime-context` (updates `when`) and
+   * to `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   machine-id       - (required) integer machine id
-   *   when             - (required) ISO datetime string
-   *   datetime-context - event bus context for `dateTimeChangeEvent`
-   *   machine-context  - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-detailedoperationcycleat
+   * @attr {number} machine-id       (required) machine id
+   * @attr {string} when             (required) ISO datetime
+   * @attr {string} datetime-context event-bus context for `dateTimeChangeEvent`
+   * @attr {string} machine-context  event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class DetailedOperationCycleAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

@@ -17,26 +17,34 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-groupsingroup>` — renders a grid of sub-group or machine items for a given group.
+   * `<x-groupsingroup>` — grid of sub-group or machine items for a given
+   * group, built by cloning a DOM template per child.
    *
-   * Machine/group source resolution priority:
-   *  1. Multi-value `group` config (comma-separated) → each value becomes a sub-`x-groupsingroup`, transitions to `Loaded`.
-   *  2. No `group` config, `machine` config present → each machine id rendered as a single-machine item, transitions to `Loaded`.
-   *  3. Single `group` config, no `ancestor1` URL param → renders the group directly without AJAX, transitions to `Loaded`.
-   *  4. Single `group` config with `ancestor1` URL param → fetches `Machine/GroupZoomIn?GroupId=<group>&Details=true` via REST.
+   * Source resolution:
+   *  1. `group` is a comma-separated list → each value becomes a child item
+   *     (treated as a sub-group), no AJAX, switches to `Loaded`.
+   *  2. No `group` but `machine` is set → each id becomes a single-machine
+   *     item, no AJAX, switches to `Loaded`.
+   *  3. Single `group` and URL has no `ancestor1` param → renders the group
+   *     directly, no AJAX.
+   *  4. Single `group` with `ancestor1` URL param → fetches
+   *     `Machine/GroupZoomIn?GroupId=<group>&Details=true`; static groups
+   *     (`Dynamic=false`) switch to `Loaded`, dynamic groups keep polling.
    *
-   * Layout: items are rendered as `<li class="groupsingroup-subgroup">` inside an `<ol class="groupsingroup-main">`.
-   * Grid dimensions (width/height) are computed automatically from the number of items using `Math.sqrt`.
+   * Renders one `<li class="groupsingroup-subgroup">` per child inside an
+   * `<ol class="groupsingroup-main">`, cloning the element identified by
+   * `templateid` (default `'boxtoclone'`) via `cloneWithNewGroupId`. Items
+   * carry `subgroup-single-machine` or `subgroup-group-not-machine`. The
+   * total count is exposed on `data-count`. After every rebuild,
+   * `groupIsReloaded` is dispatched unless `donotwarngroupreload === 'true'`.
    *
-   * Dispatches `groupIsReloaded` after each list rebuild (suppressed when `donotwarngroupreload` config is `'true'`).
-   * Static groups (`Dynamic=false` from REST) transition to `Loaded` StaticState to stop polling.
-   *
-   * Attributes:
-   *   templateid          - id of the DOM element to clone per group/machine (default `'boxtoclone'`)
-   *   group               - group id(s); comma-separated for multi-group mode
-   *   fixed-size          - adds `fixed-size` CSS class to the `<ol>` container
-   *   donotwarngroupreload - `'true'` suppresses `groupIsReloaded` dispatch
-   *
+   * @element x-groupsingroup
+   * @attr {string}  templateid           id of the DOM element to clone per child (default `'boxtoclone'`)
+   * @attr {string}  group                group id(s); comma-separated for multi-group mode
+   * @attr {boolean} fixed-size           adds the `fixed-size` class to the `<ol>` container
+   * @attr {boolean} donotwarngroupreload `'true'` suppresses the `groupIsReloaded` dispatch
+   * @attr {number}  refreshrate          polling interval in seconds (default 30)
+   * @fires groupIsReloaded                `{ newGroupsList: string }` — after each list rebuild
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class GroupsInGroupComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
@@ -163,7 +171,7 @@ var eventBus = require('eventBus');
       }
       //$(this.element).find('.disableDeleteWhenDisconnect').removeClass('disableDeleteWhenDisconnect'); // too early
 
-      // Warn fieldlegend : machine list has changed
+      // Announce that the group list has changed
       if ('false' == this.getConfigOrAttribute('donotwarngroupreload', 'false')) {
         eventBus.EventBus.dispatchToAll('groupIsReloaded', {
           newGroupsList: this._groupIdsArray.join(',')

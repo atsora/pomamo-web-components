@@ -16,15 +16,19 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-detailedshiftat>` — detail panel showing the shift information at a given point in time.
+   * `<x-detailedshiftat>` — detail panel showing the shift that contains a
+   * given point in time.
    *
-   * Fetches `GetRangeAround?Around=<when>&RangeType=shift&RangeSize=1` once per `when` value.
-   * Listens to `dateTimeChangeEvent` to update the `when` attribute dynamically.
+   * Fetches `GetRangeAround?Around=<when>&RangeType=shift&RangeSize=1` on each
+   * `when` change and renders the matching shift range plus its display label.
+   * Reacts to `dateTimeChangeEvent` on `datetime-context` (updates `when`) and
+   * to `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   when             - (required) ISO datetime string
-   *   datetime-context - event bus context for `dateTimeChangeEvent`
-   *
+   * @element x-detailedshiftat
+   * @attr {number} machine-id       (required) machine id
+   * @attr {string} when             (required) ISO datetime
+   * @attr {string} datetime-context event-bus context for `dateTimeChangeEvent`
+   * @attr {string} machine-context  event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class DetailedShiftAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

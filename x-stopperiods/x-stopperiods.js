@@ -3,8 +3,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * Lightweight provider that fetches ReasonOnlySlots and publishes a selected period
- *
  * @module x-stopperiods
  * @requires module:pulsecomponent
  * @requires module:pulseService
@@ -20,20 +18,23 @@ require('x-stopclassification/x-stopclassification');
 
 (function () {
     /**
-     * `<x-stopperiods>` — headless provider fetching the current stop period for a machine.
+     * `<x-stopperiods>` — headless provider that exposes the current stop
+     * period for one machine.
      *
-     * Fetches `CurrentReason?MachineId=<id>&Period=reason_machinemodecategory` once per trigger.
-     * On success, computes an open-ended range from `data.PeriodStart` to now and fires a
-     * `stopperiods-range` DOM CustomEvent with `{ range, slot }`.
-     * When `autocreate-stopclassification` attribute is present, auto-creates or updates a child
-     * `<x-stopclassification>` with the computed range.
-     * No UI is rendered; `displayError` logs to console only.
+     * Fetches `CurrentReason?MachineId=<id>&Period=reason_machinemodecategory`.
+     * On success, builds an open-ended range from `data.PeriodStart` to
+     * `now` and dispatches a `stopperiods-range` DOM CustomEvent with
+     * `{ range, slot }`. When the `autocreate-stopclassification`
+     * attribute is present, the component creates or updates a child
+     * `x-stopclassification` populated with the computed range. No UI is
+     * rendered; errors are logged to the console.
      *
-     * Attributes:
-     *   machine-id                     - (required) integer machine id
-     *   range                          - (required) ISO 8601 date range string for the query period
-     *   autocreate-stopclassification  - (optional) if present, auto-manages a child x-stopclassification
-     *
+     * @element x-stopperiods
+     * @attr {number}  machine-id                    (required) machine id
+     * @attr {string}  range                         (required) ISO datetime range `begin;end` used as query window
+     * @attr {boolean} autocreate-stopclassification when present, auto-manages a child `x-stopclassification`
+     * @method fetch                                 re-run the fetch using the current attributes
+     * @fires stopperiods-range                      DOM CustomEvent `{ range, slot }` — current stop period
      * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
      */
     class StopPeriodsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

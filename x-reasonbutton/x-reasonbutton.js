@@ -18,19 +18,23 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
 (function () {
 
   /**
-   * `<x-reasonbutton>` — live stop-reason color button for the current machine mode.
+   * `<x-reasonbutton>` — live stop-reason coloured button for one machine.
    *
-   * Polls `CurrentReason?MachineId=<id>` and applies the reason color as background.
-   * When `textchange-context` is set, adds `Period=running_machinemodecategory&NotRunningOnlyDuration=true`
-   * to retrieve not-running duration and dispatches `textChangeEvent` on that context.
-   * Clicking opens the stop-classification or running dialog via `pulseDetailsPopup`.
-   * Listens to `machineIdChangeSignal` on `machine-context`.
+   * Polls `CurrentReason?MachineId=<id>` (with
+   * `&Period=running_machinemodecategory&NotRunningOnlyDuration=true`
+   * appended when `textchange-context` is set) and paints the host with
+   * the reason colour. When `textchange-context` is set, dispatches
+   * `textChangeEvent` on the resolved context with the not-running
+   * duration; replies to `askForTextChangeEvent` on the same context.
+   * Clicking opens the stop-classification or running dialog via
+   * `pulseDetailsPopup`. Reacts to `machineIdChangeSignal` on
+   * `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   machine-id         - (required) integer machine id
-   *   machine-context    - event bus context for `machineIdChangeSignal`
-   *   textchange-context - event bus context for `textChangeEvent`
-   *
+   * @element x-reasonbutton
+   * @attr {number} machine-id         (required) machine id
+   * @attr {string} machine-context    event-bus context for `machineIdChangeSignal`
+   * @attr {string} textchange-context base context for `textChangeEvent`
+   * @fires textChangeEvent            `{ text: string }` — on the resolved `textchange-context`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ReasonButtonComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

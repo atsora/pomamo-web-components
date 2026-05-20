@@ -21,19 +21,29 @@ require('x-reasonsubdetails/x-reasonsubdetails');
 (function () {
 
   /**
-   * `<x-detailedreasonat>` — detail panel showing the reason slot (stop classification) at a given time.
+   * `<x-detailedreasonat>` — detail panel showing the reason slot and overlapping
+   * machine modes at a given point in time for one machine.
    *
-   * Fetches `ReasonAt/Get?MachineId=<id>&At=<when>` once per `when` value.
-   * Renders the reason color, description, details, and optional sub-details button (via `x-reasonsubdetails`).
-   * In editable roles, shows stop-classification and work-information edit buttons via `pulseDetailsPopup`.
-   * Listens to `dateTimeChangeEvent` and `machineIdChangeSignal` to update attributes.
+   * Fetches `ReasonOnlySlots?MachineId=<id>&Range=<single-point-range>` (with
+   * `&SelectableOption=…&Cache=No`, optional `&ExtendLimitRange=`) on each
+   * `machine-id` / `when` change and renders the reason (color, display,
+   * details, optional auto-reason count, optional "Change" button opening
+   * `pulseDetailsPopup.openChangeReasonDialog`) plus the matching machine
+   * modes. Inserts `x-reasonsubdetails` on click of the auto-reason count and
+   * `x-revisionprogress` while pending modifications are running. Reacts to
+   * `dateTimeChangeEvent` on `datetime-context` (updates `when`),
+   * `dateTimeRangeChangeEvent` on `period-context` (updates the extend-limit
+   * range), `machineIdChangeSignal` on `machine-context` (updates `machine-id`),
+   * and `modificationEvent` (refreshes when a `reason` modification on the same
+   * machine overlaps `when`).
    *
-   * Attributes:
-   *   machine-id       - (required) integer machine id
-   *   when             - (required) ISO datetime string
-   *   datetime-context - event bus context for `dateTimeChangeEvent`
-   *   machine-context  - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-detailedreasonat
+   * @attr {number} machine-id       (required) machine id
+   * @attr {string} when             (required) ISO datetime
+   * @attr {string} range            ISO datetime range `begin;end` used as extend-limit
+   * @attr {string} datetime-context event-bus context for `dateTimeChangeEvent`
+   * @attr {string} period-context   event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context  event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class DetailedReasonAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

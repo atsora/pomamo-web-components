@@ -16,17 +16,17 @@ var pulseSvg = require('pulseSvg');
 
 require('x-loginpassword/x-loginpassword');
 
-/**
- * Build a custom tag <x-loginpasswordbutton> — button that opens the login-with-password dialog.
- *
- * No observed attributes. Renders a button that, when clicked, opens an `x-loginpassword`
- * component inside a `pulseCustomDialog` (small, full-screen on smartphone, auto-close).
- */
 (function () {
 
   /**
-   * `<x-loginpasswordbutton>` — button that opens the user/password login dialog.
+   * `<x-loginpasswordbutton>` — button that opens the user/password login
+   * dialog.
    *
+   * Renders a button labelled "Login with user/password". Clicking opens a
+   * `pulseCustomDialog` containing an `x-loginpassword` (small size, auto-
+   * close, auto-delete, full-screen on smartphone, `helpName: 'loginpassword'`).
+   *
+   * @element x-loginpasswordbutton
    * @extends pulseComponent.PulseInitializedComponent
    */
   class LoginPasswordButtonComponent extends pulseComponent.PulseInitializedComponent {

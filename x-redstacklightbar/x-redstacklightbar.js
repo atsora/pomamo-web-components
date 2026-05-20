@@ -20,18 +20,24 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-redstacklightbar>` — timeline bar showing red stack light (CNC alarm) status over a period.
+   * `<x-redstacklightbar>` — timeline bar showing red stack-light (CNC
+   * alarm) state for one machine over a date range.
    *
-   * Polls `CncValue/RedStackLight?MachineId=<id>&Range=<range>&SkipDetails=true` at `currentRefreshSeconds` interval.
-   * Renders red/green segments indicating when the stack light alarm was active.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls
+   * `CncValue/RedStackLight?MachineId=<id>&Range=<range>&SkipDetails=true`
+   * and renders one SVG segment per slot, colored according to whether
+   * the red stack-light was active. Reacts to `dateTimeRangeChangeEvent`
+   * on `period-context` (dispatches `askForDateTimeRangeEvent` if the
+   * range is missing) and to `machineIdChangeSignal` on `machine-context`.
+   * Height comes from the `height` attribute, otherwise `tagConfig` /
+   * default.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   height          - (optional) integer pixel height of the bar
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *   range           - (optional) ISO date range string `begin;end`
-   *
+   * @element x-redstacklightbar
+   * @attr {number} machine-id      (required) machine id
+   * @attr {number} height          pixel height of the bar
+   * @attr {string} range           ISO datetime range `begin;end`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class RedStacklightBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

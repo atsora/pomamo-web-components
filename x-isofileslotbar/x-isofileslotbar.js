@@ -20,20 +20,25 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-isofileslotbar>` — timeline bar showing ISO file (NC program) slots for a machine over a period.
+   * `<x-isofileslotbar>` — timeline bar showing ISO file (NC program) slots
+   * for one machine over a date range.
    *
-   * Polls `IsoFileSlots?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
-   * Renders colored segments for each ISO file active in the range; clicking opens the ISO file details popup.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls `IsoFileSlots?MachineId=<id>&Range=<range>` and renders one colored
+   * SVG segment per slot proportional to the range. Clicks open the details
+   * view through `pulseDetailsPopup` (`showdetails` / `showpopup` configs
+   * decide between an in-place details page and a floating popup). Reacts to
+   * `dateTimeRangeChangeEvent` on `period-context` (updates the range and
+   * dispatches `askForDateTimeRangeEvent` when missing) and to
+   * `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
+   * Height comes from the `height` attribute, otherwise `tagConfig` /
+   * default.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   height          - (optional) integer pixel height of the bar
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *   range           - (optional) ISO date range string `begin;end`
-   *   showdetails     - (optional) details page to open on click (from config)
-   *   showpopup       - (optional) popup details to open on click (from config)
-   *
+   * @element x-isofileslotbar
+   * @attr {number} machine-id     (required) machine id
+   * @attr {number} height         pixel height of the bar
+   * @attr {string} range          ISO datetime range `begin;end`
+   * @attr {string} period-context event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class IsoFileSlotBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

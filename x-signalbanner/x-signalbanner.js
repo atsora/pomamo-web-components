@@ -14,33 +14,21 @@ var pulseLogin = require('pulseLogin');
 (function () {
 
   /**
-   * `<x-signalbanner>` — minimal banner that polls the `/Signal/` endpoint for the
-   * given group and stacks the returned messages vertically above the page content.
+   * `<x-signalbanner>` — stacked banner of broadcast messages for a group.
    *
-   * Polls `Signal/?GroupId=<id>` at `refresh-rate` interval (default 30s).
+   * Polls `Signal/?GroupId=<id>[&RoleKey=<role>]` and renders one
+   * `.xsignalbanner-row` per entry in `data.Messages`
+   * (`{ Message, BgColor, FgColor }`); foreground colour defaults to the
+   * best-contrast pick against `BgColor`. AJAX errors / failures hide
+   * the banner silently rather than showing an error.
+   * `from-machine-selection` opt-in mode ignores `group-id` and derives
+   * the id from the `group` / `machine` config keys (re-polled on every
+   * `configChangeEvent` matching those keys).
    *
-   * Attributes:
-   *   group-id              - (required if `from-machine-selection` is absent) group id
-   *                            string (e.g. "1_23_53" or "ALL").
-   *   from-machine-selection - (presence-only) when set, the component ignores
-   *                            `group-id` and auto-derives it from the current
-   *                            `x-machineselection` state: prefers the raw `group`
-   *                            pulseConfig key, falling back to `machine` when the
-   *                            user picked individual machines (same fallback logic
-   *                            as x-machineselection itself). The framework's
-   *                            built-in `configChangeEvent` wiring re-starts the
-   *                            polling whenever either key changes.
-   *   refresh-rate          - (optional) polling interval in seconds (default 30)
-   *
-   * Expected response shape:
-   * ```js
-   * {
-   *   Messages: [
-   *     { Message: string, BgColor: string, FgColor: string }
-   *   ]
-   * }
-   * ```
-   *
+   * @element x-signalbanner
+   * @attr {string}  group-id               group id (e.g. `"1_23_53"`, `"ALL"`) — required unless `from-machine-selection` is set
+   * @attr {boolean} from-machine-selection auto-derive the group id from the `group`/`machine` config keys
+   * @attr {number}  refresh-rate           polling interval in seconds (default 30)
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class SignalBannerComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
@@ -92,8 +80,7 @@ var pulseLogin = require('pulseLogin');
       super.clearInitialization();
     }
 
-    // Auto-wired by the framework after `initialize()` (see state.js → AutoPathInitialState).
-    // Restart the polling cycle whenever the upstream machine/group selection moves.
+    // Restart the polling cycle whenever the source machine/group selection moves.
     onConfigChange (event) {
       if (!this._isAutoMode()) return;
       const key = event && event.target && event.target.config;
@@ -108,11 +95,8 @@ var pulseLogin = require('pulseLogin');
 
     _computeResolvedGroupId () {
       if (this._isAutoMode()) {
-        // Prefer raw group ids (what x-machineselection persists in the `group`
-        // config when the user picked groups). Fall back to `machine` when no
-        // groups are stored — that's the case when the user picked individual
-        // machines, mirroring x-machineselection's own internal fallback
-        // (joinedGroups = joinedMachines when groups are empty).
+        // Prefer raw group ids (the `group` config). Fall back to `machine`
+        // when no groups are stored — the individual-machine case.
         const groups = pulseConfig.getString('group', '');
         let raw;
         if (groups && groups.trim() !== '') {
@@ -151,9 +135,8 @@ var pulseLogin = require('pulseLogin');
       if (this._errorDiv) $(this._errorDiv).text('').css('display', 'none');
     }
 
-    // Silently hide on AJAX errors / failures: a missing /Signal/ response
-    // must not turn the banner into a visible error bar — it just means
-    // there are no signals to show right now.
+    // Hide silently on AJAX errors / failures: a missing /Signal/ response
+    // just means there are no signals to show right now.
     manageError (data) {
       this.switchToKey('Error', () => this._hideAll(), () => this.removeError());
     }

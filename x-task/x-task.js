@@ -16,17 +16,23 @@ var pulseUtility = require('pulseUtility');
 (function () {
 
   /**
-   * `<x-task>` — displays and manages a task instance for a machine via GraphQL.
+   * `<x-task>` — current task panel for one machine, sourced from
+   * GraphQL.
    *
-   * Queries `graphql` with `{ allTaskInstances(machineId: $machineId) { id start end result taskTemplate { name } } }`
-   * at `currentRefreshSeconds` interval.
-   * Renders the task name, start/end time, and completion status; allows updating the task result.
-   * Listens to `machineIdChangeSignal` on `machine-context`.
+   * Polls a GraphQL endpoint with
+   * `{ allTaskInstances(machineId: $machineId) { id start end result
+   * taskTemplate { name role } } }` (refresh =
+   * `refreshingRate.currentRefreshSeconds`, default 10 s) and renders
+   * the main task — title, category icon (maintenance / quality /
+   * documentation / …), timer, state — plus up to `_numberOfTasks` (3)
+   * tabs for pending tasks; selecting a tab updates the main panel and
+   * surfaces a result-update control. Uses a `ResizeObserver` to adapt
+   * the layout to the host width. Reacts to `machineIdChangeSignal` on
+   * `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-task
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class TaskComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

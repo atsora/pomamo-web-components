@@ -18,17 +18,32 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-cycleprogresspie>` — SVG donut/pie showing the current machine cycle progress and schedule.
+   * `<x-cycleprogresspie>` — SVG donut for the current cycle's progress, with a
+   * dashed seconds ring and a live countdown text in the middle.
    *
-   * Polls `CycleProgress?MachineId=<id>` at `currentRefreshSeconds` interval.
-   * Renders a two-ring SVG: outer ring for cycle state, inner ring for elapsed time ratio.
-   * Includes a live countdown timer updated every second between server polls.
-   * Listens to `machineIdChangeSignal` on `machine-context`.
+   * Polls `CycleProgress?MachineId=<id>` (or `GroupId=<group>`) at
+   * `currentRefreshSeconds`, adapted to fire sooner when an animation end or a
+   * next-stop event is closer than the configured rate. Renders a donut split
+   * per sequence (`Stop` boundaries draw separators) with a coloured progress
+   * arc that animates between server polls toward `EstimatedCycleEndDateTime` or
+   * the current sequence end, plus a 60-tick dashed inner circle that rotates
+   * with the elapsed/remaining seconds. Centre text shows the event message
+   * (top) and a live countdown (bottom), with status classes (`activeevent` /
+   * `comingevent`, severity name, `threshold1` / `threshold2`) applied to the
+   * text and stroke. The resolved next-stop state is dispatched as
+   * `nextStopStatusChange` on `status-context`; the current event's long text is
+   * dispatched as `textChangeEvent` on `textchange-context`. Clock drift is
+   * corrected via `pulseConfig.diffServerTimeMinusNowMSec`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-cycleprogresspie
+   * @attr {number}  machine-id          machine id (alternative to `group`)
+   * @attr {string}  group               group id (alternative to `machine-id`)
+   * @attr {number}  threshold1          seconds threshold for the first warning class (default 600)
+   * @attr {number}  threshold2          seconds threshold for the urgent warning class (default 180)
+   * @attr {string}  status-context      event-bus context where `nextStopStatusChange` is dispatched
+   * @attr {string}  textchange-context  event-bus context where `textChangeEvent` is dispatched
+   * @fires nextStopStatusChange         `{ untilNextStopMSec, thresholdClass, severity, eventKind }` (or `{}` when no event / on error)
+   * @fires textChangeEvent              `{ text }` with the current event's long text
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CycleProgressPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

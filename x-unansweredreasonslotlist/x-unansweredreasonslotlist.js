@@ -24,18 +24,27 @@ require('x-machinedisplay/x-machinedisplay');
 (function () {
 
   /**
-   * `<x-unansweredreasonslotlist>` — list of unanswered (overwrite-required) reason slots for a machine.
+   * `<x-unansweredreasonslotlist>` — list of unanswered (overwrite-required)
+   * reason slots for one machine in a date range, with inline editing.
    *
-   * Fetches `Reason/OverwriteRequiredSlots/?MachineId=<id>&Range=<range>&SelectableOption=true` once per period.
-   * Renders a list of slots that require manual stop reason assignment, with stop-classification editing support.
-   * Uses `x-stopclassification` and `x-classifiedreasonslotlist` as sub-components.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Fetches
+   * `Reason/OverwriteRequiredSlots/?MachineId=<id>&Range=<range>&SelectableOption=true`
+   * and renders one row per slot that still requires a reason. Selecting
+   * one or more rows mounts an `x-stopclassification` to edit them;
+   * already-classified slots are summarised via an
+   * `x-classifiedreasonslotlist`. An embedded `x-barstack` and
+   * `x-machinedisplay` provide the surrounding context. Pending
+   * revisions of `kind: 'reason'` for the current machine append an
+   * `x-revisionprogress` over the affected sub-range. Reacts to
+   * `dateTimeRangeChangeEvent` on `period-context` and to
+   * `machineIdChangeSignal` on `machine-context`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-unansweredreasonslotlist
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} range           ISO datetime range `begin;end`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @method removeAllSelections    clear the selection from the slot list
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class ReasonSlotListComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

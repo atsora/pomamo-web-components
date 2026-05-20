@@ -3,17 +3,6 @@
 
 /**
  * @module x-groupgrid
- *
- * Stateless renderer driven by the `x-machineselection` source of truth.
- * Listens to two events:
- *   - `machineListChanged` (global) — emitted by x-machineselection with the resolved machine
- *      ids; the component clones its `templateid` per machine into a CSS grid.
- *   - `updateVisibleMachines` (page context) — emitted by the rotation engine in common_page;
- *      the component shows/hides items and exposes `data-count` on its container so page CSS
- *      can adapt the grid (e.g. column count).
- *
- * Attributes:
- *   templateid - id of the element to clone per machine (default `'boxtoclone'`)
  */
 var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
@@ -21,6 +10,25 @@ var state = require('state');
 var eventBus = require('eventBus');
 
 (function () {
+  /**
+   * `<x-groupgrid>` — stateless CSS-grid renderer for a list of machines.
+   *
+   * Performs no AJAX of its own. Rebuilds its grid from the ids carried by
+   * the global `machineListChanged` event, cloning the element identified by
+   * `templateid` (default `'boxtoclone'`) once per machine into a
+   * `.groupgrid-item`. Re-uses existing items and marks them with
+   * `disableDeleteWhenDisconnect` during reordering so the framework keeps
+   * the `_webComponent` reference alive (removed 500ms later). On the
+   * `updateVisibleMachines` event (context `'PAGE'`), shows/hides items based
+   * on the carried id list and exposes the visible count via the
+   * `data-count` attribute on `.groupgrid-main`. Shows a "No machine in
+   * selection" / "Server unreachable" message when the resolved id list is
+   * empty.
+   *
+   * @element x-groupgrid
+   * @attr {string} templateid id of the element to clone per machine (default `'boxtoclone'`)
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   */
   class GroupGridComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     constructor(...args) {
       const self = super(...args);
@@ -51,17 +59,16 @@ var eventBus = require('eventBus');
       this._messageDiv = $('<div></div>').addClass('pulse-message-div').append(this._messageSpan);
       $(this._content).append(this._messageDiv);
 
-      // Connect to source of truth (x-machineselection)
       if (eventBus.EventBus.addGlobalEventListener) {
         eventBus.EventBus.addGlobalEventListener(this, 'machineListChanged', this.onMachineListChanged.bind(this));
       }
 
-      // Connect to rotation engine
       if (eventBus.EventBus.addEventListener) {
         eventBus.EventBus.addEventListener(this, 'updateVisibleMachines', 'PAGE', this.onUpdateVisibility);
       }
 
-      // Late-arrival sync: render immediately if machineselection already resolved
+      // Late-arrival sync: pull the already-resolved id list from an
+      // x-machineselection sibling if it emitted machineListChanged before us.
       try {
         let machineSel = document.querySelector('x-machineselection');
         if (machineSel && typeof machineSel.isReady === 'function' && machineSel.isReady()) {
@@ -70,7 +77,7 @@ var eventBus = require('eventBus');
             this._buildItems(initIds);
           }
         }
-      } catch (e) { /* no machineselection on this page */ }
+      } catch (e) { /* no x-machineselection on the page */ }
 
       this.switchToNextContext();
     }
@@ -161,7 +168,7 @@ var eventBus = require('eventBus');
     }
 
     /**
-     * Source-of-truth callback: x-machineselection has resolved a new list of machine ids.
+     * `machineListChanged` callback: rebuild the grid from the new id list.
      */
     onMachineListChanged(event) {
       let ids = (event.target && event.target.ids) || event.ids || [];
@@ -170,8 +177,8 @@ var eventBus = require('eventBus');
     }
 
     /**
-     * Rotation engine callback: shows/hides `.groupgrid-item` divs based on `visibleIds`.
-     * Updates `data-count` so CSS can adapt to the visible item count.
+     * `updateVisibleMachines` callback: show/hide `.groupgrid-item` divs based
+     * on the carried id list and update `data-count` for CSS sizing.
      */
     onUpdateVisibility(event) {
       let visibleIds = [];
@@ -193,12 +200,12 @@ var eventBus = require('eventBus');
     }
 
     validateParameters() {
-      // No validation: source of truth drives state.
+      // No validation: the id list is pushed via machineListChanged.
       this.switchToNextContext();
     }
 
     /**
-     * Stateless: no AJAX. Render is driven by `machineListChanged` events.
+     * Stateless: no AJAX. Render is driven by `machineListChanged`.
      */
     _runAlternateGetData() {
       this.switchToContext('Loaded');

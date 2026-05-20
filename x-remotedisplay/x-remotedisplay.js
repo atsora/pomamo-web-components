@@ -11,26 +11,19 @@ var pulseUtility = require('pulseUtility');
 var pulseComponent = require('pulsecomponent');
 var eventBus = require('eventBus');
 
-/**
- * Build a custom tag <x-remotedisplay> — event-driven text display driven by a named context.
- *
- * Renders whatever HTML string is pushed via `displayChangeEvent` on the given context.
- * Also supports dynamic CSS class additions/removals from the event data.
- *
- * Attributes:
- *   display-context - (required) event bus context key to listen on
- */
 (function () {
 
   /**
-   * `<x-remotedisplay>` — passive display updated entirely by event bus messages.
+   * `<x-remotedisplay>` — passive text display driven by the event bus.
    *
-   * Listens to `displayChangeEvent` on the `display-context` context.
-   * Event payload fields:
-   *   - `Display`       : HTML string to render (empty string if undefined)
-   *   - `ClassToAdd`    : CSS class to add to the content div (optional)
-   *   - `ClassToRemove` : CSS class to remove from the content div (optional)
+   * Listens to `displayChangeEvent` on `display-context` and renders the
+   * payload's `Display` field as HTML (empty string when undefined).
+   * Each event may also carry `ClassToAdd` / `ClassToRemove` to toggle a
+   * CSS class on the content div. Errors when `display-context` is
+   * missing.
    *
+   * @element x-remotedisplay
+   * @attr {string} display-context (required) event-bus context for `displayChangeEvent`
    * @extends pulseComponent.PulseInitializedComponent
    */
   class RemoteDisplay extends pulseComponent.PulseInitializedComponent {

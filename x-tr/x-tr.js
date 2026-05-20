@@ -15,17 +15,19 @@ var state = require('state');
 (function () {
 
   /**
-   * `<x-tr>` — inline translation component. Renders a single translated string by key.
+   * `<x-tr>` — inline translation by key.
    *
-   * Inserts a custom `Read` context between `ParamValidation` and `Load` that first checks
-   * the local translation catalog (`pulseConfig.pulseTranslate` / `getTranslation`). If the
-   * key is found locally, transitions immediately to `Loaded`. Otherwise falls through to
-   * the REST request `I18N/Catalog?Key=<key>[&Default=<default>]`.
+   * Adds a `Read` context between `ParamValidation` and `Load` that first
+   * resolves the key against the local catalog
+   * (`pulseConfig.pulseTranslate` / `getTranslation`). When found, the
+   * value is written into the `.tr-data` span and the component skips
+   * straight to `Loaded`; otherwise it falls through to a REST request
+   * `I18N/Catalog?Key=<key>[&Default=<default>]` and renders
+   * `data.Value`.
    *
-   * Attributes:
-   *   key     - (required) translation key; restart triggered on change
-   *   default - optional fallback value passed as `Default` query param
-   *
+   * @element x-tr
+   * @attr {string} key     (required) translation key
+   * @attr {string} default fallback value forwarded as the `Default` query parameter
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class TrComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

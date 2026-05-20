@@ -13,18 +13,22 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-checkpath>` — invisible bootstrap component that resolves the web service base path.
+   * `<x-checkpath>` — invisible bootstrap component that resolves the REST base path.
    *
-   * Fetches `WebServiceAddress/` from the main app host (derived from `mainpath` config or
-   * the current page URL + port 5001). On success, stores the returned `data.Url` as
-   * `path` in session storage and fires `pathChangeEvent` if the path changed.
+   * Fetches `WebServiceAddress/` from the host derived from `mainpath` config (or
+   * from the current page URL + port 5001 when `mainpath` is empty), normalises
+   * the trailing slash, and stores the resolved URL as `path` in session storage
+   * via `pulseConfig.setGlobal`. Dispatches `pathChangeEvent` on every change so
+   * other components reload.
    *
-   * Special cases:
-   * - `skipWebServiceAddress = 'true'`: skips the REST call and uses `mainpath` directly.
-   * - `manageError` / `manageFailure`: fallback to `mainpath` config and show a user error message.
+   * Two fallback paths: `skipWebServiceAddress=true` skips the REST call and
+   * uses `mainpath` directly; on REST error or network failure, falls back to
+   * `mainpath` and (on failure only) emits a user-visible `showMessageSignal`
+   * error.
    *
-   * No visible DOM is rendered (`pulse-nodisplay`).
-   *
+   * @element x-checkpath
+   * @fires pathChangeEvent          `{}` whenever the resolved `path` changes
+   * @fires showMessageSignal        `{ id: 'PATH', message, level: 'error', time: 20, clickToClose: true }` on network failure
    * @extends pulseComponent.PulseParamSingleRequestComponent
    */
   class CheckPathComponent extends pulseComponent.PulseParamSingleRequestComponent {

@@ -15,20 +15,18 @@ var pulseConfig = require('pulseConfig');
 
 (function () {
   /**
-   * `<x-cycletask>` — donut/pie-chart progress widget for the current task instance of a machine.
+   * `<x-cycletask>` — donut widget for one machine's current task instance.
    *
-   * Polls `graphql` (POST) with `taskInstanceByMachineId(machineId)` query every `currentRefreshSeconds`.
-   * Renders a two-ring SVG donut:
-   *  - Outer ring (`_taskStateRing`): always full, colored grey (no task), white (in progress), or red (overdue).
-   *  - Inner ring (`_taskProgressRing`): fills proportionally with elapsed time while the task is in progress.
-   * Center text: top line = task name (truncated with ellipsis), bottom line = live countdown timer updated every second.
+   * Polls the GraphQL endpoint (POST) with a `taskInstanceByMachineId(machineId)`
+   * query at `currentRefreshSeconds` interval. Renders a two-ring SVG donut:
+   * an outer state ring (grey when no task, white when in progress, red when
+   * overdue) and an inner progress ring that fills proportionally with elapsed
+   * time. Centre text shows the task name (ellipsis-truncated to fit) and a
+   * live countdown driven by an independent `setTimeout` loop. Clock drift is
+   * corrected via `pulseConfig.diffServerTimeMinusNowMSec`.
    *
-   * The live timer loop (`_updateTaskTimerAndSchedule`) runs independently of the REST poll cycle.
-   * Server time offset is read from `diffServerTimeMinusNowMSec` config at each draw cycle.
-   *
-   * Attributes:
-   *   machine-id - (required) integer machine id; restart triggered on change
-   *
+   * @element x-cycletask
+   * @attr {number} machine-id  (required) machine id
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CycleTaskComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

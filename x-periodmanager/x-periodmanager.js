@@ -17,15 +17,22 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-periodmanager>` — manages and broadcasts the current time period (shift or custom range).
+   * `<x-periodmanager>` — headless period broadcaster.
    *
-   * When `displayshiftrange` config is `'true'`, polls `RangeAround?Around=<now>&RangeType=shift&RangeSize=1`
-   * to obtain the current shift boundaries; otherwise computes a rolling time window locally.
-   * Dispatches `dateTimeRangeChangeEvent` on `period-context` whenever the range changes.
+   * Computes a date range from configs (`displayweekrange`,
+   * `displayshiftrange`, `displaydaysrange`, `displayhoursrange`, plus the
+   * `exclude-now` attribute) and dispatches `dateTimeRangeChangeEvent` on
+   * `period-context` (or globally) whenever it changes. When
+   * `displayshiftrange === 'true'` (or a multi-day range is requested),
+   * fetches `GetRangeAround?…` to compute boundaries; otherwise builds the
+   * rolling window in-memory and skips the HTTP call via
+   * `_runAlternateGetData()`. Replies to `askForDateTimeRangeEvent` with
+   * the last computed range. No visible DOM.
    *
-   * Attributes:
-   *   period-context - event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-periodmanager
+   * @attr {string}  period-context event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {boolean} exclude-now    `'true'` aligns the upper bound to the current hour (exclusive)
+   * @fires dateTimeRangeChangeEvent `{ daterange: DateRange, stringrange: any }` — on `period-context`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class periodmanagerComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

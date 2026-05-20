@@ -13,14 +13,15 @@ var pulseUtility = require('pulseUtility');
 (function () {
 
   /**
-   * `<x-performancetarget>` — displays the utilization target percentage for a machine.
+   * `<x-performancetarget>` — utilization target label for one machine.
    *
-   * Fetches `UtilizationTarget/Get?MachineId=<id>` once per load.
-   * Renders "Target: X%" when `TargetPercentage > 0`, or hides the value span when undefined/zero.
+   * Fetches `UtilizationTarget/Get?MachineId=<id>` and renders a static
+   * "Target" word followed by `Math.round(TargetPercentage * 100) + '%'`.
+   * The value span carries the `empty-performancetarget` class while the
+   * target is undefined / zero or when the endpoint reports not-applicable.
    *
-   * Attributes:
-   *   machine-id - (required) integer machine id; restart triggered on change
-   *
+   * @element x-performancetarget
+   * @attr {number} machine-id (required) machine id
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class performancetargetComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

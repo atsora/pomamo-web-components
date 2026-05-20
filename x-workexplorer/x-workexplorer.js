@@ -14,15 +14,18 @@ var pulseCustomDialog = require('pulseCustomDialog');
 (function () {
 
   /**
-   * `<x-workexplorer>` — tree explorer for browsing the work order / component / operation hierarchy.
+   * `<x-workexplorer>` — hierarchical browser for the
+   * work-order / component / operation tree.
    *
-   * Fetches `WorkStructure?Kind=<kind>` to load the hierarchical work structure.
-   * Renders a tree with expandable nodes for work orders, components, and operations.
-   * Clicking a leaf opens the work order assignment dialog via `pulseCustomDialog`.
+   * Fetches `WorkStructure?Kind=<kind>[&Id=<id>]` and renders the
+   * current level with a title row, a parents/children breakdown and an
+   * action bar; navigating into a child sets `id` / `kind` and triggers
+   * a new fetch. Leaves can open the work-order assignment dialog via
+   * `pulseCustomDialog`.
    *
-   * Attributes:
-   *   kind - (optional) work structure kind to start browsing from
-   *
+   * @element x-workexplorer
+   * @attr {string} kind starting work-structure kind
+   * @attr {string} id   id of the currently focused node
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class WorkExplorerComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

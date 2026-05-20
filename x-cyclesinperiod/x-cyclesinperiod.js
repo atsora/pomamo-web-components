@@ -3,9 +3,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * Definition of tag x-cyclesinperiod used to build cyclesInPeriod widget. It shows datetime range
- * and table with cycles which occurs during given datetime range.
- *
  * @module x-cyclesinperiod
  * @requires module:pulseComponent
  * @requires module:pulseUtility
@@ -23,17 +20,21 @@ require('x-saveserialnumber/x-saveserialnumber');
 (function () {
 
   /**
-   * `<x-cyclesinperiod>` — table of machine cycles within a datetime range, with serial number editing.
+   * `<x-cyclesinperiod>` — table of one machine's cycles within a datetime range.
    *
-   * Fetches `GetCyclesWithWorkInformationsInPeriodV2?Id=<machine-id>&Begin=<begin>&End=<end>` once.
-   * Renders a table with one row per cycle showing begin/end, work info, and serial number.
-   * Clicking a serial number opens an `x-saveserialnumber` dialog via `pulseCustomDialog`.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `modificationEvent` for live updates.
+   * Fetches `GetCyclesWithWorkInformationsInPeriodV2?Id=<machine-id>&Begin=<begin>&End=<end>`
+   * on each `machine-id` / `range` change and renders one `<tr>` per cycle with
+   * its range, the work-information values, and a serial-number cell (`Missing`
+   * marker when absent). Clicking a row opens an `<x-saveserialnumber>` dialog
+   * via `pulseCustomDialog` to edit/save the cycle's serial. Reacts to
+   * `dateTimeRangeChangeEvent` on `period-context` (or globally) and to
+   * `machineIdChangeSignal` on `machine-context`.
    *
-   * Attributes:
-   *   machine-id     - (required) integer machine id
-   *   period-context - event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-cyclesinperiod
+   * @attr {number} machine-id       (required) machine id
+   * @attr {string} range            ISO datetime range `begin;end`
+   * @attr {string} period-context   event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context  event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class CyclesInPeriodComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

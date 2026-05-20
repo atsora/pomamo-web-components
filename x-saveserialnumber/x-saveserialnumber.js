@@ -3,9 +3,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * Definition of tag x-saveserialnumber used to build saveSerialNumber widget. It allow user to enter
- * a serial number or update existing one.
- *
  * @module x-saveserialnumber
  * @requires module:pulseComponent
  * @requires module:pulseUtility
@@ -24,20 +21,22 @@ require('x-datetimerange/x-datetimerange');
 (function () {
 
   /**
-   * `<x-saveserialnumber>` — form widget for saving a serial number for a machine cycle.
+   * `<x-saveserialnumber>` — form to enter or update the serial number
+   * of one machine cycle.
    *
-   * Renders an editable serial number input and a confirm button.
-   * On confirm, POSTs via `pulseService` to persist the serial number.
-   * The `range` attribute defines the cycle interval; `datetime` and `is-begin` identify
-   * whether the time refers to the cycle start or end.
+   * Renders an editable serial-number input. Calling `saveSN(this)`
+   * POSTs the new value via `pulseService`; the request identifies the
+   * cycle by `machine-id`, `range`, `datetime` and `is-begin`.
+   * Receiving an updated `serial-number` attribute refreshes the input
+   * value and re-focuses it when the host dialog regains focus.
    *
-   * Attributes:
-   *   machine-id    - (required) integer machine id
-   *   range         - ISO date range string for the cycle
-   *   datetime      - specific datetime within the cycle
-   *   is-begin      - `'true'` if `datetime` is the cycle begin
-   *   serial-number - initial serial number value to pre-fill
-   *
+   * @element x-saveserialnumber
+   * @attr {number}  machine-id    (required) machine id
+   * @attr {string}  range         ISO datetime range `begin;end` of the cycle
+   * @attr {string}  datetime      datetime within the cycle
+   * @attr {boolean} is-begin      `'true'` when `datetime` is the cycle begin
+   * @attr {string}  serial-number initial serial-number value
+   * @method saveSN               submit the current input value
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class SaveSerialNumberComponent extends pulseComponent.PulseParamInitializedComponent {

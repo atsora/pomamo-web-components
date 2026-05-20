@@ -26,22 +26,26 @@ require('x-stopclassification/x-stopclassification');
 (function () {
 
   /**
-   * `<x-unansweredreasonnumber>` — bar-style display of the count of unanswered stop periods.
+   * `<x-unansweredreasonnumber>` — single cell showing the count of
+   * unanswered stop periods for one machine over a date range.
    *
-   * Polls `ReasonUnanswered?MachineId=<id>&Number=True&Range=<range>[&Cache=No]`.
-   * Renders a single past-data cell showing "N STOP(s) to be classified" when unanswered periods exist,
-   * or "Past motion status details" when all stops are classified.
-   * Clicking the cell opens a reason history dialog via `pulseDetailsPopup`.
+   * Polls `ReasonUnanswered?MachineId=<id>&Number=True&Range=<range>[&Cache=No]`
+   * and renders a past-data cell with "N STOP(s) to be classified" (with
+   * `pulse-cellbar-cell-missing` and a question-mark) when unanswered
+   * periods exist, or "Past motion status details" otherwise. Clicking
+   * the cell opens the reason history dialog via `pulseDetailsPopup`.
+   * Pending revisions of `kind: 'reason'` on the current machine trigger
+   * a reload once `pendingModifications === 0`. Waits for an initial
+   * `dateTimeRangeChangeEvent` on `period-context` before the first
+   * request; reacts to `machineIdChangeSignal` on `machine-context` and
+   * dispatches `reasonStatusChange` on `status-context`.
    *
-   * Integrates with `x-modificationmanager` for pending reason modifications.
-   * Waits for a `dateTimeRangeChangeEvent` before its first request (`_range` must be set).
-   *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   period-context  - (optional) event bus context for `dateTimeRangeChangeEvent`
-   *   machine-context - (optional) event bus context for machine selection changes
-   *   status-context  - (optional) event bus context to dispatch `reasonStatusChange`
-   *
+   * @element x-unansweredreasonnumber
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
+   * @attr {string} status-context  event-bus context for `reasonStatusChange`
+   * @fires reasonStatusChange      `{ status: boolean }` — on `status-context`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class UnansweredReasonNumberComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

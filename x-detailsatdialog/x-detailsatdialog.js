@@ -18,20 +18,26 @@ require('x-datetimerange/x-datetimerange');
 require('x-datetimegraduation/x-datetimegraduation');
 require('x-barstack/x-barstack');
 
-/**
- * Build a custom tag <x-detailsatdialog> used as the content of a
- * pulseCustomDialog displaying details for a machine at a specific instant.
- *
- * The content inside the scrollable area is driven by the config key
- * `showcoloredbar.showdetails` (array of x-detailed* component names).
- *
- * Attributes:
- *   machine-id - machine id
- *   when       - ISO click time (for x-bartimeselection + x-detailed*)
- *   range      - ISO full range (period-context context)
- */
 (function () {
 
+  /**
+   * `<x-detailsatdialog>` — dialog body that renders the "details at" view for
+   * one machine at a specific instant.
+   *
+   * Builds a header (`x-machinedisplay`, formatted timestamp, `x-datetimerange`),
+   * a graduation strip (`x-datetimegraduation`) and a `x-barstack` over the
+   * given range, all wired to the `details` event-bus context. The scrollable
+   * area is populated from the `showcoloredbar.showdetails` config array (list
+   * of `x-detailed*` tag names); bar-only entries like `x-cncalarmbar` and
+   * `x-redstacklightbar` are turned into per-context `showcoloredbar` flags
+   * consumed by `x-barstack` instead of being appended directly.
+   *
+   * @element x-detailsatdialog
+   * @attr {number} machine-id  machine id
+   * @attr {string} when        ISO click datetime forwarded to `x-detailed*` children
+   * @attr {string} range       ISO datetime range `begin;end` of the surrounding period
+   * @extends pulseComponent.PulseInitializedComponent
+   */
   class DetailsAtDialogComponent extends pulseComponent.PulseInitializedComponent {
     constructor (...args) {
       const self = super(...args);

@@ -3,8 +3,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * Headless component that listens for reasonStatusCurrentChange and opens the Stop Classification dialog
- * 
  * @module x-openstopclassificationlistener
  */
 
@@ -18,16 +16,31 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-openstopclassificationlistener>` — headless component that automatically opens the stop classification dialog.
+   * `<x-openstopclassificationlistener>` — headless watcher that pops the
+   * stop-classification dialog when a machine has a missing/required reason.
    *
-   * Listens for `reasonStatusCurrentChange` events on the event bus and automatically opens
-   * the stop classification popup via `pulseDetailsPopup` when the machine stops without a reason.
-   * Prevents re-opening the dialog too quickly after it was last closed (debounce via `_lastDialogCloseTime`).
+   * Listens to `reasonStatusCurrentChange` on `status-context` (default
+   * `'PulseWebApp'`); when the carried `status` is truthy, fetches
+   * `GetLastMachineStatusV2?Id=<machine-id>` to pick the reason-slot begin
+   * and calls `pulseDetailsPopup.openChangeStopClassificationDialog`. Skips
+   * opening when:
+   *  - a `.customDialog` is already in the DOM,
+   *  - the `.machineSelectionDialogPart1` is visible,
+   *  - an `x-revisionprogress[kind="reason"]` for the same machine is
+   *    active,
+   *  - or `stopClassificationReopenDelay` seconds have not elapsed since
+   *    the previous dialog close (tracked via `MutationObserver`).
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
+   * Tracks the current machine id by reading the attribute and by
+   * listening to `machineIdChangeSignal` / replying to
+   * `requestMachineIdSignal` on `machine-context`; tracks the current
+   * date-range via `dateTimeRangeChangeEvent` on `period-context`.
    *
+   * @element x-openstopclassificationlistener
+   * @attr {number} machine-id      machine id (also set via `machine-context`)
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal` / `requestMachineIdSignal`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} status-context  event-bus context for `reasonStatusCurrentChange` (default `'PulseWebApp'`)
    * @extends pulseComponent.PulseParamInitializedComponent
    */
     class OpenStopClassificationListener extends pulseComponent.PulseParamInitializedComponent {

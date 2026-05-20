@@ -14,18 +14,19 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-motionpercentage>` — displays the utilization percentage driven by the event bus.
+   * `<x-motionpercentage>` — utilization percentage label driven by the
+   * event bus.
    *
-   * No REST requests — purely event-driven.
-   * Listens to `motionChangeEvent` on `motion-context[_machine-id]` to update `_motionpercentage`.
-   * Also listens to `machineIdChangeSignal` on `machine-context` to track dynamic machine selection.
-   * Renders `X%` (rounded to 0 decimals), or empty string if no value.
+   * Performs no AJAX. Listens to `motionChangeEvent` on
+   * `<motion-context>[_<machine-id>]` and renders `event.target.MotionPercent * 100`
+   * rounded to 0 decimals, suffixed with `%` (empty when the value is
+   * absent). Reacts to `machineIdChangeSignal` on `machine-context`
+   * (updates `machine-id`, which also re-binds the motion listener).
    *
-   * Attributes:
-   *   motion-context  - (required) event bus context key for motion data
-   *   machine-id      - (optional) appended to motion-context as suffix (`_<id>`)
-   *   machine-context - (optional) event bus context for machine selection changes
-   *
+   * @element x-motionpercentage
+   * @attr {string} motion-context  (required) base event-bus context for `motionChangeEvent`
+   * @attr {number} machine-id      machine id, appended to `motion-context` as `_<id>`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class MotionPercentageComponent extends pulseComponent.PulseParamInitializedComponent {

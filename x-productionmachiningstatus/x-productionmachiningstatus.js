@@ -14,16 +14,19 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-productionmachiningstatus>` — displays the current production and machining status for a machine.
+   * `<x-productionmachiningstatus>` — work-information cells reflecting
+   * the current production / machining status for one machine.
    *
-   * Polls `Operation/ProductionMachiningStatus?MachineId=<id>&Option=TrackTask` at `currentRefreshSeconds` interval.
-   * Renders current operation, part count, and task tracking information.
-   * Listens to `machineIdChangeSignal` on `machine-context`.
+   * Polls `Operation/ProductionMachiningStatus?MachineId=<id>&Option=TrackTask`
+   * (interval = `refreshingRate.currentRefreshSeconds`, default 10 s) and
+   * diff-renders one `.pulse-cellbar-first` per entry in
+   * `WorkInformations` (keyed by `{ Kind, Value }`), flagging missing
+   * values via `pulse-cellbar-cell-missing`. Reacts to
+   * `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-productionmachiningstatus
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ProductionMachiningStatusComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

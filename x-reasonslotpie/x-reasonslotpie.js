@@ -18,21 +18,25 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-reasonslotpie>` — SVG pie chart showing the distribution of reason slots over a period.
+   * `<x-reasonslotpie>` — SVG pie showing the distribution of reason
+   * colors for one machine over a date range.
    *
-   * Polls `ReasonColorSlots?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
-   * Renders a pie chart with one segment per reason color; can also display a percentage or elapsed time.
-   * Dispatches `textChangeEvent` on `textchange-context` with elapsed time or percent text.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls `ReasonColorSlots?MachineId=<id>&Range=<range>` and renders an
+   * SVG pie with one segment per reason color, sized by aggregate
+   * duration. When `textchange-context` is set, dispatches
+   * `textChangeEvent` on that context with the elapsed-time label or a
+   * percentage; the special values `'showPercent'` / `'DEMO'` change the
+   * text formatting. Reacts to `dateTimeRangeChangeEvent` on
+   * `period-context` and to `machineIdChangeSignal` on `machine-context`.
    *
-   * Attributes:
-   *   machine-id         - (required) integer machine id
-   *   period-context     - event bus context for `dateTimeRangeChangeEvent`
-   *   range              - (optional) ISO date range string `begin;end`
-   *   motion-context     - event bus context for motion updates
-   *   textchange-context - event bus context for `textChangeEvent` (special values: `'showPercent'`, `'DEMO'`)
-   *   machine-context    - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-reasonslotpie
+   * @attr {number} machine-id         (required) machine id
+   * @attr {string} range              ISO datetime range `begin;end`
+   * @attr {string} period-context     event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} motion-context     event-bus context for `motionChangeEvent` dispatch
+   * @attr {string} textchange-context base context for `textChangeEvent` (`'showPercent'`/`'DEMO'` toggle text mode)
+   * @attr {string} machine-context    event-bus context for `machineIdChangeSignal`
+   * @fires textChangeEvent            `{ text: string }` — on the resolved `textchange-context`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ReasonSlotPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

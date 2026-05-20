@@ -14,19 +14,19 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-freetext>` — event-driven free-text display component.
+   * `<x-freetext>` — event-driven free-text display.
    *
    * Listens to `textChangeEvent` on a context derived from `textchange-context`
-   * (via `pulseUtility.getTextChangeContext`) and renders the received text as a `<span>`.
-   * Also dispatches `askForTextChangeEvent` on init to request the current value.
+   * (resolved through `pulseUtility.getTextChangeContext`, which folds in
+   * `machine-id` / `group`) and renders the received text in a `<span>`.
+   * Dispatches `askForTextChangeEvent` to the same context on init / context
+   * change to request the current value.
    *
-   * Exposed method: `cleanDisplay()` — called by x-machineselection to clear on machine change.
-   *
-   * Attributes:
-   *   machine-id         - machine id (used for context computation)
-   *   group              - group id (used for context computation)
-   *   textchange-context - base context name for the text change event channel
-   *
+   * @element x-freetext
+   * @attr {number} machine-id         machine id (feeds context resolution)
+   * @attr {string} group              group id (feeds context resolution)
+   * @attr {string} textchange-context base context name for `textChangeEvent`
+   * @method cleanDisplay              empties the current display
    * @extends pulseComponent.PulseInitializedComponent
    */
   class freetextComponent extends pulseComponent.PulseInitializedComponent {
@@ -37,7 +37,7 @@ var eventBus = require('eventBus');
       const self = super(...args);
 
       self.methods = {
-        cleanDisplay: self.cleanDisplay // exposed for x-machineselection
+        cleanDisplay: self.cleanDisplay
       };
 
       // DOM
@@ -46,7 +46,7 @@ var eventBus = require('eventBus');
       return self;
     }
 
-    /** Clears the displayed text (called externally by machine selection changes). */
+    /** Clears the displayed text. */
     cleanDisplay () {
       $(this._content).empty();
     }

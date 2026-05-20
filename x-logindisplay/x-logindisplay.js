@@ -12,21 +12,19 @@ var pulseConfig = require('pulseConfig');
 var pulseLogin = require('pulseLogin');
 var pulseSvg = require('pulseSvg');
 
-/**
- * Build a custom tag <x-logindisplay> — displays the current user name and acts as a logout button.
- */
 (function () {
 
   /**
-   * `<x-logindisplay>` — current user display + logout button.
+   * `<x-logindisplay>` — current user label that doubles as a logout button.
    *
-   * Shows a text span with the current user name (from `pulseConfig.getCurrentUserDisplay()`)
-   * and an SVG icon. Hidden when no role or AppContext is defined.
-   * Clicking the element logs out (clears role, navigates to login page).
+   * Renders `pulseConfig.getCurrentUserDisplay()` next to an inlined SVG
+   * icon. The host stays hidden while `pulseConfig.currentRoleOrAppContextIsDefined()`
+   * is false. Clicking the host calls `pulseLogin.cleanLoginRole()` then
+   * `pulseConfig.goToPageLogin()`. SVG background inlining is skipped when
+   * `donotuseinline === 'true'`.
    *
-   * Attributes:
-   *   donotuseinline - if 'true', skips SVG inlining (for reporting use)
-   *
+   * @element x-logindisplay
+   * @attr {boolean} donotuseinline `'true'` skips SVG background inlining
    * @extends pulseComponent.PulseInitializedComponent
    */
   class LoginDisplayComponent extends pulseComponent.PulseInitializedComponent {

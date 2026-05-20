@@ -23,16 +23,17 @@ const locales = {
 (function () {
 
   /**
-   * `<x-datetimegraduation>` — SVG time-axis ruler for timeline bars.
+   * `<x-datetimegraduation>` — SVG time-axis ruler.
    *
-   * Renders a horizontal graduation axis using d3-time-format for the given date range.
-   * Adapts tick density and locale to the current language setting.
-   * Used as a time ruler above or below `x-*bar` components.
+   * Renders a horizontal graduation axis for `range` using `d3-time-format`,
+   * with a fixed 25 px height and a tick density computed from the container
+   * width (~one tick per 70 px, min 3). Date/time formatting locale is selected
+   * from `moment.locale()` (`fr` / `en` / `de` / `es`). A `ResizeObserver` on
+   * the host element triggers a redraw on width changes.
    *
-   * Attributes:
-   *   height - (optional) integer pixel height of the graduation area
-   *   range  - ISO date range string `begin;end`
-   *
+   * @element x-datetimegraduation
+   * @attr {string} range  ISO datetime range `begin;end`
+   * @method load          force a redraw at the current width
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class DateTimeGraduationComponent extends pulseComponent.PulseParamInitializedComponent {

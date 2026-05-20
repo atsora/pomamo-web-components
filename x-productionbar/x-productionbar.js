@@ -178,27 +178,33 @@ var eventBus = require('eventBus');
   }
 
   /**
-   * `<x-productionbar>` — horizontal bar gauge showing production ratio (actual / target parts).
+   * `<x-productionbar>` — horizontal gauge bar showing production ratio
+   * (actual / target parts) for one machine.
    *
-   * Two endpoint modes depending on whether `range` attribute / `period-context` is provided:
-   *  - With range: `Operation/PartProductionRange?GroupId=<id>&Range=<range>` — historical parts.
-   *  - Without range (live): `Operation/ProductionMachiningStatus?MachineId=<id>` — current shift.
+   * Switches endpoint based on whether a range is in play:
+   *  - with range: `Operation/PartProductionRange?GroupId=<id>&Range=<range>`
+   *    (historical),
+   *  - without range: `Operation/ProductionMachiningStatus?MachineId=<id>`
+   *    (current shift).
    *
-   * `refresh(data)` computes `_productionRatio = actual / target` (capped at 1.0) and calls `_draw()`.
-   * The bar gradient is split at `thresholdtargetproduction` config (default 80%) into a red→orange→yellow
-   * zone and a green zone. A triangular cursor marks the current production ratio.
+   * `refresh(data)` computes `_productionRatio = actual / target` (capped
+   * at 1.0) and `_draw()` renders the SVG via `createHorizontalBar()` with
+   * a red→orange→yellow→green gradient split at the
+   * `thresholdtargetproduction` config (default 80 %); a triangular cursor
+   * marks the current ratio. `_textDisplay` shows `actual/target`
+   * (`display-mode="ratio"`) or `percent%` (default `'percent'`),
+   * decorated with `production-poor` / `production-medium` /
+   * `production-good` classes based on the thresholds. Reacts to
+   * `dateTimeRangeChangeEvent` on `period-context` and to
+   * `machineIdChangeSignal` on `machine-context`.
    *
-   * `_textDisplay` shows `actual/target` (ratio mode) or `percent%` (percent mode, default), styled with
-   * `production-poor` / `production-medium` / `production-good` CSS classes based on config thresholds.
-   *
-   * Attributes:
-   *   machine-id     - (required) integer machine id or group id
-   *   height         - bar height in pixels
-   *   period-context - event bus context for date range events
-   *   range          - `'begin;end'` date range string
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *   display-mode   - `'percent'` (default) or `'ratio'`
-   *
+   * @element x-productionbar
+   * @attr {number} machine-id      (required) machine or group id
+   * @attr {number} height          bar height in px
+   * @attr {string} range           ISO datetime range `begin;end`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
+   * @attr {string} display-mode    `'percent'` (default) or `'ratio'`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class ProductionBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

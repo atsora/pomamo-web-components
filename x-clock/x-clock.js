@@ -13,16 +13,16 @@ var pulseComponent = require('pulsecomponent');
 (function () {
 
   /**
-   * `<x-clock>` — live clock displaying local time (and optionally the date).
+   * `<x-clock>` — live clock displaying local time (or the date).
    *
-   * No REST requests — uses a self-rescheduling `setTimeout` loop via `_startTime()`.
-   * Format adapts to locale: 24h for `fr`/`de`, 12h otherwise.
-   * Resyncs on the exact second boundary to avoid drift.
+   * Self-rescheduling `setTimeout` loop in `_startTime()` aligned on the next
+   * second boundary (or minute boundary when seconds are hidden) to avoid drift.
+   * Time format depends on the current Moment locale: 24h for `fr` / `de`, 12h
+   * otherwise. No AJAX.
    *
-   * Attributes:
-   *   display-seconds - `'true'` to show HH:mm:ss; default HH:mm (or 12h equivalents)
-   *   display-date    - `'true'` to show full date (dddd DD/MM/YYYY or MM/DD/YYYY for `en`) instead of time
-   *
+   * @element x-clock
+   * @attr {boolean} display-seconds  `'true'` shows seconds (`HH:mm:ss` / `hh:mm:ss a`); default hides them
+   * @attr {boolean} display-date     `'true'` shows the date (`dddd DD/MM/YYYY`, or `dddd MM/DD/YYYY` for `en`) instead of the time
    * @extends pulseComponent.PulseInitializedComponent
    */
   class ClockComponent extends pulseComponent.PulseInitializedComponent {

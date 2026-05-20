@@ -15,17 +15,21 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-currenticonworkinformation>` — icon indicator for missing work information on a machine.
+   * `<x-currenticonworkinformation>` — warning icon when one machine has missing
+   * work-information in a given range.
    *
-   * Polls `MissingWorkInformation?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
-   * Displays a warning icon when the machine has no assigned work order/component/operation for the period.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls `MissingWorkInformation?MachineId=<id>&Range=<range>` at
+   * `currentRefreshSeconds + 1` interval and renders a `.pulse-icon-missing-workorder`
+   * div (with optional tooltip) when `data.IsMissingWorkInformation` is true.
+   * Reacts to `dateTimeRangeChangeEvent` on `period-context` (or globally) and
+   * to `workinformationStatusChange` on `status-context`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-currenticonworkinformation
+   * @attr {number}  machine-id      (required) machine id
+   * @attr {boolean} active          `'true'` adds the `.active` class on the inner content
+   * @attr {string}  range           ISO datetime range `begin;end`
+   * @attr {string}  period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string}  status-context  event-bus context for `workinformationStatusChange`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CurrentIconWorkInformationComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

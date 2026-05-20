@@ -25,22 +25,26 @@ var state = require('state');
 (function () {
 
   /**
-   * `<x-lastworkinformation>` — inline text display of the last work information for a machine.
+   * `<x-lastworkinformation>` — inline current work-information cells for one
+   * machine (no past-data block, no click handlers).
    *
-   * Polls `GetLastWorkInformationV3/<machine-id>` at `currentRefreshSeconds` interval.
-   * Renders the current work info cells as inline text (no past-data block, no click handlers).
-   * Uses a custom `Loaded` (StaticState) context to stop polling when the machine has no
-   * operation tracking.
+   * Polls `GetLastWorkInformationV3/<machine-id>` (interval =
+   * `refreshingRate.currentRefreshSeconds`, default 10 s) and renders one
+   * `.pulse-cellbar-first` per work-information item, flagging cells with
+   * missing values via `pulse-cellbar-cell-missing`. When `SlotMissing` is
+   * true, inserts a single placeholder cell using the `noOperation`
+   * translation. When the response carries `MonitoredMachineOperationBar ===
+   * 'None'`, adds the `lwi-no-operation` class on the host (CSS hides it)
+   * and switches to a `Loaded` `StaticState` to stop polling. Reacts to
+   * `machineIdChangeSignal` on `machine-context` and to
+   * `dateTimeRangeChangeEvent` on `period-context` (just tracks the range).
    *
-   * `manageSuccess()` adds `lwi-no-operation` class on the host if `MonitoredMachineOperationBar`
-   * is 'None'; otherwise removes it and delegates to `refresh(data)`.
-   *
-   * Attributes:
-   *   machine-id        - (required) integer machine id; restart on change
-   *   machine-context   - (optional) event bus context for machine selection changes
-   *   status-context    - (optional) event bus context to dispatch `workinformationStatusChange`
-   *   period-context    - (optional) event bus context for `dateTimeRangeChangeEvent`
-   *
+   * @element x-lastworkinformation
+   * @attr {number} machine-id      (required) machine id
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
+   * @attr {string} status-context  event-bus context for `workinformationStatusChange`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @fires workinformationStatusChange `{ status: boolean | null }` — on `status-context`; `null` on error / no-operation, `true` when any cell is missing
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class LastWorkInformationComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

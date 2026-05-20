@@ -14,17 +14,18 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-workinfo>` — displays work information driven by the event bus.
+   * `<x-workinfo>` — inline work-information label driven by the event
+   * bus.
    *
-   * No REST requests — purely event-driven.
-   * Listens to `operationChangeEvent` on the `machine-id` context for work info updates.
-   * Also listens to `machineIdChangeSignal` on `machine-context` for dynamic machine tracking.
-   * Re-renders a concatenated line of all `workinformations[].Value` only when data changes.
+   * Performs no AJAX. Listens to `operationChangeEvent` on the
+   * `machine-id` context and renders a concatenation of the
+   * `WorkInformations[].Value` entries (re-rendered only when the
+   * payload actually changes). Reacts to `machineIdChangeSignal` on
+   * `machine-context` (updates `machine-id` and re-binds the listener).
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id; also used as event bus context
-   *   machine-context - (optional) event bus context for machine selection changes
-   *
+   * @element x-workinfo
+   * @attr {number} machine-id      (required) machine id (also used as event-bus context)
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class workinfoComponent extends pulseComponent.PulseParamInitializedComponent {

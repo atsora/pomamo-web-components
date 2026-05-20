@@ -14,17 +14,19 @@ var pulseComponent = require('pulsecomponent');
 (function () {
 
   /**
-   * `<x-currentworkinfo>` — displays current work information for a machine or group.
+   * `<x-currentworkinfo>` — current work-information line for one machine or
+   * group.
    *
-   * Polls `GetLastWorkInformationV3/<id-or-group>` at `currentRefreshSeconds` interval.
-   * `manageSuccess()` hides the component when `MonitoredMachineOperationBar` is 'None'.
-   * `refresh(data)` builds a single concatenated display of all `WorkInformations` values,
-   * but only re-renders if the data has changed (compared against `_displayedWorkInformations`).
+   * Polls `GetLastWorkInformationV3/<group-or-machine-id>` at
+   * `currentRefreshSeconds` interval and renders a single space-joined string
+   * of all non-empty `WorkInformations[].Value` entries. Re-renders only when
+   * the kind/value list actually changes (diffed against
+   * `_displayedWorkInformations`). Hides the element and switches to
+   * `NotApplicable` when the server reports `MonitoredMachineOperationBar === 'None'`.
    *
-   * Attributes:
-   *   machine-id - integer machine id (takes priority over group)
-   *   group      - group id (used if machine-id absent)
-   *
+   * @element x-currentworkinfo
+   * @attr {number} machine-id  machine id (used when `group` is absent)
+   * @attr {string} group       group id (takes priority over `machine-id` in the URL)
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CurrentWorkInfoComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

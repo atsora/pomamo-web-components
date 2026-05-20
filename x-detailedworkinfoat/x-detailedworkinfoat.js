@@ -16,17 +16,21 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-detailedworkinfoat>` — detail panel showing the work information (operation slot) at a given time.
+   * `<x-detailedworkinfoat>` — detail panel showing the operation slot
+   * (work information) at a given point in time for one machine.
    *
-   * Fetches `OperationSlots?MachineId=<id>&Range=<single-point-range>&SkipDetails=false` once per `when`.
-   * Listens to `dateTimeChangeEvent` and `machineIdChangeSignal` to update attributes.
+   * Fetches
+   * `OperationSlots?MachineId=<id>&Range=<single-point-range>&SkipDetails=false`
+   * on each `machine-id` / `when` change and renders the operation range and
+   * display label. Reacts to `dateTimeChangeEvent` on `datetime-context`
+   * (updates `when`) and to `machineIdChangeSignal` on `machine-context`
+   * (updates `machine-id`).
    *
-   * Attributes:
-   *   machine-id       - (required) integer machine id
-   *   when             - (required) ISO datetime string
-   *   datetime-context - event bus context for `dateTimeChangeEvent`
-   *   machine-context  - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-detailedworkinfoat
+   * @attr {number} machine-id       (required) machine id
+   * @attr {string} when             (required) ISO datetime
+   * @attr {string} datetime-context event-bus context for `dateTimeChangeEvent`
+   * @attr {string} machine-context  event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class DetailedWorkinfoAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

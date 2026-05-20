@@ -1,23 +1,26 @@
 // Copyright (C) 2025 Atsora Solutions
 // SPDX-License-Identifier: Apache-2.0
 
+/**
+ * @module x-rotationprogress
+ */
 var pulseComponent = require('pulsecomponent');
 var eventBus = require('eventBus');
 
 (function () {
   /**
-   * `<x-rotationprogress>` — visual indicator for page rotation progress.
+   * `<x-rotationprogress>` — visual indicator for a paged-rotation tick.
    *
-   * No REST requests — purely event-driven.
-   * Listens to `rotationPageUpdate` globally to update the display.
-   * Renders in two modes controlled by the `display-mode` attribute:
-   *  - `'bar'`  — animated progress bar (CSS transition width 0% → 100% over `delay` ms).
-   *  - `'text'` — text label `'Page N / T'`.
-   * Hidden when there is only one page or no delay is provided.
+   * Performs no AJAX. Listens to `rotationPageUpdate` globally; each event
+   * carries `{ page, total, delay }`. Hidden while `total <= 1` or
+   * `delay` is missing, otherwise renders one of two modes selected by
+   * `display-mode`:
+   *  - `'bar'` (default): a `.rotation-progress-bar` whose CSS `width`
+   *    transitions from 0 % to 100 % over `delay` ms each cycle;
+   *  - `'text'`: a `.rotation-progress-text` showing `Page N / T`.
    *
-   * Attributes:
-   *   display-mode - `'bar'` (default) or `'text'`
-   *
+   * @element x-rotationprogress
+   * @attr {string} display-mode `'bar'` (default) or `'text'`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class RotationProgressComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
@@ -50,7 +53,6 @@ var eventBus = require('eventBus');
         $(this.element).append(this._text);
       }
 
-      // Listen to the rotation engine
       if (eventBus.EventBus.addGlobalEventListener) {
         eventBus.EventBus.addGlobalEventListener(this, 'rotationPageUpdate', this.onRotationUpdate);
       }

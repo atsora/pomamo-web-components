@@ -15,20 +15,20 @@ var eventBus = require('eventBus');
 
 (function () {
   /**
-   * `<x-detailedobservationstateat>` — detail panel showing the machine observation-state slot
-   * that covers a specific point in time.
+   * `<x-detailedobservationstateat>` — detail panel showing the observation-state
+   * slot active at a given point in time for one machine.
    *
-   * Fetches `ObservationStateSlots?MachineId=<id>&Range=<single-point-range>` once per `when` value.
-   * Renders the slot date range and display string inside a `.detailed-content` div.
-   * Listens to `dateTimeChangeEvent` (on `datetime-context`) and `machineIdChangeSignal`
-   * (on `machine-context`) to update `when` and `machine-id` attributes dynamically.
+   * Fetches `ObservationStateSlots?MachineId=<id>&Range=<single-point-range>`
+   * on each `machine-id` / `when` change and renders the slot range and display
+   * inside a `.detailed-content` div. Reacts to `dateTimeChangeEvent` on
+   * `datetime-context` (updates `when`) and to `machineIdChangeSignal` on
+   * `machine-context` (updates `machine-id`).
    *
-   * Attributes:
-   *   machine-id       - (required) integer machine id
-   *   when             - (required) ISO datetime string for the slot query
-   *   datetime-context - event bus context for `dateTimeChangeEvent`
-   *   machine-context  - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-detailedobservationstateat
+   * @attr {number} machine-id       (required) machine id
+   * @attr {string} when             (required) ISO datetime
+   * @attr {string} datetime-context event-bus context for `dateTimeChangeEvent`
+   * @attr {string} machine-context  event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class DetailedObservationStateAtComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

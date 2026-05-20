@@ -17,18 +17,24 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-runningbutton>` — live status button showing the current machine mode (running/not-running).
+   * `<x-runningbutton>` — live running/not-running status button for one
+   * machine.
    *
-   * Polls `CurrentMachineMode?MachineId=<id>` and applies the mode color to the button.
-   * When `textchange-context` is set, also adds `Period=running_machinemodecategory&NotRunningOnlyDuration=true`
-   * to the URL to retrieve duration data. Dispatches `textChangeEvent` on that context.
-   * Clicking the button opens the running-view dialog via `pulseDetailsPopup`.
+   * Polls `CurrentMachineMode?MachineId=<id>` (with
+   * `&Period=running_machinemodecategory&NotRunningOnlyDuration=true`
+   * when `textchange-context` is set) and paints the host with the mode
+   * category class (running / not-running). When `textchange-context` is
+   * set, dispatches `textChangeEvent` with the not-running duration and
+   * replies to `askForTextChangeEvent` on the same context. Clicking the
+   * button opens a running-view dialog (`x-runningdialog`) via
+   * `pulseDetailsPopup`. Reacts to `machineIdChangeSignal` on
+   * `machine-context`.
    *
-   * Attributes:
-   *   machine-id        - (required) integer machine id
-   *   machine-context   - event bus context for `machineIdChangeSignal`
-   *   textchange-context - event bus context for `textChangeEvent` (last-update display)
-   *
+   * @element x-runningbutton
+   * @attr {number} machine-id         (required) machine id
+   * @attr {string} machine-context    event-bus context for `machineIdChangeSignal`
+   * @attr {string} textchange-context base context for `textChangeEvent`
+   * @fires textChangeEvent            `{ text: string }` — on the resolved `textchange-context`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class RunningButtonComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

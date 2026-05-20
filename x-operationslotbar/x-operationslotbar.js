@@ -20,20 +20,24 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-operationslotbar>` — timeline bar showing operation slots (work order/component/operation) for a machine.
+   * `<x-operationslotbar>` — timeline bar showing operation slots
+   * (work order / component / operation) for one machine over a date range.
    *
-   * Polls `OperationSlots?MachineId=<id>&Range=<range>` at `currentRefreshSeconds` interval.
-   * Renders colored segments for each operation slot; clicking opens the operation details popup.
-   * Listens to `dateTimeRangeChangeEvent` on `period-context` and `machineIdChangeSignal` on `machine-context`.
+   * Polls `OperationSlots?MachineId=<id>&Range=<range>` and renders one
+   * colored SVG segment per slot proportional to the range. Clicks open
+   * the operation details view through `pulseDetailsPopup` (`showdetails` /
+   * `showpopup` configs select an in-place page or a floating popup).
+   * Reacts to `dateTimeRangeChangeEvent` on `period-context` (dispatches
+   * `askForDateTimeRangeEvent` if the range is missing) and to
+   * `machineIdChangeSignal` on `machine-context`. Height comes from the
+   * `height` attribute, otherwise `tagConfig` / default.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   height          - (optional) integer pixel height of the bar
-   *   period-context  - event bus context for `dateTimeRangeChangeEvent`
-   *   range           - (optional) ISO date range string `begin;end`
-   *   showdetails     - (optional) details page to open on click (from config)
-   *   showpopup       - (optional) popup details to open on click (from config)
-   *
+   * @element x-operationslotbar
+   * @attr {number} machine-id      (required) machine id
+   * @attr {number} height          pixel height of the bar
+   * @attr {string} range           ISO datetime range `begin;end`
+   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
+   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class OperationSlotBarComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {

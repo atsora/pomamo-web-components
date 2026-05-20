@@ -15,19 +15,21 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 (function () {
 
   /**
-   * `<x-reasonsubdetails>` — headless component that fetches all reasons at a given point in time
-   * and opens a popup with the list of alternative reasons via `pulseDetailsPopup.openGenericPopup`.
+   * `<x-reasonsubdetails>` — headless lookup that opens an alternative-
+   * reasons popup at a click position.
    *
-   * Fetches `Reason/AllAt/Get?MachineId=<id>&At=<when>` once (single request).
-   * Skips the first reason in `ReasonAllAtItems` (assumed to be the current primary reason).
-   * Displays `Display`, `Details`, and (in `dev` role) scoring/source metadata per reason.
+   * Fetches `Reason/AllAt/Get?MachineId=<id>&At=<when>` once and opens a
+   * popup via `pulseDetailsPopup.openGenericPopup` positioned at
+   * (`clientX`, `clientY`). Each entry in `ReasonAllAtItems` is rendered
+   * with `Display` and `Details`; the first item is skipped (treated as
+   * the current primary reason). When the active role is `dev`,
+   * scoring/source metadata is appended to each row.
    *
-   * Attributes:
-   *   machine-id - (required) integer machine id
-   *   when       - (required) ISO datetime string for the `At` parameter
-   *   clientX    - X position for popup placement (forwarded to `pulseDetailsPopup`)
-   *   clientY    - Y position for popup placement
-   *
+   * @element x-reasonsubdetails
+   * @attr {number} machine-id (required) machine id
+   * @attr {string} when       (required) ISO datetime
+   * @attr {number} clientX    popup X position
+   * @attr {number} clientY    popup Y position
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class ReasonSubDetailsComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {

@@ -13,17 +13,20 @@ var pulseUtility = require('pulseUtility');
 (function () {
 
   /**
-   * `<x-datepicker>` — interactive date-only selector widget.
+   * `<x-datepicker>` — single native `<input type="date">` wrapper.
    *
-   * Renders a date input field for selecting an ISO date value.
-   * Exposes `getISOValue()` to retrieve the current value programmatically.
+   * Renders a date input, applies the `defaultdate`, `mindate`, `maxdate`
+   * attributes, and dispatches a `change` event on the host element when the
+   * value changes. Restores the default date when the user clears the input.
    *
-   * Attributes:
-   *   defaultdate - (optional) initial ISO date string
-   *   mindate     - (optional) minimum selectable date (ISO string)
-   *   maxdate     - (optional) maximum selectable date (ISO string)
-   *   disabled    - (optional) disables the input field
-   *
+   * @element x-datepicker
+   * @attr {string}  defaultdate  initial ISO date string
+   * @attr {string}  mindate      minimum selectable ISO date
+   * @attr {string}  maxdate      maximum selectable ISO date
+   * @attr {boolean} disabled     `'disabled'` / `'true'` disables the input
+   * @method isValid              `true` when the current value is a valid date
+   * @method getISOValue          current ISO date (yyyy-mm-dd)
+   * @method getValueAsIs         raw value of the input
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class DatePickerComponent extends pulseComponent.PulseParamInitializedComponent {

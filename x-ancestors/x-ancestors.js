@@ -12,28 +12,21 @@ require('x-machinedisplay/x-machinedisplay');
 (function () {
 
   /**
-   * `<x-ancestors>` — breadcrumb navigation bar for group hierarchy.
+   * `<x-ancestors>` — breadcrumb navigation bar for the group hierarchy.
    *
-   * Reads `ancestor1`, `ancestor2`, ... config/attributes (group IDs) and the current
-   * `group` config to build a series of clickable breadcrumb links. Each link navigates
-   * to the page with that ancestor as the `group` parameter, preserving accumulated
-   * ancestor context in the URL query string.
+   * Reads `ancestor1`, `ancestor2`, … from the URL (group ids) plus the current
+   * `group` config and renders a chain of links. `ancestor1` is the home link with
+   * an inlined SVG icon; `ancestor2+` are links each wrapping an `<x-machinedisplay>`;
+   * the final element is the current group, rendered as non-clickable text — or as
+   * a re-clickable link at root level for a reload effect. Each generated href
+   * rewrites the URL with that ancestor as `group=` and accumulates `ancestorN=`
+   * params for upstream context.
    *
-   * Rendering rules:
-   *  - `ancestor1` (level 1 / home): rendered as an `<a>` with an SVG icon (no x-machinedisplay).
-   *  - `ancestor2+`: rendered as `<a>` elements containing `<x-machinedisplay>` tags.
-   *  - The final element (current group, when not at root): rendered as a non-clickable `<div>`
-   *    with an `<x-machinedisplay>` inside.
-   *  - If at root level (ancestorNb == 1): final element is a re-clickable `<a>` (reload effect).
-   *  - Self-referencing URLs (?group=X&ancestor1=X), produced by drill-in zooms on a container
-   *    group, render both the home link for X and the non-clickable X name.
-   *
-   * Attributes/Configs:
-   *   group       - current group id (used for comparison and final element display)
-   *   ancestor1   - root group id (home icon)
-   *   ancestor2+  - intermediate group ids (x-machinedisplay breadcrumb links)
-   *   AppContext  - passed through to all generated links
-   *
+   * @element x-ancestors
+   * @attr {string} group       current group id (final element display)
+   * @attr {string} ancestor1   root group id (home icon link)
+   * @attr {string} ancestor2…  intermediate group ids (breadcrumb links)
+   * @attr {string} AppContext  forwarded into every generated link
    * @extends pulseComponent.PulseParamInitializedComponent
    */
   class AncestorsComponent extends pulseComponent.PulseParamInitializedComponent {
@@ -46,10 +39,6 @@ require('x-machinedisplay/x-machinedisplay');
       return self;
     }
 
-    /**
-     * Builds the breadcrumb DOM by iterating `ancestor1`, `ancestor2`, ... configs.
-     * Appends the final current-group element as non-clickable (or re-clickable at root).
-     */
     validateParameters () {}
 
     initialize () {
@@ -74,10 +63,10 @@ require('x-machinedisplay/x-machinedisplay');
       let accumulatedAncestorsQuery = '';
 
       while ('' != ancestorVal) {
-        // Note: we do not break when ancestorVal == currentGroup.
-        // Self-referencing URLs like ?group=X&ancestor1=X are intentional
-        // (e.g. drill-in to view a group's children on managementinformationterminal):
-        // we still want to render X as the home link AND the current group name in the final block.
+        // Do not break when ancestorVal == currentGroup: self-referencing URLs
+        // like ?group=X&ancestor1=X are intentional (drill-in to view a group's
+        // children) and must render both the home link for X and X as the final
+        // current-group name.
 
         let divMachine = $('<a></a>')
           .addClass('ancestors-machine-div')

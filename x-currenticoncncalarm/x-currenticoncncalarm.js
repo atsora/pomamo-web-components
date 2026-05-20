@@ -15,17 +15,21 @@ var eventBus = require('eventBus');
 (function () {
 
   /**
-   * `<x-currenticoncncalarm>` — icon indicator for active CNC alarms on a machine.
+   * `<x-currenticoncncalarm>` — alarm icon for the currently active CNC alarms on
+   * one machine.
    *
-   * Polls `CncAlarm/Current?MachineId=<id>` at `currentRefreshSeconds` interval.
-   * Displays an alarm icon when active CNC alarms exist; optionally includes ignored alarms
-   * via `showIgnoredAlarm` config. Clicking opens the alarm details popup.
-   * Listens to `machineIdChangeSignal` on `machine-context`.
+   * Polls `CncAlarm/Current?MachineId=<id>` at `currentRefreshSeconds + 1`
+   * interval. The query is extended with `&IncludeIgnored=true` when the
+   * `showIgnoredAlarm` config is `'true'`, or with `&KeepFocusOnly=true` when
+   * `showUnknownAlarm` is `'false'`. Renders a `.pulse-icon-cncalarm` div with a
+   * `-focused` / `-ignored` / `-unknown` variant depending on the alarm's
+   * `Focus`, plus an optional text label below the icon when `showAlarmBelowIcon`
+   * is `'true'`. Listens to `onCncAlarmStatusChange` on `status-context`.
    *
-   * Attributes:
-   *   machine-id      - (required) integer machine id
-   *   machine-context - event bus context for `machineIdChangeSignal`
-   *
+   * @element x-currenticoncncalarm
+   * @attr {number}  machine-id      (required) machine id
+   * @attr {boolean} active          `'true'` adds the `.active` class on the inner content
+   * @attr {string}  status-context  event-bus context for `onCncAlarmStatusChange`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CurrentIconCNCAlarmComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
