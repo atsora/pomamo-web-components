@@ -1,0 +1,72 @@
+<!--
+Copyright (C) 2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<style>
+  .currenticoncncalarm-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(127,127,127,0.2);
+  }
+  .currenticoncncalarm-row x-currenticoncncalarm {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 auto;
+  }
+  .currenticoncncalarm-row h3 {
+    margin: 0;
+    font-size: 0.95em;
+  }
+  .currenticoncncalarm-row .demo-meta {
+    font-size: 0.85em;
+    color: rgba(127,127,127,0.85);
+  }
+</style>
+
+<div class="static-tests">
+  <p>The icon variant follows the alarm <code>Focus</code> field: <strong>focused</strong> (operator must act), <strong>ignored</strong> (acknowledged), or <strong>unknown</strong> (focus annotation missing).</p>
+
+  <div class='currenticoncncalarm-row'>
+    <x-currenticoncncalarm machine-id="1" path="http://localhost:8082/"></x-currenticoncncalarm>
+    <div>
+      <h3>Mill-01 — focused alarm</h3>
+      <div class="demo-meta">Spindle overheat, Focus=true → red focused icon</div>
+    </div>
+  </div>
+
+  <div class='currenticoncncalarm-row'>
+    <x-currenticoncncalarm machine-id="2" path="http://localhost:8082/"></x-currenticoncncalarm>
+    <div>
+      <h3>Mill-02 — ignored alarm</h3>
+      <div class="demo-meta">Door open, Focus=false → grey ignored icon</div>
+    </div>
+  </div>
+
+  <div class='currenticoncncalarm-row'>
+    <x-currenticoncncalarm machine-id="3" path="http://localhost:8082/"></x-currenticoncncalarm>
+    <div>
+      <h3>Lathe-01 — unknown alarm</h3>
+      <div class="demo-meta">Probe contact, no Focus annotation → "unknown" variant</div>
+    </div>
+  </div>
+
+  <div class='currenticoncncalarm-row'>
+    <x-currenticoncncalarm machine-id="4" path="http://localhost:8082/"></x-currenticoncncalarm>
+    <div>
+      <h3>Manual-01 — no alarm</h3>
+      <div class="demo-meta">CncAlarms array empty → icon hidden</div>
+    </div>
+  </div>
+
+  <div class='currenticoncncalarm-row'>
+    <x-currenticoncncalarm machine-id="999" path="http://localhost:8082/"></x-currenticoncncalarm>
+    <div>
+      <h3>Error case (reserved id 999)</h3>
+      <div class="demo-meta">HTTP 400 from mock → icon hidden, no console error</div>
+    </div>
+  </div>
+</div>

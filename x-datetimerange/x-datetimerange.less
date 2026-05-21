@@ -42,13 +42,11 @@ x-datetimerange {
 
   .datetimerange-li-btn {
     display: inline-block;
-    margin: 4px 4px 4px 0;
     vertical-align: top;
   }
 
   .datetimerange-li-text {
     display: inline-block;
-    margin: 4px 4px 4px 0;
     vertical-align: top;
     height: @button-icon-size;
     min-width: 300px;
@@ -85,38 +83,44 @@ x-datetimerange {
 
   .datetimerange-button-previous {
     .create_svg_hover('previous', @color_text);
+    border-radius: @border_radius_small;
+    padding: 4px;
+    box-sizing: content-box;
 
-    svg:hover {
-      border-radius: @border_radius_small;
+    &:hover {
       background-color: @color_background_alternate;
     }
   }
 
   .datetimerange-button-next {
     .create_svg_hover('next', @color_text);
+    border-radius: @border_radius_small;
+    padding: 4px;
+    box-sizing: content-box;
 
-    svg:hover {
-      border-radius: @border_radius_small;
+    &:hover {
       background-color: @color_background_alternate;
     }
   }
 
   .datetimerange-button-zoomin {
     .create_svg_hover('periodtoolbar-zoomin', @color_text);
+    border-radius: @border_radius_small;
+    padding: 4px;
+    box-sizing: content-box;
 
-    svg:hover {
-      border-radius: @border_radius_small;
-      padding: 2px;
+    &:hover {
       background-color: @color_background_alternate;
     }
   }
 
   .datetimerange-button-zoomout {
     .create_svg_hover('periodtoolbar-zoomout', @color_text);
+    border-radius: @border_radius_small;
+    padding: 4px;
+    box-sizing: content-box;
 
-    svg:hover {
-      border-radius: @border_radius_small;
-      padding: 2px;
+    &:hover {
       background-color: @color_background_alternate;
     }
   }

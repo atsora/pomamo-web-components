@@ -88,10 +88,12 @@ var pulseSvg = require('pulseSvg');
       this._searchButton = $('<button title="Search" role="button"></button>')
         .addClass('workselection-search-button');
       this._searchDiv.append(this._searchButton);
+      pulseSvg.inlineBackgroundSvg(this._searchButton);
 
       this._clearSearchButton = $('<button title="Clear search" role="button"></button>')
         .addClass('workselection-clear-search');
       this._searchDiv.append(this._clearSearchButton);
+      pulseSvg.inlineBackgroundSvg(this._clearSearchButton);
 
       // Create DOM - List
       let mainList = $('<div></div>').addClass('workselection-list-scrollable');

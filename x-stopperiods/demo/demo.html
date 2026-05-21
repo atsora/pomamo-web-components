@@ -1,0 +1,36 @@
+<!--
+Copyright (C) 2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <p><code>x-stopperiods</code> is a <strong>headless provider</strong>: it fetches the current stop period and dispatches a DOM <code>stopperiods-range</code> event. By default it renders nothing.</p>
+  <p>Add <code>autocreate-stopclassification</code> to make it auto-mount a child <code>x-stopclassification</code> populated with the current stop range.</p>
+
+  <h3>Headless mode (no UI — listen below for the <code>stopperiods-range</code> event)</h3>
+  <div>
+    Mill-01: <x-stopperiods id="headless-mill1" machine-id="1" range="[2026-05-20T08:00:00.000Z,2026-05-20T20:00:00.000Z)" path="http://localhost:8082/"></x-stopperiods>
+    Mill-02: <x-stopperiods id="headless-mill2" machine-id="2" range="[2026-05-20T08:00:00.000Z,2026-05-20T20:00:00.000Z)" path="http://localhost:8082/"></x-stopperiods>
+  </div>
+
+  <h3>Event log (catches every <code>stopperiods-range</code>)</h3>
+  <div id="event-log" style="font-family: monospace; padding: 8px; background: #1a1a1a; min-height: 60px; white-space: pre-wrap;">(waiting for events…)</div>
+
+  <h3>With <code>autocreate-stopclassification</code> — auto-mounts x-stopclassification</h3>
+  <div style="border: 1px solid #555; padding: 8px; margin: 6px 0;">
+    <p>Mill-02 (idle):</p>
+    <x-stopperiods id="auto-mill2" machine-id="2" range="[2026-05-20T08:00:00.000Z,2026-05-20T20:00:00.000Z)" autocreate-stopclassification path="http://localhost:8082/"></x-stopperiods>
+  </div>
+
+  <div style="border: 1px solid #555; padding: 8px; margin: 6px 0;">
+    <p>Lathe-01 (error):</p>
+    <x-stopperiods id="auto-lathe1" machine-id="3" range="[2026-05-20T08:00:00.000Z,2026-05-20T20:00:00.000Z)" autocreate-stopclassification path="http://localhost:8082/"></x-stopperiods>
+  </div>
+
+  <h3>Error (reserved id 999)</h3>
+  <div>
+    <x-stopperiods id="error" machine-id="999" range="[2026-05-20T08:00:00.000Z,2026-05-20T20:00:00.000Z)" path="http://localhost:8082/"></x-stopperiods>
+    (headless — check console for the error)
+  </div>
+</div>

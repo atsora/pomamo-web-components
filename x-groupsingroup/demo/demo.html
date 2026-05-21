@@ -1,10 +1,28 @@
 <!--
 Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
+<script>
+  // x-groupsingroup only calls Machine/GroupZoomIn when the page URL carries
+  // an `ancestor1` query param (otherwise it renders one tile per id without
+  // AJAX). Inject the param transparently so the demo shows expanded groups
+  // out of the box. Runs in-document (not the bundle) so it can't break the
+  // stylesheet bootstrap if a security policy forbids replaceState.
+  try {
+    if (window.location.search.indexOf('ancestor1') === -1) {
+      var sep = window.location.search ? '&' : '?';
+      history.replaceState(null, '',
+        window.location.pathname + window.location.search + sep + 'ancestor1=demo'
+        + window.location.hash);
+    }
+  } catch (e) { /* file:// security policies may refuse — fall back to link */ }
+</script>
+
 <div class="static-tests">
+
   <div class='hidden-content'>
     <div class='machines_cell' id='boxtoclone'>
       <div class='tile-title'>
@@ -16,16 +34,26 @@ SPDX-License-Identifier: Apache-2.0
     </div>
   </div>
 
-  
-  <label>Click <a href='groupsingroup.html?ancestor1=anc1'>here</a> to see details in groups</label>
-
-  <label>Fixed list of 4 groups </label>
-  <div id="" class='group-div'>
-    <x-groupsingroup templateid='boxtoclone' group='G4' path=http://localhost:8082/></x-groupsingroup>
+  <label>Direct render via <code>machine</code> attribute — no AJAX, scenario machines 1..4</label>
+  <div class='group-div'>
+    <x-groupsingroup templateid='boxtoclone' machine='1,2,3,4' path='http://localhost:8082/'></x-groupsingroup>
   </div>
 
-  <label>Fixed list of 17 groups </label>
-  <div id="" class='group-div'>
-    <x-groupsingroup templateid='boxtoclone' group='G17' path=http://localhost:8082/></x-groupsingroup>
+  <label>Scenario main group (id <code>100</code> → 4 children via <code>GroupZoomIn</code>)</label>
+  <div class='group-div'>
+    <x-groupsingroup templateid='boxtoclone' group='100' path='http://localhost:8082/'></x-groupsingroup>
   </div>
+
+  <label>Synthetic group of 4 (<code>G4</code>)</label>
+  <div class='group-div'>
+    <x-groupsingroup templateid='boxtoclone' group='G4' path='http://localhost:8082/'></x-groupsingroup>
+  </div>
+
+  <label>Synthetic group of 17 (<code>G17</code> — first 4 are real machines, rest are nested sub-groups)</label>
+  <div class='group-div'>
+    <x-groupsingroup templateid='boxtoclone' group='G17' path='http://localhost:8082/'></x-groupsingroup>
+  </div>
+
+  <label>If the URL was opened without <code>?ancestor1=…</code>, <a href='groupsingroup.html?ancestor1=anc1'>reload here</a> to force AJAX expansion.</label>
+
 </div>

@@ -1,0 +1,72 @@
+<!--
+Copyright (C) 2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<style>
+  .currenticonnextstop-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(127,127,127,0.2);
+  }
+  .currenticonnextstop-row x-currenticonnextstop {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 auto;
+  }
+  .currenticonnextstop-row h3 {
+    margin: 0;
+    font-size: 0.95em;
+  }
+  .currenticonnextstop-row .demo-meta {
+    font-size: 0.85em;
+    color: rgba(127,127,127,0.85);
+  }
+</style>
+
+<div class="static-tests">
+  <p>The icon stays hidden when nothing requires attention. It only becomes visible for an <strong>active stop</strong> (severity <code>Error</code>) or an <strong>imminent coming stop</strong> (severity <code>Warning</code>, &lt; 180 s).</p>
+
+  <div class='currenticonnextstop-row'>
+    <x-currenticonnextstop machine-id="1" path="http://localhost:8082/"></x-currenticonnextstop>
+    <div>
+      <h3>Mill-01 — active stop (Error)</h3>
+      <div class="demo-meta">Stopped 4 min ago → red icon visible</div>
+    </div>
+  </div>
+
+  <div class='currenticonnextstop-row'>
+    <x-currenticonnextstop machine-id="2" path="http://localhost:8082/"></x-currenticonnextstop>
+    <div>
+      <h3>Mill-02 — imminent coming stop (&lt; threshold2)</h3>
+      <div class="demo-meta">Stop in 90 s, Warning severity → orange icon visible</div>
+    </div>
+  </div>
+
+  <div class='currenticonnextstop-row'>
+    <x-currenticonnextstop machine-id="3" path="http://localhost:8082/"></x-currenticonnextstop>
+    <div>
+      <h3>Lathe-01 — coming stop above thresholds</h3>
+      <div class="demo-meta">Stop in 7 min → component keeps icon hidden (no urgency)</div>
+    </div>
+  </div>
+
+  <div class='currenticonnextstop-row'>
+    <x-currenticonnextstop machine-id="4" path="http://localhost:8082/"></x-currenticonnextstop>
+    <div>
+      <h3>Manual-01 — no event</h3>
+      <div class="demo-meta">No active or coming stop → icon hidden</div>
+    </div>
+  </div>
+
+  <div class='currenticonnextstop-row'>
+    <x-currenticonnextstop machine-id="999" path="http://localhost:8082/"></x-currenticonnextstop>
+    <div>
+      <h3>Error case (reserved id 999)</h3>
+      <div class="demo-meta">HTTP 400 from mock → no icon, no console error</div>
+    </div>
+  </div>
+</div>

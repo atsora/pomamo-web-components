@@ -1,5 +1,6 @@
 <!--
 Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
@@ -9,27 +10,59 @@ SPDX-License-Identifier: Apache-2.0
 
   <div class="demo-sub-content attribute-content">
 
-    <div class="attribute-name mandatory integer"><code>machine-id</code></div>
-    <div class="attribute-description">Id of the machine.
+    <div class="attribute-name mandatory string"><code>machine-context</code></div>
+    <div class="attribute-description">Event-bus context used to dispatch <code>machineIdChangeSignal</code> when a
+      tab is clicked, and to listen to <code>askForMachineIdSignal</code>.
     </div>
 
-    <div class="attribute-name config optional string"><code>path</code></div>
-    <div class="attribute-description">This parameter can be used for tests. It is read in configuration filled by
-      x-checkpath.
-    </div>
-
-    <div class="attribute-name optional boolean"><code>active</code></div>
-    <div class="attribute-description">Attribute with boolean attribute that indicate if machine is selected. Default
-      value is false.
+    <div class="attribute-name optional string"><code>period-context</code></div>
+    <div class="attribute-description">Forwarded to icon children (<code>x-currenticonunansweredreason</code>,
+      <code>x-currenticonworkinformation</code>, <code>x-currenticonnextstop</code>,
+      <code>x-currenticoncncalarm</code>) for <code>dateTimeRangeChangeEvent</code>.
     </div>
 
     <div class="attribute-name optional string"><code>status-context</code></div>
-    <div class="attribute-description">This context is used for displaying icons under machine nam in machineTab.
+    <div class="attribute-description">Forwarded to icon children for <code>reasonStatusChange</code> /
+      <code>workinformationStatusChange</code>.
     </div>
 
-    <div class="attribute-name optional string"><code>machine-context</code></div>
-    <div class="attribute-description">This context is used for SENDING machine-id messages when clicking on a tab.
+    <div class="attribute-name config optional string"><code>path</code></div>
+    <div class="attribute-description">Base URL for AJAX. Read from configuration filled by
+      <code>x-checkpath</code>; can be overridden via attribute for tests.
     </div>
 
   </div>
+
+  <div class="demo-sub-title attribute-title">Events</div>
+
+  <div class="demo-sub-content attribute-content">
+
+    <div class="attribute-name"><code>machineListChanged</code> (in, global)</div>
+    <div class="attribute-description">Drives the tab list. Payload: <code>{ ids: string[], source?, error? }</code>.
+      The component does not fetch the machine list itself — it relies on
+      <code>x-machineselection</code> (or any other dispatcher) emitting this signal.
+    </div>
+
+    <div class="attribute-name"><code>machineIdChangeSignal</code> (out, on machine-context)</div>
+    <div class="attribute-description">Fired with <code>{ newMachineId }</code> when a tab is clicked or
+      the mobile chevrons are used.
+    </div>
+
+  </div>
+
+  <div class="demo-sub-title attribute-title">Config keys read</div>
+
+  <div class="demo-sub-content attribute-content">
+    <div class="attribute-name"><code>componentsToDisplay</code> (array)</div>
+    <div class="attribute-description">Drives icon visibility: <code>x-lastmachinestatus</code> →
+      unanswered-reason icon, <code>x-lastworkinformation</code> → missing-work-info,
+      <code>x-cycleprogressbar</code> → next-stop, <code>coloredbar</code> +
+      <code>showcoloredbar.cncalarm</code> → CNC-alarm icon.
+    </div>
+
+    <div class="attribute-name"><code>refreshingRate.currentRefreshSeconds</code> (int)</div>
+    <div class="attribute-description">Polling interval for <code>CurrentReason</code> per tab (default 10 s).
+    </div>
+  </div>
+
 </div>

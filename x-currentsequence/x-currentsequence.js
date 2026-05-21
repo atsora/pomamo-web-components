@@ -48,7 +48,17 @@ var pulseComponent = require('pulsecomponent');
       }
     }
 
-    validateParameters () {}
+    validateParameters () {
+      if (!this.element.hasAttribute('machine-id')) {
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
+        return;
+      }
+      if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
+        return;
+      }
+      this.switchToNextContext();
+    }
 
     initialize () {
       this.addClass('pulse-smalltext');

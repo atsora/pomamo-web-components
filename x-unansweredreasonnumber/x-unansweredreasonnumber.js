@@ -229,6 +229,20 @@ require('x-stopclassification/x-stopclassification');
     }
 
     /**
+     * Populate `_range` from the optional `range=` attribute, when set.
+     * Lets a demo (or any standalone usage) wire a fixed range without going
+     * through `period-context` + dateTimeRangeChangeEvent.
+     */
+    _setRangeFromAttribute() {
+      if (this._range || !this.element.hasAttribute('range')) return;
+      let attr = this.element.getAttribute('range');
+      let range = pulseRange.createDateRangeFromString(attr);
+      if (range && !range.isEmpty()) {
+        this._range = range;
+      }
+    }
+
+    /**
      * Validate the (event) parameters
      */
     validateParameters() {
@@ -240,6 +254,7 @@ require('x-stopclassification/x-stopclassification');
         this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
         return;
       }
+      this._setRangeFromAttribute();
       if (!this._range) {
         return; // Wait for dateTimeRangeChangeEvent — onDateTimeRangeChange will call start()
       }

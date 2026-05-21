@@ -1,14 +1,32 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Lemoine Automation Technologies
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Note: predefined buttons are not working in demo, only <> + - </label>
+  <p>Click any button (home / 1 / 7 / 31 / 90 / 190 / 365 / prev / next / zoom-in / zoom-out) and watch the current range update below. The toolbar emits <code>dateTimeRangeChangeEvent</code> on the <code>period-context</code> below.</p>
 
+  <h3>Default (no period-context — broadcasts to all)</h3>
   <div>
-    <x-periodtoolbar id="periodtoolbar" path='http://localhost:8082/' range='[2016-05-06T08:00:00.000Z;2016-05-07T08:00:00.000Z)'>
-    </x-periodtoolbar>
+    <x-periodtoolbar id="default" path='http://localhost:8082/' range='[2026-05-20T08:00:00.000Z;2026-05-20T16:00:00.000Z)'></x-periodtoolbar>
+  </div>
+
+  <h3>With period-context=demo + listener</h3>
+  <div>
+    <x-periodtoolbar id="with-context" path='http://localhost:8082/' period-context="demo" range='[2026-05-20T00:00:00.000Z;2026-05-21T00:00:00.000Z)'></x-periodtoolbar>
+  </div>
+  <div style="margin: 8px 0; padding: 8px; background: #1a1a1a; font-family: monospace;">
+    <strong>Selected range:</strong> <span id="range-display">(waiting…)</span>
+  </div>
+
+  <h3>Without zoom buttons (<code>hide-zooms="true"</code>)</h3>
+  <div>
+    <x-periodtoolbar id="no-zoom" path='http://localhost:8082/' hide-zooms="true" range='[2026-05-20T08:00:00.000Z;2026-05-20T16:00:00.000Z)'></x-periodtoolbar>
+  </div>
+
+  <h3>Without period buttons (<code>hide-period-buttons="true"</code>)</h3>
+  <div>
+    <x-periodtoolbar id="no-period" path='http://localhost:8082/' hide-period-buttons="true" range='[2026-05-20T08:00:00.000Z;2026-05-20T16:00:00.000Z)'></x-periodtoolbar>
   </div>
 </div>

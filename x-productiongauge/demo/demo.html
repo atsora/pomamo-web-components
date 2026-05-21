@@ -1,0 +1,28 @@
+<!--
+Copyright (C) 2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<style>
+  .gauge-wrapper {
+    width: 280px;
+    height: 220px;
+    border: 1px dashed #555;
+    margin-bottom: 12px;
+  }
+</style>
+
+<div class="static-tests">
+  <h3>Mill-01</h3>
+  <div class="gauge-wrapper"><x-productiongauge machine-id="1" path="http://localhost:8082/"></x-productiongauge></div>
+
+  <h3>Mill-02</h3>
+  <div class="gauge-wrapper"><x-productiongauge machine-id="2" path="http://localhost:8082/"></x-productiongauge></div>
+
+  <h3>Lathe-01</h3>
+  <div class="gauge-wrapper"><x-productiongauge machine-id="3" path="http://localhost:8082/"></x-productiongauge></div>
+
+  <h3>Error (reserved id 999)</h3>
+  <div class="gauge-wrapper"><x-productiongauge machine-id="999" path="http://localhost:8082/"></x-productiongauge></div>
+</div>

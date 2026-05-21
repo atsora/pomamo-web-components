@@ -1,10 +1,22 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Lemoine Automation Technologies
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>See <a href='reasonslotbar.html'>x-reasonslotbar</a> demo</label>
+  <label>Default 24h window, marker at noon</label>
+  <div style="width: 600px; background: #1a1a1a; padding: 4px;">
+    <x-bartimeselection id="bts-default" range='[2026-05-20T00:00:00.000Z,2026-05-21T00:00:00.000Z)' when='2026-05-20T12:00:00.000Z'></x-bartimeselection>
+  </div>
 
+  <label>8h work shift, marker 1/3 of the way</label>
+  <div style="width: 600px; background: #1a1a1a; padding: 4px;">
+    <x-bartimeselection id="bts-shift" range='[2026-05-20T08:00:00.000Z,2026-05-20T16:00:00.000Z)' when='2026-05-20T10:40:00.000Z'></x-bartimeselection>
+  </div>
+
+  <label>Without `when` (no marker — to test "absent" rendering)</label>
+  <div style="width: 600px; background: #1a1a1a; padding: 4px;">
+    <x-bartimeselection id="bts-empty" range='[2026-05-20T08:00:00.000Z,2026-05-20T16:00:00.000Z)'></x-bartimeselection>
+  </div>
 </div>

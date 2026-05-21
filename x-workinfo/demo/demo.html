@@ -1,0 +1,33 @@
+<!--
+Copyright (C) 2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <p><code>x-workinfo</code> is a passive display: it listens to <code>operationChangeEvent</code> on the event bus, scoped by <code>machine-id</code>. The demo pairs it with <code>x-production</code> (or <code>x-partproductionstatuspie</code>) which fetches the data and emits the event.</p>
+
+  <h3>Mill-01 — paired with x-production</h3>
+  <div>
+    <x-production machine-id="1" path="http://localhost:8082/"></x-production>
+    <strong>Workinfo:</strong> <x-workinfo machine-id="1" path="http://localhost:8082/"></x-workinfo>
+  </div>
+
+  <h3>Mill-02 — paired with x-production</h3>
+  <div>
+    <x-production machine-id="2" path="http://localhost:8082/"></x-production>
+    <strong>Workinfo:</strong> <x-workinfo machine-id="2" path="http://localhost:8082/"></x-workinfo>
+  </div>
+
+  <h3>Lathe-01 — paired with x-partproductionstatuspie</h3>
+  <div>
+    <x-partproductionstatuspie machine-id="3" range='[2026-05-20T08:00:00.000Z,2026-05-20T16:00:00.000Z)' path="http://localhost:8082/"></x-partproductionstatuspie>
+    <strong>Workinfo:</strong> <x-workinfo machine-id="3" path="http://localhost:8082/"></x-workinfo>
+  </div>
+
+  <h3>Manual dispatch — standalone with a button</h3>
+  <div>
+    <x-workinfo id="manual-workinfo" machine-id="999" path="http://localhost:8082/"></x-workinfo>
+    <button id="dispatch-workinfo">Dispatch operationChangeEvent (machine 999)</button>
+  </div>
+</div>

@@ -44,7 +44,9 @@ var pulseUtility = require('pulseUtility');
 
     get content () { return this._content; }
 
-    validateParameters () {}
+    validateParameters () {
+      this.switchToNextContext();
+    }
 
     initialize () {
       this.addClass('pulse-text');

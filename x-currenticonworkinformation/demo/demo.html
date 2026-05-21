@@ -1,0 +1,16 @@
+<!--
+Copyright (C) 2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <h3>Mill-01 (work info complete)</h3>
+  <div><x-currenticonworkinformation machine-id="1" range="[2026-05-20T08:00:00Z,2026-05-20T20:00:00Z)" path="http://localhost:8082/"></x-currenticonworkinformation></div>
+
+  <h3>Mill-02 (missing work info)</h3>
+  <div><x-currenticonworkinformation machine-id="2" range="[2026-05-20T08:00:00Z,2026-05-20T20:00:00Z)" path="http://localhost:8082/"></x-currenticonworkinformation></div>
+
+  <h3>Error (reserved id 999)</h3>
+  <div><x-currenticonworkinformation machine-id="999" range="[2026-05-20T08:00:00Z,2026-05-20T20:00:00Z)" path="http://localhost:8082/"></x-currenticonworkinformation></div>
+</div>

@@ -316,15 +316,13 @@ var eventBus = require('eventBus');
         let thresholdClass = '';
         if (this._untilNextMSec / 1000 < this._threshold2) {
           thresholdClass = 'threshold2';
-          // Set Threshold1
           $(this.element).find('.pulse-icon-next-stop').removeClass('threshold1');
-          $(this.element).find('.pulse-icon-next-stop').addClass('class', thresholdClass);
+          $(this.element).find('.pulse-icon-next-stop').addClass(thresholdClass);
         }
         else if (this._untilNextMSec / 1000 < this._threshold1) {
           thresholdClass = 'threshold1';
-          // Set Threshold2
           $(this.element).find('.pulse-icon-next-stop').removeClass('threshold2');
-          $(this.element).find('.pulse-icon-next-stop').addClass('class', thresholdClass);
+          $(this.element).find('.pulse-icon-next-stop').addClass(thresholdClass);
         }
         else {
           // Set No Threshold

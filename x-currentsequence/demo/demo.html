@@ -1,0 +1,19 @@
+<!--
+Copyright (C) 2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <h3>Mill-01</h3>
+  <div><x-currentsequence machine-id="1" path="http://localhost:8082/"></x-currentsequence></div>
+
+  <h3>Mill-02</h3>
+  <div><x-currentsequence machine-id="2" path="http://localhost:8082/"></x-currentsequence></div>
+
+  <h3>Lathe-01</h3>
+  <div><x-currentsequence machine-id="3" path="http://localhost:8082/"></x-currentsequence></div>
+
+  <h3>Error (reserved id 999)</h3>
+  <div><x-currentsequence machine-id="999" path="http://localhost:8082/"></x-currentsequence></div>
+</div>
