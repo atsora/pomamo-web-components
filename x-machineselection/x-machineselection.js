@@ -380,7 +380,7 @@ require('x-freetext/x-freetext');
       this._dialogPage2.append(page2);
 
       this._selectionTitle = $('<span></span>').addClass('machineselection-title')
-        .html('Selected');
+        .html(this.getTranslation('selectedTitle', 'Selected'));
       this._selectionHeader = $('<div></div>').addClass('machineselection-selection-header')
         .append(this._selectionTitle);
       this._selectionList = $('<div></div>').addClass('machineselection-selection-list');

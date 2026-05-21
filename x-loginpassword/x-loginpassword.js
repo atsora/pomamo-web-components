@@ -235,7 +235,7 @@ var pulseUtility = require('pulseUtility');
 
       // Add button AFTER message
       this._loginButton = $('<button></button>').addClass('loginpassword-button')
-        .html('Login');
+        .html(this.getTranslation('loginButton', 'Login'));
       let divBtn = $('<div></div>').addClass('loginpassword-button-div')
         .append(this._loginButton);
       this._changeContent.append(divBtn);

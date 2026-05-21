@@ -109,7 +109,7 @@ var pulseCustomDialog = require('pulseCustomDialog');
       this._title = $('<div></div>').addClass('workexplorer-title');
       this._title.append(this._titleKind).append(this._titleDisplay);
       this._reloadBtn = $('<button></button>').addClass('workexplorer-button-reload')
-        .html('Reload');
+        .html(this.getTranslation('reload', 'Reload'));
       this._title.append(this._reloadBtn);
       this._reloadBtn.click(
         function () {
@@ -455,7 +455,8 @@ var pulseCustomDialog = require('pulseCustomDialog');
       // Buttons
       // If 'id' is not defined -> 'NEW'
       if (!this.element.hasAttribute('id')) {
-        let newBtn = $('<button></button>').addClass('workexplorer-button-new').html('Save New');
+        let newBtn = $('<button></button>').addClass('workexplorer-button-new')
+          .html(this.getTranslation('saveNew', 'Save New'));
         this._buttons.append(newBtn);
 
         newBtn.click(

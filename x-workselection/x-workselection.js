@@ -80,7 +80,7 @@ var pulseSvg = require('pulseSvg');
       this._content.append(this._searchDiv);
 
       this._inputSearch = $('<input></input>').addClass('workselection-search-input')
-        .attr('type', 'text').attr('placeholder', 'Search...');
+        .attr('type', 'text').attr('placeholder', this.getTranslation('searchPlaceholder', 'Search...'));
       this._searchDiv.append(this._inputSearch);
       if (this.element.hasAttribute('search'))
         $(this._inputSearch).val(this.element.getAttribute('search'));

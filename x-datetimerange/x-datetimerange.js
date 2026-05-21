@@ -318,7 +318,7 @@ require('x-datetimepicker/x-datetimepicker');
     }
 
     displayError (message) {
-      $(this.element).find('datetimerange-display').html('Error');
+      $(this.element).find('datetimerange-display').html(this.getTranslation('errorColon', 'Error: '));
     }
     removeError () {
       $(this.element).find('datetimerange-display').html('');

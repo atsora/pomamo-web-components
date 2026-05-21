@@ -212,7 +212,7 @@ var eventBus = require('eventBus');
         let tmpDateRange = pulseRange.createDateRangeDefaultInclusivity(d_clickTime.toISOString(), d_clickTime.toISOString());
         let atDisplay = pulseUtility.displayDateRange(tmpDateRange, true);
 
-        $('.detailed-at-subtitle').html(atDisplay);
+        $('.detailsatdialog-subtitle').html(atDisplay);
         let newWhen = d_clickTime.toISOString();
         // Update red line :
         this.element.setAttribute('when', newWhen);

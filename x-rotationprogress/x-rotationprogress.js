@@ -82,7 +82,7 @@ var eventBus = require('eventBus');
 
       // Update TEXT
       if (this._mode === 'text' && this._text) {
-        this._text.html('Page ' + page + ' / ' + total);
+        this._text.html(this.getTranslation('page', 'Page') + ' ' + page + ' / ' + total);
       }
 
       // Update BAR

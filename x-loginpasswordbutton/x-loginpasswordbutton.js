@@ -81,11 +81,11 @@ require('x-loginpassword/x-loginpassword');
 
       // Create DOM - BUTTON
       this._loginSpan = $('<span></span>').addClass('loginpasswordbutton-span')
-        .html('Login with user/password');
+        .html(this.getTranslation('label', 'Login with user/password'));
       //this._loginIcon = $('<span></span>').addClass('loginpasswordbutton-icon');
       this._loginButton = $('<div></div>').addClass('loginpasswordbutton-button')
         .append(this._loginSpan);//.append(this._loginIcon);
-      this._loginButton.attr('title', 'Login Password');
+      this._loginButton.attr('title', this.getTranslation('tooltip', 'Login Password'));
 
       $(this.element).append(this._loginButton);
 

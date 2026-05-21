@@ -118,6 +118,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   detailedreasonat: {
     seeAllReasons: "Click to see all reasons"
   },
+  detailedalarmsat: {
+    focused: 'Focused',
+    unknown: 'Unknown',
+    ignored: 'Ignored'
+  },
   detailsViewSubTitles: {
     reason: 'motion status',
     machinemode: 'machine mode',
@@ -176,9 +181,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     user: 'User:',
     password: 'Password:',
     stayConnected: 'Stay connected',
+    loginButton: 'Login'
   },
   loginpasswordbutton: {
-    login: 'Login'
+    login: 'Login',
+    label: 'Login with user/password',
+    tooltip: 'Login Password'
   },
   machinedisplay: {
     invalidMachineGroup: 'Invalid machine or group'
@@ -190,6 +198,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     title: 'Machine mode'
   },
   machineselection: {
+    selectedTitle: 'Selected',
     clearButton: 'Clear',
     dynamicKey: 'DYNAMIC',
     errorMissingUnique: 'Please select one machine',
@@ -281,7 +290,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   },
   reasongroups: {
     title: 'Reason',
-    textidleDefaultValue: 'Idle . short stop . Stop'
+    textidleDefaultValue: 'Idle . short stop . Stop',
+    idleTime: 'Idle time'
   },
   reasonslotlist: {
     idle: 'Idle',
@@ -418,6 +428,16 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   },
   saveworkinfo: {
     WorkInfoTitle: 'Work information'
+  },
+  rotationprogress: {
+    page: 'Page'
+  },
+  workexplorer: {
+    reload: 'Reload',
+    saveNew: 'Save New'
+  },
+  workselection: {
+    searchPlaceholder: 'Search...'
   }
 };
 
@@ -528,6 +548,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   detailedreasonat: {
     seeAllReasons: "Cliquer pour voir toutes les raisons"
   },
+  detailedalarmsat: {
+    focused: 'Critiques',
+    unknown: 'Inconnues',
+    ignored: 'Ignorées'
+  },
   detailsViewSubTitles: {
     reason: "raison d'arrêt",
     machinemode: "mode d'exécution",
@@ -586,9 +611,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     user: 'Utilisateur :',
     password: 'Mot de passe :',
     stayConnected: 'Rester connecté',
+    loginButton: 'Se connecter'
   },
   loginpasswordbutton: {
-    login: 'Se connecter'
+    login: 'Se connecter',
+    label: 'Connexion utilisateur',
+    tooltip: 'Connexion utilisateur'
   },
   machinedisplay: {
     invalidMachineGroup: 'Machine ou groupe invalide'
@@ -600,6 +628,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     title: 'Mode machine'
   },
   machineselection: {
+    selectedTitle: 'Sélectionnées',
     clearButton: 'Réinitialiser',
     dynamicKey: 'DYNAMIQUE',
     errorMissingUnique: 'Prière de sélectionner une machine',
@@ -690,7 +719,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   reasongroups: {
     title: "Raison d'arrêt",
-    textidleDefaultValue: 'Arrêtée'
+    textidleDefaultValue: 'Arrêtée',
+    idleTime: "Temps d'inactivité"
   },
   reasonslotlist: {
     idle: 'Arrêtée',
@@ -829,6 +859,16 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   saveworkinfo: {
     WorkInfoTitle: 'Ordre de fabrication / Opération'
+  },
+  rotationprogress: {
+    page: 'Page'
+  },
+  workexplorer: {
+    reload: 'Recharger',
+    saveNew: 'Enregistrer nouveau'
+  },
+  workselection: {
+    searchPlaceholder: 'Rechercher…'
   }
 };
 
@@ -939,6 +979,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   detailedreasonat: {
     seeAllReasons: 'Klicken, um alle Gründe anzuzeigen'
   },
+  detailedalarmsat: {
+    focused: 'Kritisch',
+    unknown: 'Unbekannt',
+    ignored: 'Ignoriert'
+  },
   detailsViewSubTitles: {
     reason: 'Stillstandsgrund',
     machinemode: 'Maschinenmodus',
@@ -997,9 +1042,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     user: 'Benutzer:',
     password: 'Passwort:',
     stayConnected: 'Angemeldet bleiben',
+    loginButton: 'Anmelden'
   },
   loginpasswordbutton: {
-    login: 'Anmelden'
+    login: 'Anmelden',
+    label: 'Mit Benutzername/Passwort anmelden',
+    tooltip: 'Passwort-Anmeldung'
   },
   machinedisplay: {
     invalidMachineGroup: 'Ungültige Maschine oder Gruppe'
@@ -1011,6 +1059,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     title: 'Maschinenmodus'
   },
   machineselection: {
+    selectedTitle: 'Ausgewählt',
     clearButton: 'Zurücksetzen',
     dynamicKey: 'DYNAMISCH',
     errorMissingUnique: 'Bitte eine Maschine auswählen',
@@ -1098,7 +1147,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   },
   reasongroups: {
     title: 'Stillstandsgrund',
-    textidleDefaultValue: 'Stillstand . Kurzstillstand . Stopp'
+    textidleDefaultValue: 'Stillstand . Kurzstillstand . Stopp',
+    idleTime: 'Stillstandszeit'
   },
   reasonslotlist: {
     idle: 'Stillstand',
@@ -1236,6 +1286,16 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   },
   saveworkinfo: {
     WorkInfoTitle: 'Fertigungsauftrag / Arbeitsgang'
+  },
+  rotationprogress: {
+    page: 'Seite'
+  },
+  workexplorer: {
+    reload: 'Neu laden',
+    saveNew: 'Neu speichern'
+  },
+  workselection: {
+    searchPlaceholder: 'Suche…'
   }
 };
 

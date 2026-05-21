@@ -85,19 +85,35 @@ require('x-barstack/x-barstack');
       }
 
       // Wire the legacy `showcoloredbar.showdetails` array to the per-context
-      // flags read by x-barstack. Only the bar tags (cncalarm/redstacklight)
-      // need translation; x-detailed* components are appended to `content`.
-      // Write at rolespages level so the flags take precedence over role-wide
-      // showcoloredbar overrides (e.g. roles.dev which disables cncalarm).
+      // flags read by x-barstack. The dialog must only render the main reason
+      // bar plus the cncalarm/redstacklight/timeselection overlays — never the
+      // thin info bars (shift/machinestate/observationstate/cycle/operation/
+      // isofile) nor the below bars (cncvalue/highlightperiods) inherited from
+      // the role or general scope. Pin every flag at the rolespages level so
+      // it takes precedence over any role-wide override.
       if (typeof PULSE_DEFAULT_CONFIG !== 'undefined') {
         const role = pulseLogin.getRole();
         if (role) {
           PULSE_DEFAULT_CONFIG.rolespages = PULSE_DEFAULT_CONFIG.rolespages || {};
           PULSE_DEFAULT_CONFIG.rolespages[role] = PULSE_DEFAULT_CONFIG.rolespages[role] || {};
           PULSE_DEFAULT_CONFIG.rolespages[role].details = PULSE_DEFAULT_CONFIG.rolespages[role].details || {};
-          PULSE_DEFAULT_CONFIG.rolespages[role].details.showcoloredbar = PULSE_DEFAULT_CONFIG.rolespages[role].details.showcoloredbar || {};
-          PULSE_DEFAULT_CONFIG.rolespages[role].details.showcoloredbar.cncalarm = (configArray.indexOf('x-cncalarmbar') >= 0);
-          PULSE_DEFAULT_CONFIG.rolespages[role].details.showcoloredbar.redstacklight = (configArray.indexOf('x-redstacklightbar') >= 0);
+          PULSE_DEFAULT_CONFIG.rolespages[role].details.showcoloredbar = Object.assign(
+            PULSE_DEFAULT_CONFIG.rolespages[role].details.showcoloredbar || {},
+            {
+              shift: false,
+              machinestate: false,
+              observationstate: false,
+              cycle: false,
+              operation: false,
+              isofile: false,
+              cncalarm: (configArray.indexOf('x-cncalarmbar') >= 0),
+              redstacklight: (configArray.indexOf('x-redstacklightbar') >= 0),
+              timeselection: true,
+              cncvalue: false,
+              highlightperiods: false,
+              running: false
+            }
+          );
         }
       }
 

@@ -494,7 +494,8 @@ require('x-revisionprogress/x-revisionprogress');
       let divScrollable = $('<div></div>').addClass('scrollable-content')
         .append(divdata);
 
-      let warningDiv = $('<div></div>').addClass('reasonslotlist-warning').html('No selectable periods on the specified range');
+      let warningDiv = $('<div></div>').addClass('reasonslotlist-warning')
+        .html(this.getTranslation('noPeriod', 'No selectable periods on the specified range'));
 
       let maindiv = $('<div></div>')
         .addClass('reasonslotlist')

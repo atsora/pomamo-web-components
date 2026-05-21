@@ -143,6 +143,9 @@ var pulseUtility = require('pulseUtility');
         // (To remove if possible after some tests)
         let spanLabelAlt = $('<span></span>').addClass('reasongroups-label-alt-' + colorWithoutSharp)
           .attr('title', allGroupsDisplay); // tooltip
+        if (colorWithoutSharp.toUpperCase() === 'FFFF00') {
+          spanLabelAlt.html(this.getTranslation('idleTime', 'Idle time'));
+        }
         divLabel.append(spanLabelAlt);
 
         let divElement = $('<div></div>').addClass('pulse-legend-element');

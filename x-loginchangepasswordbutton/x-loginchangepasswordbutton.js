@@ -103,12 +103,13 @@ require('x-loginchangepassword/x-loginchangepassword');
       // Create DOM - Loader -> Not needed here
 
       // Create DOM - BUTTON
+      let changeLabel = this.getTranslation('changePassword', 'Change password');
       this._changeSpan = $('<span></span>').addClass('loginchangepasswordbutton-span')
-        .html('Change password');
+        .html(changeLabel);
       //this._changeIcon = $('<span></span>').addClass('loginchangepasswordbutton-icon');
       this._changeButton = $('<div></div>').addClass('loginchangepasswordbutton-button')
         .append(this._changeSpan);//.append(this._changeIcon);
-      this._changeButton.attr('title', 'Change password');
+      this._changeButton.attr('title', changeLabel);
 
       $(this.element).append(this._changeButton);
 

@@ -257,13 +257,16 @@ var eventBus = require('eventBus');
           }
 
           // DATA
-          let spanFocused = $('<span></span>').addClass('detailed-module-span-focused').addClass('detailed-module-span');
+          let spanFocused = $('<span></span>').addClass('detailed-module-span-focused').addClass('detailed-module-span')
+            .html(this.getTranslation('focused', 'Focused'));
           let divDataFocused = $('<div></div>').addClass('detailed-module-data-focused').append(spanFocused);
 
-          let spanUnknown = $('<span></span>').addClass('detailed-module-span-unknown').addClass('detailed-module-span');
+          let spanUnknown = $('<span></span>').addClass('detailed-module-span-unknown').addClass('detailed-module-span')
+            .html(this.getTranslation('unknown', 'Unknown'));
           let divDataUnknown = $('<div></div>').addClass('detailed-module-data-unknown').append(spanUnknown);
 
-          let spanIgnored = $('<span></span>').addClass('detailed-module-span-ignored').addClass('detailed-module-span');
+          let spanIgnored = $('<span></span>').addClass('detailed-module-span-ignored').addClass('detailed-module-span')
+            .html(this.getTranslation('ignored', 'Ignored'));
           let divDataIgnored = $('<div></div>').addClass('detailed-module-data-ignored').append(spanIgnored);
 
           let hasFocused = false;
