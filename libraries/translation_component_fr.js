@@ -367,9 +367,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   setupmachine: {
     noOperation: "Pas d'opération",
-    setupsince: "En réglage depuis :",
-    switchTo: 'Switch to ',
-    switchToProduction: 'Passer en production'
+    setupsince: "En réglage depuis :"
   },
   stopclassification: {
     title: 'Arrêts',

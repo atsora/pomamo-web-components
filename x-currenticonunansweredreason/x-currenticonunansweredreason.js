@@ -361,5 +361,5 @@ var eventBus = require('eventBus');
     }
   }
 
-  pulseComponent.registerElement('x-currenticonunansweredreason', CurrentIconUnansweredReasonComponent, ['machine-id', 'active', 'period-context', 'status-context']);
+  pulseComponent.registerElement('x-currenticonunansweredreason', CurrentIconUnansweredReasonComponent, ['machine-id', 'range', 'active', 'period-context', 'status-context']);
 })();

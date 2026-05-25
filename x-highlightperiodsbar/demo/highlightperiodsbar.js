@@ -8,21 +8,25 @@ require('x-datetimegraduation/x-datetimegraduation');
 var pulseConfig = require('pulseConfig');
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
-//# sourceMappingURL=highlightperiodsbar.js.map
-
 var pulseRange = require('pulseRange');
 
+// Anchor every highlight to TODAY so they always fall inside the bar's
+// `range=` attribute (which the template patcher also rewrites to today).
+function todayIso (hour, minute) {
+  var d = new Date();
+  d.setUTCHours(hour, minute || 0, 0, 0);
+  return d.toISOString();
+}
+
 $(function () {
-  console.log('Begin main function');
+  $('#HL_1').get(0).addRange(pulseRange.createDateRangeFromString(
+    '[' + todayIso(8) + ',' + todayIso(12) + ')'));
 
-  var HL1 = $('#HL_1');
-  HL1.get(0).addRange(pulseRange.createDateRangeFromString('[2026-05-20T08:00:00.000Z,2026-05-20T12:00:00.000Z)'));
-  var HL2 = $('#HL_2');
-  HL2.get(0).addRange(pulseRange.createDateRangeFromString('[2026-05-20T12:00:00.000Z,2026-05-20T14:00:00.000Z)'));
-  var HL3 = $('#HL_3');
-  HL3.get(0).addRange(pulseRange.createDateRangeFromString('[2026-05-20T14:00:00.000Z,2026-05-20T16:00:00.000Z)'));
-  HL3.get(0).addRange(pulseRange.createDateRangeFromString('[2026-05-20T09:00:00.000Z,2026-05-20T10:00:00.000Z)'));
-  //});
+  $('#HL_2').get(0).addRange(pulseRange.createDateRangeFromString(
+    '[' + todayIso(12) + ',' + todayIso(14) + ')'));
 
-  console.log('End main function');
+  $('#HL_3').get(0).addRange(pulseRange.createDateRangeFromString(
+    '[' + todayIso(14) + ',' + todayIso(16) + ')'));
+  $('#HL_3').get(0).addRange(pulseRange.createDateRangeFromString(
+    '[' + todayIso(9) + ',' + todayIso(10) + ')'));
 });

@@ -413,5 +413,5 @@ var eventBus = require('eventBus');
     }
   }
 
-  pulseComponent.registerElement('x-currenticonnextstop', CurrentIconNextStopComponent, ['machine-id', 'active', 'status-context']);
+  pulseComponent.registerElement('x-currenticonnextstop', CurrentIconNextStopComponent, ['machine-id', 'range', 'active', 'status-context']);
 })();

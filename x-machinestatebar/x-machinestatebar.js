@@ -223,34 +223,34 @@ require('x-revisionprogress/x-revisionprogress');
 
           this.start();
         }
-        if (attr == 'height') {
-          this._setAutoHeight();
-        }
-        if (attr == 'range') {
-          if (!pulseUtility.isNotDefined(newVal)) {
-            this._setRangeFromAttribute();
-            this.start();
-          }
-        }
-        if ('period-context' == attr) {
-          if (this.isInitialized()) {
-            if (undefined != oldVal) {
-              eventBus.EventBus.removeEventListenerBySignal(this, 'dateTimeRangeChangeEvent');
-            }
-            eventBus.EventBus.addEventListener(this, 'dateTimeRangeChangeEvent', newVal, this.onDateTimeRangeChange.bind(this));
-          }
+      }
+      if (attr == 'height') {
+        this._setAutoHeight();
+      }
+      if (attr == 'range') {
+        if (!pulseUtility.isNotDefined(newVal)) {
+          this._setRangeFromAttribute();
           this.start();
         }
-        if (('machine-context' == attr) && this.isInitialized()) {
-          if (this.isInitialized()) {
-            if (undefined != oldVal) {
-              eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
-            }
-            eventBus.EventBus.addEventListener(this,
-              'machineIdChangeSignal', newVal,
-              this.onMachineIdChange.bind(this));
-            // Not necessarily to add this.start() because it will be restarted when the machineid will be updated
+      }
+      if ('period-context' == attr) {
+        if (this.isInitialized()) {
+          if (undefined != oldVal) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'dateTimeRangeChangeEvent');
           }
+          eventBus.EventBus.addEventListener(this, 'dateTimeRangeChangeEvent', newVal, this.onDateTimeRangeChange.bind(this));
+        }
+        this.start();
+      }
+      if (('machine-context' == attr) && this.isInitialized()) {
+        if (this.isInitialized()) {
+          if (undefined != oldVal) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
+          }
+          eventBus.EventBus.addEventListener(this,
+            'machineIdChangeSignal', newVal,
+            this.onMachineIdChange.bind(this));
+          // Not necessarily to add this.start() because it will be restarted when the machineid will be updated
         }
       }
     }
@@ -744,5 +744,5 @@ require('x-revisionprogress/x-revisionprogress');
     }
   }
 
-  pulseComponent.registerElement('x-machinestatebar', MachineStateBarComponent, ['machine-id', 'height', 'period-context', 'machine-context']);
+  pulseComponent.registerElement('x-machinestatebar', MachineStateBarComponent, ['machine-id', 'height', 'range', 'period-context', 'machine-context']);
 })();

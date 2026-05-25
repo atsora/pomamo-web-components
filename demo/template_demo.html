@@ -56,6 +56,65 @@ SPDX-License-Identifier: Apache-2.0
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <script>
+    // Demo date rewriter — keeps hand-written date attributes anchored to
+    // "today" without requiring the demo source to be patched as the clock
+    // rolls. Walks every <x-*> attribute and shifts each literal YYYY-MM-DD
+    // by the same delta so multi-day ranges keep their span.
+    //
+    // Strategy: take the EARLIEST date present in the attribute as the anchor,
+    // compute delta = today - anchor, shift ALL dates in the value by delta.
+    // Handles `range=`, `when=`, `at=`, `begin=`, `end=`, `datetime=`, etc.
+    (function () {
+      var DAY_MS = 86400 * 1000;
+      var todayDate = new Date();
+      todayDate.setUTCHours(0, 0, 0, 0);
+      var DATE_RE = /\d{4}-\d{2}-\d{2}/;
+      var DATE_RE_G = /\d{4}-\d{2}-\d{2}/g;
+
+      function shiftAttrValue (value) {
+        var dates = value.match(DATE_RE_G);
+        if (!dates) return value;
+        // Anchor = earliest date in the value.
+        var minTs = Infinity;
+        dates.forEach(function (d) {
+          var t = Date.parse(d + 'T00:00:00Z');
+          if (!isNaN(t) && t < minTs) minTs = t;
+        });
+        if (minTs === Infinity) return value;
+        var deltaDays = Math.round((todayDate.getTime() - minTs) / DAY_MS);
+        if (deltaDays === 0) return value;
+        return value.replace(DATE_RE_G, function (d) {
+          var t = Date.parse(d + 'T00:00:00Z');
+          if (isNaN(t)) return d;
+          return new Date(t + deltaDays * DAY_MS).toISOString().substring(0, 10);
+        });
+      }
+
+      function patch (el) {
+        if (!el || el.nodeType !== 1 || !el.attributes) return;
+        var tag = el.tagName && el.tagName.toLowerCase();
+        if (!tag || tag.indexOf('x-') !== 0) return;
+        for (var i = 0; i < el.attributes.length; i++) {
+          var a = el.attributes[i];
+          if (a.value && DATE_RE.test(a.value)) {
+            var nv = shiftAttrValue(a.value);
+            if (nv !== a.value) el.setAttribute(a.name, nv);
+          }
+        }
+      }
+
+      new MutationObserver(function (muts) {
+        muts.forEach(function (m) {
+          m.addedNodes && m.addedNodes.forEach(function (n) {
+            patch(n);
+            if (n.querySelectorAll) n.querySelectorAll('*').forEach(patch);
+          });
+        });
+      }).observe(document.documentElement, { childList: true, subtree: true });
+    })();
+  </script>
+
 </head>
 <!-- ??? hidden_content.html ??? if exists -->
 

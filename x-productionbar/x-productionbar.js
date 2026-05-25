@@ -750,5 +750,5 @@ var eventBus = require('eventBus');
     }
   }
 
-  pulseComponent.registerElement('x-productionbar', ProductionBarComponent, ['machine-id', 'period-context', 'machine-context', 'display-mode']);
+  pulseComponent.registerElement('x-productionbar', ProductionBarComponent, ['machine-id', 'range', 'period-context', 'machine-context', 'display-mode']);
 })();

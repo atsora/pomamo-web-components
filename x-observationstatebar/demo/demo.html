@@ -5,33 +5,33 @@ SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Height = default - Machine18</label>
+  <label>Height = default - Machine 3</label>
   <div class="pulse-bar-div">
-    <x-observationstatebar id="height_default_machine18" machine-id=1 range='[2026-05-20T06:00:00.000Z;2026-05-20T18:00:00.000Z)'
+    <x-observationstatebar id="height_default_machine3" machine-id=1 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
       path='http://localhost:8082/'></x-observationstatebar>
   </div>
 
-  <label>Height = 60 - Machine18</label>
+  <label>Height = 60 - Machine 3</label>
   <div class="pulse-bar-div">
-    <x-observationstatebar id="height_60_machine18" machine-id=1 range='[2026-05-20T06:00:00.000Z;2026-05-20T18:00:00.000Z)'
+    <x-observationstatebar id="height_60_machine3" machine-id=1 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
       path='http://localhost:8082/' height=60></x-observationstatebar>
   </div>
 
-  <label>Height = 10 - Machine20</label>
+  <label>Height = 10 - Machine 2</label>
   <div class="pulse-bar-div">
-    <x-observationstatebar id="height_10_machine20" machine-id=4 range='[2026-05-20T06:00:00.000Z;2026-05-20T18:00:00.000Z)'
+    <x-observationstatebar id="height_10_machine2" machine-id=4 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
       path='http://localhost:8082/' height=10></x-observationstatebar>
   </div>
 
   <label>Error: not connected, check the network</label>
   <div class="pulse-bar-div">
-    <x-observationstatebar id="error_check_the_network" machine-id=2 range='[2026-05-20T06:00:00.000Z;2026-05-20T18:00:00.000Z)'
+    <x-observationstatebar id="error_check_the_network" machine-id=2 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
       path='http://localhost:8082/'></x-observationstatebar>
   </div>
 
   <label>Error: invalid machine-id</label>
   <div class="pulse-bar-div">
-    <x-observationstatebar id="error_machineid" machine-id='id au pif' range='[2026-05-20T06:00:00.000Z;2026-05-20T18:00:00.000Z)'
+    <x-observationstatebar id="error_machineid" machine-id='id au pif' range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
       path='http://localhost:8082/'></x-observationstatebar>
   </div>
 </div>

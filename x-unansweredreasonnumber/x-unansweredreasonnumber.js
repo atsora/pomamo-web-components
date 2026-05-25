@@ -390,5 +390,5 @@ require('x-stopclassification/x-stopclassification');
     }
   }
 
-  pulseComponent.registerElement('x-unansweredreasonnumber', UnansweredReasonNumberComponent, ['machine-id', 'period-context', 'machine-context', 'status-context']);
+  pulseComponent.registerElement('x-unansweredreasonnumber', UnansweredReasonNumberComponent, ['machine-id', 'range', 'period-context', 'machine-context', 'status-context']);
 })();

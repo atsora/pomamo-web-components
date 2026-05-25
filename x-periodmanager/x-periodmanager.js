@@ -430,8 +430,7 @@ var eventBus = require('eventBus');
     }
   }
 
-  pulseComponent.registerElement('x-periodmanager', periodmanagerComponent, [
-    'period-context', 'textchange-context',
+  pulseComponent.registerElement('x-periodmanager', periodmanagerComponent, ['period-context', 'range', 'textchange-context',
     'displayshiftrange', 'displayweekrange', 'displaydaysrange', 'displayhoursrange',
     'exclude-now']);
 })();

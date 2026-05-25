@@ -538,5 +538,5 @@ require('x-machinedisplay/x-machinedisplay');
     }
   }
 
-  pulseComponent.registerElement('x-savescrapreason', SaveScrapReasonComponent, ['machine-id']);
+  pulseComponent.registerElement('x-savescrapreason', SaveScrapReasonComponent, ['machine-id', 'range']);
 })();

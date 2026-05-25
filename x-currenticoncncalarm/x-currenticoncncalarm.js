@@ -338,5 +338,5 @@ var eventBus = require('eventBus');
     }
   }
 
-  pulseComponent.registerElement('x-currenticoncncalarm', CurrentIconCNCAlarmComponent, ['machine-id', 'active', 'status-context']);
+  pulseComponent.registerElement('x-currenticoncncalarm', CurrentIconCNCAlarmComponent, ['machine-id', 'range', 'active', 'status-context']);
 })();

@@ -16,7 +16,6 @@ require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonSelect
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/SaveReason');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetMachine');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonOnlySlots');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/MachineStateTemplates');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/SaveMachineStateTemplate');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision');
 

@@ -6,16 +6,13 @@
  * @module x-setupmachine
  * @requires module:pulseComponent
  * @requires module:pulseUtility
- * @requires module:pulseCustomDialog
  */
 var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
-var pulseService = require('pulseService');
-var pulseCustomDialog = require('pulseCustomDialog');
 var pulseRange = require('pulseRange');
 var eventBus = require('eventBus');
 
-require('x-datetimepicker/x-datetimepicker');
+require('x-savemachinestatetemplate/x-savemachinestatetemplate');
 require('x-revisionprogress/x-revisionprogress');
 
 
@@ -29,17 +26,19 @@ this.restoreDeleteWhenDisconnect ():
 (function () {
 
   /**
-   * `<x-setupmachine>` — current MST + operation editor for one machine.
+   * `<x-setupmachine>` — current MST + operation display for one machine.
    *
-   * Polls `MachineStateTemplate/Setup?MachineId=<id>` (interval =
-   * `refreshingRate.barSlowUpdateMinutes`) and renders the current MST
-   * and operation with inline `x-datetimepicker` controls plus a
-   * "Validate" button that POSTs the change via `pulseService`. The
-   * returned revision is registered with the sibling
-   * `x-modificationmanager`; pending revisions of `kind: 'MST'` for the
-   * current machine inject an `x-revisionprogress` and trigger a reload
-   * once `pendingModifications === 0`. Reacts to `machineIdChangeSignal`
-   * on `machine-context`.
+   * Polls `CurrentMachineStateTemplateOperation?MachineId=<id>` (interval =
+   * `refreshingRate.currentRefreshSeconds`) and renders the current MST
+   * operation on the left and "setup since: <date>" on the right, with
+   * good/bad efficiency coloring based on `thresholdinseconds`. Clicking
+   * the right (since) block mounts an `x-savemachinestatetemplate`
+   * sibling, which opens the MST-change dialog and registers the
+   * resulting revision with the global `x-modificationmanager`. Pending
+   * revisions of `kind: 'MST'` for the current machine inject an
+   * `x-revisionprogress` and trigger a reload once
+   * `pendingModifications === 0`. Reacts to `machineIdChangeSignal` on
+   * `machine-context`.
    *
    * @element x-setupmachine
    * @attr {number} machine-id      (required) machine id
@@ -84,99 +83,6 @@ this.restoreDeleteWhenDisconnect ():
 
       let parentsToOrder = $(this.element).parents('.group-single');
       $(parentsToOrder).css('order', Math.round(numberToOrder));
-    }
-
-    _saveFail (url, isTimeout, xhrStatus) {
-      // Do Nothing
-    }
-    _saveError (data) {
-      // Do Nothing
-    }
-    _saveSuccess (data, machid) {
-      let revisionId = null;
-      if (data.Revision) {
-        revisionId = data.Revision.Id;
-      }
-      else {
-        console.assert('NO revisionId');
-        //revisionId = data.Id;
-        return;
-      }
-
-      // Manage progress bar
-      let ranges = [];
-      let range = pulseRange.createDateRangeDefaultInclusivity(this._savedBegin, null);
-      ranges.push(range);
-      pulseUtility.getOrCreateSingleton('x-modificationmanager')
-        .addModification(revisionId, 'MST',
-          machid, ranges);
-    }
-
-    _findProductionCategoryFail (url, isTimeout, xhrStatus) {
-      // Do nothing
-    }
-    _findProductionCategoryError (data) {
-      // Do nothing
-    }
-    _findProductionCategorySuccess (data) {
-      let dialog = $('<div></div>').addClass('setupmachine-dialog');
-
-      let switchLabel = $('<div></div>').addClass('setupmachine-dialog-label')
-        .html(this.getTranslation('switchTo', 'Switch to  '));
-      let MST_CB = $('<div></div>').addClass('setupmachine-dialog-div-select');
-      //if( 1! value)  MST_CB.html('production'); -> Removed
-      // Combobox
-      this._MST_CB_select = $('<select name=MST_CB ></select>');
-      for (let index = 0;
-        index < data.MachineStateTemplates.length; index++) {
-
-        let MST_CB_option;
-        if (index == 0) {
-          MST_CB_option = $('<option value=' + data.MachineStateTemplates[index].Id + ' selected></option>').html(data.MachineStateTemplates[index].Display);
-        }
-        else {
-          MST_CB_option = $('<option value=' + data.MachineStateTemplates[index].Id + '></option>').html(data.MachineStateTemplates[index].Display);
-        }
-        this._MST_CB_select.append(MST_CB_option);
-      }
-      MST_CB.append(this._MST_CB_select);
-
-      let fromLabel = $('<div></div>').addClass('setupmachine-dialog-label')
-        .html('from ');
-
-      let nowISO = pulseUtility.convertMomentToDateTimeString(moment());
-      let dtp = pulseUtility.createjQueryElementWithAttribute('x-datetimepicker', {
-        'showseconds': 'show-seconds',
-        'defaultdatetime': nowISO,
-        'maxdatetime': nowISO,
-        'mindatetime': this._since
-      });
-      let dtpDiv = $('<div></div>').addClass('setupmachine-dialog-dtp-div').append(dtp);
-
-      //dialog.append(switchLabel).append(MST_CB).append(fromLabel).append(dtpDiv);
-      let saveDialogId = pulseCustomDialog.openDialog(dialog, {
-        title: this.getTranslation('switchToProduction', 'Switch to production'),
-        onOk: function () { // Validate
-          let begin = $(dtp)[0].getISOValue();
-          let range = pulseUtility.createDateRangeForWebService(begin);
-          this._savedBegin = begin;
-          let newMST = this._MST_CB_select[0].options[this._MST_CB_select[0].selectedIndex].value;
-          let machid = this.element.getAttribute('machine-id'); // Should be copied. This.element disappear before request answer
-          let url = this.getConfigOrAttribute('path', '') + 'MachineStateTemplateMachineAssociation/Save?MachineId=' + machid
-            + '&Range=' + range + '&MachineStateTemplateId=' + newMST + '&RevisionId=-1';
-
-          pulseService.runAjaxSimple(url,
-            function (data) {
-              this._saveSuccess(data, machid);
-            }.bind(this),
-            this._saveError.bind(this),
-            this._saveFail.bind(this));
-        }.bind(this),
-        autoClose: true,
-        autoDelete: true
-      });
-      // Append after
-      dialog.append(switchLabel).append(MST_CB).append(fromLabel).append(dtpDiv);
     }
 
     attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
@@ -458,13 +364,20 @@ this.restoreDeleteWhenDisconnect ():
      * DOM event callback triggered on a click on PAST button
      */
     clickOnPast () {
-      let url = this.getConfigOrAttribute('path', '') + 'NextMachineStateTemplate?CurrentMachineStateTemplateId=' + this._current_id;
-      // + RoleId=1 - operator
+      $(this.element).find('x-savemachinestatetemplate').remove();
 
-      pulseService.runAjaxSimple(url,
-        this._findProductionCategorySuccess.bind(this),
-        this._findProductionCategoryError.bind(this),
-        this._findProductionCategoryFail.bind(this));
+      let machineId = this.element.getAttribute('machine-id');
+      let attrs = {
+        'machine-id': machineId,
+        'mst-id': this._current_id,
+        'period-context': 'savemst' + machineId
+      };
+      if (this._since) {
+        let range = pulseRange.createDateRangeDefaultInclusivity(new Date(this._since), null);
+        attrs['range'] = pulseUtility.convertDateRangeForWebService(range);
+      }
+      let saveMST = pulseUtility.createjQueryElementWithAttribute('x-savemachinestatetemplate', attrs);
+      $(this.element).append(saveMST);
     }
   }
 

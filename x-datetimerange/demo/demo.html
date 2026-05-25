@@ -7,31 +7,31 @@ SPDX-License-Identifier: Apache-2.0
 <div class="static-tests">
   <div class="testDTR">
     <label>Default</label>
-    <x-datetimerange id="default" range="2026-05-20T18:00:00Z;2026-05-20T18:00:00Z"></x-datetimerange>
+    <x-datetimerange id="default" range="2026-05-21T18:00:00Z;2026-05-21T18:00:00Z"></x-datetimerange>
   </div>
 
   <div class="testDTR">
     <label>Only begin date + NoEnd = true</label>
-    <x-datetimerange id="begin_noend_true" range="2026-05-20T18:00:00Z;" possible-no-end=true novaluetext="No end">
+    <x-datetimerange id="begin_noend_true" range="2026-05-21T18:00:00Z;" possible-no-end=true novaluetext="No end">
     </x-datetimerange>
   </div>
 
   <div class="testDTR">
     <label>Min/Max datetime defined</label>
-    <x-datetimerange id="minmax_datetime" range="2026-05-20T18:00:00Z;2026-05-20T18:00:00Z"
-      min-begin="2026-05-20T00:00:00Z" max-end="2026-05-20T00:00:00Z"></x-datetimerange>
+    <x-datetimerange id="minmax_datetime" range="2026-05-21T18:00:00Z;2026-05-21T18:00:00Z"
+      min-begin="2026-05-21T00:00:00Z" max-end="2026-05-21T00:00:00Z"></x-datetimerange>
   </div>
 
   <div class="testDTR">
     <label>Min/Max datetime defined + NoEnd = true</label>
-    <x-datetimerange id="minmax_datetime_noend_true" range="2026-05-20T18:00:00Z;2026-05-20T18:00:00Z"
-      possible-no-end=true novaluetext="No end" min-begin="2026-05-20T00:00:00Z" max-end="2026-05-20T00:00:00Z">
+    <x-datetimerange id="minmax_datetime_noend_true" range="2026-05-21T18:00:00Z;2026-05-21T18:00:00Z"
+      possible-no-end=true novaluetext="No end" min-begin="2026-05-21T00:00:00Z" max-end="2026-05-21T00:00:00Z">
     </x-datetimerange>
   </div>
 
   <div class="testDTR">
     <label>Not editable (same day)</label>
-    <x-datetimerange id="not_editable" range="2026-05-20T08:30:00Z;2026-05-20T18:00:00Z" not-editable="true">
+    <x-datetimerange id="not_editable" range="2026-05-21T08:30:00Z;2026-05-21T18:00:00Z" not-editable="true">
     </x-datetimerange>
   </div>
 </div>

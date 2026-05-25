@@ -791,5 +791,5 @@ var eventBus = require('eventBus');
 
   }
 
-  pulseComponent.registerElement('x-productiontrackertable', ProductionTrackerTableComponent, ['machine-id', 'group', 'period-context']);
+  pulseComponent.registerElement('x-productiontrackertable', ProductionTrackerTableComponent, ['machine-id', 'range', 'group', 'period-context']);
 })();

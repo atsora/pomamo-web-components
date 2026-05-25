@@ -10,8 +10,8 @@ SPDX-License-Identifier: Apache-2.0
 
   <h3>Headless mode (no UI — listen below for the <code>stopperiods-range</code> event)</h3>
   <div>
-    Mill-01: <x-stopperiods id="headless-mill1" machine-id="1" range="[2026-05-20T08:00:00.000Z,2026-05-20T20:00:00.000Z)" path="http://localhost:8082/"></x-stopperiods>
-    Mill-02: <x-stopperiods id="headless-mill2" machine-id="2" range="[2026-05-20T08:00:00.000Z,2026-05-20T20:00:00.000Z)" path="http://localhost:8082/"></x-stopperiods>
+    Machine 1: <x-stopperiods id="headless-mill1" machine-id="1" range="[2026-05-21T08:00:00.000Z,2026-05-21T20:00:00.000Z)" path="http://localhost:8082/"></x-stopperiods>
+    Machine 2: <x-stopperiods id="headless-mill2" machine-id="2" range="[2026-05-21T08:00:00.000Z,2026-05-21T20:00:00.000Z)" path="http://localhost:8082/"></x-stopperiods>
   </div>
 
   <h3>Event log (catches every <code>stopperiods-range</code>)</h3>
@@ -19,18 +19,18 @@ SPDX-License-Identifier: Apache-2.0
 
   <h3>With <code>autocreate-stopclassification</code> — auto-mounts x-stopclassification</h3>
   <div style="border: 1px solid #555; padding: 8px; margin: 6px 0;">
-    <p>Mill-02 (idle):</p>
-    <x-stopperiods id="auto-mill2" machine-id="2" range="[2026-05-20T08:00:00.000Z,2026-05-20T20:00:00.000Z)" autocreate-stopclassification path="http://localhost:8082/"></x-stopperiods>
+    <p>Machine 2 (idle):</p>
+    <x-stopperiods id="auto-mill2" machine-id="2" range="[2026-05-21T08:00:00.000Z,2026-05-21T20:00:00.000Z)" autocreate-stopclassification path="http://localhost:8082/"></x-stopperiods>
   </div>
 
   <div style="border: 1px solid #555; padding: 8px; margin: 6px 0;">
-    <p>Lathe-01 (error):</p>
-    <x-stopperiods id="auto-lathe1" machine-id="3" range="[2026-05-20T08:00:00.000Z,2026-05-20T20:00:00.000Z)" autocreate-stopclassification path="http://localhost:8082/"></x-stopperiods>
+    <p>Machine 3 (error):</p>
+    <x-stopperiods id="auto-lathe1" machine-id="3" range="[2026-05-21T08:00:00.000Z,2026-05-21T20:00:00.000Z)" autocreate-stopclassification path="http://localhost:8082/"></x-stopperiods>
   </div>
 
   <h3>Error (reserved id 999)</h3>
   <div>
-    <x-stopperiods id="error" machine-id="999" range="[2026-05-20T08:00:00.000Z,2026-05-20T20:00:00.000Z)" path="http://localhost:8082/"></x-stopperiods>
+    <x-stopperiods id="error" machine-id="999" range="[2026-05-21T08:00:00.000Z,2026-05-21T20:00:00.000Z)" path="http://localhost:8082/"></x-stopperiods>
     (headless — check console for the error)
   </div>
 </div>

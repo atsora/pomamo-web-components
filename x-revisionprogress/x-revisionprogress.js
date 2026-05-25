@@ -106,15 +106,15 @@ var pulseUtility = require('pulseUtility');
       // Current progress
       if (this.element.hasAttribute('steps')) {
         let totalSteps = parseInt(this.element.getAttribute('steps'));
-        let remaining = undefined;
         if (this.element.hasAttribute('remaining')) {
-          remaining = parseInt(this.element.getAttribute('remaining'));
+          let remaining = parseInt(this.element.getAttribute('remaining'));
           this._progress(totalSteps, remaining);
         }
-
-        // Initialization OK => switch to the next context
-        this.switchToNextContext();
       }
+
+      // Initialization OK → switch to the next context. We do this whether or
+      // not `steps` is set: progress can also arrive later via modificationEvent.
+      this.switchToNextContext();
     }
 
     attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {

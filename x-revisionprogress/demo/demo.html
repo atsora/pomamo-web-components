@@ -8,20 +8,20 @@ SPDX-License-Identifier: Apache-2.0
   <label>Range not specified. Remaining steps not provided</label>
   <div class='pulse-bar-div'>
     <x-revisionprogress path='http://localhost:8082/' revision-id='1' machine-id='1' kind='Reason'
-      revision-range='[2026-05-20T08:28:37.000Z;2026-05-20T09:01:36.000Z)'>
+      revision-range='[2026-05-21T08:28:37.000Z;2026-05-21T09:01:36.000Z)'>
     </x-revisionprogress>
   </div>
 
   <label>Range not specified. Remaining steps provided: 7 remaining out of 10</label>
   <div class="pulse-bar-div">
     <x-revisionprogress path='http://localhost:8082/' revision-id='2' machine-id='1' kind='Reason' steps='10'
-      remaining='7' revision-range='[2026-05-20T08:28:37.000Z;2026-05-20T09:01:36.000Z)'>
+      remaining='7' revision-range='[2026-05-21T08:28:37.000Z;2026-05-21T09:01:36.000Z)'>
     </x-revisionprogress>
   </div>
 
   <div class="position-div">
     <x-periodtoolbar id="periodtoolbar" path='http://localhost:8082/'
-      range='[2026-05-20T06:00:00.000Z;2026-05-20T14:00:00.000Z)' period-context='DEMO-PROGRESS'>
+      range='[2026-05-21T06:00:00.000Z;2026-05-21T14:00:00.000Z)' period-context='DEMO-PROGRESS'>
     </x-periodtoolbar>
     <x-datetimegraduation period-context='DEMO-PROGRESS'></x-datetimegraduation>
   </div>
@@ -29,16 +29,16 @@ SPDX-License-Identifier: Apache-2.0
   <label>Range specified: [10h-12h] within [6h-14h]. Remaining steps not provided</label>
   <div class="pulse-bar-div">
     <x-revisionprogress path='http://localhost:8082/' revision-id='3' machine-id='1' kind='Reason'
-      range='[2026-05-20T06:00:00.000Z;2026-05-20T14:00:00.000Z)' period-context='DEMO-PROGRESS'
-      revision-range='[2026-05-20T10:00:00.000Z;2026-05-20T12:00:00.000Z)'>
+      range='[2026-05-21T06:00:00.000Z;2026-05-21T14:00:00.000Z)' period-context='DEMO-PROGRESS'
+      revision-range='[2026-05-21T10:00:00.000Z;2026-05-21T12:00:00.000Z)'>
     </x-revisionprogress>
   </div>
 
   <label>Range specified: [10h-12h] within [6h-14h]. Remaining steps provided: 7 remaining out of 10</label>
   <div class="pulse-bar-div">
     <x-revisionprogress path='http://localhost:8082/' revision-id='4' machine-id='1' kind='Reason' steps='10'
-      remaining='7' range='[2026-05-20T06:00:00.000Z;2026-05-20T14:00:00.000Z)' period-context='DEMO-PROGRESS'
-      revision-range='[2026-05-20T10:00:00.000Z;2026-05-20T12:00:00.000Z)'>
+      remaining='7' range='[2026-05-21T06:00:00.000Z;2026-05-21T14:00:00.000Z)' period-context='DEMO-PROGRESS'
+      revision-range='[2026-05-21T10:00:00.000Z;2026-05-21T12:00:00.000Z)'>
     </x-revisionprogress>
   </div>
 </div>
@@ -47,45 +47,45 @@ SPDX-License-Identifier: Apache-2.0
   <label>Dynamic data - progress every 4 seconds (3/12) </label>
   <div class="pulse-bar-div">
     <x-revisionprogress path='http://localhost:8082/' revision-id='123' machine-id='1' kind='Reason'
-      range='[2026-05-20T06:00:00.000Z;2026-05-20T14:00:00.000Z)' period-context='DEMO-PROGRESS'
-      revision-range='[2026-05-20T08:48:37.000Z;2026-05-20T09:50:36.000Z)'>
+      range='[2026-05-21T06:00:00.000Z;2026-05-21T14:00:00.000Z)' period-context='DEMO-PROGRESS'
+      revision-range='[2026-05-21T08:48:37.000Z;2026-05-21T09:50:36.000Z)'>
     </x-revisionprogress>
   </div>
 
   <label>Dynamic data - progress every 4 seconds (1/4) </label>
   <div class="pulse-bar-div">
     <x-revisionprogress path='http://localhost:8082/' revision-id='14' machine-id='1' kind='Reason'
-      range='[2026-05-20T06:00:00.000Z;2026-05-20T14:00:00.000Z)' period-context='DEMO-PROGRESS'
-      revision-range='[2026-05-20T08:48:37.000Z;2026-05-20T09:50:36.000Z)'>
+      range='[2026-05-21T06:00:00.000Z;2026-05-21T14:00:00.000Z)' period-context='DEMO-PROGRESS'
+      revision-range='[2026-05-21T08:48:37.000Z;2026-05-21T09:50:36.000Z)'>
     </x-revisionprogress>
   </div>
 
   <label>Dynamic data - progress every 4 seconds (1/1) </label>
   <div class="pulse-bar-div">
     <x-revisionprogress path='http://localhost:8082/' revision-id='13' machine-id='1' kind='Reason'
-      range='[2026-05-20T06:00:00.000Z;2026-05-20T14:00:00.000Z)' period-context='DEMO-PROGRESS'
-      revision-range='[2026-05-20T08:48:37.000Z;2026-05-20T09:50:36.000Z)'>
+      range='[2026-05-21T06:00:00.000Z;2026-05-21T14:00:00.000Z)' period-context='DEMO-PROGRESS'
+      revision-range='[2026-05-21T08:48:37.000Z;2026-05-21T09:50:36.000Z)'>
     </x-revisionprogress>
   </div>
 
   <label>Dynamic data - progress - smallest 'BIG' display</label>
   <div class="smallest-big-div">
     <x-revisionprogress path='http://localhost:8082/' revision-id='13' machine-id='1' kind='Reason'
-      revision-range='[2026-05-20T08:48:37.000Z;2026-05-20T09:50:36.000Z)'>
+      revision-range='[2026-05-21T08:48:37.000Z;2026-05-21T09:50:36.000Z)'>
     </x-revisionprogress>
   </div>
 
   <label>Dynamic data - progress - small display</label>
   <div class="small-div">
     <x-revisionprogress path='http://localhost:8082/' revision-id='13' machine-id='1' kind='Reason'
-      revision-range='[2026-05-20T08:48:37.000Z;2026-05-20T09:50:36.000Z)'>
+      revision-range='[2026-05-21T08:48:37.000Z;2026-05-21T09:50:36.000Z)'>
     </x-revisionprogress>
   </div>
 
   <label>Dynamic data - progress - small display</label>
   <div class="very-small-div">
     <x-revisionprogress path='http://localhost:8082/' revision-id='13' machine-id='1' kind='Reason'
-      revision-range='[2026-05-20T08:48:37.000Z;2026-05-20T09:50:36.000Z)'>
+      revision-range='[2026-05-21T08:48:37.000Z;2026-05-21T09:50:36.000Z)'>
     </x-revisionprogress>
   </div>
 </div>

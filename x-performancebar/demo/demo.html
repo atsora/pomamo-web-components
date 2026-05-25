@@ -5,18 +5,18 @@ SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-    <label>Height = default - Machine18</label>
-    <div><x-performancebar id="height_default_machine18" machine-id=1 path=http://localhost:8082/ range=[2026-05-20,2026-05-20)></x-performancebar></div>
+    <label>Height = default - Machine 3</label>
+    <div><x-performancebar id="height_default_machine3" machine-id=1 path=http://localhost:8082/ range=[2026-05-21,2026-05-22)></x-performancebar></div>
     
-    <label>Height = 150 + target defined - Machine19</label>
-    <div><x-performancebar id="height_150_target_machine19" machine-id=2 path=http://localhost:8082/ range=[2026-05-20,2026-05-20) height=150></x-performancebar></div>
+    <label>Height = 150 + target defined - Machine 1</label>
+    <div><x-performancebar id="height_150_target_machine1" machine-id=2 path=http://localhost:8082/ range=[2026-05-21,2026-05-22) height=150></x-performancebar></div>
     
-    <label>Height = 80 - Machine20</label>
-    <div><x-performancebar id="height_80_machine20" machine-id=4 path=http://localhost:8082/ range=[2026-05-20,2026-05-20) height=80></x-performancebar></div>
+    <label>Height = 80 - Machine 2</label>
+    <div><x-performancebar id="height_80_machine2" machine-id=4 path=http://localhost:8082/ range=[2026-05-21,2026-05-22) height=80></x-performancebar></div>
     
     <label>Error: No monitored machine with id 300 (not working in 2018)</label>
-    <div><x-performancebar id="error_machineid" machine-id=300 path=http://localhost:8082/ height=104 range=[2026-05-20,2026-05-20)></x-performancebar></div>
+    <div><x-performancebar id="error_machineid" machine-id=3 path=http://localhost:8082/ height=104 range=[2026-05-21,2026-05-22)></x-performancebar></div>
     
     <label>Error: Gateway Timeout (not working in 2018)</label>
-    <div><x-performancebar id="error_gateway_timeout" machine-id=400 path=http://localhost:8082/ height=104 range=[2026-05-20,2026-05-20)></x-performancebar></div>
+    <div><x-performancebar id="error_gateway_timeout" machine-id=1 path=http://localhost:8082/ height=104 range=[2026-05-21,2026-05-22)></x-performancebar></div>
 </div>

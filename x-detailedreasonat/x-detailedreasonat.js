@@ -563,5 +563,5 @@ require('x-reasonsubdetails/x-reasonsubdetails');
     }
   }
 
-  pulseComponent.registerElement('x-detailedreasonat', DetailedReasonAtComponent, ['machine-id', 'when', 'datetime-context', 'period-context', 'machine-context']);
+  pulseComponent.registerElement('x-detailedreasonat', DetailedReasonAtComponent, ['machine-id', 'range', 'when', 'datetime-context', 'period-context', 'machine-context']);
 })();

@@ -30,7 +30,10 @@ var eventBus = require('eventBus');
       return self;
     }
 
-    validateParameters () {}
+    validateParameters () {
+      // No required attribute — proceed.
+      this.switchToNextContext();
+    }
 
     initialize() {
       this.addClass('pulse-rotationprogress');

@@ -13,7 +13,6 @@ require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonOnlySl
 
 
 // FROM Save MST
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/MachineStateTemplates');
 // TO ADD - 2016 12
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/SaveMachineStateTemplate');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision');

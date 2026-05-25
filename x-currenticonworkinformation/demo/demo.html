@@ -4,13 +4,61 @@ Copyright (C) 2026 Atsora Solutions
 SPDX-License-Identifier: Apache-2.0
 -->
 
+<style>
+  .currenticonworkinformation-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(127,127,127,0.2);
+  }
+  .currenticonworkinformation-row x-currenticonworkinformation {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 auto;
+  }
+  .currenticonworkinformation-row h3 {
+    margin: 0;
+    font-size: 0.95em;
+  }
+  .currenticonworkinformation-row .demo-meta {
+    font-size: 0.85em;
+    color: rgba(127,127,127,0.85);
+  }
+</style>
+
 <div class="static-tests">
-  <h3>Mill-01 (work info complete)</h3>
-  <div><x-currenticonworkinformation machine-id="1" range="[2026-05-20T08:00:00Z,2026-05-20T20:00:00Z)" path="http://localhost:8082/"></x-currenticonworkinformation></div>
+  <p>The warning icon appears only when the response carries <code>IsMissingWorkInformation: true</code>.</p>
 
-  <h3>Mill-02 (missing work info)</h3>
-  <div><x-currenticonworkinformation machine-id="2" range="[2026-05-20T08:00:00Z,2026-05-20T20:00:00Z)" path="http://localhost:8082/"></x-currenticonworkinformation></div>
+  <div class='currenticonworkinformation-row'>
+    <x-currenticonworkinformation machine-id="1" range="[2026-05-21T08:00:00Z,2026-05-21T20:00:00Z)" path="http://localhost:8082/"></x-currenticonworkinformation>
+    <div>
+      <h3>Machine 1 — work info complete</h3>
+      <div class="demo-meta">IsMissingWorkInformation=false → icon hidden</div>
+    </div>
+  </div>
 
-  <h3>Error (reserved id 999)</h3>
-  <div><x-currenticonworkinformation machine-id="999" range="[2026-05-20T08:00:00Z,2026-05-20T20:00:00Z)" path="http://localhost:8082/"></x-currenticonworkinformation></div>
+  <div class='currenticonworkinformation-row'>
+    <x-currenticonworkinformation machine-id="2" range="[2026-05-21T08:00:00Z,2026-05-21T20:00:00Z)" path="http://localhost:8082/"></x-currenticonworkinformation>
+    <div>
+      <h3>Machine 2 — missing work info</h3>
+      <div class="demo-meta">IsMissingWorkInformation=true → icon visible</div>
+    </div>
+  </div>
+
+  <div class='currenticonworkinformation-row'>
+    <x-currenticonworkinformation machine-id="3" range="[2026-05-21T08:00:00Z,2026-05-21T20:00:00Z)" path="http://localhost:8082/"></x-currenticonworkinformation>
+    <div>
+      <h3>Machine 3 — work info complete</h3>
+      <div class="demo-meta">IsMissingWorkInformation=false → icon hidden</div>
+    </div>
+  </div>
+
+  <div class='currenticonworkinformation-row'>
+    <x-currenticonworkinformation machine-id="999" range="[2026-05-21T08:00:00Z,2026-05-21T20:00:00Z)" path="http://localhost:8082/"></x-currenticonworkinformation>
+    <div>
+      <h3>Error (reserved id 999)</h3>
+      <div class="demo-meta">HTTP 400 from mock → icon hidden, no console error</div>
+    </div>
+  </div>
 </div>

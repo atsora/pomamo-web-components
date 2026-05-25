@@ -24,6 +24,7 @@ pulseConfig.setGlobal('componentsToDisplay', [
 
 // Mocks
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/_helpers');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/scenario');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetMachine');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CurrentReason');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonUnanswered');
@@ -32,7 +33,7 @@ require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CycleProgres
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CncAlarm');
 
 $(function () {
-  var ids = MOCK.SCENARIO.MACHINES.map(function (m) { return String(m.id); });
+  var ids = SCENARIO.MACHINES.map(function (m) { return String(m.id); });
 
   // Late-dispatch so x-machinetab's initialize() has run and is subscribed.
   setTimeout(function () {

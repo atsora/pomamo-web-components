@@ -396,9 +396,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   },
   setupmachine: {
     noOperation: 'No operation',
-    setupsince: 'setup since: ',
-    switchTo: 'Switch to ',
-    switchToProduction: 'Switch to production'
+    setupsince: 'setup since: '
   },
   stopclassification: {
     title: 'Stops',
@@ -827,9 +825,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   setupmachine: {
     noOperation: "Pas d'opération",
-    setupsince: "En réglage depuis :",
-    switchTo: 'Switch to ',
-    switchToProduction: 'Passer en production'
+    setupsince: "En réglage depuis :"
   },
   stopclassification: {
     title: 'Arrêts',
@@ -1254,9 +1250,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   },
   setupmachine: {
     noOperation: 'Kein Vorgang',
-    setupsince: 'Rüsten seit: ',
-    switchTo: 'Wechseln zu ',
-    switchToProduction: 'In Produktion wechseln'
+    setupsince: 'Rüsten seit: '
   },
   stopclassification: {
     title: 'Ungeplante Stillstände',
