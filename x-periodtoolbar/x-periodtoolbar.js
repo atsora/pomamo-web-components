@@ -21,6 +21,7 @@ var eventBus = require('eventBus');
 var state = require('state');
 
 require('x-datetimepicker/x-datetimepicker');
+require('x-datetimerange/x-datetimerange');
 
 (function () {
 
@@ -31,10 +32,12 @@ require('x-datetimepicker/x-datetimepicker');
    * When `displayshiftrange === 'true'` (or a shift-aligned range type is
    * chosen), fetches `GetRangeAround?RangeType=<type>&RangeSize=<n>&Around=<now>`
    * to compute the boundaries; otherwise builds a rolling window locally.
-   * Renders the row of buttons plus an `x-datetimepicker` for manual
-   * selection. Dispatches `dateTimeRangeChangeEvent` on `period-context`
-   * after every change; replies to `askForDateTimeRangeEvent` on the same
-   * context with the current range. The `hide-period-buttons` /
+   * Renders the row of buttons plus an embedded `x-datetimerange` for manual
+   * selection. The embedded `x-datetimerange` owns the canonical range:
+   * it dispatches `dateTimeRangeChangeEvent` on `period-context` after every
+   * change and replies to `askForDateTimeRangeEvent` on the same context.
+   * `x-periodtoolbar` only pushes new ranges (fetched from `RangeAround`) into
+   * the dtr via `setAttribute('range', …)`. The `hide-period-buttons` /
    * `hide-zooms` attributes drop the corresponding button groups.
    *
    * @element x-periodtoolbar
@@ -228,11 +231,30 @@ require('x-datetimepicker/x-datetimepicker');
       });
     }
 
+    // If the component is currently loading, store `action` as the pending
+    // action and watch the class list; when `pulse-component-loading` is removed,
+    // fire the latest pending action. Returns true if the call should be deferred
+    // (caller must early-return), false if the action can run immediately.
+    // Only the latest pending action is kept — fast successive clicks all
+    // collapse to the last user intent.
+    _deferIfLoading(action) {
+      if (!$(this.element).hasClass('pulse-component-loading')) return false;
+      this._pendingAction = action;
+      if (this._loadingObserver) return true;
+      this._loadingObserver = new MutationObserver(() => {
+        if ($(this.element).hasClass('pulse-component-loading')) return;
+        const pending = this._pendingAction;
+        this._pendingAction = null;
+        this._loadingObserver.disconnect();
+        this._loadingObserver = null;
+        if (pending) pending();
+      });
+      this._loadingObserver.observe(this.element, { attributes: true, attributeFilter: ['class'] });
+      return true;
+    }
+
     _clickOnButton(buttonName) {
-      if ($(this.element).hasClass('pulse-component-loading')) {
-        // If any button is disabled, stop allowing clicks
-        return;
-      }
+      if (this._deferIfLoading(() => this._clickOnButton(buttonName))) return;
 
       this._rangeSize = 1;
       this._around = undefined;
@@ -287,10 +309,7 @@ require('x-datetimepicker/x-datetimepicker');
     }
 
     _goToPreviousPeriod() {
-      if ($(this.element).hasClass('pulse-component-loading')) {
-        // If any button is disabled, stop allowing clicks
-        return;
-      }
+      if (this._deferIfLoading(() => this._goToPreviousPeriod())) return;
 
       let m_begin = moment(this._dateRange.lower);
       let m_end = moment(this._dateRange.upper);
@@ -323,10 +342,7 @@ require('x-datetimepicker/x-datetimepicker');
     }
 
     _goToNextPeriod() {
-      if ($(this.element).hasClass('pulse-component-loading')) {
-        // If any button is disabled, stop allowing clicks
-        return;
-      }
+      if (this._deferIfLoading(() => this._goToNextPeriod())) return;
 
       let m_begin = moment(this._dateRange.lower);
       let m_end = moment(this._dateRange.upper);
@@ -361,10 +377,7 @@ require('x-datetimepicker/x-datetimepicker');
     }
 
     _zoomin() {
-      if ($(this.element).hasClass('pulse-component-loading')) {
-        // If any button is disabled, stop allowing clicks
-        return;
-      }
+      if (this._deferIfLoading(() => this._zoomin())) return;
 
       if (this._rangeType && this._rangeType != '') {
         if (this._rangeSize <= 1 || this._rangeType == 'shift') {
@@ -475,10 +488,7 @@ require('x-datetimepicker/x-datetimepicker');
     }
 
     _zoomout() {
-      if ($(this.element).hasClass('pulse-component-loading')) {
-        // If any button is disabled, stop allowing clicks
-        return;
-      }
+      if (this._deferIfLoading(() => this._zoomout())) return;
 
       if (this._rangeType && this._rangeType != '') {
         if (this._rangeSize > 4 || this._rangeType == 'shift') {
@@ -624,12 +634,8 @@ require('x-datetimepicker/x-datetimepicker');
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'period-context':
-          if (this.isInitialized()) {
-            eventBus.EventBus.removeEventListenerBySignal(this, 'askForDateTimeRangeEvent');
-            eventBus.EventBus.addEventListener(this,
-              'askForDateTimeRangeEvent', newVal,
-              this.onAskForDateTimeChange.bind(this));
-          }
+          // The embedded x-datetimerange is now the sole responder to
+          // askForDateTimeRangeEvent on this context — see initialize().
           this.start(); // To re-validate parameters
           break;
         case 'displayshiftrange':
@@ -660,17 +666,19 @@ require('x-datetimepicker/x-datetimepicker');
     initialize() {
       this.addClass('pulse-text');
 
-      // listeners
+      // Note: x-periodtoolbar does NOT listen to askForDateTimeRangeEvent —
+      // the embedded x-datetimerange (created in _appendButtons) owns the
+      // canonical range and is the sole responder on the shared period-context.
+      //
+      // We DO listen to dateTimeRangeChangeEvent so our cached `_dateRange`
+      // (used for refreshRate and previous/next navigation) follows the dtr.
+      // The dtr's `_dispatchSignal` only fires on actual mutation so the
+      // listener doesn't loop on our own setAttribute('range', …) pushes.
       if (this.element.hasAttribute('period-context')) {
         eventBus.EventBus.addEventListener(this,
-          'askForDateTimeRangeEvent',
+          'dateTimeRangeChangeEvent',
           this.element.getAttribute('period-context'),
-          this.onAskForDateTimeChange.bind(this));
-      }
-      else {
-        eventBus.EventBus.addGlobalEventListener(this,
-          'askForDateTimeRangeEvent',
-          this.onAskForDateTimeChange.bind(this));
+          this.onDateTimeRangeChange.bind(this));
       }
 
       // In case of clone, need to be empty :
@@ -724,6 +732,12 @@ require('x-datetimepicker/x-datetimepicker');
 
       //this._messageSpan = undefined;
       //this._content = undefined;
+
+      if (this._loadingObserver) {
+        this._loadingObserver.disconnect();
+        this._loadingObserver = null;
+      }
+      this._pendingAction = null;
 
       super.clearInitialization();
     }
@@ -788,9 +802,12 @@ require('x-datetimepicker/x-datetimepicker');
     }*/
 
     getShortUrl() { // Return the Web Service URL without path
-      // When reloading, remove current text + disable ALL buttons
-      // (Clears the display zone of the embedded x-datetimerange.)
-      $(this.element).find('.datetimerange-display').html('');
+      // When reloading, disable ALL buttons as a visual loading hint.
+      // We intentionally do NOT clear .datetimerange-display: if the AJAX
+      // returns the same range as before, the dtr's `range` setter early-exits
+      // on equality and never re-renders, leaving the cleared display empty
+      // for good (visible when toggling between day/shift while already on
+      // today's range).
       $(this.element).find('.periodtoolbar-btn').addClass('disabled');
 
       let url = 'RangeAround?RangeType=' + this._rangeType + '&RangeSize=' + this._rangeSize;
@@ -883,31 +900,6 @@ require('x-datetimepicker/x-datetimepicker');
       }
     }
 
-    // Callback events
-    /**
-     * Event bus callback triggered when the date/time range is asked
-     *
-     * @param {Object} event
-     */
-    onAskForDateTimeChange(event) {
-      if (this._dateRange) { // To avoid loop and problems
-        if (this.element.hasAttribute('period-context')) {
-          eventBus.EventBus.dispatchToContext('dateTimeRangeChangeEvent',
-            this.element.getAttribute('period-context'),
-            {
-              daterange: pulseRange.createDateRangeDefaultInclusivity(this._dateRange.lower, this._dateRange.upper),
-              stringrange: this._dateRange
-            });
-        }
-        else {
-          eventBus.EventBus.dispatchToAll('dateTimeRangeChangeEvent', {
-            daterange: pulseRange.createDateRangeDefaultInclusivity(this._dateRange.lower, this._dateRange.upper),
-            stringrange: this._dateRange
-          });
-        }
-      }
-    }
-
     /**
      * Event callback in case a config is updated: (re-)start the component
      *
@@ -916,6 +908,31 @@ require('x-datetimepicker/x-datetimepicker');
     onConfigChange(event) {
       if (event.target.config == 'displayshiftrange')
         this.start();
+    }
+
+    /**
+     * Keep `_dateRange` in sync with the embedded x-datetimerange (the source
+     * of truth on `period-context`). Fired both when we push a range through
+     * setAttribute('range', …) and when the user picks a new range in the
+     * dtr's dialog. The dtr only dispatches on real mutation, so this never
+     * loops with our own pushes.
+     *
+     * @param {{ target: { daterange: any, stringrange: any } }} event
+     */
+    onDateTimeRangeChange(event) {
+      let payload = event.target || event;
+      if (!payload) return;
+      let incoming = payload.stringrange || payload.daterange;
+      if (!incoming) return;
+      if (typeof incoming === 'string') {
+        incoming = pulseRange.createDateRangeFromString(incoming);
+      }
+      if (!incoming) return;
+      if (this._dateRange
+        && pulseRange.equals(incoming, this._dateRange, (a, b) => (a >= b) && (a <= b))) {
+        return;
+      }
+      this._dateRange = incoming;
     }
 
   }

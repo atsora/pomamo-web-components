@@ -34,9 +34,9 @@ const locales = {
    * @element x-datetimegraduation
    * @attr {string} range  ISO datetime range `begin;end`
    * @method load          force a redraw at the current width
-   * @extends pulseComponent.PulseParamInitializedComponent
+   * @extends pulseComponent.PulseInitializedComponent
    */
-  class DateTimeGraduationComponent extends pulseComponent.PulseParamInitializedComponent {
+  class DateTimeGraduationComponent extends pulseComponent.PulseInitializedComponent {
     /**
      * Constructor
      * * @param  {...any} args
@@ -295,10 +295,6 @@ const locales = {
       this._content = undefined;
 
       super.clearInitialization();
-    }
-
-    validateParameters() {
-      this.switchToNextContext();
     }
 
     displayError(message) {

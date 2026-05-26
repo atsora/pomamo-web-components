@@ -28,9 +28,9 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
    * @element x-showrunningdialogbutton
    * @attr {string} group      group id (preferred)
    * @attr {number} machine-id fallback machine id when `group` is absent
-   * @extends pulseComponent.PulseParamInitializedComponent
+   * @extends pulseComponent.PulseInitializedComponent
    */
-  class ShowRunningDialogButtonComponent extends pulseComponent.PulseParamInitializedComponent {
+  class ShowRunningDialogButtonComponent extends pulseComponent.PulseInitializedComponent {
     /**
      * @param {...any} args
      */
@@ -56,8 +56,6 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
      * Shows or hides the button based on `showRunningButton` config.
      * Click handler resolves `group` or `machine-id` and opens the running dialog.
      */
-    validateParameters () {}
-
     initialize () {
       this.addClass('pulse-icon');
 

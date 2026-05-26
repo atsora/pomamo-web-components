@@ -116,25 +116,36 @@
   position: relative;
   border-bottom: 1px solid @color_window_border;
   height: 5vh;
+  // Flex pushes the help + close buttons to the right of the header in normal
+  // flow, so they don't need any hardcoded right offset. The title is overlaid
+  // absolutely (see below) so its centering is unaffected by their width.
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .customDialogTitle {
+  // Absolutely positioned over the full header width so centering is computed
+  // against the whole header, not the space left after the close/help buttons.
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   text-transform: uppercase;
   color: fade(@color_text, 90%);
-  width: 100%;
-  height: 100%;
   font-size: 3vh;
+  // The title overlays the close/help boxes — let clicks pass through to them,
+  // but re-enable pointer events on the title's own interactive children.
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
 }
 
 .customDialogCloseBox {
-  display: flex;
-  right: 0;
   height: 100%;
   width: auto;
   padding: 0px 5px;

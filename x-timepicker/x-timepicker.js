@@ -27,9 +27,9 @@ var pulseComponent = require('pulsecomponent');
    * @attr {boolean} disabled    when present, disable the input
    * @method isValid             `true` when the input carries a valid time
    * @method getValueAsIs        raw value currently in the input
-   * @extends pulseComponent.PulseParamInitializedComponent
+   * @extends pulseComponent.PulseInitializedComponent
    */
-  class TimePickerComponent extends pulseComponent.PulseParamInitializedComponent {
+  class TimePickerComponent extends pulseComponent.PulseInitializedComponent {
     /**
      * Constructor
      * 
@@ -152,10 +152,6 @@ var pulseComponent = require('pulsecomponent');
       this.removeError();
       // Empty this._content
 
-      this.switchToNextContext();
-    }
-
-    validateParameters () {
       this.switchToNextContext();
     }
 

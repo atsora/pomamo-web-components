@@ -9,7 +9,6 @@
  */
 var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
-var state = require('state');
 var eventBus = require('eventBus');
 
 (function () {
@@ -36,9 +35,9 @@ var eventBus = require('eventBus');
    * @attr {boolean} forcestaticlist `'true'` opts out of the `updateVisibleMachines` listener
    * @attr {boolean} no-rotation     presence opts out of the `updateVisibleMachines` listener
    * @method getMachinesList         current machine id list, comma-separated
-   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   * @extends pulseComponent.PulseInitializedComponent
    */
-  class GroupComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
+  class GroupComponent extends pulseComponent.PulseInitializedComponent {
     constructor(...args) {
       const self = super(...args);
 
@@ -167,20 +166,6 @@ var eventBus = require('eventBus');
       });
     }
 
-    getStartKey(context) {
-      switch (context) {
-        case 'Loaded': return 'Standard';
-        default: return super.getStartKey(context);
-      }
-    }
-
-    defineState(context, key) {
-      switch (context) {
-        case 'Loaded': return new state.StaticState(context, key, this);
-        default: return super.defineState(context, key);
-      }
-    }
-
     attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       if (attr === 'templateid') {
@@ -235,11 +220,6 @@ var eventBus = require('eventBus');
       super.clearInitialization();
     }
 
-    validateParameters() {
-      // No validation: the id list is pushed via machineListChanged.
-      this.switchToNextContext();
-    }
-
     displayError(message) {
       $(this._messageSpan).html(message);
       if (this._messageDiv) this._messageDiv.addClass('force-visibility');
@@ -248,19 +228,6 @@ var eventBus = require('eventBus');
     removeError() {
       $(this._messageSpan).html('');
       if (this._messageDiv) this._messageDiv.removeClass('force-visibility');
-    }
-
-    get refreshRate() {
-      return 1000 * 60 * 60; // 1 hr — unused; _runAlternateGetData short-circuits AJAX
-    }
-
-    /**
-     * Stateless: no AJAX. Render is driven by `machineListChanged`.
-     * Short-circuits the framework's data-fetch lifecycle.
-     */
-    _runAlternateGetData() {
-      this.switchToContext('Loaded');
-      return true;
     }
   }
 

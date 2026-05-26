@@ -326,10 +326,14 @@ require('x-freetext/x-freetext');
         .addClass('machineselection-button')
         .addClass('machineselection-switch-to-groups').html(this.getTranslation('groupsButton', ' by group'));
       this._switchToGroups_button.click(function () {
-        this._groupSelectionArray = [];
-        this._machineSelectionArray = [];
+        // Preserve current selection arrays — the user just switches view,
+        // not "start fresh". When they come back from "by machine", the
+        // original group checkboxes are still ticked.
         this._switchToGroupSelection();
         this._changeSelectionInCategoryList();
+        // Refresh the page-2 "Selected" list so it reflects the new mode
+        // (group array). Without this it keeps showing the previous mode.
+        this._fillSelection();
       }.bind(this));
       div_switch_buttons.append(this._switchToGroups_button);
 
@@ -337,10 +341,14 @@ require('x-freetext/x-freetext');
         .addClass('machineselection-button')
         .addClass('machineselection-switch-to-machines').html(this.getTranslation('machinesButton', ' by machine'));
       this._switchToMachines_button.click(function () {
-        this._groupSelectionArray = [];
-        this._machineSelectionArray = [];
-        this._switchToMachineSelection();
+        // Pass clearGroups=false so _switchToMachineSelection keeps the
+        // current group selection. _useMachineButton still calls with the
+        // default (true) when the user explicitly resolves groups to machines.
+        this._switchToMachineSelection(false);
         this._changeSelectionInMachineList();
+        // Refresh the page-2 "Selected" list so it reflects the new mode
+        // (machine array). Without this it keeps showing the previous mode.
+        this._fillSelection();
       }.bind(this));
       div_switch_buttons.append(this._switchToMachines_button);
 
@@ -486,7 +494,7 @@ require('x-freetext/x-freetext');
      * Switches the dialog to machine-selection mode: shows the machine list/search, hides the group tree
      * and preview panel, clears `_groupSelectionArray`, and marks the "by machine" button as active.
      */
-    _switchToMachineSelection() {
+    _switchToMachineSelection(clearGroups = true) {
       this._useMachineSelection = true;
 
       if (this._machinesListContainer == undefined)
@@ -499,8 +507,13 @@ require('x-freetext/x-freetext');
       this._machinesSearchDiv.show();
       this._machinesListContainer.show();
 
-      this._groupSelectionArray = [];
-      this._changeSelectionInCategoryList();
+      // Clear groups only when the caller explicitly asked for it (default
+      // behaviour for _loadSelection and _useMachineButton). Tab-switch button
+      // passes false so the user's group selection is preserved across views.
+      if (clearGroups) {
+        this._groupSelectionArray = [];
+        this._changeSelectionInCategoryList();
+      }
       this._categoryList.hide();
 
       this._changeSelectionInMachineList();
@@ -786,6 +799,25 @@ require('x-freetext/x-freetext');
     }
 
     /**
+     * Builds Pulse's native circular loader (pulse-loader with loadcircle
+     * animation). The `pulse-bigdisplay pulse-component-loading` combo is
+     * what triggers the circular spinner CSS (cf. common.less:1533+) — the
+     * other combos like `pulse-text` give a row of 3 small dots instead.
+     * Wrapper required because the dialog is detached from the host element.
+     */
+    _buildLoadingSpinner() {
+      let wrapper = $('<div></div>').addClass('machineselection-loading-wrapper');
+      let loaderHost = $('<div></div>')
+        .addClass('pulse-bigdisplay').addClass('pulse-component-loading')
+        .addClass('machineselection-loading-spinner-host');
+      let loader = $('<div></div>').addClass('pulse-loader')
+        .html(this.getTranslation('loadingDots', 'Loading...'));
+      loaderHost.append($('<div></div>').addClass('pulse-loader-div').append(loader));
+      wrapper.append(loaderHost);
+      return wrapper;
+    }
+
+    /**
      * Rebuilds the right-side selection panel from the active selection array
      * (`_groupSelectionArray` or `_machineSelectionArray`).
      * Each item shows display name, a M/G label, an optional DYNAMIC badge, a remove button,
@@ -795,6 +827,30 @@ require('x-freetext/x-freetext');
       if (this._selectionList == undefined)
         return;
       $(this._selectionList).empty();
+
+      // Data not yet fetched (refresh() hasn't run) → show a self-contained SVG
+      // spinner instead of the misleading "No selection" placeholder. The
+      // normal fill flow runs again from refresh() → _loadSelection() once
+      // the data arrives.
+      // We rely on `_machinesFromService === undefined`: `_groups` defaults to
+      // [] in the constructor (truthy), so `!this._groups` never matches the
+      // initial state. `_machinesFromService` stays undefined until refresh()
+      // runs, making it the reliable "data fetched yet?" signal.
+      if (this._machinesFromService === undefined) {
+        this._selectionList.append(this._buildLoadingSpinner());
+        // Show the spinner in the category tree as long as it has no real
+        // category items yet (the `categorylist-full` wrapper may exist as a
+        // leftover from a previous refresh — we don't trust it as a signal).
+        if (this._categoryList && this._categoryList.find('.machineselection-category').length === 0) {
+          this._categoryList.empty().append(this._buildLoadingSpinner());
+        }
+        this._renderPreviewLoader();
+        return;
+      }
+      // Data is here: make sure any leftover loader in the categorylist is cleared
+      if (this._categoryList) {
+        this._categoryList.find('.machineselection-loading-svg').remove();
+      }
 
       let arrayToDisplay;
       if (false == this._useMachineSelection)

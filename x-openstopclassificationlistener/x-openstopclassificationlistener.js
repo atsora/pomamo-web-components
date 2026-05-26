@@ -41,9 +41,9 @@ var eventBus = require('eventBus');
    * @attr {string} machine-context event-bus context for `machineIdChangeSignal` / `requestMachineIdSignal`
    * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
    * @attr {string} status-context  event-bus context for `reasonStatusCurrentChange` (default `'PulseWebApp'`)
-   * @extends pulseComponent.PulseParamInitializedComponent
+   * @extends pulseComponent.PulseInitializedComponent
    */
-    class OpenStopClassificationListener extends pulseComponent.PulseParamInitializedComponent {
+    class OpenStopClassificationListener extends pulseComponent.PulseInitializedComponent {
         constructor(...args) {
             const self = super(...args);
             self._dateRange = undefined;
@@ -52,8 +52,6 @@ var eventBus = require('eventBus');
             self._lastDialogCloseTime = 0;
             return self;
         }
-
-        validateParameters () {}
 
         /**
          * Initialize listeners for period, machine, and reason status changes.

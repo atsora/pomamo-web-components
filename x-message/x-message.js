@@ -41,9 +41,9 @@ var eventBus = require('eventBus');
    * @method showMessage     create or update one alert
    * @method clearMessage    remove the alert with the given id
    * @method clearAllMessage remove every alert
-   * @extends pulseComponent.PulseParamInitializedComponent
+   * @extends pulseComponent.PulseInitializedComponent
    */
-  class MessageComponent extends pulseComponent.PulseParamInitializedComponent {
+  class MessageComponent extends pulseComponent.PulseInitializedComponent {
     /**
      * Constructor
      * 
@@ -120,10 +120,6 @@ var eventBus = require('eventBus');
       super.clearInitialization();
     }
 
-
-    validateParameters () {
-      this.switchToNextContext();
-    }
 
     /**
      * Creates or updates a message alert element inside `.xmessage`.

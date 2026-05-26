@@ -6,7 +6,6 @@
  */
 var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
-var state = require('state');
 var eventBus = require('eventBus');
 
 (function () {
@@ -27,9 +26,9 @@ var eventBus = require('eventBus');
    *
    * @element x-groupgrid
    * @attr {string} templateid id of the element to clone per machine (default `'boxtoclone'`)
-   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   * @extends pulseComponent.PulseInitializedComponent
    */
-  class GroupGridComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
+  class GroupGridComponent extends pulseComponent.PulseInitializedComponent {
     constructor(...args) {
       const self = super(...args);
       self._content = undefined;
@@ -86,20 +85,6 @@ var eventBus = require('eventBus');
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       if (attr === 'templateid') {
         this.start();
-      }
-    }
-
-    getStartKey(context) {
-      switch (context) {
-        case 'Loaded': return 'Standard';
-        default: return super.getStartKey(context);
-      }
-    }
-
-    defineState(context, key) {
-      switch (context) {
-        case 'Loaded': return new state.StaticState(context, key, this);
-        default: return super.defineState(context, key);
       }
     }
 
@@ -197,23 +182,6 @@ var eventBus = require('eventBus');
           el.hide();
         }
       });
-    }
-
-    validateParameters() {
-      // No validation: the id list is pushed via machineListChanged.
-      this.switchToNextContext();
-    }
-
-    /**
-     * Stateless: no AJAX. Render is driven by `machineListChanged`.
-     */
-    _runAlternateGetData() {
-      this.switchToContext('Loaded');
-      return true;
-    }
-
-    get refreshRate() {
-      return 1000 * 60 * 60; // unused
     }
 
     displayError(message) {

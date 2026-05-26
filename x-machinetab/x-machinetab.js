@@ -13,7 +13,6 @@ var pulseConfig = require('pulseConfig');
 var pulseService = require('pulseService');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
-var state = require('state');
 
 require('x-machinedisplay/x-machinedisplay');
 require('x-currenticonunansweredreason/x-currenticonunansweredreason');
@@ -49,9 +48,9 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
    * @attr {string} status-context  forwarded to icon children
    * @fires machineIdChangeSignal   `{ newMachineId: number }` — on `machine-context`, on click / chevron nav
    * @fires requestMachineIdSignal  `{ machineId: number }` — on `machine-context`, replies to `askForMachineIdSignal`
-   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   * @extends pulseComponent.PulseInitializedComponent
    */
-  class MachineTabComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
+  class MachineTabComponent extends pulseComponent.PulseInitializedComponent {
     constructor(...args) {
       const self = super(...args);
 
@@ -66,21 +65,6 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
 
     get content() {
       return this._listContainer;
-    }
-
-    // Static groups transition to Loaded (no further polling after first fetch)
-    getStartKey(context) {
-      switch (context) {
-        case 'Loaded': return 'Standard';
-        default: return super.getStartKey(context);
-      }
-    }
-
-    defineState(context, key) {
-      switch (context) {
-        case 'Loaded': return new state.StaticState(context, key, this);
-        default: return super.defineState(context, key);
-      }
     }
 
     // ─── LIFECYCLE ──────────────────────────────────────────────────────────
@@ -206,11 +190,6 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       }
     }
 
-    validateParameters() {
-      // No validation: the id list is pushed via machineListChanged.
-      this.switchToNextContext();
-    }
-
     displayError(message) {
       if (this._messageSpan) $(this._messageSpan).html(message);
       if (this._messageDiv) this._messageDiv.addClass('force-visibility');
@@ -219,18 +198,6 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
     removeError() {
       if (this._messageSpan) $(this._messageSpan).html('');
       if (this._messageDiv) this._messageDiv.removeClass('force-visibility');
-    }
-
-    get refreshRate() {
-      return 1000 * 60 * 60; // unused; _runAlternateGetData short-circuits AJAX
-    }
-
-    /**
-     * Stateless: no AJAX. Render is driven by `machineListChanged`.
-     */
-    _runAlternateGetData() {
-      this.switchToContext('Loaded');
-      return true;
     }
 
     /**
@@ -406,8 +373,9 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
     }
 
     _fetchReason(machineId) {
-      if (!this.path) return;
-      let url = this.path + 'CurrentReason?MachineId=' + machineId;
+      let path = this.getConfigOrAttribute('path', '');
+      if (!path) return;
+      let url = path + 'CurrentReason?MachineId=' + machineId;
       let container = this._listContainer;
       pulseService.runAjaxSimple(url,
         function (data) {

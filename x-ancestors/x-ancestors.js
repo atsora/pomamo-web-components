@@ -27,9 +27,9 @@ require('x-machinedisplay/x-machinedisplay');
    * @attr {string} ancestor1   root group id (home icon link)
    * @attr {string} ancestor2…  intermediate group ids (breadcrumb links)
    * @attr {string} AppContext  forwarded into every generated link
-   * @extends pulseComponent.PulseParamInitializedComponent
+   * @extends pulseComponent.PulseInitializedComponent
    */
-  class AncestorsComponent extends pulseComponent.PulseParamInitializedComponent {
+  class AncestorsComponent extends pulseComponent.PulseInitializedComponent {
     /**
      * @param {...any} args
      */
@@ -38,8 +38,6 @@ require('x-machinedisplay/x-machinedisplay');
       self._content = undefined;
       return self;
     }
-
-    validateParameters () {}
 
     initialize () {
       this.addClass('pulse-text');

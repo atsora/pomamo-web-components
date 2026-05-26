@@ -163,7 +163,6 @@ require('x-datetimepicker/x-datetimepicker');
     initialize () {
       this.addClass('pulse-text');
 
-      // 1. TOOLBAR
       let _addButtonToToolbar = function (toolbar, btnClass) {
         let svg = $('<div></div>').addClass('datetimerange-btn').addClass(btnClass);
         let btn = $('<li></li>').addClass('datetimerange-li-btn').append(svg);
@@ -172,55 +171,23 @@ require('x-datetimepicker/x-datetimepicker');
         return btn;
       }
 
-      // Create container
+      // Single toolbar laid out as: [<] [date] [>]  [🔍+] [🔍-]
       let toolbar = $('<ol></ol>').addClass('datetimerange-toolbar');
 
-      // Button previous
+      // [<] previous
       let prev_btn = _addButtonToToolbar(toolbar, 'datetimerange-button-previous');
       prev_btn.click(
         function () {
           this._clickAndChangeRange('previous');
         }.bind(this));
 
-      // Button zoom in
-      let zoomin_btn = _addButtonToToolbar(toolbar, 'datetimerange-button-zoomin');
-      zoomin_btn.click(
-        function () {
-          this._clickAndChangeRange('zoomin');
-        }.bind(this));
-
-      // Button zoom out
-      let zoomout_btn = _addButtonToToolbar(toolbar, 'datetimerange-button-zoomout');
-      zoomout_btn.click(
-        function () {
-          this._clickAndChangeRange('zoomout');
-        }.bind(this));
-
-      // Button next
-      let next_btn = _addButtonToToolbar(toolbar, 'datetimerange-button-next');
-      next_btn.click(
-        function () {
-          this._clickAndChangeRange('next');
-        }.bind(this));
-
-      // 2. RANGE DISPLAY
-
-      // Create container
+      // [date] range display wrapped in an <li> so it participates in the flex toolbar
       let rangedisplay = $('<div></div>').addClass('datetimerange-rangedisplay');
 
-      // Create DOM - Loader
       let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
       let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
       rangedisplay.append(loaderDiv);
-      // Create DOM - message for error
-      /*this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      rangedisplay.append(messageDiv);*/
 
-      // Display
       let display = $('<div></div>').addClass('datetimerange-display');
       if (this.element.getAttribute('not-editable') != 'true') {
         display.addClass('datetimerange-editable');
@@ -235,9 +202,35 @@ require('x-datetimepicker/x-datetimepicker');
       );
       rangedisplay.append(display);
 
-      // 3. FULL DATETIME RANGE
-      let div = $('<div></div>').addClass('datetimerange')
-        .append(rangedisplay).append(toolbar);
+      let displayLi = $('<li></li>').addClass('datetimerange-li-display').append(rangedisplay);
+      toolbar.append(displayLi);
+
+      // [>] next
+      let next_btn = _addButtonToToolbar(toolbar, 'datetimerange-button-next');
+      next_btn.click(
+        function () {
+          this._clickAndChangeRange('next');
+        }.bind(this));
+
+      // Visual gap between navigation group and zoom group
+      let spacer = $('<li></li>').addClass('datetimerange-li-spacer');
+      toolbar.append(spacer);
+
+      // [🔍+] zoom in
+      let zoomin_btn = _addButtonToToolbar(toolbar, 'datetimerange-button-zoomin');
+      zoomin_btn.click(
+        function () {
+          this._clickAndChangeRange('zoomin');
+        }.bind(this));
+
+      // [🔍-] zoom out
+      let zoomout_btn = _addButtonToToolbar(toolbar, 'datetimerange-button-zoomout');
+      zoomout_btn.click(
+        function () {
+          this._clickAndChangeRange('zoomout');
+        }.bind(this));
+
+      let div = $('<div></div>').addClass('datetimerange').append(toolbar);
       $(this.element).append(div);
 
       // Listener and dispatchers
@@ -281,22 +274,16 @@ require('x-datetimepicker/x-datetimepicker');
     }
 
     validateParameters () {
-      if (!this._dateRange) {
-        if (this.element.hasAttribute('range')) {
-          let newDateRange = pulseRange.createDateRangeFromString(this.element.getAttribute('range'));
-          // == this._updateDisplayAndDispatch (newDateRange); without dispatch
-          if (undefined == this._dateRange
-            || (!pulseRange.equals(newDateRange, this._dateRange, (a, b) => (a >= b) && (a <= b)))) {
-            this._dateRange = newDateRange;
-            this._displayRange();
-            this._dispatchSignal(); // can not be done in validate (no dispatcher created yet)
-          }
-        }
-        else {
-          console.error('missing range in datetime range');
-          this.setError(this.getTranslation('error.missingRange', 'Missing range')); // delayed error message
-          return;
-        }
+      // Adopt the initial range if one is provided via the `range` attribute.
+      // If neither `_dateRange` nor `range` is set, proceed without error: the
+      // range will arrive later via `setAttribute('range', …)` (typical when
+      // embedded in x-periodtoolbar, which fetches RangeAround asynchronously)
+      // and trigger `attributeChangedWhenConnectedOnce`.
+      if (!this._dateRange && this.element.hasAttribute('range')) {
+        let newDateRange = pulseRange.createDateRangeFromString(this.element.getAttribute('range'));
+        this._dateRange = newDateRange;
+        this._displayRange();
+        this._dispatchSignal(); // first dispatch — done here, not in initialize
       }
       this.switchToNextContext();
     }

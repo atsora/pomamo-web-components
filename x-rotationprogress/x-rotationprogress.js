@@ -21,18 +21,13 @@ var eventBus = require('eventBus');
    *
    * @element x-rotationprogress
    * @attr {string} display-mode `'bar'` (default) or `'text'`
-   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
+   * @extends pulseComponent.PulseInitializedComponent
    */
-  class RotationProgressComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
+  class RotationProgressComponent extends pulseComponent.PulseInitializedComponent {
     /** @param {...any} args */
     constructor(...args) {
       const self = super(...args);
       return self;
-    }
-
-    validateParameters () {
-      // No required attribute — proceed.
-      this.switchToNextContext();
     }
 
     initialize() {

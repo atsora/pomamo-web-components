@@ -33,9 +33,9 @@ var pulseUtility = require('pulseUtility');
    * @method isValid                  `true` when the current value is a valid ISO datetime
    * @method getISOValue              current ISO datetime
    * @method getValueAsIs             raw value (may be empty when nullable+unchecked)
-   * @extends pulseComponent.PulseParamInitializedComponent
+   * @extends pulseComponent.PulseInitializedComponent
    */
-  class DateTimePickerComponent extends pulseComponent.PulseParamInitializedComponent {
+  class DateTimePickerComponent extends pulseComponent.PulseInitializedComponent {
     /**
      * Constructor
      * 
@@ -224,10 +224,6 @@ var pulseUtility = require('pulseUtility');
       this.removeError();
       // Empty this._content
 
-      this.switchToNextContext();
-    }
-
-    validateParameters () {
       this.switchToNextContext();
     }
 

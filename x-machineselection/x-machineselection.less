@@ -122,6 +122,30 @@ x-machineselection {
 }
 
 // Group list
+// Wrapper hosting the Pulse-native circular spinner while data is being fetched.
+.machineselection-loading-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  // Top padding leaves room for the 3em-wide spinner (it expands via box-shadow
+  // both directions from a 1em center dot, so we need ~7em of clearance).
+  padding: 3.5em 0;
+}
+
+// The inner host carries `pulse-bigdisplay pulse-component-loading` so the
+// CSS rules in pulsewebcomponents-common.less:1533+ animate the .pulse-loader
+// inside with the `loadcircle` keyframe (circular spinner, not the row of
+// 3 dots that .pulse-text gives). Position relative is required because the
+// .pulse-loader inside is absolutely positioned.
+.machineselection-loading-spinner-host {
+  position: relative;
+  width: 3em;
+  height: 3em;
+  // Tame the loader font-size: loadcircle box-shadows are in em units, so
+  // smaller font ⇒ smaller spinner. ~6px gives a ~30px overall circle.
+  font-size: 6px;
+}
+
 .machineselection-categorylist {
   flex: 1 1 auto;
   min-height: 0;

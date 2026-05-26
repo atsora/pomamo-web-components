@@ -47,10 +47,20 @@ var eventBus = require('eventBus');
 
     get content () { return this._content; } // Optional
 
-    /*_orderUsingShiftEfficiency () {
+    // Sort machines worst-performance-first: set CSS `order` on the
+    // ancestor `.group-single` (flex item) so the .group-main flex container
+    // reorders rows. Lower `_shiftEfficiency` → lower order → appears first.
+    // Default `order: 999999` (set in productionmachining.less) keeps not-yet-
+    // refreshed rows at the bottom until their first response.
+    //
+    // Opt-in via `order-by-efficiency="true"` attribute — other pages that
+    // embed x-productionmachiningstatus (e.g. running) don't want their rows
+    // reordered by perf.
+    _orderUsingShiftEfficiency () {
+      if (this.element.getAttribute('order-by-efficiency') !== 'true') return;
       let parentsToOrder = $(this.element).parents('.group-single');
       $(parentsToOrder).css('order', Math.round(100.0 * this._shiftEfficiency));
-    }*/
+    }
 
     /**
       *Update display of workinformation data
@@ -217,7 +227,7 @@ var eventBus = require('eventBus');
       }
 
       this._shiftEfficiency = 999999.9; // = display last
-      //this._orderUsingShiftEfficiency();
+      this._orderUsingShiftEfficiency();
     }
 
     removeError () {
@@ -341,7 +351,7 @@ var eventBus = require('eventBus');
         shiftDiv.insertAfter(this._between);
       }
 
-      //this._orderUsingShiftEfficiency();
+      this._orderUsingShiftEfficiency();
     }
 
     // Callback events

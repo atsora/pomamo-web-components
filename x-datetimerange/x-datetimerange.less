@@ -34,6 +34,7 @@ x-datetimerange {
     //.bar-rounded-shadow; // Rounded border + shadow
 
     display: inline-flex;
+    align-items: center;
     padding: 0px;
     list-style-type: none;
     margin: 0 0 5px 0;
@@ -43,6 +44,16 @@ x-datetimerange {
   .datetimerange-li-btn {
     display: inline-block;
     vertical-align: top;
+  }
+
+  .datetimerange-li-display {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  // Visual gap between the navigation group ([<] [date] [>]) and the zoom group
+  .datetimerange-li-spacer {
+    width: 12px;
   }
 
   .datetimerange-li-text {

@@ -163,6 +163,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     pastdata: 'Past data',
     pastTooltip: ''
   },
+  lastworkinformationbar: {
+    noOperation: 'No operation',
+    pastdata: 'Past data',
+    pastTooltip: ''
+  },
   loginchangepassword: {
     user: 'User:',
     oldPassword: 'Old password:',
@@ -218,6 +223,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     selectedGroups: 'Selected groups',
     selectedMachines: 'Selected machines',
     switchToMachineSelection: 'Switch to machine selection'
+  },
+  machinetab: {
+    previousMachine: 'Previous machine',
+    nextMachine: 'Next machine',
+    serverUnreachable: 'Server unreachable'
   },
   milestonesadd: {
     shortDescriptionColon: 'Short description: ',
@@ -591,6 +601,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     pastdata: 'Données passées',
     pastTooltip: ''
   },
+  lastworkinformationbar: {
+    noOperation: "Pas d'opération",
+    pastdata: 'Données passées',
+    pastTooltip: ''
+  },
   loginchangepassword: {
     user: 'Utilisateur :',
     oldPassword: 'Ancien mot de passe :',
@@ -646,6 +661,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     selectedGroups: 'Groupes sélectionnés',
     selectedMachines: 'Machines sélectionnées',
     switchToMachineSelection: 'Passer à la sélection de machines'
+  },
+  machinetab: {
+    previousMachine: 'Machine précédente',
+    nextMachine: 'Machine suivante',
+    serverUnreachable: 'Serveur inaccessible'
   },
   milestonesadd: {
     shortDescriptionColon: 'Courte description : ',
@@ -1020,6 +1040,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     pastdata: 'Vergangene Daten',
     pastTooltip: ''
   },
+  lastworkinformationbar: {
+    noOperation: 'Kein Vorgang',
+    pastdata: 'Vergangene Daten',
+    pastTooltip: ''
+  },
   loginchangepassword: {
     user: 'Benutzer:',
     oldPassword: 'Altes Passwort:',
@@ -1075,6 +1100,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     selectedGroups: 'Ausgewählte Gruppen',
     selectedMachines: 'Ausgewählte Maschinen',
     switchToMachineSelection: 'Zur Maschinenauswahl wechseln'
+  },
+  machinetab: {
+    previousMachine: 'Vorherige Maschine',
+    nextMachine: 'Nächste Maschine',
+    serverUnreachable: 'Server nicht erreichbar'
   },
   milestonesadd: {
     shortDescriptionColon: 'Kurzbeschreibung: ',

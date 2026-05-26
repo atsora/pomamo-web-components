@@ -322,7 +322,7 @@ var eventBus = require('eventBus');
       const scale1 = fitMode === 'scroll-y'
         ? wrapperW / natW
         : Math.min(wrapperW / natW, wrapperH / natH);
-      let font = Math.max(1, Math.min(BASE * 1.9, BASE * scale1 * 0.95));
+      let font = Math.max(5, Math.min(BASE * 1.9, BASE * scale1 * 0.95));
       this._table.css('font-size', font + 'px');
 
       // Pass 2: verify the rendered grid actually fits. If it still overflows, tighten.
@@ -333,7 +333,7 @@ var eventBus = require('eventBus');
         if (realW > 0 && realH > 0) {
           const overflowScale = Math.min((wrapperW - 1) / realW, (wrapperH - 1) / realH);
           if (overflowScale < 1) {
-            font = Math.max(1, font * overflowScale);
+            font = Math.max(5, font * overflowScale);
             this._table.css('font-size', font + 'px');
           }
         }

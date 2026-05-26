@@ -39,9 +39,9 @@ var eventBus = require('eventBus');
    * @attr {string} period-context    (optional) event-bus context for `dateTimeRangeChangeEvent`
    * @attr {string} datetime-context  event-bus context for `dateTimeChangeEvent` on click
    * @fires dateTimeChangeEvent       `{ when: string }` on click, dispatched on `datetime-context`
-   * @extends pulseComponent.PulseParamInitializedComponent
+   * @extends pulseComponent.PulseInitializedComponent
    */
-  class BarTimeSelectionComponent extends pulseComponent.PulseParamInitializedComponent {
+  class BarTimeSelectionComponent extends pulseComponent.PulseInitializedComponent {
     /**
      * Constructor
      * 
@@ -322,10 +322,6 @@ var eventBus = require('eventBus');
       this._content = undefined;
 
       super.clearInitialization();
-    }
-
-    validateParameters () {
-      this.switchToNextContext();
     }
 
     displayError (message) {

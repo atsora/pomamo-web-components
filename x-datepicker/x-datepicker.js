@@ -27,9 +27,9 @@ var pulseUtility = require('pulseUtility');
    * @method isValid              `true` when the current value is a valid date
    * @method getISOValue          current ISO date (yyyy-mm-dd)
    * @method getValueAsIs         raw value of the input
-   * @extends pulseComponent.PulseParamInitializedComponent
+   * @extends pulseComponent.PulseInitializedComponent
    */
-  class DatePickerComponent extends pulseComponent.PulseParamInitializedComponent {
+  class DatePickerComponent extends pulseComponent.PulseInitializedComponent {
     /**
      * Constructor
      * 
@@ -143,10 +143,6 @@ var pulseUtility = require('pulseUtility');
       this.removeError();
       // Empty this._content
 
-      this.switchToNextContext();
-    }
-
-    validateParameters () {
       this.switchToNextContext();
     }
 

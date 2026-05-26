@@ -154,9 +154,9 @@ var pulseRange = require('pulseRange');
    * @method removeModification drop a revision (called internally on terminal state)
    * @method getModifications   current modifications filtered by kind/machine[/range]
    * @fires modificationEvent    `{ revisionid, machineid, kind, ranges, initModifications, pendingModifications }` — dispatched globally on register and every status change
-   * @extends pulseComponent.PulseParamInitializedComponent
+   * @extends pulseComponent.PulseInitializedComponent
    */
-  class ModificationManagerComponent extends pulseComponent.PulseParamInitializedComponent {
+  class ModificationManagerComponent extends pulseComponent.PulseInitializedComponent {
     /**
      * Constructor
      * 
@@ -197,12 +197,6 @@ var pulseRange = require('pulseRange');
 
     clearInitialization () {
       super.clearInitialization();
-    }
-
-    validateParameters () {
-      // Additional checks with attribute param
-
-      this.switchToNextContext();
     }
 
     displayError (message) {

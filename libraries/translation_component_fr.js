@@ -141,6 +141,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     pastdata: 'Données passées',
     pastTooltip: ''
   },
+  lastworkinformationbar: {
+    noOperation: "Pas d'opération",
+    pastdata: 'Données passées',
+    pastTooltip: ''
+  },
   loginchangepassword: {
     user: 'Utilisateur :',
     oldPassword: 'Ancien mot de passe :',
@@ -192,6 +197,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     selectedGroups: 'Groupes sélectionnés',
     selectedMachines: 'Machines sélectionnées',
     switchToMachineSelection: 'Passer à la sélection de machines'
+  },
+  machinetab: {
+    previousMachine: 'Machine précédente',
+    nextMachine: 'Machine suivante',
+    serverUnreachable: 'Serveur inaccessible'
   },
   milestonesadd: {
     shortDescriptionColon: 'Courte description : ',
