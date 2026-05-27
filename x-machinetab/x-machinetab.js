@@ -10,8 +10,6 @@
 var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
 var pulseConfig = require('pulseConfig');
-var pulseService = require('pulseService');
-var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
 
 require('x-machinedisplay/x-machinedisplay');
@@ -23,166 +21,111 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
 (function () {
 
   /**
-   * `<x-machinetab>` — stateless machine-switcher tab strip.
+   * `<x-machinetab>` — clickable tab representing a single machine in a sidebar list.
    *
-   * Performs no AJAX of its own for the tab list: it rebuilds from the ids
-   * carried by the global `machineListChanged` event. Each tab is a
-   * `.group-single` containing a `.machinetab-machine-cell` made of an
-   * `x-machinedisplay` and an icon row (`x-currenticonunansweredreason`,
-   * `x-currenticonworkinformation`, `x-currenticonnextstop`,
-   * `x-currenticoncncalarm`); icon visibility is driven by the
-   * `componentsToDisplay` config (and `showcoloredbar.cncalarm` for the
-   * CNC-alarm icon). On its own timer (`refreshingRate.currentRefreshSeconds`,
-   * default 10 s), polls `CurrentReason?MachineId=<id>` per tab and tints
-   * the cell's left border with `data.Reason.Color`. Clicking a cell — or
-   * the mobile prev/next chevrons (wrap-around) — dispatches
-   * `machineIdChangeSignal` on `machine-context`; the same event from other
-   * sources syncs the `.active` class. Responds to `askForMachineIdSignal`
-   * by re-broadcasting `requestMachineIdSignal` with the active id. Adds
-   * the `hidden-content` class on `#machine-tabs-panel` when at most one
-   * machine is present.
+   * Polls `CurrentReason?MachineId=<id>` and applies the reason color as a right border.
+   * Renders: colored mode bar + machine name (`x-machinedisplay`) + icon row.
    *
-   * @element x-machinetab
-   * @attr {string} machine-context (required) event-bus context for machine signals
-   * @attr {string} period-context  forwarded to icon children
-   * @attr {string} status-context  forwarded to icon children
-   * @fires machineIdChangeSignal   `{ newMachineId: number }` — on `machine-context`, on click / chevron nav
-   * @fires requestMachineIdSignal  `{ machineId: number }` — on `machine-context`, replies to `askForMachineIdSignal`
-   * @extends pulseComponent.PulseInitializedComponent
+   * Icons displayed (driven by `componentsToDisplay` config):
+   *  - `x-currenticonunansweredreason` — shown if `x-lastmachinestatus` is in the layout
+   *  - `x-currenticonworkinformation` — shown if `x-lastworkinformation` is in the layout
+   *  - `x-currenticonnextstop` — shown if `x-cycleprogressbar` is in the layout
+   *  - `x-currenticoncncalarm` — shown if colored bar + `showcoloredbar.cncalarm` config
+   *
+   * Clicking the tab dispatches `machineIdChangeSignal` on `machine-context` and scrolls to top.
+   * Responds to `machineIdChangeSignal` to auto-activate/deactivate based on matching machine id.
+   * Responds to `askForMachineIdSignal` to re-broadcast the active machine id.
+   *
+   * Attributes:
+   *   machine-id      - (required) integer machine id
+   *   active          - `'true'` adds `active` CSS class to the tab cell
+   *   machine-context - event bus context for machine selection
+   *   period-context  - (optional) forwarded to icon components
+   *   status-context  - (optional) forwarded to icon components
+   *
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
-  class MachineTabComponent extends pulseComponent.PulseInitializedComponent {
+  class MachineTabComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     constructor(...args) {
       const self = super(...args);
 
-      self._machineIdsArray = [];
-      self._dynamic = false;
-      self._listContainer = undefined;
-      self._activeMachineId = null;
-      self._reasonTimer = null;
+      // DOM -> never in constructor
+      self._content = undefined;
+      self._machineContent = undefined;
+      self._iconsDiv = undefined;
 
       return self;
     }
 
     get content() {
-      return this._listContainer;
-    }
-
-    // ─── LIFECYCLE ──────────────────────────────────────────────────────────
-
-    initialize() {
-      if (this.element.hasAttribute('machine-context')) {
-        eventBus.EventBus.addEventListener(this,
-          'machineIdChangeSignal',
-          this.element.getAttribute('machine-context'),
-          this.onMachineIdChange.bind(this));
-        eventBus.EventBus.addEventListener(this,
-          'askForMachineIdSignal',
-          this.element.getAttribute('machine-context'),
-          this.onAskForMachineId.bind(this));
-      }
-
-      if (eventBus.EventBus.addGlobalEventListener) {
-        eventBus.EventBus.addGlobalEventListener(this,
-          'machineListChanged', this.onMachineListChanged.bind(this));
-      }
-
-      $(this.element).empty().addClass('group-main');
-      this._listContainer = $(this.element);
-
-      // Loader DOM kept (hidden) for parity with the historical structure.
-      let loader = $('<div></div>').addClass('pulse-loader')
-        .html(this.getTranslation('loadingDots', 'Loading...')).hide();
-      this._listContainer.append($('<div></div>').addClass('pulse-loader-div').append(loader));
-
-      this._messageSpan = $('<span></span>').addClass('pulse-message');
-      this._messageDiv = $('<div></div>').addClass('pulse-message-div').append(this._messageSpan);
-      this._listContainer.append(this._messageDiv);
-
-      // Click delegation — one handler for all tab items.
-      // No-op when the clicked cell is already the active machine.
-      this._listContainer.on('click', '.machinetab-machine-cell', (e) => {
-        let machineId = Number($(e.currentTarget).closest('.group-single').attr('machine-id'));
-        if (!isNaN(machineId) && machineId !== this._activeMachineId) {
-          this._activateTab(machineId);
-        }
-      });
-
-      // Mobile chevrons: prev/next navigation between machines. Hidden on desktop
-      // via CSS; visible only inside @all-phones-media. SVG icons are inlined
-      // from images/previous.svg and images/next.svg (same pattern as periodtoolbar).
-      this._chevronPrev = $('<div></div>')
-        .addClass('machinetab-chevron machinetab-chevron-prev')
-        .attr('role', 'button')
-        .attr('tabindex', '0')
-        .attr('aria-label', this.getTranslation('previousMachine', 'Previous machine'));
-      this._chevronNext = $('<div></div>')
-        .addClass('machinetab-chevron machinetab-chevron-next')
-        .attr('role', 'button')
-        .attr('tabindex', '0')
-        .attr('aria-label', this.getTranslation('nextMachine', 'Next machine'));
-      this._chevronPrev.on('click', (e) => {
-        e.stopPropagation();
-        this._navigateAdjacent(-1);
-      });
-      this._chevronNext.on('click', (e) => {
-        e.stopPropagation();
-        this._navigateAdjacent(1);
-      });
-      this._listContainer.append(this._chevronPrev).append(this._chevronNext);
-      pulseSvg.inlineBackgroundSvg(this._chevronPrev);
-      pulseSvg.inlineBackgroundSvg(this._chevronNext);
-
-      // Late-arrival sync: pull the already-resolved id list from an
-      // x-machineselection sibling if it emitted machineListChanged before us.
-      try {
-        let machineSel = document.querySelector('x-machineselection');
-        if (machineSel && typeof machineSel.isReady === 'function' && machineSel.isReady()) {
-          let initIds = machineSel.getResolvedMachineIds();
-          if (initIds && initIds.length > 0) {
-            this._machineIdsArray = initIds.map(s => String(s));
-            this._renderList();
-          }
-        }
-      } catch (e) { /* no x-machineselection on the page */ }
-
-      this.switchToNextContext();
-    }
-
-    clearInitialization() {
-      this._stopReasonPolling();
-      eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
-      eventBus.EventBus.removeEventListenerBySignal(this, 'askForMachineIdSignal');
-      $(this.element).empty();
-      this._listContainer = undefined;
-      this._messageDiv = undefined;
-      this._messageSpan = undefined;
-      this._chevronPrev = undefined;
-      this._chevronNext = undefined;
-      this._machineIdsArray = [];
-      this._activeMachineId = null;
-      super.clearInitialization();
+      return this._content;
     }
 
     attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
+        case 'machine-id':
+          if (this.isInitialized()) {
+            let xicon = $(this._iconsDiv).find('.machinetab-icon');
+            for (let iIcon = 0; iIcon < xicon.length; iIcon++) {
+              xicon[iIcon].setAttribute('machine-id', newVal);
+            }
+            this.start();
+          }
+          break;
+        case 'active':
+          if (this.isInitialized()) {
+            if (newVal == 'true') {
+              $(this._machineContent).addClass('active');
+              if (!this.element._isActive) {
+                this.element._isActive = true;
+                this.changeSelectedMachine();
+              }
+            }
+            else {
+              this.element._isActive = false;
+              $(this._machineContent).removeClass('active');
+            }
+            let xicon = $(this._iconsDiv).find('.machinetab-icon');
+            for (let iIcon = 0; iIcon < xicon.length; iIcon++) {
+              xicon[iIcon].setAttribute('active', newVal);
+            }
+            this.start();
+          }
+          break;
         case 'machine-context':
           if (this.isInitialized()) {
             eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
-            eventBus.EventBus.addEventListener(this, 'machineIdChangeSignal', newVal, this.onMachineIdChange.bind(this));
-            eventBus.EventBus.removeEventListenerBySignal(this, 'askForMachineIdSignal');
-            eventBus.EventBus.addEventListener(this, 'askForMachineIdSignal', newVal, this.onAskForMachineId.bind(this));
-            $(this._listContainer).find('[machine-context]').attr('machine-context', newVal);
+            eventBus.EventBus.addEventListener(this,
+              'machineIdChangeSignal', newVal,
+              this.onMachineIdChange.bind(this));
+
+            eventBus.EventBus.removeEventListenerBySignal(this,
+              'askForMachineIdSignal');
+            eventBus.EventBus.addEventListener(this,
+              'askForMachineIdSignal', newVal,
+              this.onAskForMachineId.bind(this));
+
+            let xicon = $(this._iconsDiv).find('.machinetab-icon');
+            for (let iIcon = 0; iIcon < xicon.length; iIcon++) {
+              xicon[iIcon].setAttribute('machine-context', newVal);
+            }
           }
           break;
         case 'period-context':
           if (this.isInitialized()) {
-            $(this._listContainer).find('[period-context]').attr('period-context', newVal);
+            let xicon = $(this._iconsDiv).find('.machinetab-icon');
+            for (let iIcon = 0; iIcon < xicon.length; iIcon++) {
+              xicon[iIcon].setAttribute('period-context', newVal);
+            }
           }
           break;
         case 'status-context':
           if (this.isInitialized()) {
-            $(this._listContainer).find('[status-context]').attr('status-context', newVal);
+            let xicon = $(this._iconsDiv).find('.machinetab-icon');
+            for (let iIcon = 0; iIcon < xicon.length; iIcon++) {
+              xicon[iIcon].setAttribute('status-context', newVal);
+            }
           }
           break;
         default:
@@ -190,222 +133,241 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       }
     }
 
-    displayError(message) {
-      if (this._messageSpan) $(this._messageSpan).html(message);
-      if (this._messageDiv) this._messageDiv.addClass('force-visibility');
+    initialize() {
+      // listeners/dispatchers
+      if (this.element.hasAttribute('machine-context')) {
+        eventBus.EventBus.addEventListener(this,
+          'machineIdChangeSignal',
+          this.element.getAttribute('machine-context'),
+          this.onMachineIdChange.bind(this));
+
+        eventBus.EventBus.addEventListener(this,
+          'askForMachineIdSignal',
+          this.element.getAttribute('machine-context'),
+          this.onAskForMachineId.bind(this));
+      }
+
+      this.element._isActive = false; // to know if the tab is already active
+
+      // In case of clone, need to be empty :
+      $(this.element).empty();
+
+      // Create DOM - Content
+      this._content = $('<div></div>')
+        .addClass('machinetab-modecolor')
+        .addClass('machinetab-modecolor-undefined'); // default
+
+      // DOM - machine display
+      let machDisplayDiv = $('<div></div>')
+        .addClass('machinetab-machine');
+      let xmachinedisplay = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
+        'machine-id': this.element.getAttribute('machine-id')
+      });
+      $(machDisplayDiv).append(xmachinedisplay);
+
+      // DOM - icons
+      let icons = ['x-currenticonunansweredreason', 'x-currenticonworkinformation', 'x-currenticonnextstop', 'x-currenticoncncalarm'];
+      this._iconsDiv = $('<div></div>').addClass('machinetab-icons');
+      for (let i = 0; i < icons.length; i++) {
+        let xicon;
+        if (this.element.hasAttribute('period-context')) {
+          xicon = pulseUtility.createjQueryElementWithAttribute(icons[i], {
+            'machine-id': this.element.getAttribute('machine-id'),
+            'machine-context': this.element.getAttribute('machine-context'),
+            'period-context': this.element.getAttribute('period-context'),
+            'status-context': this.element.getAttribute('status-context')
+          });
+        }
+        else {
+          xicon = pulseUtility.createjQueryElementWithAttribute(icons[i], {
+            'machine-id': this.element.getAttribute('machine-id'),
+            'machine-context': this.element.getAttribute('machine-context'),
+            'status-context': this.element.getAttribute('status-context')
+          });
+        }
+        $(xicon).addClass('machinetab-icon');
+        $(this._iconsDiv).append(xicon);
+      }
+
+      this._machineContent = $('<div></div>')
+        .addClass('machinetab-machine-cell')
+        .append(machDisplayDiv).append(this._iconsDiv);
+      this._machineContent.click(
+        function (e) {
+          this.clickMachineTab(e);
+        }.bind(this)
+      );
+
+      if ((this.element.hasAttribute('active')) &&
+        (this.element.getAttribute('active') == 'true')) {
+        $(this._machineContent).addClass('active');
+        this.clickMachineTab();
+      }
+      else {
+        // Auto-activate the first machinetab inside an x-grouparray, x-grouplist,
+        // x-groupgrid or x-machinetabnav wrapper (resolver-autonomous containers).
+        let xgroup = $(this.element).parents('x-grouparray, x-grouplist, x-groupgrid, x-machinetabnav');
+        if (xgroup.length != 0) {
+          let allTabs = $(xgroup).find('x-machinetab');
+          if (allTabs.length != 0) {
+            let firstMachineTab = allTabs[0];
+            if (this.element == firstMachineTab) {
+              $(this._machineContent).addClass('active');
+              this.clickMachineTab();
+            }
+          }
+        }
+      }
+
+      $(this.element).append(this._content).append(this._machineContent);
+
+      // Show / Hide icons
+      let componentsToDisplay = pulseConfig.getArray('componentsToDisplay', []);
+
+      let posFound = componentsToDisplay.indexOf('x-lastmachinestatus');
+      if (-1 == posFound) {
+        $(this.element).find('x-currenticonunansweredreason').hide();
+      }
+      else {
+        $(this.element).find('x-currenticonunansweredreason').show();
+      }
+
+      posFound = componentsToDisplay.indexOf('x-lastworkinformation');
+      if (-1 == posFound) {
+        $(this.element).find('x-currenticonworkinformation').hide();
+      }
+      else {
+        $(this.element).find('x-currenticonworkinformation').show();
+      }
+
+      posFound = componentsToDisplay.indexOf('x-cycleprogressbar');
+      if (-1 == posFound) {
+        $(this.element).find('x-currenticonnextstop').hide();
+      }
+      else {
+        $(this.element).find('x-currenticonnextstop').show();
+      }
+
+      posFound = componentsToDisplay.indexOf('coloredbar');
+      if (-1 == posFound) {
+        posFound = componentsToDisplay.indexOf('coloredbarwithpercent');
+      }
+      if (-1 == posFound) {
+        $(this.element).find('x-currenticoncncalarm').hide();
+      }
+      else {
+        let showBar = pulseConfig.getBool('showcoloredbar.cncalarm', false);
+        if (showBar)
+          $(this.element).find('x-currenticoncncalarm').show();
+        else
+          $(this.element).find('x-currenticoncncalarm').hide();
+      }
+
+      // Initialization OK => switch to the next context
+      this.switchToNextContext();
     }
 
-    removeError() {
-      if (this._messageSpan) $(this._messageSpan).html('');
-      if (this._messageDiv) this._messageDiv.removeClass('force-visibility');
+    clearInitialization() {
+      $(this.element).empty();
+
+      this._iconsDiv = undefined;
+      this._machineContent = undefined;
+      this._content = undefined;
+
+      super.clearInitialization();
     }
 
     /**
-     * `machineListChanged` callback: rebuild the tab strip from the new id list.
+     * Validate the (event) parameters
      */
-    onMachineListChanged(event) {
-      let ids = (event.target && event.target.ids) || event.ids || [];
-      let isNetworkError = !!((event.target && event.target.error) || event.error);
-      if (this._listContainer) {
-        if (isNetworkError) {
-          this.displayError(this.getTranslation('serverUnreachable', 'Server unreachable'));
-        } else {
-          this.removeError();
-          this._machineIdsArray = ids.map(s => String(s));
-          this._renderList();
-        }
+    validateParameters() {
+      if (!this.element.hasAttribute('machine-id')) {
+        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
+        return;
       }
-    }
-
-    // ─── RENDERING ──────────────────────────────────────────────────────────
-
-    _renderList() {
-      let self = this;
-
-      // Remove machines no longer in the list
-      $(this._listContainer).find('.group-single').each(function () {
-        let machineId = String($(this).attr('machine-id'));
-        if (!self._machineIdsArray.some(id => String(id) === machineId)) {
-          if (Number(machineId) === self._activeMachineId) {
-            self._activeMachineId = null;
-          }
-          $(this).remove();
-        }
-      });
-
-      // Show/hide #machine-tabs-panel when only one machine
-      const panel = document.getElementById('machine-tabs-panel');
-      if (panel) {
-        if (this._machineIdsArray.length <= 1) {
-          panel.classList.add('hidden-content');
-        } else {
-          panel.classList.remove('hidden-content');
-        }
+      if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
+        this.switchToKey('Error',
+          () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')),
+          () => this.removeError());
+        return;
       }
 
-      // Add missing machines
-      let componentsToDisplay = pulseConfig.getArray('componentsToDisplay', []);
-      for (let i = 0; i < this._machineIdsArray.length; i++) {
-        let machineId = String(this._machineIdsArray[i]);
-        if ($(this._listContainer).find('.group-single[machine-id="' + machineId + '"]').length === 0) {
-          $(this._listContainer).append(this._createTabItem(machineId, componentsToDisplay));
-        }
-      }
-
-      // Activate first if no machine is currently active.
-      // Defer one microtask: x-machineselection's synchronous early-emit fires
-      // machineListChanged DURING HTML parsing, so page-level components on the
-      // same machine-context may not have connected yet — dispatching now would
-      // miss them and leave them stuck in "Please select a machine".
-      // The microtask ensures all synchronous connectedCallback chains have run.
-      if (this._activeMachineId === null && this._machineIdsArray.length > 0) {
-        let firstId = Number(this._machineIdsArray[0]);
-        let self = this;
-        Promise.resolve().then(function () {
-          if (self._activeMachineId === null) self._activateTab(firstId);
-        });
-      }
-
-      this._startReasonPolling();
+      this.switchToNextContext();
     }
 
-    _createTabItem(machineId, componentsToDisplay) {
-      let machineContext = this.element.getAttribute('machine-context');
-      let statusContext = this.element.getAttribute('status-context');
-      let periodContext = this.element.getAttribute('period-context');
-
-      let xmachinedisplay = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
-        'machine-id': machineId
-      });
-      let machineDiv = $('<div></div>').addClass('machinetab-machine').append(xmachinedisplay);
-
-      let iconsDiv = $('<div></div>').addClass('machinetab-icons');
-      let iconDefs = [
-        { tag: 'x-currenticonunansweredreason', showIf: 'x-lastmachinestatus' },
-        { tag: 'x-currenticonworkinformation', showIf: 'x-lastworkinformation' },
-        { tag: 'x-currenticonnextstop', showIf: 'x-cycleprogressbar' },
-        { tag: 'x-currenticoncncalarm', showIf: null }
-      ];
-      for (let def of iconDefs) {
-        let attrs = { 'machine-id': machineId, 'machine-context': machineContext };
-        if (statusContext) attrs['status-context'] = statusContext;
-        if (periodContext) attrs['period-context'] = periodContext;
-        let xicon = pulseUtility.createjQueryElementWithAttribute(def.tag, attrs);
-        $(xicon).addClass('machinetab-icon');
-        if (def.showIf !== null) {
-          if (componentsToDisplay.indexOf(def.showIf) === -1) {
-            $(xicon).hide();
-          }
-        } else {
-          // x-currenticoncncalarm: needs coloredbar + config flag
-          let hasColoredBar = componentsToDisplay.indexOf('coloredbar') !== -1
-            || componentsToDisplay.indexOf('coloredbarwithpercent') !== -1;
-          if (!hasColoredBar || !pulseConfig.getBool('showcoloredbar.cncalarm', false)) {
-            $(xicon).hide();
-          }
-        }
-        iconsDiv.append(xicon);
-      }
-
-      let cellDiv = $('<div></div>').addClass('machinetab-machine-cell')
-        .append(machineDiv).append(iconsDiv);
-
-      return $('<div></div>').addClass('group-single').attr('machine-id', machineId)
-        .append(cellDiv);
+    displayError(message) {
+      $(this._content).addClass('machinetab-modecolor-undefined');
     }
 
-    // ─── ACTIVE STATE ────────────────────────────────────────────────────────
-
-    _activateTab(machineId) {
-      eventBus.EventBus.dispatchToContext('machineIdChangeSignal',
-        this.element.getAttribute('machine-context'),
-        { newMachineId: machineId });
-      $('.pulse-mainarea-full').animate({ scrollTop: 0 }, 'slow');
+    removeError() {
+      // Do nothing
     }
 
-    _syncActiveClass(machineId) {
-      this._activeMachineId = machineId;
-      $(this._listContainer).find('.group-single').each(function () {
-        let cell = $(this).find('.machinetab-machine-cell');
-        if (Number($(this).attr('machine-id')) === machineId) {
-          $(this).addClass('active');
-          cell.addClass('active');
-        } else {
-          $(this).removeClass('active');
-          cell.removeClass('active');
-        }
-      });
+    /**
+     * Refresh interval: `currentRefreshSeconds` config * 1000 (default 10 s).
+     *
+     * @returns {number} Interval in ms.
+     */
+    get refreshRate() {
+      return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
     }
 
-    // Navigate to the prev (-1) or next (+1) machine in the list, with wrap-around.
-    // Used by the mobile chevron buttons.
-    _navigateAdjacent(direction) {
-      if (!this._machineIdsArray || this._machineIdsArray.length <= 1) return;
-      let len = this._machineIdsArray.length;
-      let currentIdx = this._machineIdsArray.findIndex(
-        id => Number(id) === this._activeMachineId);
-      if (currentIdx === -1) currentIdx = 0;
-      let newIdx = (currentIdx + direction + len) % len;
-      let newId = Number(this._machineIdsArray[newIdx]);
-      this._activateTab(newId);
+    /**
+     * REST endpoint: `CurrentReason?MachineId=<id>`
+     *
+     * @returns {string} Short URL without base path.
+     */
+    getShortUrl() {
+      return 'CurrentReason?MachineId=' + this.element.getAttribute('machine-id');
     }
 
-    // ─── CURRENT REASON POLLING ──────────────────────────────────────────────
-
-    _startReasonPolling() {
-      this._stopReasonPolling();
-      this._fetchAllReasons();
-      let interval = 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
-      this._reasonTimer = setInterval(() => this._fetchAllReasons(), interval);
+    /**
+     * Applies the current reason color as `border-right-color` on the mode bar div.
+     *
+     * @param {{ Reason: { Color: string } }} data
+     */
+    refresh(data) {
+      $(this._content)
+        .removeClass('machinetab-modecolor-undefined')
+        .css('border-right-color', data.Reason.Color);
     }
 
-    _stopReasonPolling() {
-      if (this._reasonTimer) {
-        clearInterval(this._reasonTimer);
-        this._reasonTimer = null;
-      }
-    }
-
-    _fetchAllReasons() {
-      for (let machineId of this._machineIdsArray) {
-        this._fetchReason(String(machineId));
-      }
-    }
-
-    _fetchReason(machineId) {
-      let path = this.getConfigOrAttribute('path', '');
-      if (!path) return;
-      let url = path + 'CurrentReason?MachineId=' + machineId;
-      let container = this._listContainer;
-      pulseService.runAjaxSimple(url,
-        function (data) {
-          if (!container) return;
-          let cell = container[0].querySelector('.group-single[machine-id="' + machineId + '"] .machinetab-machine-cell');
-          if (cell && data.Reason && data.Reason.Color) {
-            cell.style.borderLeftColor = data.Reason.Color;
-          }
-        },
-        null, null
-      );
-    }
-
-    // ─── EVENT CALLBACKS ─────────────────────────────────────────────────────
+    // Callback events
 
     onMachineIdChange(event) {
-      if (this._listContainer) {
-        this._syncActiveClass(event.target.newMachineId);
+      if (this.element.getAttribute('machine-id') == event.target.newMachineId) {
+        this.element.setAttribute('active', 'true');
+      }
+      else {
+        this.element.setAttribute('active', 'false');
       }
     }
 
     onAskForMachineId() {
-      if (this._activeMachineId !== null) {
+      if (this.element.querySelector('.active')) {
         eventBus.EventBus.dispatchToContext('requestMachineIdSignal',
           this.element.getAttribute('machine-context'),
-          { machineId: this._activeMachineId });
+          { machineId: Number(this.element.getAttribute('machine-id')) });
       }
+    }
+
+    clickMachineTab(e) {
+      this.changeSelectedMachine();
+    }
+
+    /**
+     * Dispatches `machineIdChangeSignal` on `machine-context` with this tab's machine id,
+     * then smoothly scrolls the main content area to the top.
+     */
+    changeSelectedMachine() {
+      eventBus.EventBus.dispatchToContext('machineIdChangeSignal',
+        this.element.getAttribute('machine-context'),
+        { newMachineId: Number(this.element.getAttribute('machine-id')) });
+
+      $('.pulse-mainarea-full').animate({ scrollTop: 0 }, 'slow');
     }
 
   }
 
-  pulseComponent.registerElement('x-machinetab', MachineTabComponent, ['machine-context', 'period-context', 'status-context']);
+  pulseComponent.registerElement('x-machinetab', MachineTabComponent, ['machine-id', 'active', 'machine-context', 'period-context', 'status-context']);
 })();

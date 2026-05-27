@@ -440,30 +440,31 @@ require('x-datetimepicker/x-datetimepicker');
         }
         this._nextDispatch = new Date(this._lastDispatch.getTime() + 100); // 0.1 sec
         let timeBeforeNextDispatch = this._nextDispatch.getTime() - now.getTime();
-        console.log('x-datetimerange - signal in ' + timeBeforeNextDispatch + 'msec');
-        setTimeout(function () { // to avoid closure
-          return function () {
-            console.log('x-datetimerange - REAL signal ');
-
-            if (this.element.hasAttribute('period-context')) {
-              eventBus.EventBus.dispatchToContext('dateTimeRangeChangeEvent',
-                this.element.getAttribute('period-context'),
-                {
-                  daterange: this._dateRange,
-                  stringrange: pulseUtility.convertDateRangeForWebService(this._dateRange)
-                });
-            }
-            else {
-              eventBus.EventBus.dispatchToAll('dateTimeRangeChangeEvent', {
+        // Deferred dispatch — coalesces multiple asks that arrive within the
+        // 100ms throttle window (typical when an orchestrator clones N tiles
+        // and each child bar dispatches askForDateTimeRangeEvent in sequence).
+        // Previously this used a malformed IIFE (`function () { return function () {…}; }`)
+        // that setTimeout invoked once, getting back the inner function but
+        // never calling it — so any clone created within the throttle window
+        // stayed stuck in "Missing range".
+        setTimeout(() => {
+          if (this.element.hasAttribute('period-context')) {
+            eventBus.EventBus.dispatchToContext('dateTimeRangeChangeEvent',
+              this.element.getAttribute('period-context'),
+              {
                 daterange: this._dateRange,
                 stringrange: pulseUtility.convertDateRangeForWebService(this._dateRange)
               });
-            }
-            this._lastDispatch = new Date();
-            this._nextDispatch = null;
-          };
-        }.bind(this)
-          , timeBeforeNextDispatch);
+          }
+          else {
+            eventBus.EventBus.dispatchToAll('dateTimeRangeChangeEvent', {
+              daterange: this._dateRange,
+              stringrange: pulseUtility.convertDateRangeForWebService(this._dateRange)
+            });
+          }
+          this._lastDispatch = new Date();
+          this._nextDispatch = null;
+        }, timeBeforeNextDispatch);
       }
     }
 

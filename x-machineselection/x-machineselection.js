@@ -29,8 +29,9 @@ require('x-freetext/x-freetext');
    * list on page 1, the ordered selection plus a live machine preview on page 2.
    * Resolves groups into machine ids internally (locally from the boot
    * `Machine/Groups` fetch, cached, or via `MachinesFromGroups` AJAX) and dedupes
-   * the result. Dynamic groups are re-polled every `dynamicGroupRefreshSeconds`
-   * (default 30s).
+   * the result. The resolution runs once at boot and again on user action or
+   * `configChangeEvent`; downstream orchestrators (`x-grouplist`, `x-groupgrid`,
+   * `x-grouparray`) own the periodic re-poll for their own dynamic groups.
    *
    * In default mode the selection is persisted to `pulseConfig` (keys `machine`
    * and `group`) and the resolved machine ids are emitted on the global event bus
@@ -42,7 +43,7 @@ require('x-freetext/x-freetext');
    * @attr {boolean} in-report          output to attributes instead of `pulseConfig`
    * @attr {string}  pulse-machines     (in-report output) selected machine ids, comma-separated
    * @attr {string}  pulse-groups       (in-report output) selected group ids, comma-separated
-   * @fires machineListChanged          `{ ids: string[], source?: 'url'|'url-early'|'user'|'group-poll', error?: 'network' }`
+   * @fires machineListChanged          `{ ids: string[], source?: 'url'|'url-early'|'user', error?: 'network' }`
    * @method changeMachineSelection     opens the selection dialog
    * @method fillExternalSummaryDisplay writes the current selection summary into a given element
    * @method getMachinesArray           copy of the current machine id selection
@@ -94,7 +95,6 @@ require('x-freetext/x-freetext');
       self._resolvedMachineIds = [];
       self._isResolvedReady = false;
       self._resolvedGroupCache = new Map();
-      self._dynamicPollTimer = null;
       self._retryTimer = null;
       // Inflight key for in-progress MachinesFromGroups call (joined GroupIds).
       // Prevents duplicate AJAX when _resolveAndEmit fires twice in a row during boot
@@ -142,10 +142,6 @@ require('x-freetext/x-freetext');
     }
 
     clearInitialization() {
-      if (this._dynamicPollTimer) {
-        clearTimeout(this._dynamicPollTimer);
-        this._dynamicPollTimer = null;
-      }
       if (this._retryTimer) {
         clearTimeout(this._retryTimer);
         this._retryTimer = null;
@@ -1682,9 +1678,10 @@ require('x-freetext/x-freetext');
      * (locally for single-machine groups, via REST `MachinesFromGroups` for the rest),
      * dedupes preserving order, then dispatches a single `machineListChanged` event.
      *
-     * Schedules a poll for dynamic groups via `_scheduleDynamicPoll()`.
+     * Runs once at boot and again on user action / config change. Downstream
+     * orchestrators handle their own periodic re-poll for dynamic groups.
      *
-     * @param {'url'|'user'|'group-poll'} source - origin of the resolution
+     * @param {'url'|'user'} source - origin of the resolution
      */
     _resolveAndEmit(source) {
       let machineConfig = pulseConfig.getString(this._configMachines, '');
@@ -1693,14 +1690,12 @@ require('x-freetext/x-freetext');
       // 1) Direct machine list — takes precedence
       if (machineConfig && machineConfig.trim() !== '') {
         let ids = machineConfig.split(',').map(s => s.trim()).filter(s => s !== '');
-        this._scheduleDynamicPoll(false);
         this._emitMachineList(ids, source);
         return;
       }
 
       // 2) Empty
       if (!groupConfig || groupConfig.trim() === '') {
-        this._scheduleDynamicPoll(false);
         this._emitMachineList([], source);
         return;
       }
@@ -1745,7 +1740,6 @@ require('x-freetext/x-freetext');
       }
 
       if (unresolvedGroups.length === 0) {
-        this._scheduleDynamicPoll(hasDynamic);
         this._emitMachineList(this._dedupePreserveOrder(resolvedIds), source);
         return;
       }
@@ -1778,7 +1772,6 @@ require('x-freetext/x-freetext');
             }
           }
           let combined = resolvedIds.concat(fetched);
-          self._scheduleDynamicPoll(isDynamic);
           self._emitMachineList(self._dedupePreserveOrder(combined), source);
         },
         function (errData) {
@@ -1846,22 +1839,6 @@ require('x-freetext/x-freetext');
       }, delay);
     }
 
-    _scheduleDynamicPoll(hasDynamic) {
-      if (this._dynamicPollTimer) {
-        clearTimeout(this._dynamicPollTimer);
-        this._dynamicPollTimer = null;
-      }
-      if (!hasDynamic) return;
-      // Period defined by `dynamicGroupRefreshSeconds` config (default 30s).
-      // Dynamic groups re-fetch their machine list at this cadence so the UI
-      // reflects backend criteria changes (machines entering/leaving the group).
-      let period = pulseConfig.getInt('dynamicGroupRefreshSeconds', 30) * 1000;
-      if (period < 5000) period = 5000;
-      let self = this;
-      this._dynamicPollTimer = setTimeout(function () {
-        self._resolveAndEmit('group-poll');
-      }, period);
-    }
   }
 
   pulseComponent.registerElement('x-machineselection', MachineSelectionComponent, ['unique-machine']);

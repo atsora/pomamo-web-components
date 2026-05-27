@@ -8,20 +8,28 @@ SPDX-License-Identifier: Apache-2.0
 <div class="static-tests">
 
   <div class="demo-block">
-    <div class="demo-sub-title">Default strip (machines 1..4 from the shared scenario)</div>
-    <!-- Headless period source: drives the range needed by per-tab icons -->
+    <div class="demo-sub-title">Single tab — machine 1 (active)</div>
     <x-periodmanager displaydaysrange="0" displayhoursrange="8" exclude-now="false" period-context="machinetab-demo"></x-periodmanager>
-    <x-machinetab id="machinetab-main" machine-context="demo" period-context="machinetab-demo"></x-machinetab>
-    <div class="demo-meta">
-      Selected machine: <span id="selected-machine">—</span>
-    </div>
+    <x-machinetab machine-id="1" active="true" machine-context="demo" period-context="machinetab-demo"></x-machinetab>
   </div>
 
   <div class="demo-block">
-    <div class="demo-sub-title">Re-dispatch <code>machineListChanged</code></div>
-    <button id="dispatch-all">Restore 4 machines</button>
-    <button id="dispatch-empty">Send empty list</button>
-    <button id="dispatch-error">Simulate network error</button>
+    <div class="demo-sub-title">Single tab — machine 2</div>
+    <x-machinetab machine-id="2" machine-context="demo" period-context="machinetab-demo"></x-machinetab>
+  </div>
+
+  <div class="demo-block">
+    <div class="demo-sub-title">Single tab — machine 3</div>
+    <x-machinetab machine-id="3" machine-context="demo" period-context="machinetab-demo"></x-machinetab>
+  </div>
+
+  <div class="demo-block">
+    <div class="demo-sub-title">Invalid machine id (delayed error)</div>
+    <x-machinetab machine-id="not-a-number" machine-context="demo" period-context="machinetab-demo"></x-machinetab>
+  </div>
+
+  <div class="demo-meta">
+    Selected machine (last <code>machineIdChangeSignal</code>): <span id="selected-machine">—</span>
   </div>
 
 </div>

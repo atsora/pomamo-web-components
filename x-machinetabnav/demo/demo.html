@@ -1,0 +1,24 @@
+<!--
+Copyright (C) 2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+
+  <div class="demo-block">
+    <div class="demo-sub-title">Mobile chevrons (resize viewport to phone width)</div>
+    <p>Click prev/next: the <code>selected-machine</code> below cycles through ids 1..4 with wrap-around.</p>
+    <x-machinetabnav id="machinetabnav-main" machine-context="demo"></x-machinetabnav>
+    <div class="demo-meta">
+      Selected machine: <span id="selected-machine">—</span>
+    </div>
+  </div>
+
+  <div class="demo-block">
+    <div class="demo-sub-title">Re-dispatch <code>machineListChanged</code></div>
+    <button id="dispatch-all">Restore 4 machines</button>
+    <button id="dispatch-empty">Send empty list</button>
+  </div>
+
+</div>

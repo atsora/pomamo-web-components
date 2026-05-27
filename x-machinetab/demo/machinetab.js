@@ -11,11 +11,8 @@ var eventBus = require('eventBus');
 
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
-// x-machinetab no longer takes a `machine-id` attribute: the tab list is
-// rebuilt from the global `machineListChanged` event. We dispatch it below
-// with the canonical scenario machines (1..4) so the demo shows a real strip.
-// Each tab also embeds icon children driven by these endpoints — enable them
-// via componentsToDisplay so the icons aren't hidden by default.
+// Each tab embeds icon children driven by these endpoints — enable them via
+// componentsToDisplay so the icons aren't hidden by default.
 pulseConfig.setGlobal('componentsToDisplay', [
   'x-lastmachinestatus',      // unanswered-reason icon
   'x-lastworkinformation',    // missing-work-info icon
@@ -33,28 +30,11 @@ require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CycleProgres
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CncAlarm');
 
 $(function () {
-  var ids = SCENARIO.MACHINES.map(function (m) { return String(m.id); });
-
-  // Late-dispatch so x-machinetab's initialize() has run and is subscribed.
-  setTimeout(function () {
-    eventBus.EventBus.dispatchToAll('machineListChanged', { ids: ids, source: 'user' });
-  }, 0);
-
-  // Surface clicks so we can see machine-context wiring is working.
+  // Surface clicks so the wiring on machine-context is observable.
   eventBus.EventBus.addEventListener({ element: document.body },
     'machineIdChangeSignal', 'demo',
     function (event) {
       var newId = event.target && event.target.newMachineId;
       $('#selected-machine').text(newId != null ? String(newId) : '—');
     });
-
-  $('#dispatch-empty').click(function () {
-    eventBus.EventBus.dispatchToAll('machineListChanged', { ids: [], source: 'user' });
-  });
-  $('#dispatch-all').click(function () {
-    eventBus.EventBus.dispatchToAll('machineListChanged', { ids: ids, source: 'user' });
-  });
-  $('#dispatch-error').click(function () {
-    eventBus.EventBus.dispatchToAll('machineListChanged', { ids: [], error: 'network' });
-  });
 });
