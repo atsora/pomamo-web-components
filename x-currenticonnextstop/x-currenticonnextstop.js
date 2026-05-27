@@ -142,6 +142,11 @@ var eventBus = require('eventBus');
       //this._messageSpan = undefined;
       this._content = undefined;
 
+      // super.clearInitialization wipes all listeners via removeEventListenerByScope.
+      // Reset the flag so the next initialize() re-registers them instead of
+      // short-circuiting in _createListenersDispatchers().
+      this._dispatchersListenersCreated = false;
+
       super.clearInitialization();
     }
 
