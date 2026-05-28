@@ -15,7 +15,10 @@
 // === CONTENT ===
 x-machinetab {
   display: inline-block;
-  cursor: pointer;
+  // Cursor is set on `.machinetab-machine-cell` itself, not on the host:
+  // pointer-events:none on the active cell makes mouse events fall back to
+  // the host's cursor — so keep the host neutral.
+  cursor: default;
   margin: 8px 0;
   width: 194px;
   height: 72px;
@@ -40,6 +43,15 @@ x-machinetab {
     height: 90%;
     padding-top: 5%;
     padding-bottom: 5%;
+    cursor: pointer;
+
+    // The active machine is, by definition, the currently-selected one — no
+    // sense triggering changeSelectedMachine/scroll-to-top on a click that
+    // would re-confirm the same selection. Disable pointer events so the
+    // cell falls back to the host x-machinetab `cursor: default`.
+    &.active {
+      pointer-events: none;
+    }
   }
 
   .machinetab-machine {
@@ -57,6 +69,44 @@ x-machinetab {
       height: 32px;
       width: 32px;
       margin: 4px;
+    }
+  }
+}
+
+// Phone display: simplified card — machine name only, no colored bar, no icons,
+// fits between the x-machinetabnav chevrons. Clicking is a no-op (the chevrons
+// drive the selection on mobile).
+@media @all-phones-media {
+  x-machinetab {
+    display: block;
+    width: auto;
+    height: auto;
+    margin: 0;
+    cursor: default;
+
+    .machinetab-modecolor {
+      display: none;
+    }
+
+    .machinetab-machine-cell {
+      float: none;
+      width: 100%;
+      height: auto;
+      padding: 0.3em 0.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .machinetab-machine {
+      margin: 0;
+      flex: 1 1 auto;
+      min-width: 0;
+      text-align: center;
+    }
+
+    .machinetab-icons {
+      display: none;
     }
   }
 }

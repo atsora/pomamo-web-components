@@ -287,11 +287,23 @@ var eventBus = require('eventBus');
     }
 
     /**
-     * `machineIdChangeSignal` callback: track the active machine id so
-     * prev/next navigation knows where to start from.
+     * `machineIdChangeSignal` callback: track the active machine id and
+     * mark the matching `.group-single` wrapper with `.active`. The CSS
+     * `@all-phones-media` rule keys off this class to show only the
+     * currently-active row on mobile (the others stay in the DOM as
+     * `display:none` so their event-bus listeners keep working).
      */
     onMachineIdChange(event) {
       this._activeMachineId = Number(event.target.newMachineId);
+      if (!this._content) return;
+      let items = this._content.querySelectorAll('.group-single');
+      items.forEach((el) => {
+        if (Number(el.getAttribute('machine-id')) === this._activeMachineId) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      });
     }
 
     /**
@@ -382,12 +394,27 @@ var eventBus = require('eventBus');
         }
       }
 
-      // 4. Activate the first x-machinetab if none is active.
-      let tabs = this._content.querySelectorAll('x-machinetab');
-      if (tabs.length > 0) {
-        let hasActive = false;
-        tabs.forEach(t => { if (t.getAttribute('active') === 'true') hasActive = true; });
-        if (!hasActive) tabs[0].setAttribute('active', 'true');
+      // 4. Auto-activate the first machine if none is active. Dispatched via
+      //    machineIdChangeSignal (deferred one microtask so children finish
+      //    their connectedCallback chains first). The dispatch sets:
+      //    - `.group-single.active` (via our own onMachineIdChange listener)
+      //    - `x-machinetab[active="true"]` (via the tab's own listener)
+      //    and notifies any other page-level component on machine-context.
+      //    Setting `active="true"` directly on the cloned x-machinetab
+      //    wouldn't propagate at this point: the tab isn't isInitialized()
+      //    yet, so its attribute handler is a no-op.
+      let hasActive = this._activeMachineId !== null
+        || this._content.querySelector('.group-single.active') !== null;
+      if (!hasActive && this._machineIdsArray.length > 0) {
+        let firstId = Number(this._machineIdsArray[0]);
+        let self = this;
+        Promise.resolve().then(() => {
+          if (self._activeMachineId === null) {
+            eventBus.EventBus.dispatchToContext('machineIdChangeSignal',
+              self.element.getAttribute('machine-context'),
+              { newMachineId: firstId });
+          }
+        });
       }
 
       // 5. Mark single-machine selections so the host page can collapse the

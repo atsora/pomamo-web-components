@@ -64,6 +64,9 @@ x-machinetabnav {
   }
 }
 
+// Phone display: horizontal layout — chevron-prev | active machinetab | chevron-next.
+// Only the currently-active .group-single row is shown; the others are hidden
+// (kept in the DOM so their event-bus listeners stay live).
 @media @all-phones-media {
   x-machinetabnav {
     display: flex;
@@ -71,10 +74,35 @@ x-machinetabnav {
     align-items: center;
     justify-content: space-between;
     gap: 0.5em;
+    height: auto;
+    width: fit-content;
+    max-width: 100%;
+    min-width: 90%;
+    margin: 0.4em auto;
+    padding: 0.2em 0.4em;
+    background-color: @box_color;
+    border: 1px solid @color_window_border;
+    border-radius: @cellbar-corner-radius;
+    box-sizing: border-box;
 
     .machinetabnav-content {
       flex: 1 1 auto;
       min-width: 0;
+      height: auto;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .group-single {
+      display: none;
+      width: auto;
+    }
+    .group-single.active {
+      display: block;
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 100%;
     }
 
     .machinetabnav-chevron {
