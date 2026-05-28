@@ -390,7 +390,12 @@ var eventBus = require('eventBus');
         if (!hasActive) tabs[0].setAttribute('active', 'true');
       }
 
-      // 5. Clear the disableDeleteWhenDisconnect markers shortly after, once
+      // 5. Mark single-machine selections so the host page can collapse the
+      //    surrounding tab list (no point showing a one-row picker).
+      this.element.classList.toggle('single-machine',
+        this._machineIdsArray.length === 1);
+
+      // 6. Clear the disableDeleteWhenDisconnect markers shortly after, once
       //    any pending move has had time to settle.
       setTimeout(this._removeDisable.bind(this), 500);
     }

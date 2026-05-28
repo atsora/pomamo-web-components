@@ -27,9 +27,10 @@ var eventBus = require('eventBus');
    * is `'true'`. Listens to `onCncAlarmStatusChange` on `status-context`.
    *
    * @element x-currenticoncncalarm
-   * @attr {number}  machine-id      (required) machine id
+   * @attr {number}  machine-id      machine id (required unless `machine-context` is set)
    * @attr {boolean} active          `'true'` adds the `.active` class on the inner content
    * @attr {string}  status-context  event-bus context for `onCncAlarmStatusChange`
+   * @attr {string}  machine-context event-bus context for `machineIdChangeSignal` (sets `machine-id` from the bus)
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class CurrentIconCNCAlarmComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
@@ -81,6 +82,22 @@ var eventBus = require('eventBus');
               this.onCncAlarmStatusChange.bind(this));
           }
           //this.start(); // Why ? Is it useful ? --RR
+          break;
+        case 'machine-context':
+          // Only re-bind to a new context if we were already following the bus
+          // (no explicit machine-id). Per-tab variants keep their fixed id.
+          if (this._dispatchersListenersCreated
+            && !this.element.hasAttribute('machine-id')) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
+            eventBus.EventBus.removeEventListenerBySignal(this, 'requestMachineIdSignal');
+            eventBus.EventBus.addEventListener(this,
+              'machineIdChangeSignal', newVal,
+              this.onMachineIdChange.bind(this));
+            eventBus.EventBus.addEventListener(this,
+              'requestMachineIdSignal', newVal,
+              this.onMachineIdChange.bind(this));
+            eventBus.EventBus.dispatchToContext('askForMachineIdSignal', newVal);
+          }
           break;
         default:
           break;
@@ -138,12 +155,26 @@ var eventBus = require('eventBus');
 
     _createListenersDispatchers () {
       if (false == this._dispatchersListenersCreated) {
-        /*if (this.element.hasAttribute('machine-context')) {
+        // Only follow machine-context when no explicit machine-id has been
+        // stamped on this element. The per-tab variant inside <x-machinetab>
+        // is pre-bound to a fixed machine and must not switch to the active
+        // one when the user picks another tab — only the page-level instance
+        // (with machine-context but no machine-id in markup) follows the bus.
+        if (this.element.hasAttribute('machine-context')
+          && !this.element.hasAttribute('machine-id')) {
+          let ctx = this.element.getAttribute('machine-context');
           eventBus.EventBus.addEventListener(this,
-            'machineIdChangeSignal',
-            this.element.getAttribute('machine-context'),
+            'machineIdChangeSignal', ctx,
             this.onMachineIdChange.bind(this));
-        }*/
+          // x-machinetab replies on `requestMachineIdSignal` when something
+          // dispatches `askForMachineIdSignal` — needed when this component
+          // mounts after the initial machineIdChangeSignal has already been
+          // fired by the active tab.
+          eventBus.EventBus.addEventListener(this,
+            'requestMachineIdSignal', ctx,
+            this.onMachineIdChange.bind(this));
+          eventBus.EventBus.dispatchToContext('askForMachineIdSignal', ctx);
+        }
         if (this.element.hasAttribute('status-context')) {
           eventBus.EventBus.addEventListener(this,
             'onCncAlarmStatusChange',
@@ -319,6 +350,22 @@ var eventBus = require('eventBus');
     }
 
     /**
+     * Event bus callback for `machineIdChangeSignal` (payload `newMachineId`) and
+     * `requestMachineIdSignal` (payload `machineId`) on `machine-context`.
+     * Updates `machine-id` so the component restarts its query for the new machine.
+     *
+     * @param {Object} event
+     */
+    onMachineIdChange (event) {
+      let newId = event.target.newMachineId !== undefined
+        ? event.target.newMachineId
+        : event.target.machineId;
+      if (newId !== undefined) {
+        this.element.setAttribute('machine-id', newId);
+      }
+    }
+
+    /**
      * Event callback in case a config is updated: (re-)start the component
      *
      * @param {*} event
@@ -343,5 +390,5 @@ var eventBus = require('eventBus');
     }
   }
 
-  pulseComponent.registerElement('x-currenticoncncalarm', CurrentIconCNCAlarmComponent, ['machine-id', 'range', 'active', 'status-context']);
+  pulseComponent.registerElement('x-currenticoncncalarm', CurrentIconCNCAlarmComponent, ['machine-id', 'range', 'active', 'status-context', 'machine-context']);
 })();
