@@ -1,37 +1,33 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Height = default - Machine 3</label>
+  <p>Renders observation state slots (Production / Setup / Maintenance) over a range.</p>
+
+  <h3>Machine 1 — Production → Setup → Production (3 slots) <small>(machine-id=1)</small></h3>
   <div class="pulse-bar-div">
-    <x-observationstatebar id="height_default_machine3" machine-id=1 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+    <x-observationstatebar machine-id="1" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
       path='http://localhost:8082/'></x-observationstatebar>
   </div>
 
-  <label>Height = 60 - Machine 3</label>
+  <h3>Machine 2 — Production then Maintenance (2 slots), height=10 <small>(machine-id=2)</small></h3>
   <div class="pulse-bar-div">
-    <x-observationstatebar id="height_60_machine3" machine-id=1 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
-      path='http://localhost:8082/' height=60></x-observationstatebar>
+    <x-observationstatebar machine-id="2" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/' height="10"></x-observationstatebar>
   </div>
 
-  <label>Height = 10 - Machine 2</label>
+  <h3>Machine 3 — uniform Production, height=60 <small>(machine-id=3)</small></h3>
   <div class="pulse-bar-div">
-    <x-observationstatebar id="height_10_machine2" machine-id=4 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
-      path='http://localhost:8082/' height=10></x-observationstatebar>
+    <x-observationstatebar machine-id="3" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/' height="60"></x-observationstatebar>
   </div>
 
-  <label>Error: not connected, check the network</label>
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div class="pulse-bar-div">
-    <x-observationstatebar id="error_check_the_network" machine-id=2 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
-      path='http://localhost:8082/'></x-observationstatebar>
-  </div>
-
-  <label>Error: invalid machine-id</label>
-  <div class="pulse-bar-div">
-    <x-observationstatebar id="error_machineid" machine-id='id au pif' range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+    <x-observationstatebar machine-id="999" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
       path='http://localhost:8082/'></x-observationstatebar>
   </div>
 </div>

@@ -1,19 +1,43 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Motion bar used for the time below (8h window ending now)</label>
+  <p>Accumulates the running-motion duration from a sibling <code>x-reasonslotbar</code>
+     via <code>motionChangeEvent</code> on the shared <code>motion-context</code>.
+     Each machine below has a different motion ratio.</p>
+
+  <h3>Machine 1 — 50 % motion (4 h / 8 h) <small>(machine-id=1)</small></h3>
   <div>
-    <x-reasonslotbar id="reasonslotbar" machine-id=1 motion-context='motiontimeTEST'
+    <x-reasonslotbar machine-id="1" motion-context="motiontime_1"
       range='[2026-05-21T00:00:00.000Z;2026-05-22T00:00:00.000Z)'
-      path='http://localhost:8082/' height=20 update=30></x-reasonslotbar>
+      path='http://localhost:8082/' height="20" update="30"></x-reasonslotbar>
+    <x-motiontime machine-id="1" motion-context="motiontime_1"></x-motiontime>
   </div>
 
-  <label>Motion time accumulated from the bar above (Machine 1 → 4h motion)</label>
+  <h3>Machine 2 — 75 % motion (6 h / 8 h) <small>(machine-id=2)</small></h3>
   <div>
-    <x-motiontime id="motiontime" machine-id=1 motion-context='motiontimeTEST'></x-motiontime>
+    <x-reasonslotbar machine-id="2" motion-context="motiontime_2"
+      range='[2026-05-21T00:00:00.000Z;2026-05-22T00:00:00.000Z)'
+      path='http://localhost:8082/' height="20" update="30"></x-reasonslotbar>
+    <x-motiontime machine-id="2" motion-context="motiontime_2"></x-motiontime>
+  </div>
+
+  <h3>Machine 3 — 62.5 % motion (5 h / 8 h) <small>(machine-id=3)</small></h3>
+  <div>
+    <x-reasonslotbar machine-id="3" motion-context="motiontime_3"
+      range='[2026-05-21T00:00:00.000Z;2026-05-22T00:00:00.000Z)'
+      path='http://localhost:8082/' height="20" update="30"></x-reasonslotbar>
+    <x-motiontime machine-id="3" motion-context="motiontime_3"></x-motiontime>
+  </div>
+
+  <h3>Error — sibling bar fails to load (motion-context never fires) <small>(machine-id=999)</small></h3>
+  <div>
+    <x-reasonslotbar machine-id="999" motion-context="motiontime_999"
+      range='[2026-05-21T00:00:00.000Z;2026-05-22T00:00:00.000Z)'
+      path='http://localhost:8082/' height="20" update="30"></x-reasonslotbar>
+    <x-motiontime machine-id="999" motion-context="motiontime_999"></x-motiontime>
   </div>
 </div>

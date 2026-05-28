@@ -1,18 +1,37 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
-<div class="dynamic-tests">
+<div class="static-tests">
+  <p>Renders a Markdown string as HTML via <code>setText(md)</code>. The demo
+     loads 3 hand-crafted samples once on page load, plus a live editor below.</p>
 
+  <h3>Sample 1 — Headings, emphasis, lists</h3>
+  <div class="color-around">
+    <x-markdowntext class="md-sample-1"></x-markdowntext>
+  </div>
+
+  <h3>Sample 2 — Code blocks, inline code, links</h3>
+  <div class="color-around">
+    <x-markdowntext class="md-sample-2"></x-markdowntext>
+  </div>
+
+  <h3>Sample 3 — Tables, blockquotes, horizontal rules</h3>
+  <div class="color-around">
+    <x-markdowntext class="md-sample-3"></x-markdowntext>
+  </div>
+</div>
+
+<div class="dynamic-tests">
+  <h3>Live editor — type Markdown, press SHOW</h3>
   <div class="demo_content">
     <div class="input-div">
       <span>Enter text here to display it below</span>
       <textarea class="inputtext" rows="12" cols="60"></textarea>
       <button class="showtextbutton">SHOW</button>
     </div>
-
     <div class="output-div">
       <span>Display</span>
       <div class="color-around">

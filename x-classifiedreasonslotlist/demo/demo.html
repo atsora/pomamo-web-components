@@ -1,17 +1,35 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Machine 3</label>
+  <p>Renders a per-day list of reason slots grouped by classification
+     (running / idle / awaiting / break). The 3 machines below illustrate
+     increasing slot density.</p>
+
+  <h3>Machine 1 — 6 slots (busy day: motion / idle / motion / awaiting / motion / break) <small>(machine-id=1)</small></h3>
   <div class='forceHeight'>
-    <x-classifiedreasonslotlist id="default" machine-id=1 path='http://localhost:8082/' range='[2026-05-21T00:00:00Z,2026-05-21T12:00:00Z)' demo></x-classifiedreasonslotlist>
+    <x-classifiedreasonslotlist machine-id="1" path='http://localhost:8082/'
+      range='[2026-05-21T00:00:00Z,2026-05-21T12:00:00Z)' demo></x-classifiedreasonslotlist>
   </div>
 
-  <label>Error: invalid machine-id</label>
+  <h3>Machine 2 — 4 slots (mostly motion, one idle, one break) <small>(machine-id=2)</small></h3>
   <div class='forceHeight'>
-    <x-classifiedreasonslotlist id="error_machineid" machine-id=2 path='http://localhost:8082/' range='[2026-05-21T00:00:00Z,2026-05-21T12:00:00Z)' demo></x-classifiedreasonslotlist>
+    <x-classifiedreasonslotlist machine-id="2" path='http://localhost:8082/'
+      range='[2026-05-21T00:00:00Z,2026-05-21T12:00:00Z)' demo></x-classifiedreasonslotlist>
+  </div>
+
+  <h3>Machine 3 — 2 slots (uninterrupted motion then awaiting part) <small>(machine-id=3)</small></h3>
+  <div class='forceHeight'>
+    <x-classifiedreasonslotlist machine-id="3" path='http://localhost:8082/'
+      range='[2026-05-21T00:00:00Z,2026-05-21T12:00:00Z)' demo></x-classifiedreasonslotlist>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div class='forceHeight'>
+    <x-classifiedreasonslotlist machine-id="999" path='http://localhost:8082/'
+      range='[2026-05-21T00:00:00Z,2026-05-21T12:00:00Z)' demo></x-classifiedreasonslotlist>
   </div>
 </div>

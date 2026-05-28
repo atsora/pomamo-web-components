@@ -1,33 +1,34 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Default size</label>
+  <p>Renders reason distribution (Motion / Idle / etc.) as a pie. The mock varies
+     the slot mix per machine.</p>
+
+  <h3>Machine 1 — busy mix (6 reason slots), default size <small>(machine-id=1)</small></h3>
   <div class='divsize'>
-    <x-reasonslotpie machine-id=1 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)' path='http://localhost:8082/' ></x-reasonslotpie>
+    <x-reasonslotpie machine-id="1" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/'></x-reasonslotpie>
   </div>
 
-  <label>Small</label>
+  <h3>Machine 2 — mostly motion (4 slots), small size <small>(machine-id=2)</small></h3>
   <div class="divsize_small">
-    <x-reasonslotpie id="details" machine-id=1 range='[2026-05-21T06:00:00.000Z,2026-05-21T18:00:00.000Z)' path='http://localhost:8082/' ></x-reasonslotpie>
+    <x-reasonslotpie machine-id="2" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/'></x-reasonslotpie>
   </div>
 
-  <label>Big</label>
+  <h3>Machine 3 — motion then awaiting (2 slots), big size <small>(machine-id=3)</small></h3>
   <div class="divsize_big">
-    <x-reasonslotpie id="popup" machine-id=4 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)' path='http://localhost:8082/' ></x-reasonslotpie>
+    <x-reasonslotpie machine-id="3" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/'></x-reasonslotpie>
   </div>
 
-  <label>Error: Not connected, check the network</label>
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div class="divsize">
-    <x-reasonslotpie id="error_check_the_network" machine-id=2 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)' path='http://localhost:8082/' ></x-reasonslotpie>
+    <x-reasonslotpie machine-id="999" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/'></x-reasonslotpie>
   </div>
-
-  <label>Error: invalid machine-id</label>
-  <div class="divsize">
-    <x-reasonslotpie id="error_machineid" machine-id='invalid id' range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)' path='http://localhost:8082/' ></x-reasonslotpie>
-  </div>
-
 </div>

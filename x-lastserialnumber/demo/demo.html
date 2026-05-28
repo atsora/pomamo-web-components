@@ -1,42 +1,34 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Machine 3</label>
+  <p>Shows the last serial number recorded for a machine, with auto-refresh.</p>
+
+  <h3>Machine 1 — last serial <small>(machine-id=1, update=300s)</small></h3>
   <div class="pulse-bar-div">
-    <x-lastserialnumber id="Machine 3" machine-id=1 path='http://localhost:8082/' update=300></x-lastserialnumber>
+    <x-lastserialnumber machine-id="1" path='http://localhost:8082/' update="300"></x-lastserialnumber>
   </div>
 
-  <label>Machine 1</label>
+  <h3>Machine 2 — last serial <small>(machine-id=2, update=180s)</small></h3>
   <div class="pulse-bar-div">
-    <x-lastserialnumber id="Machine 1" machine-id=2 path='http://localhost:8082/' update=180></x-lastserialnumber>
+    <x-lastserialnumber machine-id="2" path='http://localhost:8082/' update="180"></x-lastserialnumber>
   </div>
 
-  <label>Machine 3</label>
+  <h3>Machine 3 — last serial <small>(machine-id=3)</small></h3>
   <div class="pulse-bar-div">
-    <x-lastserialnumber id="Machine 3" machine-id=3 path='http://localhost:8082/'></x-lastserialnumber>
+    <x-lastserialnumber machine-id="3" path='http://localhost:8082/'></x-lastserialnumber>
   </div>
 
-  <label>Machine 1</label>
+  <h3>Machine 4 — no cycle (default empty payload, component shows "no data") <small>(machine-id=4)</small></h3>
   <div class="pulse-bar-div">
-    <x-lastserialnumber id="Machine 1" machine-id=1 path='http://localhost:8082/'></x-lastserialnumber>
+    <x-lastserialnumber machine-id="4" path='http://localhost:8082/'></x-lastserialnumber>
   </div>
 
-  <label>Error: undefined error data status</label>
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div class="pulse-bar-div">
-    <x-lastserialnumber id="error_undefined_data_status" machine-id=4 path='http://localhost:8082/'></x-lastserialnumber>
-  </div>
-
-  <label>Error: unknown status </label>
-  <div class="pulse-bar-div">
-    <x-lastserialnumber id="error_unknown_status" machine-id=2 path='http://localhost:8082/' update=120></x-lastserialnumber>
-  </div>
-
-  <label>Error: machine Id has incorrect value</label>
-  <div class="pulse-bar-div">
-    <x-lastserialnumber id="error_machineid" machine-id='not id' path='http://localhost:8082/' update=120></x-lastserialnumber>
+    <x-lastserialnumber machine-id="999" path='http://localhost:8082/'></x-lastserialnumber>
   </div>
 </div>

@@ -1,27 +1,30 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Machine 3</label>
+  <p>Setup-machine widget showing the current machine state template + a button
+     to start a setup phase.</p>
+
+  <h3>Machine 1 <small>(machine-id=1)</small></h3>
   <div class="pulse-bar-div">
-    <x-setupmachine id="Machine 3" machine-id=1 path='http://localhost:8082/'></x-setupmachine>
+    <x-setupmachine machine-id="1" path='http://localhost:8082/'></x-setupmachine>
   </div>
 
-  <label>Machine 2</label>
+  <h3>Machine 2 <small>(machine-id=2)</small></h3>
   <div class="pulse-bar-div">
-    <x-setupmachine id="Machine 2" machine-id=4 path='http://localhost:8082/'></x-setupmachine>
+    <x-setupmachine machine-id="2" path='http://localhost:8082/'></x-setupmachine>
   </div>
 
-  <label>Error: not connected, check the network</label>
+  <h3>Machine 3 <small>(machine-id=3)</small></h3>
   <div class="pulse-bar-div">
-    <x-setupmachine id="error_check_network" machine-id=3 path='http://localhost:8082/'></x-setupmachine>
+    <x-setupmachine machine-id="3" path='http://localhost:8082/'></x-setupmachine>
   </div>
 
-  <label>Error: machine Id has incorrect value</label>
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div class="pulse-bar-div">
-    <x-setupmachine id="error_machineid" machine-id='not id' path='http://localhost:8082/'></x-setupmachine>
+    <x-setupmachine machine-id="999" path='http://localhost:8082/'></x-setupmachine>
   </div>
 </div>

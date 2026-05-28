@@ -1,48 +1,36 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <h3>Size = default</h3>
+  <p>Renders a circular cycle progress pie colored by the next-stop severity.
+     The mock varies the cycle state per machine; the demo also illustrates
+     the 3 supported sizes (small / default / big).</p>
+
+  <h3>Machine 1 — 33 % in SEQ2 (Drilling), active error, default size <small>(machine-id=1)</small></h3>
   <div class='divsize'>
-    <x-cycleprogresspie id="size_default_machine1" machine-id=1 path='http://localhost:8082/'></x-cycleprogresspie>
+    <x-cycleprogresspie machine-id="1" path='http://localhost:8082/'></x-cycleprogresspie>
   </div>
 
-  <h3>Size = big</h3>
+  <h3>Machine 2 — 58 % in SEQ3 (Finishing), warning in 90 s, big size <small>(machine-id=2)</small></h3>
   <div class='divsize_big'>
-    <x-cycleprogresspie id="size_big_machine2" machine-id=2 path='http://localhost:8082/'></x-cycleprogresspie>
+    <x-cycleprogresspie machine-id="2" path='http://localhost:8082/'></x-cycleprogresspie>
   </div>
 
-  <h3>Size = small</h3>
+  <h3>Machine 3 — 92 % in SEQ4 (Inspection), small size <small>(machine-id=3)</small></h3>
   <div class='divsize_small'>
-    <x-cycleprogresspie id="size_small_machine2" machine-id=2 path='http://localhost:8082/'></x-cycleprogresspie>
+    <x-cycleprogresspie machine-id="3" path='http://localhost:8082/'></x-cycleprogresspie>
   </div>
 
-  <h3>Size = small - Machine3</h3>
-  <div class='divsize_small'>
-    <x-cycleprogresspie id="size_small_machine3" machine-id=3 path='http://localhost:8082/'></x-cycleprogresspie>
-  </div>
-
-  <h3>Size = small - Machine4</h3>
-  <div class='divsize_small'>
-    <x-cycleprogresspie id="size_small_machine4" machine-id=4 path='http://localhost:8082/'></x-cycleprogresspie>
-  </div>
-
-  <h3>Size = default, stopped - Machine 2</h3>
+  <h3>Machine 4 — idle (no operation), default size <small>(machine-id=4)</small></h3>
   <div class='divsize'>
-    <x-cycleprogresspie id="size_default_machine2" machine-id=2 path='http://localhost:8082/'></x-cycleprogresspie>
+    <x-cycleprogresspie machine-id="4" path='http://localhost:8082/'></x-cycleprogresspie>
   </div>
 
-  <h3>Error: no cycle progress information for machine</h3>
-  <div class='divsize'>
-    <x-cycleprogresspie id="error_no_cycle_size_default_machine2" machine-id=2 path='http://localhost:8082/'></x-cycleprogresspie>
-  </div>
-
-  <h3>Error: Gateway Timeout</h3>
+  <h3>Error — server HTTP 400, big size <small>(machine-id=999)</small></h3>
   <div class='divsize_big'>
-    <x-cycleprogresspie id="error_gateway_timeout_size_big_machine3" machine-id=3 path='http://localhost:8082/'></x-cycleprogresspie>
+    <x-cycleprogresspie machine-id="999" path='http://localhost:8082/'></x-cycleprogresspie>
   </div>
-
 </div>

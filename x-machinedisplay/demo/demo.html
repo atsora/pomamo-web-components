@@ -1,45 +1,41 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Machine 3</label>
+  <p>Displays a machine's name from <code>Machine/Name?MachineId=&lt;id&gt;</code>
+     (or <code>?GroupId=&lt;id&gt;</code>). The component auto-shrinks long names
+     to the container width.</p>
+
+  <h3>Machine 1 — "Machine 1" <small>(machine-id=1)</small></h3>
   <div>
-    <x-machinedisplay id="Machine 3" machine-id=1 path="http://localhost:8082/"> </x-machinedisplay>
+    <x-machinedisplay machine-id="1" path="http://localhost:8082/"></x-machinedisplay>
   </div>
 
-  <label>Machine 1</label>
+  <h3>Machine 3 — "Machine 3" <small>(machine-id=3)</small></h3>
   <div>
-    <x-machinedisplay id="
-            Machine 1" machine-id=2 path="http://localhost:8082/"></x-machinedisplay>
+    <x-machinedisplay machine-id="3" path="http://localhost:8082/"></x-machinedisplay>
   </div>
 
-  <label>Machine 1 - width=100px</label>
-  <div style="width:100px; border:1px solid blue;">
-    <x-machinedisplay id="machine1_100px" machine-id=2 path="http://localhost:8082/"> </x-machinedisplay>
-  </div>
-
-  <label>Machine 1 - width=10%</label>
-  <div style="width:10%; border:1px solid blue;">
-    <x-machinedisplay id="machine1_10pct" machine-id=2 path="http://localhost:8082/"> </x-machinedisplay>
-  </div>
-
-  <label>Error: undefined error data status</label>
+  <h3>Group 101 — "Milling cell" <small>(group=101)</small></h3>
   <div>
-    <x-machinedisplay id="error_machineid" machine-id=999 path="http://localhost:8082/"> </x-machinedisplay>
+    <x-machinedisplay group="101" path="http://localhost:8082/"></x-machinedisplay>
   </div>
 
-  <label>Error: gateway timeout</label>
+  <h3>Narrow container (100 px) — name shrinks to fit</h3>
+  <div style="width:100px; border:1px solid #888;">
+    <x-machinedisplay machine-id="1" path="http://localhost:8082/"></x-machinedisplay>
+  </div>
+
+  <h3>Very narrow container (30 px) — extreme shrink</h3>
+  <div style="width:30px; border:1px solid #888;">
+    <x-machinedisplay machine-id="1" path="http://localhost:8082/"></x-machinedisplay>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div>
-    <x-machinedisplay id="error_gateway_timeout" machine-id=999 path="http://localhost:8082/"></x-machinedisplay>
+    <x-machinedisplay machine-id="999" path="http://localhost:8082/"></x-machinedisplay>
   </div>
-
-  <label>With javascript: Machine 3 + Error: undefined error data status</label>
-  <div id="demo-js" style="border:1px solid blue;" ></div>
-
-  <label>With javascript: width=30px</label>
-  <div id="demo-js-auto-width" style="width:30px; border:1px solid blue;" ></div>
-
 </div>

@@ -1,18 +1,28 @@
 <!--
-Copyright (C) 2009-2026 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
-<div class="dynamic-tests">
-  <label>Login form (use <code>manager</code>/<code>anypass</code> or <code>operator</code>/<code>anypass</code> — anything else fails)</label>
-  <div class='border-class'>
-    <x-loginconnection id="login" path="http://localhost:8082/"></x-loginconnection>
-  </div>
-</div>
 <div class="static-tests">
-  <label>Already-logged-in display</label>
+  <p>Login form for the Pulse web app. The mock accepts
+     <code>manager</code>/<code>anypass</code> or <code>operator</code>/<code>anypass</code>
+     — anything else returns HTTP 401.</p>
+
+  <h3>Empty — login form (try <code>manager</code> / <code>anypass</code>)</h3>
   <div class='border-class'>
-    <x-loginconnection id="logout" PulseLogin='manager' path="http://localhost:8082/" PulseWebAppLogin='manager'></x-loginconnection>
+    <x-loginconnection path="http://localhost:8082/"></x-loginconnection>
+  </div>
+
+  <h3>Already logged in as <code>manager</code> — logout button visible</h3>
+  <div class='border-class'>
+    <x-loginconnection PulseLogin='manager' path="http://localhost:8082/"
+      PulseWebAppLogin='manager'></x-loginconnection>
+  </div>
+
+  <h3>Already logged in as <code>operator</code> — logout button visible</h3>
+  <div class='border-class'>
+    <x-loginconnection PulseLogin='operator' path="http://localhost:8082/"
+      PulseWebAppLogin='operator'></x-loginconnection>
   </div>
 </div>

@@ -1,16 +1,29 @@
 <!--
-Copyright (C) 2026 Atsora Solutions
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <h3>Main group (100)</h3>
-  <div><x-performancetarget group-id="100" path="http://localhost:8082/"></x-performancetarget></div>
+  <p>Shows the configured utilization target (e.g. 75 %) for a machine or group.</p>
 
-  <h3>Machine 1</h3>
-  <div><x-performancetarget machine-id="1" path="http://localhost:8082/"></x-performancetarget></div>
+  <h3>Machine 1 — single-machine target <small>(machine-id=1)</small></h3>
+  <div>
+    <x-performancetarget machine-id="1" path="http://localhost:8082/"></x-performancetarget>
+  </div>
 
-  <h3>Error (reserved id 999)</h3>
-  <div><x-performancetarget machine-id="999" path="http://localhost:8082/"></x-performancetarget></div>
+  <h3>Machine 2 — single-machine target <small>(machine-id=2)</small></h3>
+  <div>
+    <x-performancetarget machine-id="2" path="http://localhost:8082/"></x-performancetarget>
+  </div>
+
+  <h3>Main group target <small>(group-id=100)</small></h3>
+  <div>
+    <x-performancetarget group-id="100" path="http://localhost:8082/"></x-performancetarget>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div>
+    <x-performancetarget machine-id="999" path="http://localhost:8082/"></x-performancetarget>
+  </div>
 </div>

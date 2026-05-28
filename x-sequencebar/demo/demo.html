@@ -1,37 +1,35 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Machine1</label>
+  <p>Renders the current cycle's sequence progress as a horizontal bar.
+     The mock varies the cycle state per machine.</p>
+
+  <h3>Machine 1 — in SEQ2 (Drilling, 33 % complete) <small>(machine-id=1)</small></h3>
   <div class="pulse-bar-div">
-    <x-sequencebar id="machine1" machine-id=1 path='http://localhost:8082/'></x-sequencebar>
+    <x-sequencebar machine-id="1" path='http://localhost:8082/'></x-sequencebar>
   </div>
 
-  <label>Machine3</label>
+  <h3>Machine 2 — in SEQ3 (Finishing, 58 % complete) <small>(machine-id=2)</small></h3>
   <div class="pulse-bar-div">
-    <x-sequencebar id="machine3" machine-id=3 path='http://localhost:8082/'></x-sequencebar>
+    <x-sequencebar machine-id="2" path='http://localhost:8082/'></x-sequencebar>
   </div>
 
-  <label>Machine4</label>
+  <h3>Machine 3 — in SEQ4 (Inspection, 92 % complete) <small>(machine-id=3)</small></h3>
   <div class="pulse-bar-div">
-    <x-sequencebar id="machine4" machine-id=4 path='http://localhost:8082/'></x-sequencebar>
+    <x-sequencebar machine-id="3" path='http://localhost:8082/'></x-sequencebar>
   </div>
 
-  <label>Machine 2</label>
+  <h3>Machine 4 — idle (no operation, bar hidden) <small>(machine-id=4)</small></h3>
   <div class="pulse-bar-div">
-    <x-sequencebar id="Machine 2" machine-id=2 path='http://localhost:8082/'></x-sequencebar>
+    <x-sequencebar machine-id="4" path='http://localhost:8082/'></x-sequencebar>
   </div>
 
-  <label>Error: No cycle progress information (not displayed)</label>
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div class="pulse-bar-div">
-    <x-sequencebar id="error_no_cycle" machine-id=2 path='http://localhost:8082/'></x-sequencebar>
-  </div>
-
-  <label>Error: Gateway Timeout (not displayed)</label>
-  <div class="pulse-bar-div">
-    <x-sequencebar id="error_gateway_timeout" machine-id=3 path='http://localhost:8082/'></x-sequencebar>
+    <x-sequencebar machine-id="999" path='http://localhost:8082/'></x-sequencebar>
   </div>
 </div>

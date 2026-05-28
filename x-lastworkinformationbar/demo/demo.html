@@ -1,57 +1,44 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
-Copyright (C) 2025 Atsora Solutions
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Machine 3</label>
-  <div class="machine-component" id="Machine 3">
+  <p>Bar-style display of last work info (WorkOrder / Part / Operation) for a machine.</p>
+
+  <h3>Machine 1 — full work info (WO-1001 / PART-A1 / OP-1001-A) <small>(machine-id=1)</small></h3>
+  <div class="machine-component">
     <div class="pulse-bar-div">
-      <x-lastworkinformationbar machine-id=1 path='http://localhost:8082/'></x-lastworkinformationbar>
+      <x-lastworkinformationbar machine-id="1" path='http://localhost:8082/'></x-lastworkinformationbar>
     </div>
   </div>
 
-  <label>Machine 1</label>
-  <div class="machine-component" id="Machine 1">
+  <h3>Machine 2 — full work info (WO-1002 / PART-B2 / OP-1002-B) <small>(machine-id=2)</small></h3>
+  <div class="machine-component">
     <div class="pulse-bar-div">
-      <x-lastworkinformationbar machine-id=2 path="http://localhost:8082/"></x-lastworkinformationbar>
+      <x-lastworkinformationbar machine-id="2" path='http://localhost:8082/'></x-lastworkinformationbar>
     </div>
   </div>
 
-  <label>Machine 2</label>
-  <div class="machine-component" id="Machine 2">
+  <h3>Machine 3 — partial work info (Part/Op empty → "?") <small>(machine-id=3)</small></h3>
+  <div class="machine-component">
     <div class="pulse-bar-div">
-      <x-lastworkinformationbar machine-id=4 path="http://localhost:8082/"></x-lastworkinformationbar>
+      <x-lastworkinformationbar machine-id="3" path='http://localhost:8082/'></x-lastworkinformationbar>
     </div>
   </div>
 
-  <label>Error: gateway timeout</label>
-  <div class="machine-component" id="error_gateway_timeout">
+  <h3>Machine 4 — slot missing (lwi-no-operation class, component hidden) <small>(machine-id=4)</small></h3>
+  <div class="machine-component">
     <div class="pulse-bar-div">
-      <x-lastworkinformationbar machine-id=3 path="http://localhost:8082/"></x-lastworkinformationbar>
+      <x-lastworkinformationbar machine-id="4" path='http://localhost:8082/'></x-lastworkinformationbar>
     </div>
   </div>
 
-  <label>Error: machine Id has incorrect value</label>
-  <div class="machine-component" id="error_machineid">
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div class="machine-component">
     <div class="pulse-bar-div">
-      <x-lastworkinformationbar machine-id='not id' path="http://localhost:8082/"></x-lastworkinformationbar>
-    </div>
-  </div>
-
-  <label>Error: MonitoredMachineOperationBar = None - the component adds the lwi-no-operation class and hides itself</label>
-  <div class="machine-component" id="error_monitoredmachineoperationbar">
-    <div class="pulse-bar-div">
-      <x-lastworkinformationbar machine-id=1 path="http://localhost:8082/"></x-lastworkinformationbar>
-    </div>
-  </div>
-
-  <label>Error: SlotMissing = true</label>
-  <div class="machine-component" id="error_slotmissing">
-    <div class="pulse-bar-div">
-      <x-lastworkinformationbar machine-id=2 path="http://localhost:8082/"></x-lastworkinformationbar>
+      <x-lastworkinformationbar machine-id="999" path='http://localhost:8082/'></x-lastworkinformationbar>
     </div>
   </div>
 </div>

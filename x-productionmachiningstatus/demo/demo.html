@@ -1,66 +1,41 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <h3>BARS</h3>
-  <div>
+  <p>Shows part production count / goal + work info for the current shift.
+     Supports two layouts: <code>bar-style="true"</code> (compact bar) and
+     <code>bar-style="false"</code> (info box).</p>
 
-    <label>Machine 3</label>
-    <div class="pulse-bar-div">
-      <x-productionmachiningstatus id="Machine 3" machine-id=3 path='http://localhost:8082/' bar-style='true'></x-productionmachiningstatus>
-    </div>
-
-    <label>Machine 1 - long names</label>
-    <div class="pulse-bar-div">
-      <x-productionmachiningstatus id="machine1_long_name" machine-id=1 path=http://localhost:8082/ bar-style='true'></x-productionmachiningstatus>
-    </div>
-
-    <label>Machine 2 - bad efficiency display in red</label>
-    <div class="pulse-bar-div">
-      <x-productionmachiningstatus id="machine2_bad_efficiency" machine-id=2 path=http://localhost:8082/ bar-style='true'></x-productionmachiningstatus>
-    </div>
-
-    <label>Machine 1 - empty names</label>
-    <div class="pulse-bar-div">
-      <x-productionmachiningstatus id="machine1_empty_name" machine-id=1 path=http://localhost:8082/ bar-style='true'></x-productionmachiningstatus>
-    </div>
-
-    <label>Error: undefined machine</label>
-    <div class="pulse-bar-div">
-      <x-productionmachiningstatus id="error_machineid" machine-id=999 path=http://localhost:8082/ bar-style='true'></x-productionmachiningstatus>
-    </div>
-
-    <label>Error: Not Applicable (hidden is normal)</label>
-    <div class="pulse-bar-div">
-      <x-productionmachiningstatus id="error_notapplicable" machine-id=999 path=http://localhost:8082/ bar-style='true'></x-productionmachiningstatus>
-    </div>
-
+  <h3>BAR layout — Machine 1, 48 / 200 (behind plan) <small>(machine-id=1)</small></h3>
+  <div class="pulse-bar-div">
+    <x-productionmachiningstatus machine-id="1" path='http://localhost:8082/' bar-style='true'></x-productionmachiningstatus>
   </div>
-  <h3>BOXES</h3>
-  <div>
 
-    <label>Machine 3</label>
-    <div class="box-div">
-      <x-productionmachiningstatus id="box_machine3" machine-id=3 path='http://localhost:8082/' bar-style='false'></x-productionmachiningstatus>
-    </div>
+  <h3>BAR layout — Machine 2, 109 / 200 (on track) <small>(machine-id=2)</small></h3>
+  <div class="pulse-bar-div">
+    <x-productionmachiningstatus machine-id="2" path='http://localhost:8082/' bar-style='true'></x-productionmachiningstatus>
+  </div>
 
-    <label>Machine 1 - long names</label>
-    <div class="box-div">
-      <x-productionmachiningstatus id="box_machine1_long_name" machine-id=1 path='http://localhost:8082/' bar-style='false'></x-productionmachiningstatus>
-    </div>
+  <h3>BAR layout — Machine 3, 198 / 200 (almost done) <small>(machine-id=3)</small></h3>
+  <div class="pulse-bar-div">
+    <x-productionmachiningstatus machine-id="3" path='http://localhost:8082/' bar-style='true'></x-productionmachiningstatus>
+  </div>
 
-    <label>Error: undefined machine </label>
-    <div class="box-div">
-      <x-productionmachiningstatus id="box_error_machineid" machine-id=999 path=http://localhost:8082/ bar-style='false'></x-productionmachiningstatus>
-    </div>
+  <h3>BOX layout — Machine 1 <small>(machine-id=1)</small></h3>
+  <div class="box-div">
+    <x-productionmachiningstatus machine-id="1" path='http://localhost:8082/' bar-style='false'></x-productionmachiningstatus>
+  </div>
 
-    <label>Error: Not Applicable </label>
-    <div class="box-div">
-      <x-productionmachiningstatus id="box_error_notapplicable" machine-id=999 path=http://localhost:8082/ bar-style='false'></x-productionmachiningstatus>
-    </div>
+  <h3>BOX layout — Machine 3 <small>(machine-id=3)</small></h3>
+  <div class="box-div">
+    <x-productionmachiningstatus machine-id="3" path='http://localhost:8082/' bar-style='false'></x-productionmachiningstatus>
+  </div>
 
+  <h3>Error — server HTTP 400 (bar style) <small>(machine-id=999)</small></h3>
+  <div class="pulse-bar-div">
+    <x-productionmachiningstatus machine-id="999" path='http://localhost:8082/' bar-style='true'></x-productionmachiningstatus>
   </div>
 </div>

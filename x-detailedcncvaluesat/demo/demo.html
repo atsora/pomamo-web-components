@@ -1,18 +1,30 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <p>Shows the CNC field readings active at a specific instant
+     (<code>CncValueAt?MachineId&amp;At</code>). The mock varies the readings per machine.</p>
+
+  <h3>Machine 1 — first sensor sample <small>(machine-id=1)</small></h3>
   <div>
-    <x-detailedcncvaluesat id="detailedcncvaluesat" machine-id=1 path=http://localhost:8082/
-      when='2026-05-21T00:00:00Z'></x-detailedcncvaluesat>
+    <x-detailedcncvaluesat machine-id="1" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedcncvaluesat>
   </div>
 
+  <h3>Machine 2 — second sensor sample <small>(machine-id=2)</small></h3>
   <div>
-    <label>Blinking</label>
-    <x-detailedcncvaluesat id="currentcncvalue_blinking" machine-id=1 path=http://localhost:8082/ when='2026-05-21T07:30:01Z'>
-      </x-detailedcncvaluesat>
+    <x-detailedcncvaluesat machine-id="2" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedcncvaluesat>
+  </div>
+
+  <h3>Machine 3 — third sensor sample <small>(machine-id=3)</small></h3>
+  <div>
+    <x-detailedcncvaluesat machine-id="3" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedcncvaluesat>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div>
+    <x-detailedcncvaluesat machine-id="999" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedcncvaluesat>
   </div>
 </div>

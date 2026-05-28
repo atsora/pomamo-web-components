@@ -1,11 +1,30 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <p>Shows alarms active on a machine at a specific instant
+     (<code>CncAlarm/At?MachineId&amp;At</code>). One-shot — no polling.</p>
+
+  <h3>Machine 1 — critical alarm "MACHINE STOPPED" <small>(machine-id=1)</small></h3>
   <div>
-    <x-detailedalarmsat id="detailedalarmsat" machine-id=1 path=http://localhost:8082/ when='2026-05-21T00:00:00Z'></x-detailedalarmsat>
+    <x-detailedalarmsat machine-id="1" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedalarmsat>
+  </div>
+
+  <h3>Machine 2 — warning "Door open" (non-stopping) <small>(machine-id=2)</small></h3>
+  <div>
+    <x-detailedalarmsat machine-id="2" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedalarmsat>
+  </div>
+
+  <h3>Machine 3 — no active alarms (empty list) <small>(machine-id=3)</small></h3>
+  <div>
+    <x-detailedalarmsat machine-id="3" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedalarmsat>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div>
+    <x-detailedalarmsat machine-id="999" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedalarmsat>
   </div>
 </div>

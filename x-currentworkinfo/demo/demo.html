@@ -1,33 +1,34 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>default - Machine 2</label>
+  <p>Shows the work-info (WorkOrder / Part / Operation) of the last operation slot.</p>
+
+  <h3>Machine 1 — full work info (WO-1001 / PART-A1 / OP-1001-A) <small>(machine-id=1)</small></h3>
   <div class="content-div">
-    <x-currentworkinfo id="Machine 2" machine-id=2 path='http://localhost:8082/'></x-currentworkinfo>
+    <x-currentworkinfo machine-id="1" path='http://localhost:8082/'></x-currentworkinfo>
   </div>
 
-  <label>Machine 3 - nblines = 2</label>
+  <h3>Machine 2 — full work info (WO-1002 / PART-B2 / OP-1002-B) <small>(machine-id=2)</small></h3>
   <div class="content-div">
-    <x-currentworkinfo id="machine3_2lines" machine-id=3 path='http://localhost:8082/' nblines="2" ></x-currentworkinfo>
+    <x-currentworkinfo machine-id="2" path='http://localhost:8082/'></x-currentworkinfo>
   </div>
 
-  <label>Slot missing</label>
+  <h3>Machine 3 — partial info (WO only, Part/Op empty → "?" UI), nblines=2 <small>(machine-id=3)</small></h3>
   <div class="content-div">
-    <x-currentworkinfo id="error_slotmissing" machine-id=1 path='http://localhost:8082/'></x-currentworkinfo>
+    <x-currentworkinfo machine-id="3" path='http://localhost:8082/' nblines="2"></x-currentworkinfo>
   </div>
 
-  <label>No operation</label>
+  <h3>Machine 4 — slot missing (no operation) <small>(machine-id=4)</small></h3>
   <div class="content-div">
-    <x-currentworkinfo id="error_nooperation" machine-id=2 path='http://localhost:8082/'></x-currentworkinfo>
+    <x-currentworkinfo machine-id="4" path='http://localhost:8082/'></x-currentworkinfo>
   </div>
 
-  <label>Error 404</label>
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div class="content-div">
-    <x-currentworkinfo id="error_1" machine-id=3 path='http://localhost:8082/'></x-currentworkinfo>
+    <x-currentworkinfo machine-id="999" path='http://localhost:8082/'></x-currentworkinfo>
   </div>
-
 </div>

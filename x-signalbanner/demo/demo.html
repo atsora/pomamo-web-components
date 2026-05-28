@@ -1,40 +1,37 @@
 <!--
-Copyright (C) 2009-2026 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <p>Banner that polls <code>Signal/?GroupId=&lt;id&gt;</code> and stacks the
+     returned messages. Each message has its own background / foreground color
+     (foreground auto-computed if empty).</p>
 
-  <label>Multi-message stacked (group-id="100_23_53", 4 messages)</label>
+  <h3>Multi-message stack (4 messages) <small>(group-id="1_23_53")</small></h3>
   <div>
-    <x-signalbanner group-id="100_23_53" refresh-rate="60"></x-signalbanner>
+    <x-signalbanner group-id="1_23_53" refresh-rate="60"></x-signalbanner>
   </div>
 
-  <label>Single message (group-id="102")</label>
+  <h3>Single message <small>(group-id="42")</small></h3>
   <div>
-    <x-signalbanner group-id="102" refresh-rate="60"></x-signalbanner>
+    <x-signalbanner group-id="42" refresh-rate="60"></x-signalbanner>
   </div>
 
-  <label>Empty response (group-id="102", banner takes no space)</label>
+  <h3>Empty response — banner takes no space <small>(group-id="99")</small></h3>
   <div style="border: 1px dashed #888; padding: 4px;">
-    <x-signalbanner group-id="102" refresh-rate="60"></x-signalbanner>
+    <x-signalbanner group-id="99" refresh-rate="60"></x-signalbanner>
     <span style="font-size: 0.8em; opacity: 0.6;">(dashed box shows that nothing is rendered)</span>
   </div>
 
-  <label>Auto-contrast (group-id="contrast", BgColor only — FgColor computed)</label>
+  <h3>Auto-contrast — <code>BgColor</code> only, <code>FgColor</code> computed <small>(group-id="contrast")</small></h3>
   <div>
     <x-signalbanner group-id="contrast" refresh-rate="60"></x-signalbanner>
   </div>
 
-  <label>All groups (group-id="ALL")</label>
-  <div>
-    <x-signalbanner group-id="ALL" refresh-rate="60"></x-signalbanner>
-  </div>
-
-  <label>Error: no group-id attribute</label>
+  <h3>Error — no <code>group-id</code> attribute, component stuck</h3>
   <div>
     <x-signalbanner refresh-rate="60"></x-signalbanner>
   </div>
-
 </div>

@@ -1,9 +1,26 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <div><x-reasongroups id="reasongroups" path=http://localhost:8082/></x-reasongroups></div>
+  <p>Static legend panel for reason groups. Fetches <code>ReasonGroupLegend</code>
+     once. The mock returns the same payload regardless of caller; the visual
+     variation here is purely about container width.</p>
+
+  <h3>Default — full-width container</h3>
+  <div>
+    <x-reasongroups path="http://localhost:8082/"></x-reasongroups>
+  </div>
+
+  <h3>Narrow container (300 px) — legend wraps</h3>
+  <div style="width: 300px; border: 1px dashed #888; padding: 4px;">
+    <x-reasongroups path="http://localhost:8082/"></x-reasongroups>
+  </div>
+
+  <h3>Wide container (1000 px) — legend spreads</h3>
+  <div style="width: 1000px; border: 1px dashed #888; padding: 4px;">
+    <x-reasongroups path="http://localhost:8082/"></x-reasongroups>
+  </div>
 </div>

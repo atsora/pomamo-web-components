@@ -1,42 +1,35 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Color = default - Machine1</label>
+  <p>Renders a horizontal cycle progress bar colored by the next-stop severity.
+     The mock varies the cycle state per machine.</p>
+
+  <h3>Machine 1 — 33 % in SEQ2 (Drilling), active error event <small>(machine-id=1)</small></h3>
   <div class="pulse-bar-div">
-    <x-cycleprogressbar id="color_default_1" machine-id=1 path='http://localhost:8082/'></x-cycleprogressbar>
+    <x-cycleprogressbar machine-id="1" path='http://localhost:8082/'></x-cycleprogressbar>
   </div>
 
-  <label>Color = default - Machine2</label>
+  <h3>Machine 2 — 58 % in SEQ3 (Finishing), warning in 90 s (orange) <small>(machine-id=2)</small></h3>
   <div class="pulse-bar-div">
-    <x-cycleprogressbar id="color_default_2" machine-id=2 path='http://localhost:8082/'></x-cycleprogressbar>
+    <x-cycleprogressbar machine-id="2" path='http://localhost:8082/'></x-cycleprogressbar>
   </div>
 
-  <label>Color = yellow (warning 1) - Machine3</label>
+  <h3>Machine 3 — 92 % in SEQ4 (Inspection), warning in 7 min (yellow) <small>(machine-id=3)</small></h3>
   <div class="pulse-bar-div">
-    <x-cycleprogressbar id="color_yellow" machine-id=3 path='http://localhost:8082/'></x-cycleprogressbar>
+    <x-cycleprogressbar machine-id="3" path='http://localhost:8082/'></x-cycleprogressbar>
   </div>
 
-  <label>Color = orange (warning 2) - Machine4</label>
+  <h3>Machine 4 — idle (no operation, default empty payload) <small>(machine-id=4)</small></h3>
   <div class="pulse-bar-div">
-    <x-cycleprogressbar id="color_orange" machine-id=4 path='http://localhost:8082/'></x-cycleprogressbar>
+    <x-cycleprogressbar machine-id="4" path='http://localhost:8082/'></x-cycleprogressbar>
   </div>
 
-  <label>Color = red (stop) - Machine 2</label>
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div class="pulse-bar-div">
-    <x-cycleprogressbar id="color_red" machine-id=2 path='http://localhost:8082/'></x-cycleprogressbar>
-  </div>
-
-  <label>Error: undefined error data status</label>
-  <div class="pulse-bar-div">
-    <x-cycleprogressbar id="error_undefined_data_status" machine-id=2 path='http://localhost:8082/'></x-cycleprogressbar>
-  </div>
-
-  <label>Error: error504 - Machine 3</label>
-  <div class="pulse-bar-div">
-    <x-cycleprogressbar id="error_gateway_timeout" machine-id=3 path='http://localhost:8082/'></x-cycleprogressbar>
+    <x-cycleprogressbar machine-id="999" path='http://localhost:8082/'></x-cycleprogressbar>
   </div>
 </div>

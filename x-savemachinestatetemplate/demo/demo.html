@@ -1,9 +1,42 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <div><x-savemachinestatetemplate id="savemachinestatetemplate" machine-id="1" path="http://localhost:8082/" range="2026-05-21T06:06:06.000Z;2026-05-21T08:00:00.000Z" period-context="savemst18"></x-savemachinestatetemplate></div>
+  <p>Form that assigns a machine-state template (Production / Setup / Maintenance / Off)
+     to a time slot. The mock returns the same list of templates regardless of
+     machine — vary `machine-id`, `mst-id` (current template, filtered out of the
+     dropdown) and `range` to see different starting points.</p>
+
+  <h3>Machine 1 — no current MST, 2 h slot at 06:06 <small>(machine-id=1)</small></h3>
+  <div>
+    <x-savemachinestatetemplate machine-id="1" path="http://localhost:8082/"
+      range="2026-05-21T06:06:06.000Z;2026-05-21T08:00:00.000Z"
+      period-context="savemst1"></x-savemachinestatetemplate>
+  </div>
+
+  <h3>Machine 2 — current MST = Production (7), morning shift slot <small>(machine-id=2)</small></h3>
+  <div>
+    <x-savemachinestatetemplate machine-id="2" path="http://localhost:8082/"
+      mst-id="7"
+      range="2026-05-21T08:00:00.000Z;2026-05-21T12:00:00.000Z"
+      period-context="savemst2"></x-savemachinestatetemplate>
+  </div>
+
+  <h3>Machine 3 — current MST = Maintenance (9), afternoon slot <small>(machine-id=3)</small></h3>
+  <div>
+    <x-savemachinestatetemplate machine-id="3" path="http://localhost:8082/"
+      mst-id="9"
+      range="2026-05-21T13:00:00.000Z;2026-05-21T18:00:00.000Z"
+      period-context="savemst3"></x-savemachinestatetemplate>
+  </div>
+
+  <h3>Error — server HTTP 400 on the MST list <small>(machine-id=999)</small></h3>
+  <div>
+    <x-savemachinestatetemplate machine-id="999" path="http://localhost:8082/"
+      range="2026-05-21T06:00:00.000Z;2026-05-21T07:00:00.000Z"
+      period-context="savemst999"></x-savemachinestatetemplate>
+  </div>
 </div>

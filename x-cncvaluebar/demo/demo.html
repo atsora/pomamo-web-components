@@ -1,44 +1,40 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Height = default - Machine 3</label>
+  <p>The bar colors slots over a time range based on a CNC value (e.g. spindle load).
+     Each instance below pulls a different machine — the mock varies the slot density per machine.</p>
+
+  <h3>Machine 1 — busy, multi-state (5 slots: green/yellow/green/red/green) <small>(machine-id=1)</small></h3>
   <div class="pulse-bar-div">
-    <x-cncvaluebar id="height_default_machine3" machine-id=1 range='[2026-05-21T08:00:00.000Z;2026-05-21T16:00:00.000Z)'
+    <x-cncvaluebar machine-id="1" range='[2026-05-20T20:00:00.000Z;2026-05-21T20:00:00.000Z)'
       path='http://localhost:8082/'></x-cncvaluebar>
   </div>
 
-  <label>Height = 30 - Machine 3</label>
+  <h3>Machine 2 — moderate variation (3 slots: green/yellow/green) <small>(machine-id=2, height=30)</small></h3>
   <div class="pulse-bar-div">
-    <x-cncvaluebar id="height_30_machine3" machine-id=1 range='[2026-05-21T08:00:00.000Z;2026-05-21T16:00:00.000Z)'
-      path='http://localhost:8082/' height=30></x-cncvaluebar>
+    <x-cncvaluebar machine-id="2" range='[2026-05-20T20:00:00.000Z;2026-05-21T20:00:00.000Z)'
+      path='http://localhost:8082/' height="30"></x-cncvaluebar>
   </div>
 
-  <label>Height = 20 - Machine 1</label>
+  <h3>Machine 3 — single uniform slot (entire range green) <small>(machine-id=3, height=20)</small></h3>
   <div class="pulse-bar-div">
-    <x-cncvaluebar id="height_20_machine1" machine-id=1 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
-      path='http://localhost:8082/' height=20></x-cncvaluebar>
+    <x-cncvaluebar machine-id="3" range='[2026-05-20T20:00:00.000Z;2026-05-21T20:00:00.000Z)'
+      path='http://localhost:8082/' height="20"></x-cncvaluebar>
   </div>
 
-  <label>Error: no data (height = 30) - Machine 1</label>
+  <h3>Error — server HTTP 400 (height=40, error message visible) <small>(machine-id=999)</small></h3>
   <div class="pulse-bar-div">
-    <x-cncvaluebar id="error_no_data_height_40" machine-id=2 range='[2026-05-21T08:00:00.000Z;2026-05-21T16:00:00.000Z)'
-      path='http://localhost:8082/' height=30></x-cncvaluebar>
+    <x-cncvaluebar machine-id="999" range='[2026-05-20T20:00:00.000Z;2026-05-21T20:00:00.000Z)'
+      path='http://localhost:8082/' height="40"></x-cncvaluebar>
   </div>
 
-  <label>Error: invalid machine-id (height = 40)</label></label>
+  <h3>Slow response — 5 s loader <small>(machine-id=998)</small></h3>
   <div class="pulse-bar-div">
-    <x-cncvaluebar id="error_machineid_height_40" machine-id='id bizarre' range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
-      path='http://localhost:8082/' height=40></x-cncvaluebar>
-  </div>
-
-  <label>Error: invalid machine-id (height = default -> too small to display error message)</label></label>
-  <div class="pulse-bar-div">
-    <x-cncvaluebar id="error_machineid_height_default" machine-id='id bizarre' range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+    <x-cncvaluebar machine-id="998" range='[2026-05-20T20:00:00.000Z;2026-05-21T20:00:00.000Z)'
       path='http://localhost:8082/'></x-cncvaluebar>
   </div>
-
 </div>

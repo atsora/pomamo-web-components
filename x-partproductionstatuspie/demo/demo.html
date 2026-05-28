@@ -1,50 +1,35 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Warning ! Simulations need to be changed !</label>
+  <p>Pie chart of part production status against the current-shift goal.
+     The mock varies the completion ratio per machine.</p>
 
-  <h3>Size = default</h3>
+  <h3>Machine 1 — 48 / 200 pieces (24 %, behind plan) <small>(machine-id=1)</small></h3>
   <div class='divsize'>
-    <x-partproductionstatuspie id="size_default_machine3" machine-id=1 path='http://localhost:8082/'></x-partproductionstatuspie>
+    <x-partproductionstatuspie machine-id="1" path='http://localhost:8082/'></x-partproductionstatuspie>
   </div>
 
-  <h3>Size = big</h3>
+  <h3>Machine 2 — 109 / 200 (54 %, on track), big size <small>(machine-id=2)</small></h3>
   <div class='divsize_big'>
-    <x-partproductionstatuspie id="size_big_machine3" machine-id=1 path='http://localhost:8082/'></x-partproductionstatuspie>
+    <x-partproductionstatuspie machine-id="2" path='http://localhost:8082/'></x-partproductionstatuspie>
   </div>
 
-  <h3>Size = small</h3>
+  <h3>Machine 3 — 198 / 200 (99 %, almost done), small size <small>(machine-id=3)</small></h3>
   <div class='divsize_small'>
-    <x-partproductionstatuspie id="size_small_machine3" machine-id=1 path='http://localhost:8082/'></x-partproductionstatuspie>
+    <x-partproductionstatuspie machine-id="3" path='http://localhost:8082/'></x-partproductionstatuspie>
   </div>
 
-  <h3>Size = small - Machine 1</h3>
-  <div class='divsize_small'>
-    <x-partproductionstatuspie id="size_small_machine1" machine-id=2 path='http://localhost:8082/'></x-partproductionstatuspie>
-  </div>
-
-  <h3>Size = big - Machine 1</h3>
-  <div class='divsize_big'>
-    <x-partproductionstatuspie id="size_big_machine1" machine-id=2 path='http://localhost:8082/'></x-partproductionstatuspie>
-  </div>
-
-  <h3>Size = big - Machine 2</h3>
-  <div class='divsize_big'>
-    <x-partproductionstatuspie id="size_big_machine2" machine-id=4 path='http://localhost:8082/'></x-partproductionstatuspie>
-  </div>
-
-  <h3>Error: no cycle progress information for machine</h3>
+  <h3>Machine 4 — no data (default empty payload), default size <small>(machine-id=4)</small></h3>
   <div class='divsize'>
-    <x-partproductionstatuspie id="error_no_cycle_size_default_machine2" machine-id=999 path='http://localhost:8082/'></x-partproductionstatuspie>
+    <x-partproductionstatuspie machine-id="4" path='http://localhost:8082/'></x-partproductionstatuspie>
   </div>
 
-  <h3>Error: Gateway Timeout</h3>
-  <div class='divsize_big'>
-    <x-partproductionstatuspie id="error_gateway_timeout_size_big_machine3" machine-id=3 path='http://localhost:8082/'></x-partproductionstatuspie>
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div class='divsize'>
+    <x-partproductionstatuspie machine-id="999" path='http://localhost:8082/'></x-partproductionstatuspie>
   </div>
-
 </div>

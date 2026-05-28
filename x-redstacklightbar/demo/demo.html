@@ -1,25 +1,38 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label> Default - Machine 3</label>
+  <p>Renders red stack-light pulses over a time range. Each red block marks
+     a moment when the operator-call stack light was lit.</p>
+
+  <h3>Machine 1 — 5 frequent pulses over 4 h <small>(machine-id=1)</small></h3>
   <div class="pulse-bar-div">
     <div class="simul-reason-bar"></div>
-    <x-redstacklightbar id="height_default_machine3" machine-id=1 path='http://localhost:8082/' range='[2026-05-21T00:00:00.000Z,2026-05-22T00:00:00.000Z)'></x-redstacklightbar>
+    <x-redstacklightbar machine-id="1" path='http://localhost:8082/'
+      range='[2026-05-21T00:00:00.000Z,2026-05-22T00:00:00.000Z)'></x-redstacklightbar>
   </div>
 
-  <label>Error: missing range (hidden)</label>
+  <h3>Machine 2 — 2 sparse pulses over 4 h <small>(machine-id=2)</small></h3>
   <div class="pulse-bar-div">
     <div class="simul-reason-bar"></div>
-    <x-redstacklightbar id="error_missing_range" machine-id=2 path='http://localhost:8082/'></x-redstacklightbar>
+    <x-redstacklightbar machine-id="2" path='http://localhost:8082/'
+      range='[2026-05-21T00:00:00.000Z,2026-05-22T00:00:00.000Z)'></x-redstacklightbar>
   </div>
 
-  <label>Error: invalid machine-id (hidden)</label>
+  <h3>Machine 3 — no pulses (empty range, bar hidden) <small>(machine-id=3)</small></h3>
   <div class="pulse-bar-div">
     <div class="simul-reason-bar"></div>
-    <x-redstacklightbar id="error_machineid" machine-id='string id' path='http://localhost:8082/' range='[2026-05-21T00:00:00.000Z,2026-05-22T00:00:00.000Z)'></x-redstacklightbar>
+    <x-redstacklightbar machine-id="3" path='http://localhost:8082/'
+      range='[2026-05-21T00:00:00.000Z,2026-05-22T00:00:00.000Z)'></x-redstacklightbar>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div class="pulse-bar-div">
+    <div class="simul-reason-bar"></div>
+    <x-redstacklightbar machine-id="999" path='http://localhost:8082/'
+      range='[2026-05-21T00:00:00.000Z,2026-05-22T00:00:00.000Z)'></x-redstacklightbar>
   </div>
 </div>

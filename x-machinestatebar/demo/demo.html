@@ -1,37 +1,35 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Height = default - Machine 3</label>
+  <p>Renders a horizontal bar of machine-state slots (Production / Maintenance / Off)
+     with optional pattern fills. Each instance below uses a different machine to show
+     different slot densities and patterns.</p>
+
+  <h3>Machine 1 — Production / Maintenance (dots) / Production <small>(machine-id=1)</small></h3>
   <div class="pulse-bar-div">
-    <x-machinestatebar id="height_default_machine3" machine-id=1 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+    <x-machinestatebar machine-id="1" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
       path='http://localhost:8082/'></x-machinestatebar>
   </div>
 
-  <label>Height = 10 - Machine 2</label>
+  <h3>Machine 2 — Production / Off (diagonal stripes), height=10 <small>(machine-id=2)</small></h3>
   <div class="pulse-bar-div">
-    <x-machinestatebar id="height_10_machine2" machine-id=4 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
-      path='http://localhost:8082/' height=10></x-machinestatebar>
+    <x-machinestatebar machine-id="2" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/' height="10"></x-machinestatebar>
   </div>
 
-  <label>Height = 60 - Machine 3</label>
+  <h3>Machine 3 — single uniform slot (Production all range), height=60 <small>(machine-id=3)</small></h3>
   <div class="pulse-bar-div">
-    <x-machinestatebar id="height_60_machine3" machine-id=1 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
-      path='http://localhost:8082/' height=60></x-machinestatebar>
+    <x-machinestatebar machine-id="3" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/' height="60"></x-machinestatebar>
   </div>
 
-  <label>Error: not connected, check the network</label>
+  <h3>Error — server HTTP 400 (no data, error message visible) <small>(machine-id=999)</small></h3>
   <div class="pulse-bar-div">
-    <x-machinestatebar id="error_check_the_network" machine-id=2 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
-      path='http://localhost:8082/'></x-machinestatebar>
-  </div>
-
-  <label>Error: invalid machine-id</label>
-  <div class="pulse-bar-div">
-    <x-machinestatebar id="error_machineid" machine-id='not an id' range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+    <x-machinestatebar machine-id="999" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
       path='http://localhost:8082/'></x-machinestatebar>
   </div>
 </div>

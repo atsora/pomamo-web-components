@@ -1,51 +1,46 @@
 <!--
-Copyright (C) 2009-2026 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <p>Production-tracker table for a group of machines. Varies by <code>group</code>
+     (which machines), container size, <code>showreservecapacity</code>, and
+     <code>fit-mode</code> for overflow handling.</p>
 
-  <h3>Size = default — 8h window, main group (100)</h3>
+  <h3>Main group (100) — all monitored machines, default size <small>(group=100)</small></h3>
   <div class='divsize'>
-    <x-productiontrackertable id="size_default_main" group="100" range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackertable>
+    <x-productiontrackertable group="100"
+      range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)'
+      path='http://localhost:8082/'></x-productiontrackertable>
   </div>
 
-  <h3>Size = big — 8h window, milling cell (101)</h3>
+  <h3>Milling cell (101) — machines 1 + 2, big size <small>(group=101)</small></h3>
   <div class='divsize_big'>
-    <x-productiontrackertable id="size_big_mill" group="101" range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackertable>
+    <x-productiontrackertable group="101"
+      range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)'
+      path='http://localhost:8082/'></x-productiontrackertable>
   </div>
 
-  <h3>Size = small — 8h window, lathe cell (102)</h3>
+  <h3>Lathe cell (102) — machine 3, small size + reserve capacity <small>(group=102)</small></h3>
   <div class='divsize_small'>
-    <x-productiontrackertable id="size_small_lathe" group="102" range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackertable>
+    <x-productiontrackertable group="102" showreservecapacity="true"
+      range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)'
+      path='http://localhost:8082/'></x-productiontrackertable>
   </div>
 
-  <h3>Size = small with reserve capacity — main group</h3>
-  <div class='divsize_small'>
-    <x-productiontrackertable id="size_small_reserve" group="100" showreservecapacity="true" range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackertable>
-  </div>
-
-  <h3>15h data — limited by height (contain mode, default)</h3>
-  <p>Natural ratio (~0.73) taller than wrapper (1.0) → height is the binding constraint. Width left/right has empty space, no scroll.</p>
+  <h3>15 h data with <code>fit-mode="scroll-y"</code> — vertical scroll on overflow</h3>
   <div class='divsize_med'>
-    <x-productiontrackertable id="size_med_15h" group="100" range='[2026-05-21T00:00:00.000Z,2026-05-21T15:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackertable>
+    <x-productiontrackertable group="100" fit-mode="scroll-y"
+      range='[2026-05-21T00:00:00.000Z,2026-05-21T15:00:00.000Z)'
+      path='http://localhost:8082/'></x-productiontrackertable>
   </div>
 
-  <h3>15h data — scroll on overflow (fit-mode="scroll-y")</h3>
-  <p>Same data, same wrapper. Font scaled by width only, height naturally overflows → vertical scroll inside the table.</p>
-  <div class='divsize_med'>
-    <x-productiontrackertable id="size_med_15h_scroll" group="100" fit-mode="scroll-y" range='[2026-05-21T00:00:00.000Z,2026-05-21T15:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackertable>
-  </div>
-
-  <h3>Error (reserved id 999)</h3>
+  <h3>Error — server HTTP 400 <small>(group=999)</small></h3>
   <div class='divsize'>
-    <x-productiontrackertable id="error_group" group="999" range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackertable>
+    <x-productiontrackertable group="999"
+      range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)'
+      path='http://localhost:8082/'></x-productiontrackertable>
   </div>
-
-  <h3>Slow response (reserved id 998 — 5 s)</h3>
-  <div class='divsize'>
-    <x-productiontrackertable id="slow_group" group="998" range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackertable>
-  </div>
-
 </div>

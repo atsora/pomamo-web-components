@@ -1,32 +1,33 @@
 <!--
-Copyright (C) 2009-2026 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Machine 1</label>
+  <p>Counter showing the number of unanswered reasons for a machine over a range.</p>
+
+  <h3>Machine 1 <small>(machine-id=1, update=300s)</small></h3>
   <div class="pulse-bar-div">
-    <x-unansweredreasonnumber id="machine1" machine-id="1" path='http://localhost:8082/' update="300" range="[2026-05-21T11:35:00Z;2026-05-21T19:35:00Z]"></x-unansweredreasonnumber>
+    <x-unansweredreasonnumber machine-id="1" path='http://localhost:8082/' update="300"
+      range="[2026-05-21T11:35:00Z;2026-05-21T19:35:00Z]"></x-unansweredreasonnumber>
   </div>
 
-  <label>Machine 2</label>
+  <h3>Machine 2 <small>(machine-id=2, update=180s)</small></h3>
   <div class="pulse-bar-div">
-    <x-unansweredreasonnumber id="machine2" machine-id="2" path='http://localhost:8082/' update="180" range="[2026-05-21T11:35:00Z;2026-05-21T19:35:00Z]"></x-unansweredreasonnumber>
+    <x-unansweredreasonnumber machine-id="2" path='http://localhost:8082/' update="180"
+      range="[2026-05-21T11:35:00Z;2026-05-21T19:35:00Z]"></x-unansweredreasonnumber>
   </div>
 
-  <label>Machine 3</label>
+  <h3>Machine 3 <small>(machine-id=3)</small></h3>
   <div class="pulse-bar-div">
-    <x-unansweredreasonnumber id="machine3" machine-id="3" path='http://localhost:8082/' range="[2026-05-21T11:35:00Z;2026-05-21T19:35:00Z]"></x-unansweredreasonnumber>
+    <x-unansweredreasonnumber machine-id="3" path='http://localhost:8082/'
+      range="[2026-05-21T11:35:00Z;2026-05-21T19:35:00Z]"></x-unansweredreasonnumber>
   </div>
 
-  <label>Error (reserved id 999)</label>
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div class="pulse-bar-div">
-    <x-unansweredreasonnumber id="error_id" machine-id="999" path='http://localhost:8082/' range="[2026-05-21T11:35:00Z;2026-05-21T19:35:00Z]"></x-unansweredreasonnumber>
-  </div>
-
-  <label>Error: machine id has incorrect value</label>
-  <div class="pulse-bar-div">
-    <x-unansweredreasonnumber id="error_machineid" machine-id="not id" path='http://localhost:8082/' update="120"></x-unansweredreasonnumber>
+    <x-unansweredreasonnumber machine-id="999" path='http://localhost:8082/'
+      range="[2026-05-21T11:35:00Z;2026-05-21T19:35:00Z]"></x-unansweredreasonnumber>
   </div>
 </div>

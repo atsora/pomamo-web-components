@@ -1,42 +1,31 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <h3>Charts</h3>
-  <div>
+  <p>Bar chart of remaining shift capacity per machine inside a parent group.
+     Positive bars = ahead of plan, negative = behind. The mock varies the
+     content per <code>group</code>.</p>
 
-    <label>Chart 18 - negative values </label>
-    <div class="fixed-size2">
-      <x-chartreservecapacity id="reservecapa_18" group=102 path='http://localhost:8082/' ></x-chartreservecapacity>
-    </div>
+  <h3>Main group (100) — 3 machines, mixed (+ / − / +) <small>(group=100)</small></h3>
+  <div class="fixed-size1">
+    <x-chartreservecapacity group="100" path='http://localhost:8082/'></x-chartreservecapacity>
+  </div>
 
-    <label>Chart 19 - positive values </label>
-    <div class="fixed-size1">
-      <x-chartreservecapacity id="reservecapa_19" group=100 path=http://localhost:8082/ ></x-chartreservecapacity>
-    </div>
+  <h3>Milling cell (101) — 2 machines (+12 and −3.5) <small>(group=101)</small></h3>
+  <div class="fixed-size2">
+    <x-chartreservecapacity group="101" path='http://localhost:8082/'></x-chartreservecapacity>
+  </div>
 
-    <label>Chart 20 - positive AND negative values</label>
-    <div class="fixed-size2">
-      <x-chartreservecapacity id="reservecapa_20" group=101 path=http://localhost:8082/ ></x-chartreservecapacity>
-    </div>
+  <h3>Lathe cell (102) — 1 machine, positive <small>(group=102)</small></h3>
+  <div class="fixed-size2">
+    <x-chartreservecapacity group="102" path='http://localhost:8082/'></x-chartreservecapacity>
+  </div>
 
-    <label>Machine 2 - bad efficiency display in red</label>
-    <div class="fixed-size1">
-      <x-chartreservecapacity id="reservecapa_error" group=realERROR path=http://localhost:8082/ ></x-chartreservecapacity>
-    </div>
-
-    <label>Error: undefined machine</label>
-    <div class="fixed-size1">
-      <x-chartreservecapacity id="error_machineid" group=101 path=http://localhost:8082/ ></x-chartreservecapacity>
-    </div>
-
-    <label>Error: Not Applicable (hidden is normal)</label>
-    <div class="fixed-size1">
-      <x-chartreservecapacity id="error_notapplicable" group=102 path=http://localhost:8082/ ></x-chartreservecapacity>
-    </div>
-
+  <h3>Error — server HTTP 400 <small>(group=999)</small></h3>
+  <div class="fixed-size1">
+    <x-chartreservecapacity group="999" path='http://localhost:8082/'></x-chartreservecapacity>
   </div>
 </div>

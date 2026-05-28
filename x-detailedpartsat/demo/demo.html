@@ -1,17 +1,34 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <p>Shows part production count vs goal for a machine over a range
+     (<code>Operation/PartProductionRange</code>).</p>
+
+  <h3>Machine 1 — 48 / 60 pieces (80 % to goal, in progress) <small>(machine-id=1)</small></h3>
   <div>
-    <x-detailedpartsat id="detailedpartsat" machine-id=1 path=http://localhost:8082/ range='[2026-05-21T00:00:00Z,2026-05-21T10:00:00Z]'></x-detailedpartsat>
+    <x-detailedpartsat machine-id="1" path="http://localhost:8082/"
+      range='[2026-05-21T00:00:00Z,2026-05-21T10:00:00Z]'></x-detailedpartsat>
   </div>
-   <div>
-    <x-detailedpartsat id="detailedpartsat" machine-id=2 path=http://localhost:8082/ range='[2026-05-21T00:00:00Z,2026-05-21T10:00:00Z]'></x-detailedpartsat>
+
+  <h3>Machine 2 — 33 / 60 pieces (55 %, behind plan) <small>(machine-id=2)</small></h3>
+  <div>
+    <x-detailedpartsat machine-id="2" path="http://localhost:8082/"
+      range='[2026-05-21T00:00:00Z,2026-05-21T10:00:00Z]'></x-detailedpartsat>
   </div>
-    <div>
-    <x-detailedpartsat id="detailedpartsat" machine-id=1 path=http://localhost:8082/ range='[2026-05-21T00:00:00Z,2026-05-21T10:00:00Z]'></x-detailedpartsat>
+
+  <h3>Machine 3 — 57 / 60 pieces (95 %, almost done) <small>(machine-id=3)</small></h3>
+  <div>
+    <x-detailedpartsat machine-id="3" path="http://localhost:8082/"
+      range='[2026-05-21T00:00:00Z,2026-05-21T10:00:00Z]'></x-detailedpartsat>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div>
+    <x-detailedpartsat machine-id="999" path="http://localhost:8082/"
+      range='[2026-05-21T00:00:00Z,2026-05-21T10:00:00Z]'></x-detailedpartsat>
   </div>
 </div>

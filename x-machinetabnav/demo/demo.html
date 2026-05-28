@@ -1,24 +1,40 @@
 <!--
-Copyright (C) 2026 Atsora Solutions
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <p>Compact machine-tab navigation (mobile chevrons). Clones the element
+     referenced by <code>templateid</code> once per machine id, stamping
+     <code>machine-id</code> on each clone. Click prev/next dispatches
+     <code>machineIdChangeSignal</code> on the <code>machine-context</code>.</p>
 
-  <div class="demo-block">
-    <div class="demo-sub-title">Mobile chevrons (resize viewport to phone width)</div>
-    <p>Click prev/next: the <code>selected-machine</code> below cycles through ids 1..4 with wrap-around.</p>
-    <x-machinetabnav id="machinetabnav-main" machine-context="demo"></x-machinetabnav>
-    <div class="demo-meta">
-      Selected machine: <span id="selected-machine">—</span>
+  <!-- Hidden templates cloned per machine, one per nav (must be unique ids). -->
+  <div class="hidden-content" style="display:none">
+    <div id="tabnav-template-A">
+      <div class="demo-tab">Tab A — machine <span class="demo-tab-id">?</span></div>
+    </div>
+    <div id="tabnav-template-B">
+      <div class="demo-tab">Tab B — M<span class="demo-tab-id">?</span></div>
     </div>
   </div>
 
-  <div class="demo-block">
-    <div class="demo-sub-title">Re-dispatch <code>machineListChanged</code></div>
-    <button id="dispatch-all">Restore 4 machines</button>
-    <button id="dispatch-empty">Send empty list</button>
+  <h3>4 machines (static list <code>machine="1,2,3,4"</code>) <small>(machine-context="demo")</small></h3>
+  <p>Click prev/next: the <code>selected-machine</code> below cycles through ids 1..4 with wrap-around.</p>
+  <x-machinetabnav templateid="tabnav-template-A" machine="1,2,3,4" machine-context="demo"></x-machinetabnav>
+  <div class="demo-meta">
+    Selected machine: <span id="selected-machine">—</span>
   </div>
 
+  <h3>2-machine subset (static list <code>machine="1,2"</code>) <small>(machine-context="demo2")</small></h3>
+  <x-machinetabnav templateid="tabnav-template-B" machine="1,2" machine-context="demo2"></x-machinetabnav>
+  <div class="demo-meta">
+    Selected machine: <span id="selected-machine-2">—</span>
+  </div>
+
+  <h3>Dynamic list — driven by <code>machineListChanged</code></h3>
+  <p>The two buttons below dispatch <code>machineListChanged</code> globally — the navs above react.</p>
+  <button id="dispatch-all">Restore 4 machines</button>
+  <button id="dispatch-empty">Send empty list</button>
 </div>

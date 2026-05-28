@@ -1,19 +1,35 @@
 <!--
-Copyright (C) 2026 Atsora Solutions
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <h3>Machine 1</h3>
-  <div><x-production machine-id="1" path="http://localhost:8082/"></x-production></div>
+  <p>Top-level production widget: combines part count, goal and shift target.
+     The mock varies the completion per machine.</p>
 
-  <h3>Machine 2</h3>
-  <div><x-production machine-id="2" path="http://localhost:8082/"></x-production></div>
+  <h3>Machine 1 — 48 / 200 pieces (24 %, behind plan) <small>(machine-id=1)</small></h3>
+  <div>
+    <x-production machine-id="1" path="http://localhost:8082/"></x-production>
+  </div>
 
-  <h3>Main group (100)</h3>
-  <div><x-production group-id="100" path="http://localhost:8082/"></x-production></div>
+  <h3>Machine 2 — 109 / 200 (54 %, on track) <small>(machine-id=2)</small></h3>
+  <div>
+    <x-production machine-id="2" path="http://localhost:8082/"></x-production>
+  </div>
 
-  <h3>Error (reserved id 999)</h3>
-  <div><x-production machine-id="999" path="http://localhost:8082/"></x-production></div>
+  <h3>Machine 3 — 198 / 200 (99 %, almost done) <small>(machine-id=3)</small></h3>
+  <div>
+    <x-production machine-id="3" path="http://localhost:8082/"></x-production>
+  </div>
+
+  <h3>Main group aggregate <small>(group-id=100)</small></h3>
+  <div>
+    <x-production group-id="100" path="http://localhost:8082/"></x-production>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div>
+    <x-production machine-id="999" path="http://localhost:8082/"></x-production>
+  </div>
 </div>

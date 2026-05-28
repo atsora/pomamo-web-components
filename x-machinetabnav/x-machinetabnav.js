@@ -271,7 +271,7 @@ var eventBus = require('eventBus');
 
       if (!this._dynamic) {
         this.switchToContext('Loaded');
-      } else {
+      }else {
         super.manageSuccess(data);
       }
     }

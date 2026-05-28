@@ -1,36 +1,34 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Default</label>
+  <p>Renders running/idle ratio as a pie. The mock varies the motion ratio
+     per machine.</p>
+
+  <h3>Machine 1 — 50 % motion, default size <small>(machine-id=1)</small></h3>
   <div class='divsize'>
-    <x-runningslotpie id="default" machine-id=1 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)' path='http://localhost:8082/'></x-runningslotpie>
-  </div>
-
-  <label>Small</label>
-  <div class='divsize_small'>
-    <x-runningslotpie id="small" machine-id=1 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)' path='http://localhost:8082/'
-      bicolore=true></x-runningslotpie>
-  </div>
-
-  <label>Big + 'CH eck' text position for elapsed time</label>
-  <div class='divsize_big'>
-    <x-runningslotpie id="big" machine-id=1 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)' path='http://localhost:8082/'
-      textchange-context='DEMO'></x-runningslotpie>
-  </div>
-
-  <label>Error: Not connected, check the network</label>
-  <div class='divsize'>
-    <x-runningslotpie id="error_check_the_network" machine-id=2 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+    <x-runningslotpie machine-id="1" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
       path='http://localhost:8082/'></x-runningslotpie>
   </div>
 
-  <label>Error: Machine Id has incorrect value</label>
+  <h3>Machine 2 — 75 % motion, small + bicolore <small>(machine-id=2)</small></h3>
+  <div class='divsize_small'>
+    <x-runningslotpie machine-id="2" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/' bicolore="true"></x-runningslotpie>
+  </div>
+
+  <h3>Machine 3 — 62.5 % motion, big + textchange-context <small>(machine-id=3)</small></h3>
+  <div class='divsize_big'>
+    <x-runningslotpie machine-id="3" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/' textchange-context='DEMO'></x-runningslotpie>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div class='divsize'>
-    <x-runningslotpie id="error_machineid" machine-id='invalid id' range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+    <x-runningslotpie machine-id="999" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
       path='http://localhost:8082/'></x-runningslotpie>
   </div>
 </div>

@@ -1,19 +1,43 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Motion bar used for the percentage below (8h window ending now)</label>
+  <p>Displays the motion ratio (motion / total time) computed from a sibling
+     <code>x-reasonslotbar</code> via <code>motionChangeEvent</code> on the
+     shared <code>motion-context</code>.</p>
+
+  <h3>Machine 1 — 50 % motion (4 h / 8 h) <small>(machine-id=1)</small></h3>
   <div>
-    <x-reasonslotbar id="reasonslotbar" machine-id=1 motion-context='motionpercTEST'
+    <x-reasonslotbar machine-id="1" motion-context='motionperc_1'
       range='[2026-05-21T00:00:00.000Z;2026-05-22T00:00:00.000Z)'
-      path='http://localhost:8082/' height=20 update=30></x-reasonslotbar>
+      path='http://localhost:8082/' height="20" update="30"></x-reasonslotbar>
+    <x-motionpercentage machine-id="1" motion-context='motionperc_1'></x-motionpercentage>
   </div>
 
-  <label>Motion percentage computed from the bar above</label>
+  <h3>Machine 2 — 75 % motion (6 h / 8 h) <small>(machine-id=2)</small></h3>
   <div>
-    <x-motionpercentage id="motionpercentage" machine-id=1 motion-context='motionpercTEST'></x-motionpercentage>
+    <x-reasonslotbar machine-id="2" motion-context='motionperc_2'
+      range='[2026-05-21T00:00:00.000Z;2026-05-22T00:00:00.000Z)'
+      path='http://localhost:8082/' height="20" update="30"></x-reasonslotbar>
+    <x-motionpercentage machine-id="2" motion-context='motionperc_2'></x-motionpercentage>
+  </div>
+
+  <h3>Machine 3 — 62.5 % motion (5 h / 8 h) <small>(machine-id=3)</small></h3>
+  <div>
+    <x-reasonslotbar machine-id="3" motion-context='motionperc_3'
+      range='[2026-05-21T00:00:00.000Z;2026-05-22T00:00:00.000Z)'
+      path='http://localhost:8082/' height="20" update="30"></x-reasonslotbar>
+    <x-motionpercentage machine-id="3" motion-context='motionperc_3'></x-motionpercentage>
+  </div>
+
+  <h3>Error — sibling bar fails to load (no motionChangeEvent) <small>(machine-id=999)</small></h3>
+  <div>
+    <x-reasonslotbar machine-id="999" motion-context='motionperc_999'
+      range='[2026-05-21T00:00:00.000Z;2026-05-22T00:00:00.000Z)'
+      path='http://localhost:8082/' height="20" update="30"></x-reasonslotbar>
+    <x-motionpercentage machine-id="999" motion-context='motionperc_999'></x-motionpercentage>
   </div>
 </div>

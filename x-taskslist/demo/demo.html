@@ -1,11 +1,31 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <p>Lists task instances grouped by time category (Late / Todo / Upcoming).
+     The Tasks mock uses a separate GraphQL endpoint with its own machine IDs
+     (18, 20, 21, 22) — not the standard 1/2/3 scenario.</p>
+
+  <h3>Machine 18 — many tasks across Quality, Maintenance, ShiftChange categories <small>(machine-id=18)</small></h3>
   <div class='forceHeight'>
-    <x-taskslist id='SR_1' machine-id="1"></x-taskslist>
+    <x-taskslist machine-id="18"></x-taskslist>
+  </div>
+
+  <h3>Machine 20 — single long-running task (multi-day DocAck) <small>(machine-id=20)</small></h3>
+  <div class='forceHeight'>
+    <x-taskslist machine-id="20"></x-taskslist>
+  </div>
+
+  <h3>Machine 22 — single pending maintenance task <small>(machine-id=22)</small></h3>
+  <div class='forceHeight'>
+    <x-taskslist machine-id="22"></x-taskslist>
+  </div>
+
+  <h3>Machine without tasks (id=99) — empty list <small>(machine-id=99)</small></h3>
+  <div class='forceHeight'>
+    <x-taskslist machine-id="99"></x-taskslist>
   </div>
 </div>

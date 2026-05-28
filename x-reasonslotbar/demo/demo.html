@@ -1,48 +1,47 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Height=30 + click=change + bar time</label>
+  <p>Renders reason color slots (Motion / Short idle / Operator break / Awaiting)
+     over a time range with click-to-edit, click-to-details or click-to-popup modes.</p>
+
+  <h3>Machine 1 — click=change + bartimeselection cursor, height=30 <small>(machine-id=1)</small></h3>
   <div class='pulse-bar-div'>
-    <x-reasonslotbar machine-id=1 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)' path='http://localhost:8082/'
-      height=30 click=change></x-reasonslotbar>
-    <x-bartimeselection when='2026-05-21T07:00:00.000Z' range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
-      height=30></x-bartimeselection>
+    <x-reasonslotbar machine-id="1" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/' height="30" click="change"></x-reasonslotbar>
+    <x-bartimeselection when='2026-05-21T07:00:00.000Z'
+      range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)' height="30"></x-bartimeselection>
   </div>
 
-  <label>Height=50 + click=details</label>
+  <h3>Machine 2 — click=details (opens detail-at panels), height=50 <small>(machine-id=2)</small></h3>
   <div class="pulse-bar-div">
-    <x-reasonslotbar id="details" machine-id=1 range='[2026-05-21T06:00:00.000Z,2026-05-21T18:00:00.000Z)' path='http://localhost:8082/'
-      height=50 click=details showdetails='x-detailedreasonat,x-detailedcncvaluesat'></x-reasonslotbar>
+    <x-reasonslotbar machine-id="2" range='[2026-05-21T06:00:00.000Z,2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/' height="50" click="details"
+      showdetails='x-detailedreasonat,x-detailedcncvaluesat'></x-reasonslotbar>
   </div>
 
-  <label>Height=80 + click=popup</label>
+  <h3>Machine 3 — click=popup + overwrite-required markers, height=80 <small>(machine-id=3)</small></h3>
   <div class="pulse-bar-div">
-    <x-reasonslotbar id="popup" machine-id=4 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)' path='http://localhost:8082/'
-      height=80 showoverwriterequired='true' click=popup showpopup='x-detailedreasonat,x-detailedcncvaluesat'></x-reasonslotbar>
+    <x-reasonslotbar machine-id="3" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/' height="80" showoverwriterequired='true' click="popup"
+      showpopup='x-detailedreasonat,x-detailedcncvaluesat'></x-reasonslotbar>
   </div>
 
-  <label>Error: Not connected, check the network</label>
-  <div class="pulse-bar-div">
-    <x-reasonslotbar id="error_check_the_network" machine-id=2 range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
-      path='http://localhost:8082/' height=40 clic=popup showpopup='x-detailedreasonat,x-detailedcncvaluesat'></x-reasonslotbar>
-  </div>
-
-  <label>Error: invalid machine-id</label>
-  <div class="pulse-bar-div">
-    <x-reasonslotbar id="error_machineid" machine-id='invalid id' range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
-      path='http://localhost:8082/' height=40></x-reasonslotbar>
-  </div>
-
-  <label>With period tool bar (8am-8pm)</label>
-  <x-periodtoolbar path='http://localhost:8082/' range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
-    period-context='periodtoolbar'></x-periodtoolbar>
+  <h3>With <code>x-periodtoolbar</code> driving the range</h3>
+  <x-periodtoolbar path='http://localhost:8082/'
+    range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)' period-context='periodtoolbar'></x-periodtoolbar>
   <x-datetimegraduation path='http://localhost:8082/' period-context='periodtoolbar'></x-datetimegraduation>
   <div class='align-graduation-and-bar pulse-bar-div'>
-    <x-reasonslotbar id="toolbar" machine-id='1' period-context='periodtoolbar' path='http://localhost:8082/' height=20></x-reasonslotbar>
+    <x-reasonslotbar machine-id="1" period-context='periodtoolbar'
+      path='http://localhost:8082/' height="20"></x-reasonslotbar>
   </div>
 
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div class="pulse-bar-div">
+    <x-reasonslotbar machine-id="999" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/' height="40"></x-reasonslotbar>
+  </div>
 </div>

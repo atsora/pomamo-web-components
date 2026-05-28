@@ -1,19 +1,30 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Group102</label>
+  <p>Shows the production shift goal (target parts to produce in the current shift)
+     for a machine.</p>
+
+  <h3>Machine 1 — shift goal 100 <small>(machine-id=1)</small></h3>
   <div>
-    <x-productionshiftgoal id="group102" machine-id=3 path="http://localhost:8082/"> </x-productionshiftgoal>
+    <x-productionshiftgoal machine-id="1" path="http://localhost:8082/"></x-productionshiftgoal>
   </div>
 
-  <label>With javascript</label>
-  <div id="demo-js" style="border:1px solid blue;" ></div>
+  <h3>Machine 2 — shift goal 120 <small>(machine-id=2)</small></h3>
+  <div>
+    <x-productionshiftgoal machine-id="2" path="http://localhost:8082/"></x-productionshiftgoal>
+  </div>
 
-  <label>Error</label>
-  <div id="demo-js-error" style="border:1px solid blue;" ></div>
+  <h3>Machine 3 — shift goal 80 <small>(machine-id=3)</small></h3>
+  <div>
+    <x-productionshiftgoal machine-id="3" path="http://localhost:8082/"></x-productionshiftgoal>
+  </div>
 
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div>
+    <x-productionshiftgoal machine-id="999" path="http://localhost:8082/"></x-productionshiftgoal>
+  </div>
 </div>

@@ -1,16 +1,30 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-    <label>Height = default - Machine 3</label>
-    <div><x-productionbar id="height_default_machine3" machine-id=1 path=http://localhost:8082/ ></x-productionbar></div>
-    
-    <label>Error: No monitored machine with id 300 (not working in 2018)</label>
-    <div><x-productionbar id="error_machineid" machine-id=3 path=http://localhost:8082/ height=104 ></x-productionbar></div>
-    
-    <label>Error: Gateway Timeout (not working in 2018)</label>
-    <div><x-productionbar id="error_gateway_timeout" machine-id=1 path=http://localhost:8082/ height=104 ></x-productionbar></div>
+  <p>Renders the part production count / goal for the current shift as a bar.
+     The mock varies the completion ratio per machine.</p>
+
+  <h3>Machine 1 — 48 / 200 pieces (24 %, behind plan) <small>(machine-id=1)</small></h3>
+  <div>
+    <x-productionbar machine-id="1" path="http://localhost:8082/"></x-productionbar>
+  </div>
+
+  <h3>Machine 2 — 109 / 200 (54 %, on track), height=80 <small>(machine-id=2)</small></h3>
+  <div>
+    <x-productionbar machine-id="2" path="http://localhost:8082/" height="80"></x-productionbar>
+  </div>
+
+  <h3>Machine 3 — 198 / 200 (99 %, almost done), height=104 <small>(machine-id=3)</small></h3>
+  <div>
+    <x-productionbar machine-id="3" path="http://localhost:8082/" height="104"></x-productionbar>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div>
+    <x-productionbar machine-id="999" path="http://localhost:8082/" height="104"></x-productionbar>
+  </div>
 </div>

@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
@@ -16,21 +16,23 @@ SPDX-License-Identifier: Apache-2.0
 </div>
 
 <div class="static-tests">
-  <label>Fixed list of 4 machines for the test (instead of dynamic group) column=3</label>
-  <div id="machine" class='group-div'>
-    <x-grouparray templateid='boxtoclone' machine='18,19,20,21' column=3></x-grouparray>
+  <p>Renders a grid of machine tiles from a comma-separated <code>machine</code>
+     list, cloning <code>boxtoclone</code> per machine. The <code>column</code> /
+     <code>row</code> attributes control the layout matrix.</p>
+
+  <h3>4 machines, 3 columns (auto 2 rows, last row partial)</h3>
+  <div class='group-div'>
+    <x-grouparray templateid='boxtoclone' machine='1,2,3,4' column="3"></x-grouparray>
   </div>
 
-  <label>Fixed group (Ca1) 2 rows (+ adapt), 2 columns</label>
-  <div id="group" class='group-div'>
-    <!-- group='Ca1'-->
-    <x-grouparray templateid='boxtoclone' machine='18,19,20,21' column=2 row=2 canUseRowsToSetHeight='true'></x-grouparray>
+  <h3>4 machines, 2 cols × 2 rows (fixed-height grid, <code>canUseRowsToSetHeight=true</code>)</h3>
+  <div class='group-div'>
+    <x-grouparray templateid='boxtoclone' machine='1,2,3,4'
+      column="2" row="2" canUseRowsToSetHeight='true'></x-grouparray>
   </div>
 
-  <label>Dynamic group (ET) 4 columns</label>
-  <div id="dyn-group" class='group-div'>
-    <!--group='ET'-->
-    <x-grouparray templateid='boxtoclone' machine='18,19,20,21' column=4></x-grouparray>
+  <h3>4 machines, 4 columns (single row, wide layout)</h3>
+  <div class='group-div'>
+    <x-grouparray templateid='boxtoclone' machine='1,2,3,4' column="4"></x-grouparray>
   </div>
-
 </div>

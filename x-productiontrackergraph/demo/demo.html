@@ -1,33 +1,38 @@
 <!--
-Copyright (C) 2025 Atsora Solutions
+Copyright (C) 2009-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Warning ! Simulations need to be changed !</label>
+  <p>Production tracker graph for a group of machines over a shift. The mock
+     varies the cumulative production curve per group.</p>
 
-  <h3>Size = default</h3>
+  <h3>Main group (100) — all monitored machines, default size <small>(group=100)</small></h3>
   <div class='divsize'>
-    <x-productiontrackergraph id="size_default_machine3" group=102 range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackergraph>
+    <x-productiontrackergraph group="100"
+      range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)'
+      path='http://localhost:8082/'></x-productiontrackergraph>
   </div>
 
-  <h3>Size = big</h3>
+  <h3>Milling cell (101), big size <small>(group=101)</small></h3>
   <div class='divsize_big'>
-    <x-productiontrackergraph id="size_big_machine3" group=102 range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackergraph>
+    <x-productiontrackergraph group="101"
+      range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)'
+      path='http://localhost:8082/'></x-productiontrackergraph>
   </div>
 
-  <h3>Size = small</h3>
+  <h3>Lathe cell (102), small size <small>(group=102)</small></h3>
   <div class='divsize_small'>
-    <x-productiontrackergraph id="size_small_machine3" group=102 range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackergraph>
+    <x-productiontrackergraph group="102"
+      range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)'
+      path='http://localhost:8082/'></x-productiontrackergraph>
   </div>
 
-  <h3>Error</h3>
+  <h3>Error — server HTTP 400 <small>(group=999)</small></h3>
   <div class='divsize'>
-    <x-productiontrackergraph id="error_no_cycle_size_default_machine2" group=101 range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackergraph>
+    <x-productiontrackergraph group="999"
+      range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)'
+      path='http://localhost:8082/'></x-productiontrackergraph>
   </div>
-
-  <h3>Error: Gateway Timeout</h3>
-  <div class='divsize_big'>
-    <x-productiontrackergraph id="error_gateway_timeout_size_big_machine3" group=102 range='[2026-05-21T08:00:00.000Z,2026-05-21T16:00:00.000Z)' path='http://localhost:8082/'></x-productiontrackergraph>
-  </div>
-
 </div>

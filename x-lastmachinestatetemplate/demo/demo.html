@@ -1,27 +1,30 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Machine 3</label>
+  <p>Shows the current machine state template (Production / Setup / Maintenance / Off)
+     with an inline editor.</p>
+
+  <h3>Machine 1 — current MST <small>(machine-id=1)</small></h3>
   <div class="pulse-bar-div">
-    <x-lastmachinestatetemplate id="Machine 3" machine-id=1 path='http://localhost:8082/'></x-lastmachinestatetemplate>
+    <x-lastmachinestatetemplate machine-id="1" path='http://localhost:8082/'></x-lastmachinestatetemplate>
   </div>
 
-  <label>Machine 2</label>
+  <h3>Machine 2 — current MST <small>(machine-id=2)</small></h3>
   <div class="pulse-bar-div">
-    <x-lastmachinestatetemplate id="Machine 2" machine-id=4 path='http://localhost:8082/'></x-lastmachinestatetemplate>
+    <x-lastmachinestatetemplate machine-id="2" path='http://localhost:8082/'></x-lastmachinestatetemplate>
   </div>
 
-  <label>Error: not connected, check the network</label>
+  <h3>Machine 3 — current MST <small>(machine-id=3)</small></h3>
   <div class="pulse-bar-div">
-    <x-lastmachinestatetemplate id="error_check_network" machine-id=2 path='http://localhost:8082/'></x-lastmachinestatetemplate>
+    <x-lastmachinestatetemplate machine-id="3" path='http://localhost:8082/'></x-lastmachinestatetemplate>
   </div>
 
-  <label>Error: machine Id has incorrect value</label>
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div class="pulse-bar-div">
-    <x-lastmachinestatetemplate id="error_machineid" machine-id='not id' path='http://localhost:8082/'></x-lastmachinestatetemplate>
+    <x-lastmachinestatetemplate machine-id="999" path='http://localhost:8082/'></x-lastmachinestatetemplate>
   </div>
 </div>

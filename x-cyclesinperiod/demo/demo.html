@@ -1,17 +1,34 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Machine 3</label>
+  <p>Lists machining cycles with their work-info over a time range. The mock
+     varies the cycle count per machine.</p>
+
+  <h3>Machine 1 — 5 cycles (busy 4 h) <small>(machine-id=1)</small></h3>
   <div>
-    <x-cyclesinperiod id="Machine 3" machine-id=1 path='http://localhost:8082/' range='[2026-05-21T08:28:37.000Z;2026-05-21T09:01:36.000Z)'></x-cyclesinperiod>
+    <x-cyclesinperiod machine-id="1" path='http://localhost:8082/'
+      range='2026-05-21T00:00:00.000Z;2026-05-21T08:00:00.000Z'></x-cyclesinperiod>
   </div>
 
-  <label>Error: Machine 1</label>
+  <h3>Machine 2 — 2 cycles (moderate) <small>(machine-id=2)</small></h3>
   <div>
-    <x-cyclesinperiod id="error_machine1" machine-id=2 path='http://localhost:8082/' range='[2026-05-21T08:45:00.000Z;2026-05-21T09:01:36.000Z)'></x-cyclesinperiod>
+    <x-cyclesinperiod machine-id="2" path='http://localhost:8082/'
+      range='2026-05-21T00:00:00.000Z;2026-05-21T08:00:00.000Z'></x-cyclesinperiod>
+  </div>
+
+  <h3>Machine 3 — 1 long cycle (single 4 h) <small>(machine-id=3)</small></h3>
+  <div>
+    <x-cyclesinperiod machine-id="3" path='http://localhost:8082/'
+      range='2026-05-21T00:00:00.000Z;2026-05-21T08:00:00.000Z'></x-cyclesinperiod>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div>
+    <x-cyclesinperiod machine-id="999" path='http://localhost:8082/'
+      range='2026-05-21T00:00:00.000Z;2026-05-21T08:00:00.000Z'></x-cyclesinperiod>
   </div>
 </div>

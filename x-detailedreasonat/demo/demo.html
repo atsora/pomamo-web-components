@@ -1,11 +1,30 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <p>Shows the reason slot (Motion / Short idle / Operator break / Awaiting
+     part) active at a specific instant.</p>
+
+  <h3>Machine 1 — busy day (6 reason slots) <small>(machine-id=1)</small></h3>
   <div>
-    <x-detailedreasonat id="detailedreasonat" machine-id=3 path=http://localhost:8082/ when='2026-05-21T11:36:00Z'></x-detailedreasonat>
+    <x-detailedreasonat machine-id="1" path="http://localhost:8082/" when='2026-05-21T11:36:00Z'></x-detailedreasonat>
+  </div>
+
+  <h3>Machine 2 — mostly motion (4 slots) <small>(machine-id=2)</small></h3>
+  <div>
+    <x-detailedreasonat machine-id="2" path="http://localhost:8082/" when='2026-05-21T11:36:00Z'></x-detailedreasonat>
+  </div>
+
+  <h3>Machine 3 — uninterrupted then awaiting (2 slots) <small>(machine-id=3)</small></h3>
+  <div>
+    <x-detailedreasonat machine-id="3" path="http://localhost:8082/" when='2026-05-21T11:36:00Z'></x-detailedreasonat>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div>
+    <x-detailedreasonat machine-id="999" path="http://localhost:8082/" when='2026-05-21T11:36:00Z'></x-detailedreasonat>
   </div>
 </div>

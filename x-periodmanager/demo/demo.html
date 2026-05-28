@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2009-2026 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
@@ -11,10 +11,8 @@ SPDX-License-Identifier: Apache-2.0
     border: 1px solid #444;
     border-radius: 4px;
   }
-  .periodmanager-row > label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 6px;
+  .periodmanager-row > h3 {
+    margin: 0 0 6px 0;
   }
   .periodmanager-row .range-output {
     margin-top: 6px;
@@ -25,47 +23,42 @@ SPDX-License-Identifier: Apache-2.0
 </style>
 
 <div class="static-tests">
-  <p><code>x-periodmanager</code> is a <strong>headless component</strong>. It computes a date range and dispatches <code>dateTimeRangeChangeEvent</code> on its <code>period-context</code>. Pair it with <code>x-datetimegraduation</code> to visualise the range.</p>
+  <p><code>x-periodmanager</code> is a <strong>headless component</strong>:
+     it computes a date range from <code>displayhoursrange</code> or
+     <code>displaydaysrange</code> + <code>exclude-now</code> and dispatches
+     <code>dateTimeRangeChangeEvent</code> on its <code>period-context</code>.
+     Each row pairs it with <code>x-datetimegraduation</code> to visualise the
+     computed range.</p>
 
   <div class="periodmanager-row">
-    <label>Current hour</label>
+    <h3>1 hour, ending now (current hour, <code>exclude-now=false</code>)</h3>
     <x-datetimegraduation path='http://localhost:8082/' period-context='CrtHOUR'></x-datetimegraduation>
-    <x-periodmanager id="current_hours" path='http://localhost:8082/' displaydaysrange="0" displayhoursrange="1" exclude-now='false' period-context='CrtHOUR'></x-periodmanager>
+    <x-periodmanager path='http://localhost:8082/' displaydaysrange="0" displayhoursrange="1"
+      exclude-now='false' period-context='CrtHOUR'></x-periodmanager>
     <div class="range-output" data-context="CrtHOUR">(computing…)</div>
   </div>
 
   <div class="periodmanager-row">
-    <label>Last hour (exclude-now=true)</label>
-    <x-datetimegraduation path='http://localhost:8082/' period-context='LastHOUR'></x-datetimegraduation>
-    <x-periodmanager id="last_hours" path='http://localhost:8082/' displaydaysrange="0" displayhoursrange="1" exclude-now='true' period-context='LastHOUR'></x-periodmanager>
-    <div class="range-output" data-context="LastHOUR">(computing…)</div>
-  </div>
-
-  <div class="periodmanager-row">
-    <label>Current 2 hours</label>
-    <x-datetimegraduation path='http://localhost:8082/' period-context='Crt2HOURS'></x-datetimegraduation>
-    <x-periodmanager id="current_2_hours" path='http://localhost:8082/' displaydaysrange="0" displayhoursrange="2" exclude-now='false' period-context='Crt2HOURS'></x-periodmanager>
-    <div class="range-output" data-context="Crt2HOURS">(computing…)</div>
-  </div>
-
-  <div class="periodmanager-row">
-    <label>Last 2 hours</label>
+    <h3>Last 2 hours (rolling window, <code>exclude-now=true</code>)</h3>
     <x-datetimegraduation path='http://localhost:8082/' period-context='Last2HOURS'></x-datetimegraduation>
-    <x-periodmanager id="last_2_hours" path='http://localhost:8082/' displaydaysrange="0" displayhoursrange="2" exclude-now='true' period-context='Last2HOURS'></x-periodmanager>
+    <x-periodmanager path='http://localhost:8082/' displaydaysrange="0" displayhoursrange="2"
+      exclude-now='true' period-context='Last2HOURS'></x-periodmanager>
     <div class="range-output" data-context="Last2HOURS">(computing…)</div>
   </div>
 
   <div class="periodmanager-row">
-    <label>Today (1 day)</label>
+    <h3>Today (1 day, <code>displaydaysrange=1</code>, current day)</h3>
     <x-datetimegraduation path='http://localhost:8082/' period-context='TODAY'></x-datetimegraduation>
-    <x-periodmanager id="1_day" path='http://localhost:8082/' displaydaysrange="1" exclude-now='false' period-context='TODAY'></x-periodmanager>
+    <x-periodmanager path='http://localhost:8082/' displaydaysrange="1"
+      exclude-now='false' period-context='TODAY'></x-periodmanager>
     <div class="range-output" data-context="TODAY">(computing…)</div>
   </div>
 
   <div class="periodmanager-row">
-    <label>Last 6 days to date</label>
-    <x-datetimegraduation path='http://localhost:8082/' period-context='LAST6DAYStoDATE'></x-datetimegraduation>
-    <x-periodmanager id="6_days" path='http://localhost:8082/' displaydaysrange="6" exclude-now='false' period-context='LAST6DAYStoDATE'></x-periodmanager>
-    <div class="range-output" data-context="LAST6DAYStoDATE">(computing…)</div>
+    <h3>Last 7 days to date (<code>displaydaysrange=7</code>)</h3>
+    <x-datetimegraduation path='http://localhost:8082/' period-context='LAST7DAYS'></x-datetimegraduation>
+    <x-periodmanager path='http://localhost:8082/' displaydaysrange="7"
+      exclude-now='false' period-context='LAST7DAYS'></x-periodmanager>
+    <div class="range-output" data-context="LAST7DAYS">(computing…)</div>
   </div>
 </div>

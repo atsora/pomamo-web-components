@@ -1,17 +1,35 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <p>Form to classify a stop period with a reason. Use the <code>ranges</code>
+     attribute (<code>&amp;</code>-joined ISO ranges) to seed one or several
+     periods to classify on mount.</p>
+
+  <h3>Machine 1 — single slot to classify <small>(machine-id=1)</small></h3>
   <div class='forceHeight'>
-    <x-savereason id='SR_1' machine-id="1" path="http://localhost:8082/" begin="2026-05-21T11:35:00Z" end="2026-05-21T11:35:00Z"></x-savereason>
+    <x-savereason machine-id="1" path="http://localhost:8082/"
+      ranges='[2026-05-21T00:00:00Z,2026-05-21T12:00:00Z)'></x-savereason>
   </div>
+
+  <h3>Machine 2 — single slot (8 h morning) <small>(machine-id=2)</small></h3>
   <div class='forceHeight'>
-    <x-savereason id='SR_2' machine-id="2" path="http://localhost:8082/" begin="2026-05-21T11:35:00Z" end="2026-05-21T11:35:00Z"></x-savereason>
+    <x-savereason machine-id="2" path="http://localhost:8082/"
+      ranges='[2026-05-21T00:00:00Z,2026-05-21T08:00:00Z)'></x-savereason>
   </div>
+
+  <h3>Machine 3 — multi-slot (2 periods classified at once) <small>(machine-id=3)</small></h3>
   <div class='forceHeight'>
-    <x-savereason id='SR_3' machine-id="1" path="http://localhost:8082/" begin="2026-05-21T11:35:00Z" end="2026-05-21T11:35:00Z"></x-savereason>
+    <x-savereason machine-id="3" path="http://localhost:8082/"
+      ranges='[2026-05-21T08:00:00Z,2026-05-21T10:00:00Z)&amp;[2026-05-21T13:00:00Z,2026-05-21T16:00:00Z)'></x-savereason>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div class='forceHeight'>
+    <x-savereason machine-id="999" path="http://localhost:8082/"
+      ranges='[2026-05-21T00:00:00Z,2026-05-21T12:00:00Z)'></x-savereason>
   </div>
 </div>

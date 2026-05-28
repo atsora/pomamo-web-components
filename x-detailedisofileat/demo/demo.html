@@ -1,11 +1,29 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <p>Shows the ISO file (NC program) active at a specific instant.</p>
+
+  <h3>Machine 1 — IsoFile_A through IsoFile_D (4 slots in 8 h) <small>(machine-id=1)</small></h3>
   <div>
-    <x-detailedisofileat id="detailedisofileat" machine-id=3 path=http://localhost:8082/ when='2026-05-21T00:00:00Z'></x-detailedisofileat>
+    <x-detailedisofileat machine-id="1" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedisofileat>
+  </div>
+
+  <h3>Machine 2 — IsoFile_A or IsoFile_B (2 slots in 8 h) <small>(machine-id=2)</small></h3>
+  <div>
+    <x-detailedisofileat machine-id="2" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedisofileat>
+  </div>
+
+  <h3>Machine 3 — IsoFile_LATHE (uniform single slot) <small>(machine-id=3)</small></h3>
+  <div>
+    <x-detailedisofileat machine-id="3" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedisofileat>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div>
+    <x-detailedisofileat machine-id="999" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedisofileat>
   </div>
 </div>

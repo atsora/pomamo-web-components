@@ -1,34 +1,30 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Height = default - Machine 3</label>
+  <p>Renders the motion / not-running ratio as a gauge. The mock varies the
+     ratio per machine.</p>
+
+  <h3>Machine 1 — 80 % motion (busy), default size <small>(machine-id=1)</small></h3>
   <div class='divsize'>
-    <x-performancegauge id="height_default_machine3" machine-id=1 path=http://localhost:8082/ range=[2026-05-21,2026-05-22)></x-performancegauge>
+    <x-performancegauge machine-id="1" path="http://localhost:8082/" range="[2026-05-21,2026-05-22)"></x-performancegauge>
   </div>
 
-  <label>Height = big + target defined - Machine 1</label>
+  <h3>Machine 2 — 45 % motion (under-performing), big size <small>(machine-id=2)</small></h3>
   <div class='divsize_big'>
-    <x-performancegauge id="height_big_target_machine1" machine-id=2 path=http://localhost:8082/ range=[2026-05-21,2026-05-22)></x-performancegauge>
+    <x-performancegauge machine-id="2" path="http://localhost:8082/" range="[2026-05-21,2026-05-22)"></x-performancegauge>
   </div>
 
-  <label>Height = small - Machine 2</label>
+  <h3>Machine 3 — 60 % motion (average), small size <small>(machine-id=3)</small></h3>
   <div class='divsize_small'>
-    <x-performancegauge id="height_small_machine2" machine-id=4 path=http://localhost:8082/ range=[2026-05-21,2026-05-22)></x-performancegauge>
+    <x-performancegauge machine-id="3" path="http://localhost:8082/" range="[2026-05-21,2026-05-22)"></x-performancegauge>
   </div>
 
-  <label>Error: No monitored machine with id 300 (not working in 2018)</label>
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div class='divsize'>
-    <x-performancegauge id="error_machineid" machine-id=3 path=http://localhost:8082/ range=[2026-05-21,2026-05-22)
-      update=10></x-performancegauge>
-  </div>
-
-  <label>Error: Gateway Timeout (not working in 2018)</label>
-  <div class='divsize'>
-    <x-performancegauge id="error_gateway_timeout" machine-id=1 path=http://localhost:8082/ range=[2026-05-21,2026-05-22)
-      update=10></x-performancegauge>
+    <x-performancegauge machine-id="999" path="http://localhost:8082/" range="[2026-05-21,2026-05-22)"></x-performancegauge>
   </div>
 </div>

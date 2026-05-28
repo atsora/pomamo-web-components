@@ -1,47 +1,42 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <p>Datetime/range input used in report forms. The <code>webapp</code>
+     attribute encodes the picker mode: <code>explicit_&lt;begin&gt;_&lt;end&gt;</code>,
+     <code>since_&lt;date&gt;</code>, <code>past_&lt;N&gt;_&lt;unit&gt;</code>,
+     <code>current_&lt;N&gt;_&lt;unit&gt;</code>.</p>
+
+  <h3>Explicit range — 2021-12-01 → 2021-12-15</h3>
   <div class="testReportDT">
-    <label>Default - error</label>
-    <x-reportdatetime></x-reportdatetime>
+    <x-reportdatetime groupDisplayForm='form' groupName='grp' dataType='DATE'
+      webapp='explicit_2021-12-01_2021-12-15'></x-reportdatetime>
   </div>
 
+  <h3>Since — anchored at 2021-12-01 to now</h3>
   <div class="testReportDT">
-    <label>Minimum to validate - date</label>
-    <x-reportdatetime  groupDisplayForm='form' groupName='grp' dataType='DATE'></x-reportdatetime>
+    <x-reportdatetime groupDisplayForm='form' groupName='grp' dataType='DATE'
+      webapp='since_2021-12-01'></x-reportdatetime>
   </div>
 
+  <h3>Current week — rolling 1 week including today</h3>
   <div class="testReportDT">
-    <label>Minimum to validate - date time</label>
-    <x-reportdatetime  groupDisplayForm='form' groupName='grp' dataType='DATETIME'></x-reportdatetime>
+    <x-reportdatetime groupDisplayForm='form' groupName='grp' dataType='DATE'
+      webapp='current_1_week'></x-reportdatetime>
   </div>
 
+  <h3>Past 2 days — rolling, ending now</h3>
   <div class="testReportDT">
-    <label>explicit dates 1/12/2021 - 15/12/2021</label>
-    <x-reportdatetime  groupDisplayForm='form' groupName='grp' dataType='DATE' webapp='explicit_2021-12-01_2021-12-15'></x-reportdatetime>
+    <x-reportdatetime groupDisplayForm='form' groupName='grp' dataType='DATE'
+      webapp='past_2_day'></x-reportdatetime>
   </div>
 
+  <h3>Error — invalid service (<code>current_99_week</code> exceeds bounds)</h3>
   <div class="testReportDT">
-    <label>Since 1/12/2021</label>
-    <x-reportdatetime  groupDisplayForm='form' groupName='grp' dataType='DATE' webapp='since_2021-12-01'></x-reportdatetime>
-  </div>
-
-  <div class="testReportDT">
-    <label>Past (service)</label>
-    <x-reportdatetime  groupDisplayForm='form' groupName='grp' dataType='DATE' webapp='past_2_day'></x-reportdatetime>
-  </div>
-
-  <div class="testReportDT">
-    <label>Current (service)</label>
-    <x-reportdatetime  groupDisplayForm='form' groupName='grp' dataType='DATE' webapp='current_1_week'></x-reportdatetime>
-  </div>
-
-  <div class="testReportDT">
-    <label>Current (unknown service = error)</label>
-    <x-reportdatetime  groupDisplayForm='form' groupName='grp' dataType='DATE' webapp='current_99_week'></x-reportdatetime>
+    <x-reportdatetime groupDisplayForm='form' groupName='grp' dataType='DATE'
+      webapp='current_99_week'></x-reportdatetime>
   </div>
 </div>

@@ -1,20 +1,29 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>No machine = disabled</label>
-  <div class='middleSized'>
-    <x-milestonesadd id='MA_NoMach_disabled' path="http://localhost:8082/"></x-milestonesadd>
-  </div>
-  <label>Machine 3 : Try 2026-05-21 & "One special day" for success (= clean)</label>
-  <div class='middleSized'>
-    <x-milestonesadd id='MA_1' machine-id="1" path="http://localhost:8082/"></x-milestonesadd>
-  </div>
-  <label>Machine 1 : Try any data for failure</label>
+  <p>Form to add a milestone (named marker) on a machine timeline at a given date.</p>
+
+  <h3>Machine 1 — full size form <small>(machine-id=1)</small></h3>
   <div class='fullSized'>
-    <x-milestonesadd id='MA_2' machine-id="1" path="http://localhost:8082/"></x-milestonesadd>
+    <x-milestonesadd machine-id="1" path="http://localhost:8082/"></x-milestonesadd>
+  </div>
+
+  <h3>Machine 2 — middle-sized container <small>(machine-id=2)</small></h3>
+  <div class='middleSized'>
+    <x-milestonesadd machine-id="2" path="http://localhost:8082/"></x-milestonesadd>
+  </div>
+
+  <h3>Machine 3 — middle-sized container <small>(machine-id=3)</small></h3>
+  <div class='middleSized'>
+    <x-milestonesadd machine-id="3" path="http://localhost:8082/"></x-milestonesadd>
+  </div>
+
+  <h3>No <code>machine-id</code> — form disabled <small>(no attribute)</small></h3>
+  <div class='middleSized'>
+    <x-milestonesadd path="http://localhost:8082/"></x-milestonesadd>
   </div>
 </div>

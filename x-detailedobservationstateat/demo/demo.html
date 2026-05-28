@@ -1,11 +1,30 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <p>Shows the observation state slot active at a specific instant
+     (<code>ObservationStateSlots</code>).</p>
+
+  <h3>Machine 1 — Production → Setup → Production <small>(machine-id=1)</small></h3>
   <div>
-    <x-detailedobservationstateat id="detailedobservationstateat" machine-id=3 path=http://localhost:8082/ when='2026-05-21T00:00:00Z'></x-detailedobservationstateat>
+    <x-detailedobservationstateat machine-id="1" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedobservationstateat>
+  </div>
+
+  <h3>Machine 2 — Production then Maintenance <small>(machine-id=2)</small></h3>
+  <div>
+    <x-detailedobservationstateat machine-id="2" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedobservationstateat>
+  </div>
+
+  <h3>Machine 3 — uniform Production <small>(machine-id=3)</small></h3>
+  <div>
+    <x-detailedobservationstateat machine-id="3" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedobservationstateat>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div>
+    <x-detailedobservationstateat machine-id="999" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedobservationstateat>
   </div>
 </div>

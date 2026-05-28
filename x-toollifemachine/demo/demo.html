@@ -1,42 +1,32 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Machine 3</label>
+  <p>Shows the tool life (remaining cycles per tool) for a machine. The
+     <code>displayremainingcyclesbelowtool</code> attribute toggles the numeric
+     remaining-cycles label.</p>
+
+  <h3>Machine 1 — default layout <small>(machine-id=1)</small></h3>
   <div class="pulse-bar-div">
-    <x-toollifemachine id="Machine 3" machine-id=1 path='http://localhost:8082/'></x-toollifemachine>
+    <x-toollifemachine machine-id="1" path='http://localhost:8082/'></x-toollifemachine>
   </div>
 
-  <label>Machine 1 - error </label>
+  <h3>Machine 2 — with remaining cycles below each tool <small>(machine-id=2)</small></h3>
   <div class="pulse-bar-div">
-    <x-toollifemachine id="Machine 1" machine-id=2 path='http://localhost:8082/'></x-toollifemachine>
+    <x-toollifemachine machine-id="2" displayremainingcyclesbelowtool="true"
+      path='http://localhost:8082/'></x-toollifemachine>
   </div>
 
-  <label>Machine 2 - with remaining cycles</label>
+  <h3>Machine 3 — default layout <small>(machine-id=3)</small></h3>
   <div class="pulse-bar-div">
-    <x-toollifemachine id="Machine 2" displayremainingcyclesbelowtool="true" machine-id=4 path='http://localhost:8082/'></x-toollifemachine>
+    <x-toollifemachine machine-id="3" path='http://localhost:8082/'></x-toollifemachine>
   </div>
 
-  <label>Machine 3</label>
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div class="pulse-bar-div">
-    <x-toollifemachine id="Machine 3" machine-id=3 path='http://localhost:8082/'></x-toollifemachine>
-  </div>
-
-  <label>Machine 1</label>
-  <div class="pulse-bar-div">
-    <x-toollifemachine id="Machine 1" machine-id=1 displayremainingcyclesbelowtool="true"  path='http://localhost:8082/'></x-toollifemachine>
-  </div>
-
-  <label>Machine 2</label>
-  <div class="pulse-bar-div">
-    <x-toollifemachine id="Machine 2" machine-id=2 displayremainingcyclesbelowtool="true"  path='http://localhost:8082/'></x-toollifemachine>
-  </div>
-
-  <label>Error: machine Id has incorrect value</label>
-  <div class="pulse-bar-div">
-    <x-toollifemachine id="error_machineid" machine-id='not id' path='http://localhost:8082/'></x-toollifemachine>
+    <x-toollifemachine machine-id="999" path='http://localhost:8082/'></x-toollifemachine>
   </div>
 </div>

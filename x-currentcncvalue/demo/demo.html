@@ -1,28 +1,30 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Machine 3 (future = displayed)</label>
+  <p>Shows the latest CNC value for a machine (e.g. spindle feed rate). The mock
+     returns a different feed-rate per machine to illustrate the 3 typical ranges.</p>
+
+  <h3>Machine 1 — slow feed rate (937 mm/min) <small>(machine-id=1)</small></h3>
   <div>
-    <x-currentcncvalue id="Machine 3" machine-id=1 path='http://localhost:8082/'></x-currentcncvalue>
+    <x-currentcncvalue machine-id="1" path='http://localhost:8082/'></x-currentcncvalue>
   </div>
 
-  <label>Machine 1 (past)</label>
+  <h3>Machine 2 — medium feed rate (2074 mm/min) <small>(machine-id=2)</small></h3>
   <div>
-    <x-currentcncvalue id="Machine 1" machine-id=2 path='http://localhost:8082/'></x-currentcncvalue>
+    <x-currentcncvalue machine-id="2" path='http://localhost:8082/'></x-currentcncvalue>
   </div>
 
-  <label>Error: Machine 2 (no field defined) -> hidden</label>
+  <h3>Machine 3 — high feed rate (3211 mm/min) <small>(machine-id=3)</small></h3>
   <div>
-    <x-currentcncvalue id="error_machine2" machine-id=4 path='http://localhost:8082/'></x-currentcncvalue>
+    <x-currentcncvalue machine-id="3" path='http://localhost:8082/'></x-currentcncvalue>
   </div>
 
-  <label>Error: Machine 3 (unknown id) -> hidden</label>
+  <h3>Error — server HTTP 400 (no field defined, component hidden) <small>(machine-id=999)</small></h3>
   <div>
-    <x-currentcncvalue id="error_machine3" machine-id=3 path='http://localhost:8082/'></x-currentcncvalue>
+    <x-currentcncvalue machine-id="999" path='http://localhost:8082/'></x-currentcncvalue>
   </div>
-
 </div>

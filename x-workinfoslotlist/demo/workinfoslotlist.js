@@ -7,3 +7,4 @@ require('x-workinfoslotlist/x-workinfoslotlist');
 var pulseConfig = require('pulseConfig');
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetListOfOperationSlotV2');
+require('node_modules/@atsora/pomamo-web-service-simulation/scripts/OperationSlots');

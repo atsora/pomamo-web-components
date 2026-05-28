@@ -1,11 +1,29 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <p>Shows the operation slot (work info) active at a specific instant.</p>
+
+  <h3>Machine 1 — 3 operations (OP1042-A → OP1042-B → OP1043) <small>(machine-id=1)</small></h3>
   <div>
-    <x-detailedworkinfoat id="detailedworkinfoat" machine-id=2 path=http://localhost:8082/ when='2026-05-21T00:00:00Z'></x-detailedworkinfoat>
+    <x-detailedworkinfoat machine-id="1" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedworkinfoat>
+  </div>
+
+  <h3>Machine 2 — 2 operations (OP1042-A → OP1042-B) <small>(machine-id=2)</small></h3>
+  <div>
+    <x-detailedworkinfoat machine-id="2" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedworkinfoat>
+  </div>
+
+  <h3>Machine 3 — 1 long operation (OP1043 all range) <small>(machine-id=3)</small></h3>
+  <div>
+    <x-detailedworkinfoat machine-id="3" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedworkinfoat>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div>
+    <x-detailedworkinfoat machine-id="999" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedworkinfoat>
   </div>
 </div>

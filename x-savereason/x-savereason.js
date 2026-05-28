@@ -75,16 +75,19 @@ require('x-datetimerange/x-datetimerange');
           this.start(); // Call reset
         } break;
         case 'ranges': {
+          // Reset the selection from the new attribute value, then restart.
+          // We push directly rather than calling `this.addReason()` because
+          // `addReason()` itself calls `this.start()`, which would re-enter
+          // the state machine recursively on every iteration.
+          this._reasonsSelected = [];
           let ranges = newVal.split('&');
-          ranges.forEach(function (element, index, array) {
-            let beginEnd = pulseRange.createStringRangeFromString(element);
-            this.addReason({
-              range: beginEnd,
-              reason: null,
-              mode: null
-            })
+          ranges.forEach((element) => {
+            if (typeof element === 'string' && element.length > 0) {
+              this._reasonsSelected.push({ range: element, reason: null, mode: null });
+            }
           });
-          this.start(); // Call reset
+          this._reasonsSelected.sort((a, b) => a.range.localeCompare(b.range));
+          this.start(); // Re-run init + validation with the new selection
         } break;
         default:
           break;
@@ -161,17 +164,21 @@ require('x-datetimerange/x-datetimerange');
 
       $(this.element).append(list);
 
-      // FOR DOCS
+      // Seed `_reasonsSelected` from the `ranges` attribute if present.
+      // We push directly rather than calling `this.addReason()` because
+      // `addReason()` itself calls `this.start()`, which would re-enter the
+      // initialize flow recursively.
       if (this.element.hasAttribute('ranges')) {
         let ranges = this.element.getAttribute('ranges').split('&');
-        ranges.forEach(function (element, index, array) {
-          let beginEnd = pulseRange.createStringRangeFromString(element);
-          this.addReason({
-            range: beginEnd,
-            reason: null,
-            mode: null
-          });
+        ranges.forEach((element) => {
+          if (typeof element === 'string' && element.length > 0) {
+            let exists = this._reasonsSelected.some(r => r.range === element);
+            if (!exists) {
+              this._reasonsSelected.push({ range: element, reason: null, mode: null });
+            }
+          }
         });
+        this._reasonsSelected.sort((a, b) => a.range.localeCompare(b.range));
       }
 
       // Initialization OK => switch to the next context
@@ -454,18 +461,21 @@ require('x-datetimerange/x-datetimerange');
         }
       }
 
-      // Collapse / Expand reason groups
-      $('.savereason-table > li > span').click(function () {
+      // Collapse / Expand reason groups — scope the selectors to THIS
+      // component's own `_table`. Using a global `$('.savereason-table …')`
+      // would bind the click handler once per x-savereason on the page,
+      // toggling N times per click (= net zero when N is even).
+      this._table.find('> li > span').off('click.savereason').on('click.savereason', function () {
         $(this).parent().find('ul').toggle();
       });
       let groupCount = groupNames.length + (!shouldGroupAll && nonAlwaysReasons.length > 0 ? 1 : 0);
 
       // Always hide the flat group header
-      $('.savereason-table > li[data-flat="true"] > span').hide();
+      this._table.find('> li[data-flat="true"] > span').hide();
 
       if (groupCount > 1 && (groupCount > 2 || nonAlwaysCount > nonAlwaysThreshold)) {
         // Collapse groups only when multiple groups exist (otherwise header is hidden and can't be clicked)
-        $('.savereason-table > li:not([data-flat="true"]) > ul').hide();
+        this._table.find('> li:not([data-flat="true"]) > ul').hide();
       }
     }
 

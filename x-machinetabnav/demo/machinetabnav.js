@@ -22,6 +22,10 @@ function load() {
     var span = document.getElementById('selected-machine');
     if (span) span.textContent = String(event.target.newMachineId);
   });
+  eventBus.EventBus.addEventListener({}, 'machineIdChangeSignal', 'demo2', function (event) {
+    var span = document.getElementById('selected-machine-2');
+    if (span) span.textContent = String(event.target.newMachineId);
+  });
 
   var btnAll = document.getElementById('dispatch-all');
   if (btnAll) btnAll.addEventListener('click', function () { dispatchIds(['1', '2', '3', '4']); });

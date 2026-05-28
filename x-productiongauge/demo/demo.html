@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2026 Atsora Solutions
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
@@ -14,15 +14,26 @@ SPDX-License-Identifier: Apache-2.0
 </style>
 
 <div class="static-tests">
-  <h3>Machine 1</h3>
-  <div class="gauge-wrapper"><x-productiongauge machine-id="1" path="http://localhost:8082/"></x-productiongauge></div>
+  <p>Renders the part production count / goal for the current shift as a
+     gauge. The mock varies the completion ratio per machine.</p>
 
-  <h3>Machine 2</h3>
-  <div class="gauge-wrapper"><x-productiongauge machine-id="2" path="http://localhost:8082/"></x-productiongauge></div>
+  <h3>Machine 1 — 48 / 200 pieces (24 %, behind plan) <small>(machine-id=1)</small></h3>
+  <div class="gauge-wrapper">
+    <x-productiongauge machine-id="1" path="http://localhost:8082/"></x-productiongauge>
+  </div>
 
-  <h3>Machine 3</h3>
-  <div class="gauge-wrapper"><x-productiongauge machine-id="3" path="http://localhost:8082/"></x-productiongauge></div>
+  <h3>Machine 2 — 109 / 200 (54 %, on track) <small>(machine-id=2)</small></h3>
+  <div class="gauge-wrapper">
+    <x-productiongauge machine-id="2" path="http://localhost:8082/"></x-productiongauge>
+  </div>
 
-  <h3>Error (reserved id 999)</h3>
-  <div class="gauge-wrapper"><x-productiongauge machine-id="999" path="http://localhost:8082/"></x-productiongauge></div>
+  <h3>Machine 3 — 198 / 200 (99 %, almost done) <small>(machine-id=3)</small></h3>
+  <div class="gauge-wrapper">
+    <x-productiongauge machine-id="3" path="http://localhost:8082/"></x-productiongauge>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div class="gauge-wrapper">
+    <x-productiongauge machine-id="999" path="http://localhost:8082/"></x-productiongauge>
+  </div>
 </div>

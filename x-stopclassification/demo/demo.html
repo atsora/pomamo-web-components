@@ -1,18 +1,43 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <!-- Machine 2 : LIMITE EXACTE — 9 flat + 3 groupes = 12 = seuil → MIXTE attendu -->
+  <p>Dialog/form for classifying a machine stop. The component switches between
+     <em>flat</em> layout (one tile per reason) and <em>grouped</em> layout
+     (collapsed by category) when the count of visual units exceeds the
+     threshold (<code>stopclassification.maxflat</code>, default 11). Each
+     scenario below probes the threshold boundary.</p>
+
+  <h3>Machine 1 — 8 reasons, well under limit → flat layout <small>(machine-id=1)</small></h3>
   <div class='forceHeight'>
-    <p style="font-weight:bold;margin:4px">Machine 2 — limite=12 → mixte (9 flat + 3 groupes)</p>
-    <x-stopclassification id='SR_20' machine-id="4" path="http://localhost:8082/" range="[2026-05-20T11:35:00Z;2026-05-21T11:35:00Z]"></x-stopclassification>
+    <x-stopclassification machine-id="1" path="http://localhost:8082/"
+      range="[2026-05-20T11:35:00Z;2026-05-21T11:35:00Z]"></x-stopclassification>
   </div>
-  <!-- Machine 3 : DÉPASSEMENT — 10 flat + 3 groupes = 13 > seuil → TOUT GROUPÉ attendu -->
+
+  <h3>Machine 2 — 11 reasons, exactly at limit → still flat <small>(machine-id=2)</small></h3>
   <div class='forceHeight'>
-    <p style="font-weight:bold;margin:4px">Machine 3 — limite=13 → tout groupé (10 flat + 3 groupes)</p>
-    <x-stopclassification id='SR_21' machine-id="3" path="http://localhost:8082/" range="[2026-05-20T11:35:00Z;2026-05-21T11:35:00Z]"></x-stopclassification>
+    <x-stopclassification machine-id="2" path="http://localhost:8082/"
+      range="[2026-05-20T11:35:00Z;2026-05-21T11:35:00Z]"></x-stopclassification>
+  </div>
+
+  <h3>Machine 3 — 12 reasons, one over → all reasons grouped by category <small>(machine-id=3)</small></h3>
+  <div class='forceHeight'>
+    <x-stopclassification machine-id="3" path="http://localhost:8082/"
+      range="[2026-05-20T11:35:00Z;2026-05-21T11:35:00Z]"></x-stopclassification>
+  </div>
+
+  <h3>Machine 4 — Quality category marked AlwaysSecondLevel → flat + 1 clickable group <small>(machine-id=4)</small></h3>
+  <div class='forceHeight'>
+    <x-stopclassification machine-id="4" path="http://localhost:8082/"
+      range="[2026-05-20T11:35:00Z;2026-05-21T11:35:00Z]"></x-stopclassification>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div class='forceHeight'>
+    <x-stopclassification machine-id="999" path="http://localhost:8082/"
+      range="[2026-05-20T11:35:00Z;2026-05-21T11:35:00Z]"></x-stopclassification>
   </div>
 </div>

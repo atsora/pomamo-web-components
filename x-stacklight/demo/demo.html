@@ -1,49 +1,45 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Red stack light</label>
+  <p>Renders a vertical stack-light icon. The mock varies the lit lamp per
+     machine: green/yellow/red. Size adapts to the container.</p>
+
+  <h3>Machine 1 — Green (running) <small>(machine-id=1)</small></h3>
   <div class="stacklight-div1">
     <div class="stacklight-div2">
-      <x-stacklight id="red_stacklight" machine-id=3 path='http://localhost:8082/'></x-stacklight>
+      <x-stacklight machine-id="1" path='http://localhost:8082/'></x-stacklight>
     </div>
   </div>
 
-  <label>Green stack light</label>
+  <h3>Machine 2 — Yellow (warning) <small>(machine-id=2)</small></h3>
   <div class="stacklight-div1">
     <div class="stacklight-div2">
-      <x-stacklight id="green_stacklight" machine-id=3 path='http://localhost:8082/'></x-stacklight>
+      <x-stacklight machine-id="2" path='http://localhost:8082/'></x-stacklight>
     </div>
   </div>
 
-  <label>Green + Blue stack light</label>
+  <h3>Machine 3 — Red (alarm) <small>(machine-id=3)</small></h3>
   <div class="stacklight-div1">
     <div class="stacklight-div2">
-      <x-stacklight id="green_blue_stacklight" machine-id=2 path='http://localhost:8082/'></x-stacklight>
+      <x-stacklight machine-id="3" path='http://localhost:8082/'></x-stacklight>
     </div>
   </div>
 
-  <label>Small width</label>
+  <h3>Machine 2 — small container width (icon stays proportional) <small>(machine-id=2)</small></h3>
   <div class="stacklight-div1">
     <div class="stacklight-div2 smallwidth">
-      <x-stacklight id="small_width" machine-id=2 path='http://localhost:8082/'></x-stacklight>
+      <x-stacklight machine-id="2" path='http://localhost:8082/'></x-stacklight>
     </div>
   </div>
 
-  <label>Small height</label>
-  <div class="stacklight-div1">
-    <div class="stacklight-div2 smallheight">
-      <x-stacklight id="small_height" machine-id=2 path='http://localhost:8082/'></x-stacklight>
-    </div>
-  </div>
-
-  <label>Error: invalid machine-id (hidden?)</label>
+  <h3>Error — server HTTP 400 (component hidden) <small>(machine-id=999)</small></h3>
   <div class="stacklight-div1">
     <div class="stacklight-div2">
-      <x-stacklight id="error_machineid" machine-id=2 path='http://localhost:8082/'></x-stacklight>
+      <x-stacklight machine-id="999" path='http://localhost:8082/'></x-stacklight>
     </div>
   </div>
 </div>

@@ -1,17 +1,33 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Machine 3</label>
+  <p>Lists reason slots with overwrite-required markers over a range.</p>
+
+  <h3>Machine 1 — busy day (6 slots, several requiring overwrite) <small>(machine-id=1)</small></h3>
   <div class='forceHeight'>
-    <x-unansweredreasonslotlist id="default" machine-id=1 path='http://localhost:8082/' range='[2026-05-21T00:00:00Z,2026-05-21T12:00:00Z)' demo></x-unansweredreasonslotlist>
+    <x-unansweredreasonslotlist machine-id="1" path='http://localhost:8082/'
+      range='[2026-05-21T00:00:00Z,2026-05-21T12:00:00Z)' demo></x-unansweredreasonslotlist>
   </div>
 
-  <label>Error: invalid machine-id</label>
+  <h3>Machine 2 — moderate (4 slots) <small>(machine-id=2)</small></h3>
   <div class='forceHeight'>
-    <x-unansweredreasonslotlist id="error_machineid" machine-id=2 path='http://localhost:8082/' range='[2026-05-21T00:00:00Z,2026-05-21T12:00:00Z)' demo></x-unansweredreasonslotlist>
+    <x-unansweredreasonslotlist machine-id="2" path='http://localhost:8082/'
+      range='[2026-05-21T00:00:00Z,2026-05-21T12:00:00Z)' demo></x-unansweredreasonslotlist>
+  </div>
+
+  <h3>Machine 3 — 2 slots <small>(machine-id=3)</small></h3>
+  <div class='forceHeight'>
+    <x-unansweredreasonslotlist machine-id="3" path='http://localhost:8082/'
+      range='[2026-05-21T00:00:00Z,2026-05-21T12:00:00Z)' demo></x-unansweredreasonslotlist>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div class='forceHeight'>
+    <x-unansweredreasonslotlist machine-id="999" path='http://localhost:8082/'
+      range='[2026-05-21T00:00:00Z,2026-05-21T12:00:00Z)' demo></x-unansweredreasonslotlist>
   </div>
 </div>

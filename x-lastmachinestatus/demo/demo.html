@@ -1,42 +1,30 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Machine 3</label>
+  <p>Shows the last known machine status (reason + observation state + mode)
+     with auto-refresh. The mock varies the state per machine.</p>
+
+  <h3>Machine 1 — Motion (running) / Maintenance MOS <small>(machine-id=1, update=300s)</small></h3>
   <div class="pulse-bar-div">
-    <x-lastmachinestatus id="Machine 3" machine-id=1 path='http://localhost:8082/' update=300 range="[2026-05-20T11:35:00Z;2026-05-21T11:35:00Z]"></x-lastmachinestatus>
+    <x-lastmachinestatus machine-id="1" path='http://localhost:8082/' update="300"></x-lastmachinestatus>
   </div>
 
-  <label>Machine 1</label>
+  <h3>Machine 2 — Idle (yellow) / Off MOS <small>(machine-id=2, update=180s)</small></h3>
   <div class="pulse-bar-div">
-    <x-lastmachinestatus id="Machine 1" machine-id=2 path='http://localhost:8082/' update=180></x-lastmachinestatus>
+    <x-lastmachinestatus machine-id="2" path='http://localhost:8082/' update="180"></x-lastmachinestatus>
   </div>
 
-  <label>Machine 2</label>
+  <h3>Machine 3 — third state variant <small>(machine-id=3)</small></h3>
   <div class="pulse-bar-div">
-    <x-lastmachinestatus id="Machine 2" machine-id=4 path='http://localhost:8082/'></x-lastmachinestatus>
+    <x-lastmachinestatus machine-id="3" path='http://localhost:8082/'></x-lastmachinestatus>
   </div>
 
-  <label>Machine 3</label>
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div class="pulse-bar-div">
-    <x-lastmachinestatus id="Machine 3" machine-id=3 path='http://localhost:8082/'></x-lastmachinestatus>
-  </div>
-
-  <label>Error: undefined error data status</label>
-  <div class="pulse-bar-div">
-    <x-lastmachinestatus id="error_undefined_data_status" machine-id=1 path='http://localhost:8082/' update=120></x-lastmachinestatus>
-  </div>
-
-  <label>Error: gateway timeout</label>
-  <div class="pulse-bar-div">
-    <x-lastmachinestatus id="error_gateway_timeout" machine-id=999 path='http://localhost:8082/'></x-lastmachinestatus>
-  </div>
-
-  <label>Error: machine Id has incorrect value</label>
-  <div class="pulse-bar-div">
-    <x-lastmachinestatus id="error_machineid" machine-id='not id' path='http://localhost:8082/' update=120></x-lastmachinestatus>
+    <x-lastmachinestatus machine-id="999" path='http://localhost:8082/'></x-lastmachinestatus>
   </div>
 </div>

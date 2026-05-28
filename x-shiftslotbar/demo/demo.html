@@ -1,24 +1,28 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
-  <label>Default</label>
+  <p>Renders shift boundaries over a time range. The only meaningful axis is
+     the bar height.</p>
+
+  <h3>Default height — shifts over a 24 h range</h3>
   <div class="pulse-bar-div">
-    <x-shiftslotbar id="default" range='[2026-05-21T00:00:00.000Z;2026-05-22T00:00:00.000Z)' path='http://localhost:8082/'></x-shiftslotbar>
+    <x-shiftslotbar range='[2026-05-21T00:00:00.000Z;2026-05-22T00:00:00.000Z)'
+      path='http://localhost:8082/'></x-shiftslotbar>
   </div>
 
-  <label>Big</label>
+  <h3>Tall (height=80) — shift labels readable</h3>
   <div class="pulse-bar-div">
-    <x-shiftslotbar id="big" range='[2026-05-21T00:00:00.000Z;2026-05-22T00:00:00.000Z)' path='http://localhost:8082/'
-      height=80></x-shiftslotbar>
+    <x-shiftslotbar range='[2026-05-21T00:00:00.000Z;2026-05-22T00:00:00.000Z)'
+      path='http://localhost:8082/' height="80"></x-shiftslotbar>
   </div>
 
-  <label>Small</label>
+  <h3>Compact (height=10) — boundaries only, no labels</h3>
   <div class="pulse-bar-div">
-    <x-shiftslotbar id="small" range='[2026-05-21T00:00:00.000Z;2026-05-22T00:00:00.000Z)' path='http://localhost:8082/'
-      height=10></x-shiftslotbar>
+    <x-shiftslotbar range='[2026-05-21T00:00:00.000Z;2026-05-22T00:00:00.000Z)'
+      path='http://localhost:8082/' height="10"></x-shiftslotbar>
   </div>
 </div>

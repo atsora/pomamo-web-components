@@ -1,29 +1,33 @@
 <!--
-Copyright (C) 2009-2023 Lemoine Automation Technologies
+Copyright (C) 2009-2026 Atsora Solutions
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 <div class="static-tests">
+  <p>Renders production-state slots (Production / No production) over a range.</p>
 
-  <label>Height=40</label>
+  <h3>Machine 1 — alternating Production / No production (5 slots) <small>(machine-id=1)</small></h3>
   <div class="pulse-bar-div">
-    <x-productionstatebar id="popup" machine-id=2 range='[2026-05-21T12:00:00.000Z,2026-05-21T17:00:00.000Z)'
-      path='http://localhost:8082/' height=80></x-productionstatebar>
+    <x-productionstatebar machine-id="1" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/'></x-productionstatebar>
   </div>
 
-  <!--
-  <label>Error: Not connected, check the network</label>
+  <h3>Machine 2 — Production then No production (2 slots), height=80 <small>(machine-id=2)</small></h3>
   <div class="pulse-bar-div">
-    <x-productionstatebar id="error_check_the_network" machine-id=2
-      range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)' path='http://localhost:8082/' height=40></x-productionstatebar>
+    <x-productionstatebar machine-id="2" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/' height="80"></x-productionstatebar>
   </div>
 
-  <label>Error: invalid machine-id</label>
+  <h3>Machine 3 — uniform Production, height=20 (compact) <small>(machine-id=3)</small></h3>
   <div class="pulse-bar-div">
-    <x-productionstatebar id="error_machineid" machine-id='invalid id'
-      range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)' path='http://localhost:8082/' height=40>
-    </x-productionstatebar>
+    <x-productionstatebar machine-id="3" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/' height="20"></x-productionstatebar>
   </div>
--->
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div class="pulse-bar-div">
+    <x-productionstatebar machine-id="999" range='[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)'
+      path='http://localhost:8082/' height="40"></x-productionstatebar>
+  </div>
 </div>
