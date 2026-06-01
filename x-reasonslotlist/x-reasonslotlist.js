@@ -664,6 +664,18 @@ require('x-revisionprogress/x-revisionprogress');
         this._applyDisplayMode();
       }
 
+      // Always surface something to classify, whatever the clicked context is:
+      // when there is no overwrite-required idle period, auto-show the identified
+      // idle periods, and the motion periods when there is no idle period at all.
+      // Without this, opening the popup on a motion or already-classified range
+      // would only display the "all periods are classified" message.
+      if (!hasSelectableNonIdentified) {
+        this._allIdleCheckbox.checked = true;
+        if (!hasSelectableIdentified) {
+          this._motionCheckbox.checked = true;
+        }
+      }
+
       this.fillTable();
 
       let datetimerangeDiv = this.element.querySelector('.reasonslotlist-datetimerange');

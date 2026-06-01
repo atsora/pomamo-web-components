@@ -362,6 +362,11 @@ var eventBus = require('eventBus');
     initialize () {
       this.addClass('pulse-piegauge');
 
+      // No gauge is drawn until the main utilization data arrives (see
+      // _perfSuccess / refresh), so the loader is shown alone instead of an
+      // empty gauge when the target request resolves before the main one.
+      this._dataReceived = false;
+
       // Update here some internal parameters
 
       // listeners/dispatchers
@@ -521,7 +526,13 @@ var eventBus = require('eventBus');
     _perfSuccess (data) {
       this._targetpercentage = data.TargetPercentage;
       this._targetIsUpdated = true;
-      this._draw();
+      // Only redraw once the main utilization data has arrived. The target
+      // request (fired from getShortUrl) often resolves before the main
+      // request, and drawing here would paint an empty gauge over the loader
+      // during the initial load.
+      if (this._dataReceived) {
+        this._draw();
+      }
     }
     _perfError (errorMessage) {
     }
@@ -573,6 +584,7 @@ var eventBus = require('eventBus');
             });
         }
       }
+      this._dataReceived = true;
       this._draw();
     }
 

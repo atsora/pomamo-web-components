@@ -256,6 +256,12 @@ var eventBus = require('eventBus');
      * @returns {void}
      */
     initialize() {
+      // Category class used by the common loading CSS: gives a stable
+      // min-height and a centered circular loader during loading (same as
+      // x-performancegauge). Without it the gauge shows no loader at all and
+      // the empty background arc stays visible while the data loads.
+      this.addClass('pulse-piegauge');
+
       // listeners
       if (this.element.hasAttribute('machine-context')) {
         eventBus.EventBus.addEventListener(this,

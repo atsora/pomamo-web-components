@@ -8,6 +8,11 @@ x-productiongauge {
   width: 100%;
   height: 100%;
 
+  /* Positioning context so the absolutely-positioned loader overlay
+     (.pulse-loader-div, appended to the host) centers on the gauge instead
+     of escaping to a higher ancestor. */
+  position: relative;
+
   /* Maximum safety constraints */
   min-width: 0;
   min-height: 0;
@@ -38,6 +43,18 @@ x-productiongauge {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* While loading, hide the static background arc (drawn in initialize, before
+   data) so only the circular loader shows. Tied to the loading state class
+   rather than a one-shot JS flag, so it also survives the per-machine cloning
+   done by x-groupgrid and reveals itself when loading ends.
+   The !important + higher specificity are required to beat the app-global
+   `svg { visibility: visible !important }` rule (pomamo-web-app/src/styles/style.less),
+   which otherwise forces the SVG visible regardless of its parent. */
+x-productiongauge.pulse-component-loading .productiongauge-svg,
+x-productiongauge.pulse-component-loading .productiongauge-text {
+  visibility: hidden !important;
 }
 
 .productiongauge-svg {
