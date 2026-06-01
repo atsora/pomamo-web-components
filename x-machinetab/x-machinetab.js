@@ -198,6 +198,9 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       this._machineContent.appendChild(this._iconsDiv);
       this._machineContent.addEventListener('click',
         function (e) {
+          // The active tab is already the selected machine: ignore the click so it
+          // does not re-dispatch the selection (which refreshes + scrolls the page).
+          if (this._machineContent.classList.contains('active')) return;
           this.clickMachineTab(e);
         }.bind(this)
       );

@@ -1314,6 +1314,9 @@ exports.addToolTip = function (target, text) {
       let p = document.createElement('p');
       p.className = 'mastertooltip';
       p.textContent = tooltip;
+      // `.mastertooltip` is `display:none` by default; the element is created only
+      // while hovering, so reveal it here (the former jQuery .fadeIn() did this).
+      p.style.display = 'block';
       // CSS-driven fade-in: start hidden, then animate to visible on next frame
       p.style.opacity = '0';
       p.style.transition = 'opacity 0.4s';
