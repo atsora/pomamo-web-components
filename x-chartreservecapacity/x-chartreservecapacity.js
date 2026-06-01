@@ -64,34 +64,48 @@ var pulseUtility = require('pulseUtility');
       // Update here some internal parameters
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      let headerContent = $('<div></div>').addClass('chartreservecapacity-header');
-      this._shiftDisplay = $('<div></div>').addClass('chartreservecapacity-shift-div');
-      this._whenDiv = $('<div></div>').addClass('chartreservecapacity-now-div');
-      headerContent.append(this._shiftDisplay).append(this._whenDiv);
+      let headerContent = document.createElement('div');
+      headerContent.className = 'chartreservecapacity-header';
+      this._shiftDisplay = document.createElement('div');
+      this._shiftDisplay.className = 'chartreservecapacity-shift-div';
+      this._whenDiv = document.createElement('div');
+      this._whenDiv.className = 'chartreservecapacity-now-div';
+      headerContent.appendChild(this._shiftDisplay);
+      headerContent.appendChild(this._whenDiv);
 
-      this._charContent = $('<div></div>').addClass('pulse-chart-content');
-      let chartPosition = $('<div></div>').addClass('chartreservecapacity-chart-position')
-        .append(this._charContent);
+      this._charContent = document.createElement('div');
+      this._charContent.className = 'pulse-chart-content';
+      let chartPosition = document.createElement('div');
+      chartPosition.className = 'chartreservecapacity-chart-position';
+      chartPosition.appendChild(this._charContent);
 
-      this._content = $('<div></div>').addClass('chartreservecapacity-content')
-        .append(headerContent).append(chartPosition);
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'chartreservecapacity-content';
+      this._content.appendChild(headerContent);
+      this._content.appendChild(chartPosition);
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = 'Loading...';
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      this._messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(this._messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      this._messageDiv = document.createElement('div');
+      this._messageDiv.className = 'pulse-message-div';
+      this._messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(this._messageDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -107,7 +121,7 @@ var pulseUtility = require('pulseUtility');
       // Parameters
 
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._content = undefined;
       this._charContent = undefined;
 
@@ -137,14 +151,14 @@ var pulseUtility = require('pulseUtility');
     }
 
     displayError (message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
       // Note that you can use the CSS class .pulse-component-error or .pulse-component-warning instead
-      $(this._messageDiv).addClass('force-visibility');
+      this._messageDiv.classList.add('force-visibility');
     }
 
     removeError () {
       this.displayError('');
-      $(this._messageDiv).removeClass('force-visibility');
+      this._messageDiv.classList.remove('force-visibility');
     }
 
     get refreshRate () {
@@ -185,16 +199,16 @@ var pulseUtility = require('pulseUtility');
       // Header
       if (!pulseUtility.isNotDefined(data.Shift)
         && !pulseUtility.isNotDefined(data.Shift.Display)) {
-        $(this._shiftDisplay).html(data.Shift.Display);
+        this._shiftDisplay.innerHTML = data.Shift.Display;
       }
       else {
-        this._shiftDisplay.html('');
+        this._shiftDisplay.innerHTML = '';
       }
       if (!pulseUtility.isNotDefined(data.DateTime)) {
-        this._whenDiv.html(pulseUtility.displayDate(data.DateTime, false));
+        this._whenDiv.innerHTML = pulseUtility.displayDate(data.DateTime, false);
       }
       else {
-        this._whenDiv.html('');
+        this._whenDiv.innerHTML = '';
       }
 
       if (pulseUtility.isNotDefined(data.ChartData)
@@ -262,7 +276,7 @@ var pulseUtility = require('pulseUtility');
 
       // Resize
       var self = this;
-      $(window).resize(function () {
+      window.addEventListener('resize', function () {
         pulseSvg.createBarChart(self._charContent, 'chartreservecapacity-svg', self._graphData, self._options);
       });
     }

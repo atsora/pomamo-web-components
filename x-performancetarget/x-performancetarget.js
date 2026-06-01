@@ -59,23 +59,30 @@ var pulseUtility = require('pulseUtility');
       // Update here some internal parameters
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('performancetarget-content');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'performancetarget-content';
+      this.element.appendChild(this._content);
 
       // Prepare span
-      let targetSpan = $('<span></span>').html(this.getTranslation('target', 'Target'));
-      this._spanDisplay = $('<span></span>').addClass('performancetarget-span')
-        .addClass('empty-performancetarget');
-      this._content.append(targetSpan);
-      this._content.append(this._spanDisplay);
+      let targetSpan = document.createElement('span');
+      targetSpan.innerHTML = this.getTranslation('target', 'Target');
+      this._spanDisplay = document.createElement('span');
+      this._spanDisplay.className = 'performancetarget-span empty-performancetarget';
+      this._content.appendChild(targetSpan);
+      this._content.appendChild(this._spanDisplay);
 
       // Create DOM - (smalltext == NO Loader + NO error message displayed. see .less)
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', ' Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', ' Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Listener and dispatchers
 
@@ -89,7 +96,7 @@ var pulseUtility = require('pulseUtility');
       //this._targetIsUpdated = false;
 
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       this._content = undefined;
@@ -119,11 +126,11 @@ var pulseUtility = require('pulseUtility');
     }
 
     displayError (message) {
-      $(this._content).hide();
+      this._content.style.display = 'none';
     }
 
     removeError () {
-      $(this._content).show();
+      this._content.style.display = '';
     }
 
     /**
@@ -144,11 +151,11 @@ var pulseUtility = require('pulseUtility');
     refresh (data) {
       this._targetpercentage = data.TargetPercentage;
       if (!pulseUtility.isNotDefined(this._targetpercentage) && this._targetpercentage > 0) {
-        this._spanDisplay.removeClass('empty-performancetarget')
-          .html(Math.round(100 * this._targetpercentage) + '%');
+        this._spanDisplay.classList.remove('empty-performancetarget');
+        this._spanDisplay.innerHTML = Math.round(100 * this._targetpercentage) + '%';
       }
       else {
-        this._spanDisplay.addClass('empty-performancetarget');
+        this._spanDisplay.classList.add('empty-performancetarget');
       }
     }
 
@@ -161,7 +168,7 @@ var pulseUtility = require('pulseUtility');
      * then delegates to the base implementation.
      */
     manageNotApplicable () {
-      this._spanDisplay.addClass('empty-performancetarget');
+      this._spanDisplay.classList.add('empty-performancetarget');
       super.manageNotApplicable();
     }
     /*

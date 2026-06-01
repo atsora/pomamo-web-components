@@ -108,16 +108,20 @@ var eventBus = require('eventBus');
      * Dispatches `groupIsReloaded` and initiates page rotation via `_dealWithRotation()`.
      */
     _displayOrUpdateMachineList() {
-      //$(this._content).empty(); No !
+      //this._content already not emptied
 
       if ((false == this._dynamic)
         && (this._machineIdsArray.length == 0)) {
-        let noMachines = $('<div></div>').addClass('no-machines')
-          .html(this.getTranslation('groupArray.noMachine', 'No machine in selection'));
-        $(this._content).append(noMachines);
+        let noMachines = document.createElement('div');
+        noMachines.className = 'no-machines';
+        noMachines.innerHTML = this.getTranslation('groupArray.noMachine', 'No machine in selection');
+        this._content.appendChild(noMachines);
       }
       else {
-        $(this._content).find('.no-machines').remove();
+        let noMachineEl = this._content.querySelector('.no-machines');
+        if (noMachineEl) {
+          noMachineEl.remove();
+        }
       }
 
       // init possible rotation
@@ -149,24 +153,28 @@ var eventBus = require('eventBus');
 
       // REMOVE machine not in list anymore
       let self = this;
-      $(this.element).find('.group-single').each(function () {
-        let machineId = $(this).attr('machine-id'); // this = group-single
-        if (false == machineIdIsInList(machineId, self._machineIdsArray)) { // self = x-grouparray
-          $(this).remove(); // this = group-single
+      let groupSingles = this.element.querySelectorAll('.group-single');
+      [...groupSingles].forEach(function (el) {
+        let machineId = el.getAttribute('machine-id');
+        if (false == machineIdIsInList(machineId, self._machineIdsArray)) {
+          el.remove();
         }
         else {
-          $(this).find('*').addClass('disableDeleteWhenDisconnect');
-          /* DO NOT used this.element : not defined here ! this == '.group-single' */
+          let allChildren = el.querySelectorAll('*');
+          [...allChildren].forEach(function(child) {
+            child.classList.add('disableDeleteWhenDisconnect');
+          });
         }
       });
 
       // Reset pages
       for (let i = 1; i <= this._nbPagesTotal; i++) {
         let page_class = 'li-page-' + i;
-        $(this.element).find('.' + page_class).removeClass(page_class);
+        let pageEls = this.element.querySelectorAll('.' + page_class);
+        [...pageEls].forEach(el => el.classList.remove(page_class));
       }
 
-      //$(this.element).find('*').addClass('disableDeleteWhenDisconnect');
+      //let allElems = this.element.querySelectorAll('*'); [...allElems].forEach(el => el.classList.add('disableDeleteWhenDisconnect'));
 
       // Update list of machines - Add ROWS
       const panel = document.getElementById("grouparray"); // Hide when only one machine
@@ -186,58 +194,51 @@ var eventBus = require('eventBus');
         let li;
 
         // Find if already exists
-        let machineRow = $(this._content).find(".group-single[machine-id='" + singleid + "']");
+        let machineRow = this._content.querySelector(".group-single[machine-id='" + singleid + "']");
         // NO remove ELSE display can become not smooth enough
-        if (machineRow.length != 0) { // if exists
+        if (machineRow) { // if exists
           // disableDeleteWhenDisconnect
-          //machineRow[0].find ('*').addClass('disableDeleteWhenDisconnect');
+          //machineRow.querySelectorAll('*').forEach(el => el.classList.add('disableDeleteWhenDisconnect'));
 
           // Move at end of the list to order all
-          //$(this._content).append(machineRow[0]);
-          li = machineRow[0];
+          //this._content.appendChild(machineRow);
+          li = machineRow;
         }
         else {
           // Else Create NEW = copy the element and its child nodes
           let copy = pulseUtility.cloneWithNewMachineId(boxtocloneid, singleid);
-          /*let copy = $('#' + boxtocloneid).clone(true);
-          $(copy).removeAttr('id');
-          $(copy).attr('machine-id', singleid);
-          $(copy).find('*').attr('machine-id', singleid);*/
 
           // Append the cloned element to the list
-          li = $('<li></li>').addClass('group-single');
-          li.attr('machine-id', singleid);
-          li.append(copy);
+          li = document.createElement('li');
+          li.className = 'group-single';
+          li.setAttribute('machine-id', singleid);
+          li.appendChild(copy);
         }
 
         if (nbColumnToDisplay != 0 && nbRowToDisplay != 0) {
           // Add page class to ease page rotation
           let page_class = 'li-page-' + Math.ceil((i + 1) / (nbColumnToDisplay * nbRowToDisplay));
-          $(li).addClass(page_class);
+          li.classList.add(page_class);
 
           // Set height / width
           if (null != column_width)
-            $(li).css({
-              'width': column_width
-            });
+            li.style.width = column_width;
           if (null != row_height)
-            $(li).css({
-              'height': row_height
-            });
+            li.style.height = row_height;
         }
 
-        $(this._content).append(li);
+        this._content.appendChild(li);
 
       }
-      let $tabs = $(this._content).find('x-machinetab');
-      if ($tabs) {
-        let $activeTab = $tabs.filter('[active="true"]');
-        if ($tabs.length > 0 && $activeTab.length === 0) {
-          $tabs[0].setAttribute('active', 'true');
+      let tabs = this._content.querySelectorAll('x-machinetab');
+      if (tabs && tabs.length > 0) {
+        let activeTab = this._content.querySelector('x-machinetab[active="true"]');
+        if (tabs.length > 0 && !activeTab) {
+          tabs[0].setAttribute('active', 'true');
         }
       }
 
-      //$(this.element).find('.disableDeleteWhenDisconnect').removeClass('disableDeleteWhenDisconnect'); // too early
+      //let disableEls = this.element.querySelectorAll('.disableDeleteWhenDisconnect'); [...disableEls].forEach(el => el.classList.remove('disableDeleteWhenDisconnect')); // too early
 
       // Announce that the machine list has changed
       if ('false' == this.getConfigOrAttribute('donotwarngroupreload', 'false')) {
@@ -258,8 +259,8 @@ var eventBus = require('eventBus');
 
     /** Removes the `disableDeleteWhenDisconnect` guard class from all descendant elements. */
     _removeDisable() {
-      $(this.element).find('.disableDeleteWhenDisconnect')
-        .removeClass('disableDeleteWhenDisconnect');
+      let els = this.element.querySelectorAll('.disableDeleteWhenDisconnect');
+      [...els].forEach(el => el.classList.remove('disableDeleteWhenDisconnect'));
     }
 
     /**
@@ -309,7 +310,10 @@ var eventBus = require('eventBus');
           let rotationDelay = Number(this.getConfigOrAttribute('rotation', '90'));
 
           // Display pagination
-          $('#pulse-pagination').html((this._currentDisplayedPage) + ' / ' + this._nbPagesTotal);
+          let paginationEl = document.getElementById('pulse-pagination');
+          if (paginationEl) {
+            paginationEl.innerHTML = (this._currentDisplayedPage) + ' / ' + this._nbPagesTotal;
+          }
 
           // Prepare next page rotation
           this._currentDisplayedPage++;
@@ -322,7 +326,10 @@ var eventBus = require('eventBus');
         }
         else { // 1 page only
           // Reset rotation
-          $('#pulse-pagination').html('');
+          let paginationEl = document.getElementById('pulse-pagination');
+          if (paginationEl) {
+            paginationEl.innerHTML = '';
+          }
         }
       }
     }
@@ -335,16 +342,20 @@ var eventBus = require('eventBus');
     _showHidePages() {
       // Hide or show pages
       for (let index_page = 1; index_page <= this._nbPagesTotal; index_page++) {
-        let page_class = '.li-page-' + index_page.toString();
-        let li = $(this.element).find(page_class);
+        let page_class = 'li-page-' + index_page.toString();
+        let lis = this.element.querySelectorAll('.' + page_class);
         if (index_page == this._currentDisplayedPage) {
-          // $(li).css('display', 'inline-block'); //NO ! Because of ManagerWiew Page
-          $(li).show();
-          $(li).find('x-datetimegraduation').load(); // datetimegraduation can not manage 'width' when hidden
-          // a best solution is to manage onShow Event.. once it exists
+          // display = 'inline-block'; //NO ! Because of ManagerWiew Page
+          [...lis].forEach(li => li.style.display = '');
+          let datetimeGraduations = [...lis].flatMap(li => li.querySelectorAll('x-datetimegraduation'));
+          [...datetimeGraduations].forEach(el => {
+            if (typeof el.load === 'function') {
+              el.load();
+            }
+          });
         }
         else {
-          $(li).hide();
+          [...lis].forEach(li => li.style.display = 'none');
         }
       } // end for
     }
@@ -406,24 +417,30 @@ var eventBus = require('eventBus');
       // listeners
 
       // Empty display if already filled
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<ol></ol>').addClass('group-main');
-      $(this.element)
-        .addClass('group')
-        .append(this._content);
+      this._content = document.createElement('ol');
+      this._content.className = 'group-main';
+      this.element.classList.add('group');
+      this.element.appendChild(this._content);
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -439,7 +456,7 @@ var eventBus = require('eventBus');
 
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this.removeError();
       this._messageSpan = undefined;
@@ -489,9 +506,10 @@ var eventBus = require('eventBus');
     }
 
     displayError(message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
 
-      $('.grouparray-dependant').addClass('grouparray-in-error'); //).hide();
+      let els = document.querySelectorAll('.grouparray-dependant');
+      [...els].forEach(el => el.classList.add('grouparray-in-error'));
 
       // STOP timer
       if (this._showHideTimer) {
@@ -501,9 +519,10 @@ var eventBus = require('eventBus');
     }
 
     removeError() {
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
 
-      $('.grouparray-dependant').removeClass('grouparray-in-error'); //.show();
+      let els = document.querySelectorAll('.grouparray-dependant');
+      [...els].forEach(el => el.classList.remove('grouparray-in-error'));
     }
 
     /**

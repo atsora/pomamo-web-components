@@ -94,11 +94,12 @@ var pulseUtility = require('pulseUtility');
       eventBus.EventBus.addGlobalEventListener(this, 'modificationEvent', this.onModificationEvent.bind(this));
 
       // In the case of a clone, empty first
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('pulse-revisionprogress-content');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'pulse-revisionprogress-content';
+      this.element.appendChild(this._content);
 
       // DRAW
       // Compute the left and right position of the progress bar
@@ -189,11 +190,14 @@ var pulseUtility = require('pulseUtility');
 
     displayError () {
       if (this.element != null)
-        $(this.element).remove();
+        this.element.remove();
     }
 
     _removeSVG () {
-      this._content.find('.revision-svg').remove();
+      let svg = this._content.querySelector('.revision-svg');
+      if (svg) {
+        svg.remove();
+      }
       this._positionSVG = undefined;
       this._progressSVG = undefined;
     }
@@ -274,11 +278,11 @@ var pulseUtility = require('pulseUtility');
       this._progressSVG = document.createElementNS(pulseSvg.get_svgNS(), 'rect');
       this._progressSVG.setAttribute('x', this._width * this._beginPosition);
       this._progressSVG.setAttribute('y', (this._height / 3.0));
-      this._smallDisplay = (($(this._content).width() * this._widthPosition) <= this._smallestMovingBar);
+      this._smallDisplay = ((this._content.offsetWidth * this._widthPosition) <= this._smallestMovingBar);
       if (this._smallDisplay)
-        $(this._progressSVG).width(this._width * this._widthPosition * 1);
+        this._progressSVG.setAttribute('width', this._width * this._widthPosition * 1);
       else
-        $(this._progressSVG).width(this._width * this._widthPosition * (null == this._percent) ? 0 : this._percent);
+        this._progressSVG.setAttribute('width', this._width * this._widthPosition * (null == this._percent) ? 0 : this._percent);
       this._progressSVG.setAttribute('height', (this._height / 3.0));
       this._progressSVG.setAttribute('class', 'revision-progress');
       this._progressSVG.setAttribute('fill', 'url(#progress-pattern-' + revisionProgressMaxId + ')');
@@ -286,7 +290,7 @@ var pulseUtility = require('pulseUtility');
       revisionProgressMaxId++;
 
       svg.appendChild(this._progressSVG);
-      this._content.append(svg);
+      this._content.appendChild(svg);
     }
 
     _position () {
@@ -334,19 +338,19 @@ var pulseUtility = require('pulseUtility');
       }
       else {
         this._positionSVG.setAttribute('x', this._width * this._beginPosition);
-        $(this._positionSVG).width(this._width * this._widthPosition);
+        this._positionSVG.setAttribute('width', this._width * this._widthPosition);
 
         this._progressSVG.setAttribute('x', this._width * this._beginPosition);
       }
 
-      this._smallDisplay = (($(this._content).width() * this._widthPosition) <= this._smallestMovingBar);
+      this._smallDisplay = ((this._content.offsetWidth * this._widthPosition) <= this._smallestMovingBar);
       if (this._smallDisplay) { // Display 100%
-        //$(this._progressBar).animate({ 'width': '100%' }, 0); // == NOW
-        $(this._progressSVG).width(this._width * this._widthPosition); // NOW. No need to animate
+        //this._progressBar.style.width = '100%'; // == NOW
+        this._progressSVG.setAttribute('width', this._width * this._widthPosition); // NOW. No need to animate
       }
       else {
-        //$(this._progressSVG).animate({ 'width': this._width * this._widthPosition * this._displayedPercent}, 0); // == NOW
-        $(this._progressSVG).width(this._width * this._widthPosition * this._displayedPercent); // NOW ! No need to animate
+        //this._progressSVG.style.width = (this._width * this._widthPosition * this._displayedPercent) + 'px'; // == NOW
+        this._progressSVG.setAttribute('width', this._width * this._widthPosition * this._displayedPercent); // NOW ! No need to animate
       }
     }
 
@@ -372,29 +376,29 @@ var pulseUtility = require('pulseUtility');
         if ((0 == remaining) || (percent == 1)) {
           if (undefined != this._progressSVG) { // small or not. GO TO 100% with animation
             // 100 %
-            $(this._progressSVG).animate({
-              'width': (this._width * this._widthPosition * 1)
-            }, 500); // = 0.5 sec = fast
+            // animate width via CSS transition (replaces jQuery .animate)
+            this._progressSVG.style.transition = 'width 500ms';
+            this._progressSVG.style.width = (this._width * this._widthPosition * 1) + 'px';
           }
-          //$(this._progressBar).animate({ 'width': '100%' }, 'fast');
 
           this._percent = percent;
           setTimeout(function () {
             if (this.element != null)
-              $(this.element).remove();
+              this.element.remove();
           }.bind(this), 1000);
         }
         else {
           // Small display == always like 100% -> not here
           if (undefined != this._progressSVG) {
-            this._smallDisplay = (($(this._content).width() * this._widthPosition) <= this._smallestMovingBar);
+            this._smallDisplay = ((this._content.offsetWidth * this._widthPosition) <= this._smallestMovingBar);
             if (this._smallDisplay) {
-              $(this._progressSVG).width(this._width * this._widthPosition * 1);
+              this._progressSVG.style.transition = '';
+              this._progressSVG.style.width = (this._width * this._widthPosition * 1) + 'px';
             }
             else {
               if (percent != this._percent) {
-                $(this._progressSVG).width(this._width * this._widthPosition * percent);
-                //$(this._progressBar).animate({ 'width': (percent + '%') }, 'fast');
+                this._progressSVG.style.transition = '';
+                this._progressSVG.style.width = (this._width * this._widthPosition * percent) + 'px';
 
                 // Store previous for simulated progress
                 this._percent = percent;
@@ -408,10 +412,9 @@ var pulseUtility = require('pulseUtility');
               // 2- 1/5 progression since last display (refresh rate 1 sec in modificationmanager)
               let realNextPercent = this._displayedPercent
                 + (nextStepPercent - this._displayedPercent) / simulatedDurationInSec;
-              // 3- animate
-              $(this._progressSVG).animate({
-                'width': (this._width * this._widthPosition * realNextPercent)
-              }, 1000 * modificationmanager_refreshRate); // = 1 sec*/
+              // 3- animate width via CSS transition (replaces jQuery .animate)
+              this._progressSVG.style.transition = 'width ' + (1000 * modificationmanager_refreshRate) + 'ms';
+              this._progressSVG.style.width = (this._width * this._widthPosition * realNextPercent) + 'px';
 
               // 4- store real display %
               this._displayedPercent = realNextPercent;

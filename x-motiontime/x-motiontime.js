@@ -83,10 +83,10 @@ var eventBus = require('eventBus');
      */
     _display () {
       if (!pulseUtility.isNotDefined(this._motionSec)) {
-        $(this._text).html(this._formatSecondsInDDHHMM(this._motionSec));
+        this._text.innerHTML = this._formatSecondsInDDHHMM(this._motionSec);
       }
       else {
-        $(this._text).html('');
+        this._text.innerHTML = '';
       }
     }
 
@@ -159,17 +159,24 @@ var eventBus = require('eventBus');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Loader (?)
-      /*let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);*/
+      /*let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = 'Loading...';
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);*/
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('motiontime');
-      this._text = $('<span></span>').addClass('motiontime-text');
-      $(this._content).append(this._text);
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'motiontime';
+      this._text = document.createElement('span');
+      this._text.className = 'motiontime-text';
+      this._content.appendChild(this._text);
+      this.element.appendChild(this._content);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -179,7 +186,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       this._text = undefined;

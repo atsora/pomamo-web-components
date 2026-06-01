@@ -64,16 +64,22 @@ var pulseComponent = require('pulsecomponent');
       this.addClass('pulse-smalltext');
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('currentisofile-data');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'currentisofile-data';
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = 'Loading...';
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -82,7 +88,7 @@ var pulseComponent = require('pulsecomponent');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       //this._messageSpan = undefined;
       this._content = undefined;
 
@@ -94,7 +100,7 @@ var pulseComponent = require('pulsecomponent');
 
       // Empty content
       this.displayTextAndTooltip('');
-      $(this._content).empty(); // To remove svg
+      this._content.replaceChildren(); // To remove svg
 
       this.switchToNextContext();
     }
@@ -119,11 +125,12 @@ var pulseComponent = require('pulsecomponent');
     }
 
     displayError (text) {
-      $(this._content).empty(); // To remove svg
+      this._content.replaceChildren(); // To remove svg
 
-      let span = $('<span></span>').addClass('pulse-message')
-        .html(text);
-      $(this._content).append(span);
+      let span = document.createElement('span');
+      span.className = 'pulse-message';
+      span.innerHTML = text;
+      this._content.appendChild(span);
     }
 
     removeError () {
@@ -156,17 +163,18 @@ var pulseComponent = require('pulsecomponent');
      * @param {string} [tooltip] - Tooltip string; removes `title` attribute if undefined.
      */
     displayTextAndTooltip (text, tooltip) {
-      let span = $(this._content).find('span');
-      if (0 == span.length) {
-        span = $('<span></span>').addClass('currentisofile-data-span');
-        $(this._content).append(span);
+      let span = this._content.querySelector('span');
+      if (!span) {
+        span = document.createElement('span');
+        span.className = 'currentisofile-data-span';
+        this._content.appendChild(span);
       }
-      span.html(text);
+      span.innerHTML = text;
       if (pulseUtility.isNotDefined(tooltip)) {
-        $(this._content).removeAttr('title');
+        this._content.removeAttribute('title');
       }
       else {
-        $(this._content).attr('title', tooltip);
+        this._content.setAttribute('title', tooltip);
       }
     }
 

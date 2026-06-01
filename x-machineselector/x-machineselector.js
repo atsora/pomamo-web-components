@@ -63,7 +63,7 @@ var eventBus = require('eventBus');
     }
 
     clearInitialization () {
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       super.clearInitialization();
     }
@@ -75,23 +75,30 @@ var eventBus = require('eventBus');
       // Parameters
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content - MACHINES
-      this._machinesSelector = $('<select></select>').addClass('machineselection-machines-select');
-      $(this.element).append(this._machinesSelector);
+      this._machinesSelector = document.createElement('select');
+      this._machinesSelector.className = 'machineselection-machines-select';
+      this.element.appendChild(this._machinesSelector);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this.element.appendChild(messageDiv);
 
       this.switchToNextContext();
     }
@@ -155,25 +162,27 @@ var eventBus = require('eventBus');
     _fillMachinesList () {
       if (this._machinesSelector == undefined)
         return;
-      $(this._machinesSelector).empty();
+      this._machinesSelector.replaceChildren();
 
       for (let machine of this._machines) {
         let id = machine[0];
         let displayStr = machine[1].display;
         //if (machine[1].sortpriority != undefined) -> to use ?
 
-        let option = $('<option></option>').addClass('machineselection-machines-option')
-          .html(displayStr);
-        option[0].setAttribute('value', id);
-        $(this._machinesSelector).append(option);
+        let option = document.createElement('option');
+        option.className = 'machineselection-machines-option';
+        option.innerHTML = displayStr;
+        option.setAttribute('value', id);
+        this._machinesSelector.appendChild(option);
       }
-      this._machinesSelector[0].options.selectedIndex = 0;
+      this._machinesSelector.options.selectedIndex = 0;
       this._selectOption();
 
-      $('.machineselection-machines-option').click(
-        function () {
+      [...this._machinesSelector.querySelectorAll('.machineselection-machines-option')].forEach(option => {
+        option.addEventListener('click', () => {
           this._selectOption();
-        }.bind(this));
+        });
+      });
     }
 
     /**
@@ -182,8 +191,8 @@ var eventBus = require('eventBus');
      */
     _selectOption () {
       let context = this.element.getAttribute('machine-context');
-      let index = this._machinesSelector[0].options.selectedIndex;
-      let id = this._machinesSelector[0].options[index].getAttribute('value');
+      let index = this._machinesSelector.options.selectedIndex;
+      let id = this._machinesSelector.options[index].getAttribute('value');
       eventBus.EventBus.dispatchToContext('machineIdChangeSignal',
         context,
         {

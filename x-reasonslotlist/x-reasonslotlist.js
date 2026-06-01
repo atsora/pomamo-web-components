@@ -112,9 +112,9 @@ require('x-revisionprogress/x-revisionprogress');
               this.onDateTimeRangeChange.bind(this));
           }
 
-          let modifMgr = $('body').find('x-modificationmanager');
-          if (modifMgr.length == 1) {
-            this._mapOfModifications = modifMgr[0].getModifications('reason',
+          let modifMgr = document.querySelector('body x-modificationmanager');
+          if (modifMgr) {
+            this._mapOfModifications = modifMgr.getModifications('reason',
               this.element.getAttribute('machine-id'));
           }
 
@@ -136,9 +136,9 @@ require('x-revisionprogress/x-revisionprogress');
     }
 
     cleanTable(table) {
-      this._table.empty();
+      this._table.replaceChildren();
       if (this._xsaveReason != null) {
-        this._xsaveReason[0].cleanReasons();
+        this._xsaveReason.cleanReasons();
       }
     }
 
@@ -157,22 +157,22 @@ require('x-revisionprogress/x-revisionprogress');
 
       if (this._displayMode === 'force-all') {
         // Initialization only: start with all shown
-        this._allIdleCheckbox.prop('checked', true);
+        this._allIdleCheckbox.checked = true;
       } else if (this._displayMode === 'only-overwrite-required') {
         // Initialization only: start with non-classified only
-        this._allIdleCheckbox.prop('checked', false);
+        this._allIdleCheckbox.checked = false;
       }
 
       // Checkbox must always remain user-accessible
-      this._allIdleCheckbox.prop('disabled', false);
+      this._allIdleCheckbox.disabled = false;
       this._displayModeInitialized = true;
     }
 
     fillTable() {
       this.cleanTable();
 
-      let showAllIdle = $(this._allIdleCheckbox).is(':checked');
-      let showMotion = $(this._motionCheckbox).is(':checked');
+      let showAllIdle = this._allIdleCheckbox.checked;
+      let showMotion = this._motionCheckbox.checked;
 
       this._numberOfDisplayedItems = 0;
       this._numberOfSelectableItems = 0;
@@ -223,68 +223,71 @@ require('x-revisionprogress/x-revisionprogress');
           (machineModeDisplay.substr(len - 1, 1) == ',')) {
           machineModeDisplay = machineModeDisplay.substring(0, len - 1);
         }
-        let tr = $('<div></div>').addClass('selectable').addClass('reasonslotlist-tr');
+        let tr = document.createElement('div');
+        tr.className = 'selectable reasonslotlist-tr';
 
-        let attributeTr = {
-          'range': rangeString,
-          'reason-text': item.Display,
-          'mode': machineModeDisplay,
-          'current': item.Current,
-          'is-default': item.DefaultReason,
-          'is-running': item.Running,
-          'is-selectable': item.IsSelectable
-        };
+        tr.setAttribute('range', rangeString);
+        tr.setAttribute('reason-text', item.Display);
+        tr.setAttribute('mode', machineModeDisplay);
+        tr.setAttribute('current', item.Current);
+        tr.setAttribute('is-default', item.DefaultReason);
+        tr.setAttribute('is-running', item.Running);
+        tr.setAttribute('is-selectable', item.IsSelectable);
 
         if (item.Details) {
-          attributeTr['details'] = item.Details;
+          tr.setAttribute('details', item.Details);
         }
-
-        tr.attr(attributeTr);
 
         let displayedRange = pulseUtility.displayDateRange(range);
 
-        let tdCheck = $('<div></div>').addClass('reasonslotlist-td-check');
+        let tdCheck = document.createElement('div');
+        tdCheck.className = 'reasonslotlist-td-check';
         if (item.IsSelectable == undefined || item.IsSelectable) {
-          tdCheck.append($("<input type='checkbox'></input>").addClass('table-check'));
+          let checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.className = 'table-check';
+          tdCheck.appendChild(checkbox);
         }
-        tdCheck.click(
-          function (e) {
-            this.checkBoxClick(e);
-          }.bind(this)
-        );
+        tdCheck.addEventListener('click', function (e) {
+          this.checkBoxClick(e);
+        }.bind(this));
 
-        let tdReasonButton = $('<div></div>').addClass('reasonslotlist-td-icon');
+        let tdReasonButton = document.createElement('div');
+        tdReasonButton.className = 'reasonslotlist-td-icon';
         if (catId > 0) {
-          let svgDiv = $('<div></div>').addClass('reasonslotlist-reason-svg');
+          let svgDiv = document.createElement('div');
+          svgDiv.className = 'reasonslotlist-reason-svg';
           let modeClass = pulseSvg.getMachineModeClass(catId);
-          svgDiv.addClass(modeClass);
-          svgDiv.css('color', item.BgColor);
-          tdReasonButton.append(svgDiv);
+          svgDiv.classList.add(modeClass);
+          svgDiv.style.color = item.BgColor;
+          tdReasonButton.appendChild(svgDiv);
           pulseSvg.inlineBackgroundSvg(svgDiv);
         }
-        let tdRange = $('<div></div>').html(displayedRange)
-          .addClass('reasonslotlist-td-range')
-          .addClass('reasonslotlist-td-click-change');
-        let textbox = $('<div></div>').html(display).addClass('reasonslotlist-td-reason')
-          .addClass('reasonslotlist-td-click-change')
-          .attr('title', machineModeDisplay);
-        let desc = $('<div></div>').addClass('reasonslotlist-td-desc').append(tdRange).append(textbox);
+        let tdRange = document.createElement('div');
+        tdRange.innerHTML = displayedRange;
+        tdRange.className = 'reasonslotlist-td-range reasonslotlist-td-click-change';
+        let textbox = document.createElement('div');
+        textbox.innerHTML = display;
+        textbox.className = 'reasonslotlist-td-reason reasonslotlist-td-click-change';
+        textbox.setAttribute('title', machineModeDisplay);
+        let desc = document.createElement('div');
+        desc.className = 'reasonslotlist-td-desc';
+        desc.appendChild(tdRange);
+        desc.appendChild(textbox);
         if (item.OverwriteRequired) {
-          textbox.addClass('overwrite-required missing');
+          textbox.classList.add('overwrite-required', 'missing');
         }
-        tdRange.click(
-          function (e) {
-            this.rowClick(e);
-          }.bind(this)
-        );
-        textbox.click(
-          function (e) {
-            this.rowClick(e);
-          }.bind(this)
-        );
+        tdRange.addEventListener('click', function (e) {
+          this.rowClick(e);
+        }.bind(this));
+        textbox.addEventListener('click', function (e) {
+          this.rowClick(e);
+        }.bind(this));
 
-        tr.append(tdReasonButton).append(tdCheck).append(desc);
-        this._table.append(tr);
+        tr.appendChild(tdReasonButton);
+        tr.appendChild(tdCheck);
+        tr.appendChild(desc);
+        this._table.appendChild(tr);
 
         if (item.IsSelectable) {
           ++this._numberOfSelectableItems;
@@ -297,7 +300,7 @@ require('x-revisionprogress/x-revisionprogress');
         let modif = this._getRangeInModifications(rangeRow);
         if (null != modif) {
           let newRevisionProgress =
-            pulseUtility.createjQueryElementWithAttribute('x-revisionprogress', {
+            pulseUtility.createElementWithAttribute('x-revisionprogress', {
               'revision-id': modif.revisionid,
               'machine-id': modif.machineid,
               'kind': modif.kind,
@@ -305,25 +308,23 @@ require('x-revisionprogress/x-revisionprogress');
               'steps': modif.initModifications,
               'remaining': modif.pendingModifications
             });
-          $(desc).append(newRevisionProgress);
+          desc.appendChild(newRevisionProgress);
         }
       }
       if (this._numberOfDisplayedItems === 0) {
-        let emptyTr = $('<div></div>')
-          .addClass('reasonslotlist-tr')
-          .css({
-            'justify-content': 'center',
-            'padding': '20px',
-            'font-style': 'italic',
-            'opacity': '0.7',
-            'cursor': 'default' // To not give the impression it's clickable
-          });
+        let emptyTr = document.createElement('div');
+        emptyTr.className = 'reasonslotlist-tr';
+        emptyTr.style.justifyContent = 'center';
+        emptyTr.style.padding = '20px';
+        emptyTr.style.fontStyle = 'italic';
+        emptyTr.style.opacity = '0.7';
+        emptyTr.style.cursor = 'default';
 
-        let message = $('<div></div>')
-          .text(this.getTranslation('allPeriodsClassified', 'All stop periods are classified'));
+        let message = document.createElement('div');
+        message.textContent = this.getTranslation('allPeriodsClassified', 'All stop periods are classified');
 
-        emptyTr.append(message);
-        this._table.append(emptyTr);
+        emptyTr.appendChild(message);
+        this._table.appendChild(emptyTr);
       }
 
       this._skipList = false;
@@ -338,7 +339,7 @@ require('x-revisionprogress/x-revisionprogress');
         }
       }
       if (this._xsaveReason != null) {
-        this._xsaveReason[0].closeAfterSave(this._skipList);
+        this._xsaveReason.closeAfterSave(this._skipList);
       }
       this._firstLoad = false;
     }
@@ -351,16 +352,21 @@ require('x-revisionprogress/x-revisionprogress');
       if (this.element.hasAttribute('demo'))
         return;
 
-      let dialogbox2 = $('<div></div>').addClass('dialog-savereason-page2')
-        .append(`<div class="reasonslotlist-header-label">3. ${this.getTranslation('sectionReasonTitle', 'Apply a reason on the selected period(s)')}</div>`);
-      let xsaveReason = pulseUtility.createjQueryElementWithAttribute('x-savereason', {
-        'machine-id': $(this.element).attr('machine-id')
-      });
-      dialogbox2.append(xsaveReason);
-      this._xsaveReason = xsaveReason;
-      this._xsaveReason[0].closeAfterSave(this._skipList);
+      let dialogbox2 = document.createElement('div');
+      dialogbox2.className = 'dialog-savereason-page2';
+      let header = document.createElement('div');
+      header.className = 'reasonslotlist-header-label';
+      header.innerHTML = `3. ${this.getTranslation('sectionReasonTitle', 'Apply a reason on the selected period(s)')}`;
+      dialogbox2.appendChild(header);
 
-      if ($('.dialog-savereason').length > 0) {
+      let xsaveReason = pulseUtility.createElementWithAttribute('x-savereason', {
+        'machine-id': this.element.getAttribute('machine-id')
+      });
+      dialogbox2.appendChild(xsaveReason);
+      this._xsaveReason = xsaveReason;
+      this._xsaveReason.closeAfterSave(this._skipList);
+
+      if (document.querySelector('.dialog-savereason')) {
         // LE COMPOSANT NATIF S'OCCUPE DE CREER LA PAGE 2
         pulseCustomDialog.addPage('.dialog-savereason', dialogbox2);
       }
@@ -369,7 +375,7 @@ require('x-revisionprogress/x-revisionprogress');
     }
 
     _reloadOrClose() {
-      if ($('.dialog-savereason').length == 0)
+      if (!document.querySelector('.dialog-savereason'))
         return;
 
       if (this._skipList) {
@@ -377,7 +383,8 @@ require('x-revisionprogress/x-revisionprogress');
       }
       else {
         pulseCustomDialog.goToPage('.dialog-savereason', 0);
-        $(this.element).find('x-highlightperiodsbar').get(0).cleanRanges();
+        let hpb = this.element.querySelector('x-highlightperiodsbar');
+        if (hpb) hpb.cleanRanges();
         this.switchToContext('Reload');
       }
     }
@@ -395,19 +402,25 @@ require('x-revisionprogress/x-revisionprogress');
     initialize() {
       this.addClass('pulse-bigdisplay');
 
+      // Validation must happen here — initialize() runs BEFORE
+      // validateParameters() in the state machine (Initialization → ParamValidation),
+      // and the DOM build below dereferences this.range.
       if (!this.element.hasAttribute('machine-id')) {
-        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.selectMachine', 'Please select a machine')), () => this.removeError());
+        this.switchToKey('Error',
+          () => this.displayError(this.getTranslation('error.selectMachine', 'Please select a machine')),
+          () => this.removeError());
         return;
       }
       if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
         console.error('invalid attribute machine-id in ReasonSlotListComponent.element');
-        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')), () => this.removeError());
+        this.switchToKey('Error',
+          () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')),
+          () => this.removeError());
         return;
       }
       this._setAutoRange();
 
-      if (this.range == undefined) {
-        console.error('undefined range');
+      const askForRange = () => {
         if (this.element.hasAttribute('period-context')) {
           eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent',
             this.element.getAttribute('period-context'));
@@ -415,38 +428,43 @@ require('x-revisionprogress/x-revisionprogress');
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
+      };
+      if (this.range == undefined) {
+        console.error('undefined range');
+        askForRange();
         this.switchToKey('Error', () => this.displayError('undefined range'), () => this.removeError());
         return;
       }
       if (this.range.isEmpty()) {
         console.error('empty range');
-        if (this.element.hasAttribute('period-context')) {
-          eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent',
-            this.element.getAttribute('period-context'));
-        }
-        else {
-          eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
-        }
-
+        askForRange();
         this.switchToKey('Error', () => this.displayError('empty range'), () => this.removeError());
         return;
       }
 
-      $(this.element).empty();
+      this.element.replaceChildren();
 
-      let datetimerangeDiv = $('<div></div>').addClass('reasonslotlist-datetimerange');
-      let xdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
+      let datetimerangeDiv = document.createElement('div');
+      datetimerangeDiv.className = 'reasonslotlist-datetimerange';
+      let xdatetimerange = pulseUtility.createElementWithAttribute('x-datetimerange', {
         'range': this.range.toString(d => d.toISOString()),
         'period-context': 'reasonslotlist'
       });
-      datetimerangeDiv.append(xdatetimerange);
+      datetimerangeDiv.appendChild(xdatetimerange);
 
-      let fixedHeaderDiv = $('<div></div>').addClass('fixed-header')
-        .append(`<div class="reasonslotlist-header-label">1. ${this.getTranslation('sectionTimeRangeTitle', 'Select a time range')}</div>`)
-        .append(datetimerangeDiv)
-        .append(`<div class="reasonslotlist-header-label">2. ${this.getTranslation('sectionPeriodTitle', 'Select one or more periods')}</div>`);
+      let fixedHeaderDiv = document.createElement('div');
+      fixedHeaderDiv.className = 'fixed-header';
+      let hdr1 = document.createElement('div');
+      hdr1.className = 'reasonslotlist-header-label';
+      hdr1.innerHTML = `1. ${this.getTranslation('sectionTimeRangeTitle', 'Select a time range')}`;
+      fixedHeaderDiv.appendChild(hdr1);
+      fixedHeaderDiv.appendChild(datetimerangeDiv);
+      let hdr2 = document.createElement('div');
+      hdr2.className = 'reasonslotlist-header-label';
+      hdr2.innerHTML = `2. ${this.getTranslation('sectionPeriodTitle', 'Select one or more periods')}`;
+      fixedHeaderDiv.appendChild(hdr2);
 
-      let xBarstack = pulseUtility.createjQueryElementWithAttribute('x-barstack', {
+      let xBarstack = pulseUtility.createElementWithAttribute('x-barstack', {
         'machine-id': this.element.getAttribute('machine-id'),
         'period-context': 'reasonslotlist',
         'main-bar': 'reason',
@@ -454,70 +472,96 @@ require('x-revisionprogress/x-revisionprogress');
         'mainbar-showoverwriterequired': 'false',
         'mainbar-click-to-change-reason': 'false'
       });
-      let barDiv = $('<div></div>').addClass('reasonslotlist-bar').append(xBarstack);
-      fixedHeaderDiv.append(barDiv);
+      let barDiv = document.createElement('div');
+      barDiv.className = 'reasonslotlist-bar';
+      barDiv.appendChild(xBarstack);
+      fixedHeaderDiv.appendChild(barDiv);
 
-      this._allIdleCheckbox = $("<input type='checkbox' id='reasonslotlist-allidle-checkbox' name='idle' value='AllIdle'>");
-      let allIdlelabel = $("<label for='reasonslotlist-allidle-checkbox'></label>")
-        .append(this.getTranslation('optionIdentified', 'Show identified idle periods'));
-      this._motionCheckbox = $("<input type='checkbox' id='reasonslotlist-motion-checkbox' name='motion' value='AllMotion'>");
-      let motionlabel = $("<label for='reasonslotlist-motion-checkbox'></label>")
-        .append(this.getTranslation('optionRunning', 'Show running periods'));
+      this._allIdleCheckbox = document.createElement('input');
+      this._allIdleCheckbox.type = 'checkbox';
+      this._allIdleCheckbox.id = 'reasonslotlist-allidle-checkbox';
+      this._allIdleCheckbox.name = 'idle';
+      this._allIdleCheckbox.value = 'AllIdle';
 
-      this._allIdleCheckbox.change(function () {
-        $(this.element).find('x-highlightperiodsbar').get(0).cleanRanges();
+      let allIdlelabel = document.createElement('label');
+      allIdlelabel.htmlFor = 'reasonslotlist-allidle-checkbox';
+      allIdlelabel.innerHTML = this.getTranslation('optionIdentified', 'Show identified idle periods');
+
+      this._motionCheckbox = document.createElement('input');
+      this._motionCheckbox.type = 'checkbox';
+      this._motionCheckbox.id = 'reasonslotlist-motion-checkbox';
+      this._motionCheckbox.name = 'motion';
+      this._motionCheckbox.value = 'AllMotion';
+
+      let motionlabel = document.createElement('label');
+      motionlabel.htmlFor = 'reasonslotlist-motion-checkbox';
+      motionlabel.innerHTML = this.getTranslation('optionRunning', 'Show running periods');
+
+      this._allIdleCheckbox.addEventListener('change', function () {
+        let hpb = this.element.querySelector('x-highlightperiodsbar');
+        if (hpb) hpb.cleanRanges();
         if (this._xsaveReason != null) {
-          this._xsaveReason[0].cleanReasons();
+          this._xsaveReason.cleanReasons();
         }
         this.fillTable();
       }.bind(this));
 
-      this._motionCheckbox.change(function () {
-        $(this.element).find('x-highlightperiodsbar').get(0).cleanRanges();
+      this._motionCheckbox.addEventListener('change', function () {
+        let hpb = this.element.querySelector('x-highlightperiodsbar');
+        if (hpb) hpb.cleanRanges();
         if (this._xsaveReason != null) {
-          this._xsaveReason[0].cleanReasons();
+          this._xsaveReason.cleanReasons();
         }
         this.fillTable();
       }.bind(this));
 
-      let divfilter = $('<div></div>')
-        .addClass('reasonslotlist-filter')
-        .append(this._allIdleCheckbox).append(allIdlelabel)
-        .append(this._motionCheckbox).append(motionlabel);
+      let divfilter = document.createElement('div');
+      divfilter.className = 'reasonslotlist-filter';
+      divfilter.appendChild(this._allIdleCheckbox);
+      divfilter.appendChild(allIdlelabel);
+      divfilter.appendChild(this._motionCheckbox);
+      divfilter.appendChild(motionlabel);
 
-      let topDiv = $('<div></div>')
-        .addClass('reasonslotlist-top-div')
-        .append(divfilter);
+      let topDiv = document.createElement('div');
+      topDiv.className = 'reasonslotlist-top-div';
+      topDiv.appendChild(divfilter);
 
-      let divdata = $('<div></div>')
-        .addClass('reasonslotlist-data');
-      let divScrollable = $('<div></div>').addClass('scrollable-content')
-        .append(divdata);
+      let divdata = document.createElement('div');
+      divdata.className = 'reasonslotlist-data';
+      let divScrollable = document.createElement('div');
+      divScrollable.className = 'scrollable-content';
+      divScrollable.appendChild(divdata);
 
-      let warningDiv = $('<div></div>').addClass('reasonslotlist-warning')
-        .html(this.getTranslation('noPeriod', 'No selectable periods on the specified range'));
+      let warningDiv = document.createElement('div');
+      warningDiv.className = 'reasonslotlist-warning';
+      warningDiv.innerHTML = this.getTranslation('noPeriod', 'No selectable periods on the specified range');
 
-      let maindiv = $('<div></div>')
-        .addClass('reasonslotlist')
-        .append(fixedHeaderDiv)
-        .append(divScrollable)
-        .append(topDiv)
-        .append(warningDiv);
+      let maindiv = document.createElement('div');
+      maindiv.className = 'reasonslotlist';
+      maindiv.appendChild(fixedHeaderDiv);
+      maindiv.appendChild(divScrollable);
+      maindiv.appendChild(topDiv);
+      maindiv.appendChild(warningDiv);
 
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
 
-      $(this.element).append(maindiv);
+      this.element.appendChild(maindiv);
 
       eventBus.EventBus.addEventListener(this,
         'dateTimeRangeChangeEvent',
         'reasonslotlist',
         this.onDateTimeRangeChange.bind(this));
 
-      let modifMgr = $('body').find('x-modificationmanager');
-      if (modifMgr.length == 1) {
-        this._mapOfModifications = modifMgr[0].getModifications('reason',
+      let modifMgr = document.body.querySelector('x-modificationmanager');
+      if (modifMgr) {
+        this._mapOfModifications = modifMgr.getModifications('reason',
           this.element.getAttribute('machine-id'));
       }
       eventBus.EventBus.addGlobalEventListener(this,
@@ -527,7 +571,7 @@ require('x-revisionprogress/x-revisionprogress');
     }
 
     clearInitialization() {
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._allIdleCheckbox = undefined;
       this._motionCheckbox = undefined;
@@ -542,14 +586,51 @@ require('x-revisionprogress/x-revisionprogress');
       this.switchToNextContext();
     }
 
-    refresh(data) {
-      let divfilter = $(this.element).find('.reasonslotlist div.reasonslotlist-filter').first();
-      divfilter.show();
+    /**
+     * Validates `machine-id` (required, integer) and `range` (required, non-empty).
+     * Same checks as initialize() — kept in sync intentionally because the
+     * state machine calls initialize() FIRST (and initialize() needs the
+     * params validated to build the DOM safely), then validateParameters().
+     */
+    validateParameters() {
+      if (!this.element.hasAttribute('machine-id')) {
+        this.switchToKey('Error',
+          () => this.displayError(this.getTranslation('error.selectMachine', 'Please select a machine')),
+          () => this.removeError());
+        return;
+      }
+      if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
+        this.switchToKey('Error',
+          () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')),
+          () => this.removeError());
+        return;
+      }
+      this._setAutoRange();
+      if (this.range == undefined || this.range.isEmpty()) {
+        if (this.element.hasAttribute('period-context')) {
+          eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent',
+            this.element.getAttribute('period-context'));
+        }
+        else {
+          eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
+        }
+        this.switchToKey('Error', () => this.displayError('invalid range'), () => this.removeError());
+        return;
+      }
+      this.switchToNextContext();
+    }
 
-      this._table = $(this.element).find('.reasonslotlist div.reasonslotlist-data').first();
-      this._table.empty()
-        .removeClass('reasonslotlist-error')
-        .addClass('reasonslotlist-table  pulse-selection-table-container');
+    refresh(data) {
+      let divfilter = this.element.querySelector('.reasonslotlist div.reasonslotlist-filter');
+      if (divfilter) divfilter.style.display = '';
+
+      this._table = this.element.querySelector('.reasonslotlist div.reasonslotlist-data');
+      if (this._table) {
+        this._table.replaceChildren();
+        this._table.classList.remove('reasonslotlist-error');
+        this._table.classList.add('reasonslotlist-table');
+        this._table.classList.add('pulse-selection-table-container');
+      }
 
       // Initialize display mode from attribute if not already set
       if (!this._displayMode && this.element.hasAttribute('display-mode')) {
@@ -570,10 +651,12 @@ require('x-revisionprogress/x-revisionprogress');
       }
 
       if (!hasSelectableNonIdentified && !hasSelectableIdentified && !hasSelectableMotion) {
-        $(this.element).find('.reasonslotlist-warning').show();
+        let wd = this.element.querySelector('.reasonslotlist-warning');
+        if (wd) wd.style.display = '';
       }
       else {
-        $(this.element).find('.reasonslotlist-warning').hide();
+        let wd = this.element.querySelector('.reasonslotlist-warning');
+        if (wd) wd.style.display = 'none';
       }
 
       // Apply display mode if set
@@ -583,27 +666,34 @@ require('x-revisionprogress/x-revisionprogress');
 
       this.fillTable();
 
-      let datetimerangeDiv = $(this.element).find('.reasonslotlist-datetimerange');
-      datetimerangeDiv.empty();
-      let xdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange',
-        {
-          'range': this.range.toString(d => d.toISOString()),
-          'period-context': 'reasonslotlist'
-        });
-      datetimerangeDiv.append(xdatetimerange);
+      let datetimerangeDiv = this.element.querySelector('.reasonslotlist-datetimerange');
+      if (datetimerangeDiv) {
+        datetimerangeDiv.replaceChildren();
+        let xdatetimerange = pulseUtility.createElementWithAttribute('x-datetimerange',
+          {
+            'range': this.range.toString(d => d.toISOString()),
+            'period-context': 'reasonslotlist'
+          });
+        datetimerangeDiv.appendChild(xdatetimerange);
+      }
 
       this._getXSaveReason();
     }
 
     displayError(text) {
-      let divfilter = $(this.element).find('.reasonslotlist div.reasonslotlist-filter').first();
-      divfilter.hide();
+      let divfilter = this.element.querySelector('.reasonslotlist div.reasonslotlist-filter');
+      if (divfilter) divfilter.style.display = 'none';
 
-      this._table = $(this.element).find('.reasonslotlist div.reasonslotlist-data').first();
-      this._table.empty()
-        .removeClass('reasonslotlist-table pulse-selection-table-container')
-        .addClass('reasonslotlist-error');
-      this._table.append('<div>' + text + '</div>');
+      this._table = this.element.querySelector('.reasonslotlist div.reasonslotlist-data');
+      if (this._table) {
+        this._table.replaceChildren();
+        this._table.classList.remove('reasonslotlist-table');
+        this._table.classList.remove('pulse-selection-table-container');
+        this._table.classList.add('reasonslotlist-error');
+        let div = document.createElement('div');
+        div.innerHTML = text;
+        this._table.appendChild(div);
+      }
     }
 
     removeError() {
@@ -611,12 +701,14 @@ require('x-revisionprogress/x-revisionprogress');
     }
 
     startLoading() {
-      $(this.element).find('.reasonslotlist').css('display', 'none');
+      let rl = this.element.querySelector('.reasonslotlist');
+      if (rl) rl.style.display = 'none';
       super.startLoading();
     }
 
     endLoading() {
-      $(this.element).find('.reasonslotlist').css('display', 'flex'); // Modified here for Flex
+      let rl = this.element.querySelector('.reasonslotlist');
+      if (rl) rl.style.display = 'flex';
       super.endLoading();
     }
 
@@ -639,7 +731,7 @@ require('x-revisionprogress/x-revisionprogress');
 
         this.element.setAttribute('skip1periodlist', 'false');
         if (this._xsaveReason != null) {
-          this._xsaveReason[0].closeAfterSave(false);
+          this._xsaveReason.closeAfterSave(false);
         }
 
         this.start();
@@ -662,21 +754,22 @@ require('x-revisionprogress/x-revisionprogress');
 
       if (isNew) {
         for (let iModif = 0; iModif < modif.ranges.length; iModif++) {
-          let rows = $(this.element).find('.reasonslotlist-tr');
-          for (let iRow = 0; iRow < rows.length; iRow++) {
-            let rangeRowStr = $(rows[iRow]).attr('range');
+          let rows = this.element.querySelectorAll('.reasonslotlist-tr');
+          rows.forEach(row => {
+            let rangeRowStr = row.getAttribute('range');
             let rangeRow = pulseRange.createDateRangeFromString(rangeRowStr);
             if (pulseRange.overlaps(modif.ranges[iModif], rangeRow)) {
               let newRevisionProgress =
-                pulseUtility.createjQueryElementWithAttribute('x-revisionprogress', {
+                pulseUtility.createElementWithAttribute('x-revisionprogress', {
                   'revision-id': modif.revisionid,
                   'machine-id': modif.machineid,
                   'kind': modif.kind,
                   'revision-range': pulseUtility.convertDateRangeForWebService(modif.ranges[iModif])
                 });
-              $(rows[iRow]).find('.reasonslotlist-td-desc').append(newRevisionProgress);
+              let desc = row.querySelector('.reasonslotlist-td-desc');
+              if (desc) desc.appendChild(newRevisionProgress);
             }
-          }
+          });
         }
       }
       if (event.target.pendingModifications == 0) {
@@ -708,88 +801,91 @@ require('x-revisionprogress/x-revisionprogress');
     }
 
     _getRangeFromRowWithCurrent(row) {
-      let range = $(row).attr('range');
-      let current = $(row).attr('current');
+      let range = row.getAttribute('range');
+      let current = row.getAttribute('current');
       return this._getRangeWithCurrent(range, current);
     }
 
     removeAllSelections() {
-      let rows = $(this.element).find('.reasonslotlist-tr');
+      let rows = this.element.querySelectorAll('.reasonslotlist-tr');
 
-      for (let i = 0; i < rows.length; i++) {
-        let tdCheck = $(rows[i]).find('input[type=checkbox]').first();
-        if ($(tdCheck).length > 0)
-          $(tdCheck)[0].checked = false;
+      rows.forEach(row => {
+        let tdCheck = row.querySelector('input[type=checkbox]');
+        if (tdCheck)
+          tdCheck.checked = false;
 
-        $(rows[i]).removeClass('row-selected');
+        row.classList.remove('row-selected');
 
-        let isDefault = $(rows[i]).attr('is-default');
+        let isDefault = row.getAttribute('is-default');
         if (isDefault == 'false') {
-          $(rows[i]).removeClass('row-notdefault-selected');
+          row.classList.remove('row-notdefault-selected');
         }
+      });
 
-      }
       let xSR = this._getXSaveReason();
       if (xSR != null) {
-        xSR[0].cleanReasons();
+        xSR.cleanReasons();
       }
-      let highlightBar = $(this.element).find('x-highlightperiodsbar');
-      highlightBar.get(0).cleanRanges();
+      let highlightBar = this.element.querySelector('x-highlightperiodsbar');
+      if (highlightBar) {
+        highlightBar.cleanRanges();
+      }
     }
 
     checkBoxClick(e) {
-      let row = $(e.target).closest('.reasonslotlist-tr');
-      let tdCheck = row.find('input[type=checkbox]');
+      let row = e.target.closest('.reasonslotlist-tr');
+      let tdCheck = row.querySelector('input[type=checkbox]');
       if (this._firstLoad) {
-        if ($(tdCheck).length > 0)
-          $(tdCheck)[0].checked = true;
+        if (tdCheck)
+          tdCheck.checked = true;
       }
-      let checked = $(tdCheck).is(':checked');
-      let highlightBar = $(this.element).find('x-highlightperiodsbar');
-      let rangeString = $(row).attr('range');
+      let checked = tdCheck && tdCheck.checked;
+      let highlightBar = this.element.querySelector('x-highlightperiodsbar');
+      let rangeString = row.getAttribute('range');
       let range = pulseRange.createDateRangeFromString(rangeString);
-      let isDefault = $(row).attr('is-default');
+      let isDefault = row.getAttribute('is-default');
       let reasonSelected = {
         range: rangeString,
-        reason: $(row).attr('reason-text'),
-        mode: $(row).attr('mode'),
+        reason: row.getAttribute('reason-text'),
+        mode: row.getAttribute('mode'),
       }
-      if ($(row).attr('details')) {
-        reasonSelected.details = $(row).attr('details');
+      let details = row.getAttribute('details');
+      if (details) {
+        reasonSelected.details = details;
       }
 
       if (checked) {
-        row.addClass('row-selected');
-        highlightBar.get(0).addRange(range);
+        row.classList.add('row-selected');
+        if (highlightBar) highlightBar.addRange(range);
         let xSR = this._getXSaveReason();
         if (xSR != null) {
-          xSR[0].addReason(reasonSelected);
+          xSR.addReason(reasonSelected);
           if (isDefault == 'false') {
-            row.addClass('row-notdefault-selected');
+            row.classList.add('row-notdefault-selected');
           }
         }
       }
       else {
-        row.removeClass('row-selected');
-        highlightBar.get(0).removeRange(range);
+        row.classList.remove('row-selected');
+        if (highlightBar) highlightBar.removeRange(range);
         let xSR = this._getXSaveReason();
         if (xSR != null) {
-          xSR[0].removeReason(reasonSelected);
+          xSR.removeReason(reasonSelected);
           if (isDefault == 'false') {
-            row.removeClass('row-notdefault-selected');
+            row.classList.remove('row-notdefault-selected');
           }
         }
       }
     }
 
     rowClick(e) {
-      let row = $(e.target).closest('.reasonslotlist-tr');
-      let isSelectable = $(row).attr('is-selectable');
+      let row = e.target.closest('.reasonslotlist-tr');
+      let isSelectable = row.getAttribute('is-selectable');
       if (isSelectable == 'false') {
         return;
       }
-      let tdCheck = row.find('input[type=checkbox]').first();
-      $(tdCheck).click();
+      let tdCheck = row.querySelector('input[type=checkbox]');
+      if (tdCheck) tdCheck.click();
     }
 
   }

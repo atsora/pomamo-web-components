@@ -76,38 +76,45 @@ require('x-loginpassword/x-loginpassword');
       // Attributes
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Loader -> Not needed here
 
       // Create DOM - LOGIN Content
-      this._loginPass = pulseUtility.createjQueryElementWithAttribute('x-loginpassword', {});
+      this._loginPass = pulseUtility.createElementWithAttribute('x-loginpassword', {});
 
-      this._loginContent = $('<div></div>').addClass('loginconnection-login-content')
-        .append(this._loginPass); //.append(loginLabel).append(passLabel);
-      this._content = $('<div></div>').addClass('loginconnection-content')
-        .append(this._loginContent);
+      this._loginContent = document.createElement('div');
+      this._loginContent.className = 'loginconnection-login-content';
+      this._loginContent.appendChild(this._loginPass);
 
-      this._loginOauthContent = $('<div></div>').addClass('loginconnection-login-oauth-content');
-      this._content.append(this._loginOauthContent);
-      this._loginOauthContent.hide();
+      this._content = document.createElement('div');
+      this._content.className = 'loginconnection-content';
+      this._content.appendChild(this._loginContent);
+
+      this._loginOauthContent = document.createElement('div');
+      this._loginOauthContent.className = 'loginconnection-login-oauth-content';
+      this._content.appendChild(this._loginOauthContent);
+      this._loginOauthContent.style.display = 'none';
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      this._messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(this._messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      this._messageDiv = document.createElement('div');
+      this._messageDiv.className = 'pulse-message-div';
+      this._messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(this._messageDiv);
 
       // Add button AFTER message
-      /*this._loginButton = $('<button></button>').addClass('loginconnection-login-button')
-        .html('Log in');
-      let divBtn = $('<div></div>').addClass('loginconnection-login-button-div')
-        .append(this._loginButton);
-      this._loginContent.append(divBtn);*/
+      /*this._loginButton = document.createElement('button');
+      this._loginButton.className = 'loginconnection-login-button';
+      this._loginButton.innerHTML = 'Log in';
+      let divBtn = document.createElement('div');
+      divBtn.className = 'loginconnection-login-button-div';
+      divBtn.appendChild(this._loginButton);
+      this._loginContent.appendChild(divBtn);*/
 
-      $(this.element).append(this._content);
+      this.element.appendChild(this._content);
 
       // Press on buttons
       //this._defineClickButtons();
@@ -122,13 +129,13 @@ require('x-loginpassword/x-loginpassword');
     }
 
     displayError (message) {
-      $(this._messageDiv).show();
-      $(this._messageSpan).html(message);
+      this._messageDiv.style.display = '';
+      this._messageSpan.innerHTML = message;
     }
 
     removeError () {
-      $(this._messageDiv).hide();
-      $(this._messageSpan).html('');
+      this._messageDiv.style.display = 'none';
+      this._messageSpan.innerHTML = '';
     }
 
     getShortUrl () {
@@ -144,10 +151,10 @@ require('x-loginpassword/x-loginpassword');
     refresh (data) {
       pulseLogin.cleanAuthentication();
       if (!data.UserPasswordAuthentication) {
-        this._loginContent.hide();
+        this._loginContent.style.display = 'none';
       }
       else {
-        this._loginContent.show();
+        this._loginContent.style.display = '';
       }
       let tmpAuth = data.OAuth2Methods;
       /*[
@@ -168,118 +175,121 @@ require('x-loginpassword/x-loginpassword');
       ];*/
 
       if (tmpAuth.length == 0) {
-        this._loginOauthContent.hide();
+        this._loginOauthContent.style.display = 'none';
       }
       else {
-        this._loginOauthContent.empty();
-        this._loginOauthContent.show();
+        this._loginOauthContent.replaceChildren();
+        this._loginOauthContent.style.display = '';
       }
       for (let iMeth = 0; iMeth < tmpAuth.length; iMeth++) {
         // Main
-        let authDiv = $('<div></div>').addClass('loginconnection-oauth');
-        $(this._loginOauthContent).append(authDiv);
+        let authDiv = document.createElement('div');
+        authDiv.className = 'loginconnection-oauth';
+        this._loginOauthContent.appendChild(authDiv);
 
         // Attributes for click
-        authDiv.attr('AuthenticationKind', tmpAuth[iMeth].AuthenticationKind);
-        authDiv.attr('AuthenticationName', tmpAuth[iMeth].AuthenticationName);
-        authDiv.attr('StateRequired', tmpAuth[iMeth].StateRequired);
-        authDiv.attr('LoginRequired', tmpAuth[iMeth].LoginRequired);
-        authDiv.attr('AuthenticationUrl', tmpAuth[iMeth].AuthenticationUrl);
+        authDiv.setAttribute('AuthenticationKind', tmpAuth[iMeth].AuthenticationKind);
+        authDiv.setAttribute('AuthenticationName', tmpAuth[iMeth].AuthenticationName);
+        authDiv.setAttribute('StateRequired', tmpAuth[iMeth].StateRequired);
+        authDiv.setAttribute('LoginRequired', tmpAuth[iMeth].LoginRequired);
+        authDiv.setAttribute('AuthenticationUrl', tmpAuth[iMeth].AuthenticationUrl);
 
         // Image
-        let authImage = $('<div></div>').addClass('loginconnection-oauth-image');
+        let authImage = document.createElement('div');
+        authImage.className = 'loginconnection-oauth-image';
 
         let imgUrl = 'images/login-' + tmpAuth[iMeth].AuthenticationKind + '.svg';
-        authImage.css('backgroundImage', 'url(' + imgUrl + ')');
+        authImage.style.backgroundImage = 'url(' + imgUrl + ')';
         authImage.src = imgUrl;
 
-        authDiv.append(authImage);
+        authDiv.appendChild(authImage);
 
         // Moved LATER pulseSvg.inlineBackgroundSvg(authImage);
 
         // Name
-        let authNameDisplay = $('<span></span>').addClass('loginconnection-oauth-name')
-          .html(this.getTranslation('connectWith', 'Connect with ')
-           + tmpAuth[iMeth].AuthenticationName);
-        authDiv.append(authNameDisplay);
+        let authNameDisplay = document.createElement('span');
+        authNameDisplay.className = 'loginconnection-oauth-name';
+        authNameDisplay.innerHTML = this.getTranslation('connectWith', 'Connect with ')
+           + tmpAuth[iMeth].AuthenticationName;
+        authDiv.appendChild(authNameDisplay);
 
         // Login if required
         if (tmpAuth[iMeth].LoginRequired) {
-          let loginEdit = $('<input></input>').addClass('loginconnection-oauth-login-input')
-            .attr('type', 'text');
-          let loginLabel = $('<label></label>').addClass('loginconnection-oauth-login-label')
-            .html(this.getTranslation('user', 'User:'))
-            .append(loginEdit);
-          authDiv.append(loginLabel);
+          let loginEdit = document.createElement('input');
+          loginEdit.className = 'loginconnection-oauth-login-input';
+          loginEdit.type = 'text';
+          let loginLabel = document.createElement('label');
+          loginLabel.className = 'loginconnection-oauth-login-label';
+          loginLabel.innerHTML = this.getTranslation('user', 'User:');
+          loginLabel.appendChild(loginEdit);
+          authDiv.appendChild(loginLabel);
         }
 
         // Click
-        authNameDisplay.click(
-          function (e) {
-            let div = $(e.target).closest('.loginconnection-oauth');
+        authNameDisplay.addEventListener('click', (e) => {
+          let div = e.target.closest('.loginconnection-oauth');
 
-            let AuthenticationKind = div[0].getAttribute('AuthenticationKind');
-            let AuthenticationName = div[0].getAttribute('AuthenticationName');
-            let StateRequired = div[0].getAttribute('StateRequired');
-            let LoginRequired = div[0].getAttribute('LoginRequired');
-            let AuthenticationUrl = div[0].getAttribute('AuthenticationUrl');
-            let login = '';
+          let AuthenticationKind = div.getAttribute('AuthenticationKind');
+          let AuthenticationName = div.getAttribute('AuthenticationName');
+          let StateRequired = div.getAttribute('StateRequired');
+          let LoginRequired = div.getAttribute('LoginRequired');
+          let AuthenticationUrl = div.getAttribute('AuthenticationUrl');
+          let login = '';
 
-            if ("true" == LoginRequired) {
-              let loginEdits = $(div).find('.loginconnection-oauth-login-input');
-              if (loginEdits.length > 0)
-                login = loginEdits[0].val();
-              // replace in URL
-              AuthenticationUrl = AuthenticationUrl.replace('{{login}}', login);
+          if ("true" == LoginRequired) {
+            let loginEdit = div.querySelector('.loginconnection-oauth-login-input');
+            if (loginEdit) {
+              login = loginEdit.value;
             }
-
-            // Store AuthenticationKind / AuthenticationName' / 'State':
-            let state = pulseLogin.storeAuthentication(AuthenticationKind,
-              AuthenticationName, StateRequired, login);
-
-            if ("true" == StateRequired) {
-              // replace in URL
-              AuthenticationUrl = AuthenticationUrl.replace('{{state}}', state);
-            }
-
-            window.location.href = AuthenticationUrl;
+            // replace in URL
+            AuthenticationUrl = AuthenticationUrl.replace('{{login}}', login);
           }
-        );
+
+          // Store AuthenticationKind / AuthenticationName' / 'State':
+          let state = pulseLogin.storeAuthentication(AuthenticationKind,
+            AuthenticationName, StateRequired, login);
+
+          if ("true" == StateRequired) {
+            // replace in URL
+            AuthenticationUrl = AuthenticationUrl.replace('{{state}}', state);
+          }
+
+          window.location.href = AuthenticationUrl;
+        });
 
         // Click
-        authImage.click(
-          function (e) {
-            let div = $(e.target).closest('.loginconnection-oauth');
+        authImage.addEventListener('click', (e) => {
+          let div = e.target.closest('.loginconnection-oauth');
 
-            let AuthenticationKind = div[0].getAttribute('AuthenticationKind');
-            let AuthenticationName = div[0].getAttribute('AuthenticationName');
-            let StateRequired = div[0].getAttribute('StateRequired');
-            let LoginRequired = div[0].getAttribute('LoginRequired');
-            let AuthenticationUrl = div[0].getAttribute('AuthenticationUrl');
-            let login = '';
+          let AuthenticationKind = div.getAttribute('AuthenticationKind');
+          let AuthenticationName = div.getAttribute('AuthenticationName');
+          let StateRequired = div.getAttribute('StateRequired');
+          let LoginRequired = div.getAttribute('LoginRequired');
+          let AuthenticationUrl = div.getAttribute('AuthenticationUrl');
+          let login = '';
 
-            if ("true" == LoginRequired) {
-              let loginEdits = $(div).find('.loginconnection-oauth-login-input');
-              if (loginEdits.length > 0)
-                login = loginEdits[0].val();
-              // TODO : Replace in URL
-              //AuthenticationUrl = AuthenticationUrl.replace('%%login%%', login);
-              // ? If login not defined = error ?
+          if ("true" == LoginRequired) {
+            let loginEdit = div.querySelector('.loginconnection-oauth-login-input');
+            if (loginEdit) {
+              login = loginEdit.value;
             }
-
-            // Store AuthenticationKind / AuthenticationName / State:
-            let state = pulseLogin.storeAuthentication(AuthenticationKind,
-              AuthenticationName, StateRequired, login);
-
-            if ("true" == StateRequired) {
-              // TODO : Replace in URL
-              //AuthenticationUrl = AuthenticationUrl.replace('%%state%%', state);
-              // ? If state not defined = error ?
-            }
-
-            window.location.href = AuthenticationUrl;
+            // TODO : Replace in URL
+            //AuthenticationUrl = AuthenticationUrl.replace('%%login%%', login);
+            // ? If login not defined = error ?
           }
-        );
+
+          // Store AuthenticationKind / AuthenticationName / State:
+          let state = pulseLogin.storeAuthentication(AuthenticationKind,
+            AuthenticationName, StateRequired, login);
+
+          if ("true" == StateRequired) {
+            // TODO : Replace in URL
+            //AuthenticationUrl = AuthenticationUrl.replace('%%state%%', state);
+            // ? If state not defined = error ?
+          }
+
+          window.location.href = AuthenticationUrl;
+        });
 
         // if only ONE way to connect, use it !
         if (!data.UserPasswordAuthentication

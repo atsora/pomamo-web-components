@@ -603,11 +603,11 @@ exports.createSegmentOnGauge = function (xMiddle, yMiddle, radius, fillColor, ma
   }
   circleProgress.setAttribute('stroke-width', strokeWidth);
   // 2*pi*R = 2*3.14*radius = 100
-  $(circleProgress).css('stroke-dasharray',
+  circleProgress.style.strokeDasharray =
     (circumference * (widthPercent / 2.0)).toFixed(0) + ' ' +
-    (circumference * (1.0 - (widthPercent / 2.0))).toFixed(0)); //'85 15');
-  $(circleProgress).css('stroke-dashoffset',
-    (circumference * (1.25 - (beginPercent / 2.0 + 0.75))).toFixed(0));
+    (circumference * (1.0 - (widthPercent / 2.0))).toFixed(0); //'85 15'
+  circleProgress.style.strokeDashoffset =
+    (circumference * (1.25 - (beginPercent / 2.0 + 0.75))).toFixed(0);
   return circleProgress;
 }
 
@@ -652,40 +652,51 @@ exports.createLineOnGauge = function (xMiddle, yMiddle, middleRadius, externRadi
  * @param {string} selector
  * @param {function} callbackAfterInline (can be undefined)
  */
-var inlineBackgroundSvg = exports.inlineBackgroundSvg = function (selector, callbackAfterInline) {
-  // Check if SVG is supported and selector is valid
-  if (typeof SVGRect == 'undefined' || $(selector) == null)
-    return;
+// target: string selector OR Element OR NodeList/Array of Elements
+var inlineBackgroundSvg = exports.inlineBackgroundSvg = function (target, callbackAfterInline) {
+  if (typeof SVGRect == 'undefined' || target == null) return;
 
-  // Try to change the image as long as the css is not loaded yet
-  function checkBackgroundImage (selector) {
-    let backgroundImage = $(selector).css('background-image');
-    if (backgroundImage == null || !backgroundImage.includes('url')) {
-      window.setTimeout(checkBackgroundImage, 100, selector);
-    }
-    else {
-      // Request the SVG file
-      let src = backgroundImage.replace('url(', '').replace(')', '').replace(/\"/gi, '');
-
-      // Append the SVG to the target
-      var ajaxReq = new XMLHttpRequest();
-      ajaxReq.onload = function (e, d) {
-        //if (ajaxReq.statusText == 'OK') { statusText == '' using https / Ford
-        if (ajaxReq.status == 200) {
-          $(selector).css('background-image', 'none');
-          $(selector).append(ajaxReq.responseText);
-
-          // Callback
-          if (pulseUtility.isFunction(callbackAfterInline)) {
-            callbackAfterInline();
-          }
-        }
-      };
-      ajaxReq.open('GET', src, true);
-      ajaxReq.send();
-    }
+  function resolveElements (t) {
+    if (typeof t === 'string') return document.querySelectorAll(t);
+    if (t.nodeType) return [t];
+    if (typeof t.length === 'number') return t; // NodeList / Array
+    return [];
   }
-  checkBackgroundImage(selector);
+
+  function checkBackgroundImage (originalTarget) {
+    let elements = resolveElements(originalTarget);
+    if (elements.length === 0) {
+      window.setTimeout(checkBackgroundImage, 100, originalTarget);
+      return;
+    }
+    // Use the first element to read the computed background-image
+    let first = elements[0];
+    let backgroundImage = window.getComputedStyle(first).backgroundImage;
+    if (backgroundImage == null || backgroundImage === 'none' || !backgroundImage.includes('url')) {
+      window.setTimeout(checkBackgroundImage, 100, originalTarget);
+      return;
+    }
+    // Request the SVG file
+    let src = backgroundImage.replace('url(', '').replace(')', '').replace(/"/g, '');
+
+    var ajaxReq = new XMLHttpRequest();
+    ajaxReq.onload = function () {
+      if (ajaxReq.status == 200) {
+        // Re-resolve in case more elements have appeared since
+        let toUpdate = resolveElements(originalTarget);
+        for (let i = 0; i < toUpdate.length; i++) {
+          toUpdate[i].style.backgroundImage = 'none';
+          toUpdate[i].insertAdjacentHTML('beforeend', ajaxReq.responseText);
+        }
+        if (pulseUtility.isFunction(callbackAfterInline)) {
+          callbackAfterInline();
+        }
+      }
+    };
+    ajaxReq.open('GET', src, true);
+    ajaxReq.send();
+  }
+  checkBackgroundImage(target);
 };
 
 /* Get a class to know the icon FOR machine modes
@@ -728,34 +739,38 @@ exports.createColoredLegend = function (color, mainClass) {
  *
  */
 exports.showPulseMaintenance = function () {
-  // if already exists, do nothing
-  {
-    let pulseMaintenance = $('body').find('.pulse-maintenance');
-    if (pulseMaintenance.length != 0) {
-      $(pulseMaintenance[0]).show();
-      return;
-    }
+  // if already exists, just show it
+  let existing = document.body.querySelector('.pulse-maintenance');
+  if (existing != null) {
+    existing.style.display = '';
+    return;
   }
 
   // else CREATE
-  let text = $('<div></div>').addClass('pulse-maintenance-text')
-    .html('The system is currently under maintenance');
-  let svg = $('<div></div>').addClass('pulse-maintenance-svg');
-  let centeredDiv = $('<div></div>').addClass('pulse-maintenance-centered-div')
-    .append(svg).append(text);
+  function mkDiv (cls) {
+    let d = document.createElement('div');
+    d.className = cls;
+    return d;
+  }
 
-  let shadow = $('<div></div>').addClass('pulse-maintenance-shadow');
-  let box = $('<div></div>').addClass('pulse-maintenance-display-box')
-    .append(centeredDiv);
+  let text = mkDiv('pulse-maintenance-text');
+  text.innerHTML = 'The system is currently under maintenance';
+  let svg = mkDiv('pulse-maintenance-svg');
+  let centeredDiv = mkDiv('pulse-maintenance-centered-div');
+  centeredDiv.appendChild(svg);
+  centeredDiv.appendChild(text);
 
-  let pulseMaintenance = $('<div></div>').addClass('pulse-maintenance')
-    .append(shadow).append(box);
+  let shadow = mkDiv('pulse-maintenance-shadow');
+  let box = mkDiv('pulse-maintenance-display-box');
+  box.appendChild(centeredDiv);
 
-  //pulseSvg.
+  let pulseMaintenance = mkDiv('pulse-maintenance');
+  pulseMaintenance.appendChild(shadow);
+  pulseMaintenance.appendChild(box);
+
   inlineBackgroundSvg(svg);
 
-  // Create a div Maintenance
-  $('body').append(pulseMaintenance);
+  document.body.appendChild(pulseMaintenance);
 }
 /*
 .pulse-maintenance-svg{
@@ -771,8 +786,8 @@ exports.showPulseMaintenance = function () {
  *
  */
 exports.hidePulseMaintenance = function () {
-  //$('body').find('.pulse-maintenance').remove();
-  $('body').find('.pulse-maintenance').hide();
+  let nodes = document.body.querySelectorAll('.pulse-maintenance');
+  for (let i = 0; i < nodes.length; i++) nodes[i].style.display = 'none';
 }
 
 
@@ -789,10 +804,14 @@ var removeBarChart = exports.removeBarChart = function (parent, svgClass) {
   if (parent == undefined) {
     return;
   }
-  // clear svg
-  let svg = $(parent).find('.' + svgClass);
-  d3.selectAll(svg.toArray()).remove();
-  $(parent).remove('.' + svgClass);
+  let parentEl = (typeof parent === 'string') ? document.querySelector(parent) : parent;
+  if (parentEl == null) return;
+  let matches = parentEl.querySelectorAll('.' + svgClass);
+  d3.selectAll([...matches]).remove();
+  // (also remove any direct child matching the class — jQuery .remove(selector) filtered children)
+  for (let i = 0; i < matches.length; i++) {
+    if (matches[i].parentNode === parentEl) matches[i].remove();
+  }
 }
 
 /**
@@ -1048,7 +1067,8 @@ exports.createMissingdata = function (parent) {
   svg.setAttribute('class', 'pulse-missing-data');
   svg.setAttribute('viewBox', '0 0 ' + 2 * radius + ' ' + 2 * radius);
   // Append
-  $(parent).append(svg);
+  let parentEl = (typeof parent === 'string') ? document.querySelector(parent) : parent;
+  if (parentEl != null) parentEl.appendChild(svg);
 
   // createCircle / could be an image
   let circle = document.createElementNS(_svgNS, 'circle');

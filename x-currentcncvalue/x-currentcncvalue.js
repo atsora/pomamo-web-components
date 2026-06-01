@@ -74,16 +74,22 @@ var pulseSvg = require('pulseSvg');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('currentcncvalue-data');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'currentcncvalue-data';
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = 'Loading...';
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -92,7 +98,7 @@ var pulseSvg = require('pulseSvg');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       //this._messageSpan = undefined;
       this._content = undefined;
 
@@ -104,7 +110,7 @@ var pulseSvg = require('pulseSvg');
 
       // Empty content
       this.displayTextAndTooltip('', '');
-      $(this._content).empty(); // To remove svg
+      this._content.replaceChildren();
 
       this.switchToNextContext();
     }
@@ -129,11 +135,12 @@ var pulseSvg = require('pulseSvg');
     }
 
     displayError (text) {
-      $(this._content).empty(); // To remove svg
+      this._content.replaceChildren();
 
-      let span = $('<span></span>').addClass('pulse-message')
-        .html(text);
-      $(this._content).append(span);
+      let span = document.createElement('span');
+      span.className = 'pulse-message';
+      span.innerHTML = text;
+      this._content.appendChild(span);
     }
 
     removeError () {
@@ -154,25 +161,27 @@ var pulseSvg = require('pulseSvg');
 
     displayTextAndTooltip (label, text, tooltip) {
       // label + this._fieldDisplay - default hidden
-      let lbl = $(this._content).find('label');
-      if (0 == lbl.length) {
-        lbl = $('<label></label>').addClass('currentcncvalue-data-label');
-        $(this._content).append(lbl);
+      let lbl = this._content.querySelector('label');
+      if (!lbl) {
+        lbl = document.createElement('label');
+        lbl.className = 'currentcncvalue-data-label';
+        this._content.appendChild(lbl);
       }
-      lbl.html(label);
+      lbl.innerHTML = label;
 
       // value
-      let span = $(this._content).find('span');
-      if (0 == span.length) {
-        span = $('<span></span>').addClass('currentcncvalue-data-span');
-        $(this._content).append(span);
+      let span = this._content.querySelector('span');
+      if (!span) {
+        span = document.createElement('span');
+        span.className = 'currentcncvalue-data-span';
+        this._content.appendChild(span);
       }
-      span.html(text);
+      span.innerHTML = text;
       if (pulseUtility.isNotDefined(tooltip)) {
-        $(this._content).removeAttr('title');
+        this._content.removeAttribute('title');
       }
       else {
-        $(this._content).attr('title', tooltip);
+        this._content.setAttribute('title', tooltip);
       }
     }
 
@@ -250,7 +259,7 @@ var pulseSvg = require('pulseSvg');
                       slice.setAttribute('class', sliceClasses);
                       svgValue.appendChild(slice);
                     }
-                    (this._content).append(svgValue);
+                    this._content.appendChild(svgValue);
 
                     return;
                   } // End of Light
@@ -276,9 +285,9 @@ var pulseSvg = require('pulseSvg');
 
     manageSuccess (data) {
       // Clear
-      //$(this._content).css('display', 'inline-block');
+      //this._content.style.display = 'inline-block';
       this.displayTextAndTooltip('', '', '');
-      $(this._content).empty(); // To remove svg
+      this._content.replaceChildren();
 
       if ((!pulseUtility.isNotDefined(data.ByMachineModule)) &&
         (data.ByMachineModule.length > 0) &&

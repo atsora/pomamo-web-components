@@ -71,13 +71,13 @@ var pulseComponent = require('pulsecomponent');
       this._setMyparameter();
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('pulse-XXX-content');
-      $(this.element)
-        .addClass('XXX')
-        .append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'pulse-XXX-content';
+      this.element.classList.add('XXX');
+      this.element.appendChild(this._content);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -93,7 +93,7 @@ var pulseComponent = require('pulsecomponent');
       // Parameters
       this._myparameter = undefined;
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._content = undefined;
 
       super.clearInitialization();

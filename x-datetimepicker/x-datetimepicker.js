@@ -97,21 +97,16 @@ var pulseUtility = require('pulseUtility');
           // Show seconds or not
           if (this.isInitialized()) {
             if (this.element.hasAttribute('showseconds')) {
-              this._timeInput[0].setAttribute('step', 1); // 1 sec == show sec
+              this._timeInput.setAttribute('step', 1); // 1 sec == show sec
             }
             else {
-              this._timeInput[0].setAttribute('step', 60); // 1 min
+              this._timeInput.setAttribute('step', 60); // 1 min
             }
           }
           break;
         case 'nullable':
           if (this.isInitialized()) {
-            if (newVal) {
-              this._inputNullableDiv.show();
-            }
-            else {
-              this._inputNullableDiv.hide();
-            }
+            this._inputNullableDiv.style.display = newVal ? '' : 'none';
           }
           break;
         default:
@@ -124,35 +119,47 @@ var pulseUtility = require('pulseUtility');
       this.addClass('pulse-bigdisplay');
 
       // Create DOM - NO Loader
-      let datetimeDiv = $('<div></div>').addClass('datetimepicker-datetimediv');
-      $(this.element).append(datetimeDiv);
+      let datetimeDiv = document.createElement('div');
+      datetimeDiv.classList.add('datetimepicker-datetimediv');
+      this.element.appendChild(datetimeDiv);
 
       // DOM - date
-      this._dateInput = $('<input type="date"></input>')
-        .addClass('datetimepicker-input-date');
-      this._timeInput = $('<input type="time"></input>')
-        .addClass('datetimepicker-input-time');
-      datetimeDiv.append(this._dateInput).append(this._timeInput);
+      this._dateInput = document.createElement('input');
+      this._dateInput.type = 'date';
+      this._dateInput.classList.add('datetimepicker-input-date');
+
+      this._timeInput = document.createElement('input');
+      this._timeInput.type = 'time';
+      this._timeInput.classList.add('datetimepicker-input-time');
+      datetimeDiv.appendChild(this._dateInput);
+      datetimeDiv.appendChild(this._timeInput);
 
       // With or without seconds
       if (this.element.hasAttribute('showseconds')) {
-        this._timeInput[0].setAttribute('step', 1); // 1 sec == show sec
+        this._timeInput.setAttribute('step', 1); // 1 sec == show sec
       }
       else {
-        this._timeInput[0].setAttribute('step', 60); // 1 min
+        this._timeInput.setAttribute('step', 60); // 1 min
       }
 
       // DOM - NULLABLE
-      this._inputNullable = $('<input type="checkbox" name="datetime-nullable"></input>')
-        .addClass('datetimepicker-input-nullable');
-      this._inputNullableText = $('<label for="datetime-nullable"></label>')
-        .addClass('datetimepicker-input-nullable-label')
-        .html((this.element.hasAttribute('novaluetext')) ? this.element.getAttribute('novaluetext') : 'No value');
-      this._inputNullableDiv = $('<div"></div>').addClass('datetimepicker-input-nullable-div')
-        .append(this._inputNullable).append(this._inputNullableText);
-      datetimeDiv.append(this._inputNullableDiv);
+      this._inputNullable = document.createElement('input');
+      this._inputNullable.type = 'checkbox';
+      this._inputNullable.name = 'datetime-nullable';
+      this._inputNullable.classList.add('datetimepicker-input-nullable');
+
+      this._inputNullableText = document.createElement('label');
+      this._inputNullableText.htmlFor = 'datetime-nullable';
+      this._inputNullableText.classList.add('datetimepicker-input-nullable-label');
+      this._inputNullableText.innerHTML = (this.element.hasAttribute('novaluetext')) ? this.element.getAttribute('novaluetext') : 'No value';
+
+      this._inputNullableDiv = document.createElement('div');
+      this._inputNullableDiv.classList.add('datetimepicker-input-nullable-div');
+      this._inputNullableDiv.appendChild(this._inputNullable);
+      this._inputNullableDiv.appendChild(this._inputNullableText);
+      datetimeDiv.appendChild(this._inputNullableDiv);
       if ((this.element.hasAttribute('nullable')) == false) {
-        this._inputNullableDiv.hide();
+        this._inputNullableDiv.style.display = 'none';
       }
 
       // Fill DateTime
@@ -166,9 +173,9 @@ var pulseUtility = require('pulseUtility');
       // if disabled
       this._enabledisableInput();
 
-      this._dateInput.change(function () {
+      this._dateInput.addEventListener('change', function () {
         // Restore default if empty
-        if ('' == this._dateInput[0].value) {
+        if ('' == this._dateInput.value) {
           this._setDefaultDate();
         }
         // Manage min/max time
@@ -180,9 +187,9 @@ var pulseUtility = require('pulseUtility');
 
       }.bind(this));
 
-      this._timeInput.change(function () {
+      this._timeInput.addEventListener('change', function () {
         // Restore default if empty
-        if ('' == this._timeInput[0].value) {
+        if ('' == this._timeInput.value) {
           this._setDefaultTime();
         }
         // Tell parent if needed
@@ -192,7 +199,7 @@ var pulseUtility = require('pulseUtility');
       }.bind(this));
 
       // If user click to set datetime to null
-      this._inputNullable.change(function () {
+      this._inputNullable.addEventListener('change', function () {
         this._enabledisableInput();
         // Tell parent if needed
         if (typeof this._onChangeCallback === 'function')
@@ -211,7 +218,7 @@ var pulseUtility = require('pulseUtility');
       // Parameters
 
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._inputNullable = undefined;
       this._inputNullableText = undefined;
@@ -231,20 +238,20 @@ var pulseUtility = require('pulseUtility');
       if (this.element.hasAttribute('disabled')
         && (this.element.getAttribute('disabled') == 'disabled'
           || this.element.getAttribute('disabled') == 'true')) {
-        this._dateInput[0].disabled = true;
-        this._timeInput[0].disabled = true;
-        this._inputNullable[0].disabled = true;
+        this._dateInput.disabled = true;
+        this._timeInput.disabled = true;
+        this._inputNullable.disabled = true;
       }
       else {
-        if ($(this._inputNullable).is(':checked')) {
-          this._dateInput[0].disabled = true;
-          this._timeInput[0].disabled = true;
+        if (this._inputNullable.checked) {
+          this._dateInput.disabled = true;
+          this._timeInput.disabled = true;
         }
         else {
-          this._dateInput[0].disabled = false;
-          this._timeInput[0].disabled = false;
+          this._dateInput.disabled = false;
+          this._timeInput.disabled = false;
         }
-        this._inputNullable[0].disabled = false;
+        this._inputNullable.disabled = false;
       }
     }
 
@@ -253,7 +260,7 @@ var pulseUtility = require('pulseUtility');
       if ((this.element.hasAttribute('nullable'))
         && !this.element.hasAttribute('defaultdatetime')) {
         // Set IS NULL
-        $(this._inputNullable)[0].checked = true;
+        this._inputNullable.checked = true;
       }
       // same as check changed
       this._enabledisableInput();
@@ -269,9 +276,9 @@ var pulseUtility = require('pulseUtility');
         + pulseUtility.leadingZero(defaultDatetime.getMonth() + 1) + '-'
         + pulseUtility.leadingZero(defaultDatetime.getDate());
 
-      this._dateInput[0].value = displayedDate;
-      //this._dateInput[0].setAttribute('value', displayedDate); //'2018-07-22');
-      //this._dateInput[0].defaultValue = displayedDate;
+      this._dateInput.value = displayedDate;
+      //this._dateInput.setAttribute('value', displayedDate); //'2018-07-22');
+      //this._dateInput.defaultValue = displayedDate;
     }
 
     _setDefaultTime () {
@@ -290,7 +297,7 @@ var pulseUtility = require('pulseUtility');
       let displayedTime = defaultDatetime.toLocaleTimeString('en-GB',// And NOT : [],
         { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-      // Remove seconds if not useful - 
+      // Remove seconds if not useful -
       if (!this.element.hasAttribute('showseconds')) {
         displayedTime = defaultDatetime.toLocaleTimeString('en-GB',// And NOT : [],
           { hour: '2-digit', minute: '2-digit' });
@@ -301,9 +308,9 @@ var pulseUtility = require('pulseUtility');
         displayedTime = '0' + displayedTime;
       }
 
-      this._timeInput[0].value = displayedTime; // Works for LAT, but not Paragon Metal
-      //this._timeInput[0].setAttribute('value', displayedTime); //'08:00');
-      //this._timeInput[0].defaultValue = displayedTime;
+      this._timeInput.value = displayedTime; // Works for LAT, but not Paragon Metal
+      //this._timeInput.setAttribute('value', displayedTime); //'08:00');
+      //this._timeInput.defaultValue = displayedTime;
     }
 
     _fillMinMaxDate () {
@@ -314,7 +321,7 @@ var pulseUtility = require('pulseUtility');
           + pulseUtility.leadingZero(minDatetime.getMonth() + 1) + '-'
           + pulseUtility.leadingZero(minDatetime.getDate());
 
-        this._dateInput[0].setAttribute('min', minDate);
+        this._dateInput.setAttribute('min', minDate);
       }
       if (this.element.hasAttribute('maxdatetime')) {
         let maxDatetime = new Date(this.element.getAttribute('maxdatetime'));
@@ -323,17 +330,17 @@ var pulseUtility = require('pulseUtility');
           + pulseUtility.leadingZero(maxDatetime.getMonth() + 1) + '-'
           + pulseUtility.leadingZero(maxDatetime.getDate());
 
-        this._dateInput[0].setAttribute('max', maxDate);
+        this._dateInput.setAttribute('max', maxDate);
       }
     }
 
     _fillMinMaxTime () {
       if (this.element.hasAttribute('mindatetime')) {
         // Check if min date >= value
-        let minDate = new Date(this._dateInput[0].getAttribute('min'));
-        let crtDate = new Date(this._dateInput[0].value);
+        let minDate = new Date(this._dateInput.getAttribute('min'));
+        let crtDate = new Date(this._dateInput.value);
         if (minDate < crtDate) {
-          this._timeInput[0].removeAttribute('min');
+          this._timeInput.removeAttribute('min');
         }
         else {
           let minDatetime = new Date(this.element.getAttribute('mindatetime'));
@@ -346,15 +353,15 @@ var pulseUtility = require('pulseUtility');
           if (!this.element.hasAttribute('showseconds')) {
             minTime = minTime.substring(0, 5); // Hide sec, not compatible
           }
-          this._timeInput[0].setAttribute('min', minTime);
+          this._timeInput.setAttribute('min', minTime);
         }
       }
       if (this.element.hasAttribute('maxdatetime')) {
         // Check if min date >= value
-        let maxDate = new Date(this._dateInput[0].getAttribute('max'));
-        let crtDate = new Date(this._dateInput[0].value);
+        let maxDate = new Date(this._dateInput.getAttribute('max'));
+        let crtDate = new Date(this._dateInput.value);
         if (crtDate < maxDate) {
-          this._timeInput[0].removeAttribute('max');
+          this._timeInput.removeAttribute('max');
         }
         else {
           let maxDatetime = new Date(this.element.getAttribute('maxdatetime'));
@@ -368,17 +375,17 @@ var pulseUtility = require('pulseUtility');
             maxTime = maxTime.substring(0, 5); // Hide sec, not compatible
           }
 
-          this._timeInput[0].setAttribute('max', maxTime);
+          this._timeInput.setAttribute('max', maxTime);
         }
       }
     }
 
     isValid () {
-      if ((this.element.hasAttribute('nullable')) && (this._inputNullable.is(':checked'))) {
+      if ((this.element.hasAttribute('nullable')) && (this._inputNullable.checked)) {
         return true;
       }
 
-      let crtDateTime = new Date(this._dateInput[0].value + ' ' + this._timeInput[0].value);
+      let crtDateTime = new Date(this._dateInput.value + ' ' + this._timeInput.value);
       if (this.element.hasAttribute('mindatetime')) {
         let minDatetime = new Date(this.element.getAttribute('mindatetime'));
         if (crtDateTime < minDatetime)
@@ -395,17 +402,17 @@ var pulseUtility = require('pulseUtility');
     }
 
     getISOValue () {
-      if ((this.element.hasAttribute('nullable')) && (this._inputNullable.is(':checked'))) {
+      if ((this.element.hasAttribute('nullable')) && (this._inputNullable.checked)) {
         return null;
       }
       else {
-        let crtDateTime = new Date(this._dateInput[0].value + ' ' + this._timeInput[0].value);
+        let crtDateTime = new Date(this._dateInput.value + ' ' + this._timeInput.value);
         return crtDateTime.toISOString();
       }
     }
 
-    getValueAsIs () { //'YYYY-MM-DD HH:mm:ss 
-      return (this._dateInput[0].value + ' ' + this._timeInput[0].value);
+    getValueAsIs () { //'YYYY-MM-DD HH:mm:ss
+      return (this._dateInput.value + ' ' + this._timeInput.value);
     }
 
     // Callback events

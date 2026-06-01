@@ -127,7 +127,10 @@ var eventBus = require('eventBus');
     // internal use. Prefer calling _displayCompletionTextAndAnimate
     _loopdisplayCompletionTextAndAnimate () {
       this._displayedCompletion += 1;
-      $(this.element).find('.time-in-pie').text(this._displayedCompletion + ' %');
+      let timeInPie = this.element.querySelector('.time-in-pie');
+      if (timeInPie) {
+        timeInPie.textContent = this._displayedCompletion + ' %';
+      }
 
       if (this._completionTextAnimationEnd > this._displayedCompletion) {
         this._textPercentRefreshTimer = setTimeout(
@@ -150,7 +153,10 @@ var eventBus = require('eventBus');
       // Display
       let completionToDisplay = 100.0 * this._completion; // ==  bounded this._data.Completion
       this._displayedCompletion = Math.round(completionToDisplay);
-      $(this.element).find('.time-in-pie').text(this._displayedCompletion + ' %');
+      let timeInPie = this.element.querySelector('.time-in-pie');
+      if (timeInPie) {
+        timeInPie.textContent = this._displayedCompletion + ' %';
+      }
 
       // Check if text animation is needed
       if (this._currentArcAnimationEnd != null && this._currentArcAnimationEnd != null) {
@@ -193,9 +199,12 @@ var eventBus = require('eventBus');
     }
 
     _translateSecondsToTextAndDisplay (seconds) {
+      let timeInPie = this.element.querySelector('.time-in-pie');
+      if (!timeInPie) return;
+
       if (Math.abs(seconds) < 60) {
         let text = seconds + 's';
-        $(this.element).find('.time-in-pie').text(text);
+        timeInPie.textContent = text;
       }
       else { // HH:mm display
         let mins = Math.abs(seconds) / 60; // Should be enough
@@ -207,7 +216,7 @@ var eventBus = require('eventBus');
         mins = mins % 60;
 
         let text = ((seconds >= 0) ? '' : '-') + hours + ':' + (mins > 9 ? '' + mins : '0' + mins);
-        $(this.element).find('.time-in-pie').text(text);
+        timeInPie.textContent = text;
       }
     }
 
@@ -224,25 +233,37 @@ var eventBus = require('eventBus');
           if (this._untilNextMSec / 1000 < this._threshold2) {
             thresholdClass = 'threshold2';
             // Change text color
-            $(this.element).find('.time-in-pie').removeClass('threshold1');
-            $(this.element).find('.time-in-pie').addClass('class', 'threshold2');
+            let timeInPie = this.element.querySelector('.time-in-pie');
+            if (timeInPie) {
+              timeInPie.classList.remove('threshold1');
+              timeInPie.classList.add('threshold2');
+            }
           }
           else if (this._untilNextMSec / 1000 < this._threshold1) {
             thresholdClass = 'threshold1';
             // Change text color
-            $(this.element).find('.time-in-pie').removeClass('threshold2');
-            $(this.element).find('.time-in-pie').addClass('class', 'threshold1');
+            let timeInPie = this.element.querySelector('.time-in-pie');
+            if (timeInPie) {
+              timeInPie.classList.remove('threshold2');
+              timeInPie.classList.add('threshold1');
+            }
           }
           else {
             // Change text color
-            $(this.element).find('.time-in-pie').removeClass('threshold1');
-            $(this.element).find('.time-in-pie').removeClass('threshold2');
+            let timeInPie = this.element.querySelector('.time-in-pie');
+            if (timeInPie) {
+              timeInPie.classList.remove('threshold1');
+              timeInPie.classList.remove('threshold2');
+            }
           }
         }
         else {
           // Change text color
-          $(this.element).find('.time-in-pie').removeClass('threshold1');
-          $(this.element).find('.time-in-pie').removeClass('threshold2');
+          let timeInPie = this.element.querySelector('.time-in-pie');
+          if (timeInPie) {
+            timeInPie.classList.remove('threshold1');
+            timeInPie.classList.remove('threshold2');
+          }
         }
 
         // Dispatch message for machine-tab
@@ -306,8 +327,11 @@ var eventBus = require('eventBus');
       // No event == no displayed time in circle
       if (pulseUtility.isNotDefined(this._eventDateTime)) { // == no active or coming event
         if (pulseUtility.isNotDefined(this._data.Completion)) {
-          $(this.element).find('.time-in-pie').text('');
-          //$(this._dashcircle).css('animation-duration', '0s');
+          let timeInPie = this.element.querySelector('.time-in-pie');
+          if (timeInPie) {
+            timeInPie.textContent = '';
+          }
+          //this._dashcircle.style.animationDuration = '0s';
         }
         else {
           // Show completion % text in the middle
@@ -377,7 +401,7 @@ var eventBus = require('eventBus');
         // DRAW dash circle
         if (!animateTimeAndDash || stopDashAnimation) {
           // No animation
-          $(this._dashcircle).css('animation-duration', '0s');
+          this._dashcircle.style.animationDuration = '0s';
           // Fixed dash circle
           pulseSvg.initFixedDashCircleDasharray(this._dashcircle,
             this._dashCircleRadius, secondsForDash);
@@ -393,9 +417,9 @@ var eventBus = require('eventBus');
           pulseSvg.createStyleDashCircleRotation(this._dashcircle, // this,
             keyframeName, secondsForDash, this._dashCircleRadius, this._activeEvent);
 
-          $(this._dashcircle).css('animation-timing-function', 'linear');
-          $(this._dashcircle).css('animation-duration', this._secondsBeforeDashEnd + 's');
-          $(this._dashcircle).css('animation-name', keyframeName);
+          this._dashcircle.style.animationTimingFunction = 'linear';
+          this._dashcircle.style.animationDuration = this._secondsBeforeDashEnd + 's';
+          this._dashcircle.style.animationName = keyframeName;
         }
       }
       /*else {
@@ -578,9 +602,9 @@ var eventBus = require('eventBus');
                 realEndOfAnimation, // to Begin
                 endOfBk - beginOfBk, // init width
                 endOfBk - realEndOfAnimation); // toWidth
-              $(circleBk).css('animation-timing-function', 'linear');
-              $(circleBk).css('animation-duration', animationSeconds + 's');
-              $(circleBk).css('animation-name', keyframeNameBk);
+              circleBk.style.animationTimingFunction = 'linear';
+              circleBk.style.animationDuration = animationSeconds + 's';
+              circleBk.style.animationName = keyframeNameBk;
             }*/
             svg.appendChild(circleBk);
           }
@@ -624,9 +648,9 @@ var eventBus = require('eventBus');
                 keyframeName, this._circleRadius,
                 (endOfBlue - beginOfBlue), // fromWidth
                 realEndOfAnimation - beginOfBlue); // toWidth
-              $(circleProgress).css('animation-timing-function', 'linear');
-              $(circleProgress).css('animation-duration', roundedAnimSec + 's');
-              $(circleProgress).css('animation-name', keyframeName);
+              circleProgress.style.animationTimingFunction = 'linear';
+              circleProgress.style.animationDuration = roundedAnimSec + 's';
+              circleProgress.style.animationName = keyframeName;
             }
             /*else {
               console.log('CycleProgressPie(' + this.element.getAttribute('machine-id') + '): no REAL animation');
@@ -765,8 +789,12 @@ var eventBus = require('eventBus');
         }
 
         // Change parent to allow css = Add 'activeeventinpie' (LevelName==Error) in .tile
-        if ('Error' == this._severity)
-          $(this.element).parents('.tile').addClass('activeeventinpie-' + this._severity);
+        if ('Error' == this._severity) {
+          let tileParent = this.element.closest('.tile');
+          if (tileParent) {
+            tileParent.classList.add('activeeventinpie-' + this._severity);
+          }
+        }
 
         return event.Message; // STOPPED / No cycle since...
       }
@@ -819,7 +847,10 @@ var eventBus = require('eventBus');
       this._ringStrokeClass = 'completion-stroke-noinfo'
 
       // Remove 'activeeventinpie' (LevelName==Error) in .tile
-      $(this.element).parents('.tile').removeClass('activeeventinpie-Error');
+      let tileParent = this.element.closest('.tile');
+      if (tileParent) {
+        tileParent.classList.remove('activeeventinpie-Error');
+      }
 
       // Timers
       this._stopDashTimeRefreshTimer();
@@ -870,7 +901,10 @@ var eventBus = require('eventBus');
       if ((this._pie == undefined) || (this._pie == null)) {
         return;
       }
-      $(this._pie).find('.cycleprogresspie-svg').remove(); // Remove Old SVG
+      let oldSvg = this._pie.querySelector('.cycleprogresspie-svg');
+      if (oldSvg) {
+        oldSvg.remove();
+      } // Remove Old SVG
 
       // Restore default == this._restoreDefaultValues (); DONE just before
 
@@ -883,13 +917,13 @@ var eventBus = require('eventBus');
         this._height, // height
         'donut', 2 * this._xyPosition, 2 * this._xyPosition);
       svg.setAttribute('class', 'cycleprogresspie-svg');
-      $(this._pie).prepend(svg); // Before message
+      this._pie.insertBefore(svg, this._pie.firstChild); // Before message
 
       let g = document.createElementNS(pulseSvg.get_svgNS(), 'g');
       svg.appendChild(g);
       // PIE - rotate
-      $(g).css('transform-origin', 'center');
-      $(g).css('transform', 'rotate(-90deg)');
+      g.style.transformOrigin = 'center';
+      g.style.transform = 'rotate(-90deg)';
 
       // Circle background
       let circleBorder = pulseSvg.createSegmentOnDonut(
@@ -1324,29 +1358,36 @@ var eventBus = require('eventBus');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._pie = $('<div></div>').addClass('cycleprogresspie-progresspie');
-      //let divNextstop = $('<div></div>').addClass('cycleprogresspie-nextstop');
-      this._content = $('<div></div>').addClass('cycleprogresspie-content')
-        .append(this._pie);
+      this._pie = document.createElement('div');
+      this._pie.className = 'cycleprogresspie-progresspie';
+
+      this._content = document.createElement('div');
+      this._content.className = 'cycleprogresspie-content';
+      this._content.appendChild(this._pie);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.textContent = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.textContent = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
-      $(this.element)
-        .append(this._content);
+      this.element.appendChild(this._content);
 
       /*
       $(window).resize(function () {
@@ -1370,7 +1411,7 @@ var eventBus = require('eventBus');
 
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._pie = undefined;
       this._messageSpan = undefined;
       this._content = undefined;
@@ -1400,8 +1441,11 @@ var eventBus = require('eventBus');
     }
 
     displayError (message) {
-      $(this._messageSpan).html(message);
-      //$(this.element).find('.cycleprogresspie-progresspie').hide();
+      if (this._messageSpan) {
+        this._messageSpan.innerHTML = message;
+      }
+      //let progressPie = this.element.querySelector('.cycleprogresspie-progresspie');
+      //if (progressPie) { progressPie.style.display = 'none'; }
       /*if ('NO_DATA' == statusString) {
         errorMessage = 'No available next stop information';
       }*/
@@ -1409,8 +1453,11 @@ var eventBus = require('eventBus');
     }
 
     removeError () {
-      $(this._messageSpan).html('');
-      //$(this.element).find('.cycleprogresspie-progresspie').show();
+      if (this._messageSpan) {
+        this._messageSpan.innerHTML = '';
+      }
+      //let progressPie = this.element.querySelector('.cycleprogresspie-progresspie');
+      //if (progressPie) { progressPie.style.display = ''; }
     }
 
     get refreshRate () {
@@ -1470,7 +1517,10 @@ var eventBus = require('eventBus');
         // Now on server - stored at reception and later too to have smooth display
         this._serverNow = new Date((new Date()).getTime() + this._diffServerTimeMinusNowMSec);
 
-        $(this.element).find('.cycleprogresspie-progresspie').show();
+        let progressPie = this.element.querySelector('.cycleprogresspie-progresspie');
+        if (progressPie) {
+          progressPie.style.display = '';
+        }
 
         this._draw();
       }

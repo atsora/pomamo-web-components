@@ -53,15 +53,15 @@ require('x-loginchangepassword/x-loginchangepassword');
     _showHide () {
       if (this.getConfigOrAttribute('loginchangepasswordbutton.changepasswordallowed',
         'false') == 'false') {
-        this._changeButton.hide();
+        this._changeButton.style.display = 'none';
       }
       else {
         let login = pulseLogin.getLoginForWebService();
         if ('' == login) {
-          this._changeButton.hide();
+          this._changeButton.style.display = 'none';
         }
         else {
-          this._changeButton.show();
+          this._changeButton.style.display = '';
         }
       }
     }
@@ -70,7 +70,7 @@ require('x-loginchangepassword/x-loginchangepassword');
      * Binds the click handler on `_changeButton` to call `_openDialog`.
      */
     _defineClickButtons () {
-      this._changeButton.click(
+      this._changeButton.addEventListener('click',
         function () {
           this._openDialog();
         }.bind(this));
@@ -80,7 +80,7 @@ require('x-loginchangepassword/x-loginchangepassword');
      * Opens a small `pulseCustomDialog` containing an `<x-loginchangepassword>` component.
      */
     _openDialog () {
-      let chgePass = pulseUtility.createjQueryElementWithAttribute('x-loginchangepassword', {});
+      let chgePass = pulseUtility.createElementWithAttribute('x-loginchangepassword', {});
 
       pulseCustomDialog.openDialog(chgePass, {
         title: this.getTranslation ('changePassword', 'Change password'),
@@ -98,20 +98,24 @@ require('x-loginchangepassword/x-loginchangepassword');
       // Attributes
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Loader -> Not needed here
 
       // Create DOM - BUTTON
       let changeLabel = this.getTranslation('changePassword', 'Change password');
-      this._changeSpan = $('<span></span>').addClass('loginchangepasswordbutton-span')
-        .html(changeLabel);
-      //this._changeIcon = $('<span></span>').addClass('loginchangepasswordbutton-icon');
-      this._changeButton = $('<div></div>').addClass('loginchangepasswordbutton-button')
-        .append(this._changeSpan);//.append(this._changeIcon);
-      this._changeButton.attr('title', changeLabel);
+      this._changeSpan = document.createElement('span');
+      this._changeSpan.className = 'loginchangepasswordbutton-span';
+      this._changeSpan.innerHTML = changeLabel;
+      //this._changeIcon = document.createElement('span');
+      //this._changeIcon.className = 'loginchangepasswordbutton-icon';
+      this._changeButton = document.createElement('div');
+      this._changeButton.className = 'loginchangepasswordbutton-button';
+      this._changeButton.appendChild(this._changeSpan);
+      //this._changeButton.appendChild(this._changeIcon);
+      this._changeButton.setAttribute('title', changeLabel);
 
-      $(this.element).append(this._changeButton);
+      this.element.appendChild(this._changeButton);
 
       //pulseSvg.inlineBackgroundSvg('.loginchangepasswordbutton-icon');
       // Create DOM - NO message for error

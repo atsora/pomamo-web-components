@@ -93,9 +93,10 @@ var eventBus = require('eventBus');
     }
 
     _translateSecondsToTextAndDisplay(seconds) {
+      let timeElement = this.element.querySelector('.time-in-pie');
       if (Math.abs(seconds) < 60) {
         let text = seconds + 's';
-        $(this.element).find('.time-in-pie').text(text);
+        timeElement.textContent = text;
       }
       else { // HH:mm display
         let mins = Math.abs(seconds) / 60; // Should be enough
@@ -107,11 +108,12 @@ var eventBus = require('eventBus');
         mins = mins % 60;
 
         let text = ((seconds >= 0) ? '' : '-') + hours + ':' + (mins > 9 ? '' + mins : '0' + mins);
-        $(this.element).find('.time-in-pie').text(text);
+        timeElement.textContent = text;
       }
     }
 
     _setTimeColorAndDispatch() {
+      let timeElement = this.element.querySelector('.time-in-pie');
       if (pulseUtility.isNotDefined(this._eventDateTime)) {
         //
       }
@@ -123,25 +125,25 @@ var eventBus = require('eventBus');
           if (this._untilNextMSec / 1000 < this._threshold2) {
             //thresholdClass = 'threshold2';
             // Change text color
-            $(this.element).find('.time-in-pie').removeClass('threshold1');
-            $(this.element).find('.time-in-pie').addClass('class', 'threshold2');
+            timeElement.classList.remove('threshold1');
+            timeElement.classList.add('threshold2');
           }
           else if (this._untilNextMSec / 1000 < this._threshold1) {
             //thresholdClass = 'threshold1';
             // Change text color
-            $(this.element).find('.time-in-pie').removeClass('threshold2');
-            $(this.element).find('.time-in-pie').addClass('class', 'threshold1');
+            timeElement.classList.remove('threshold2');
+            timeElement.classList.add('threshold1');
           }
           else {
             // Change text color
-            $(this.element).find('.time-in-pie').removeClass('threshold1');
-            $(this.element).find('.time-in-pie').removeClass('threshold2');
+            timeElement.classList.remove('threshold1');
+            timeElement.classList.remove('threshold2');
           }
         }
         else {
           // Change text color
-          $(this.element).find('.time-in-pie').removeClass('threshold1');
-          $(this.element).find('.time-in-pie').removeClass('threshold2');
+          timeElement.classList.remove('threshold1');
+          timeElement.classList.remove('threshold2');
         }
 
       }
@@ -195,8 +197,11 @@ var eventBus = require('eventBus');
       // No event == no displayed time in circle
       if (pulseUtility.isNotDefined(this._eventDateTime)) { // == no active or coming event
         if (pulseUtility.isNotDefined(this._data.Completion)) {
-          $(this.element).find('.time-in-pie').text('');
-          //$(this._dashcircle).css('animation-duration', '0s');
+          let timeElem = this.element.querySelector('.time-in-pie');
+          if (timeElem) {
+            timeElem.textContent = '';
+          }
+          //this._dashcircle.style.animationDuration = '0s';
         }
         /* else {
          // Show completion ??? Show it be added ? Maybe use something like "big display"
@@ -265,7 +270,7 @@ var eventBus = require('eventBus');
         // DRAW dash circle
         if (!animateTimeAndDash || stopDashAnimation) {
           // No animation
-          $(this._dashcircle).css('animation-duration', '0s');
+          this._dashcircle.style.animationDuration = '0s';
           // Fixed dash circle
           pulseSvg.initFixedDashCircleDasharray(this._dashcircle,
             this._dashCircleRadius, secondsForDash);
@@ -281,9 +286,9 @@ var eventBus = require('eventBus');
           pulseSvg.createStyleDashCircleRotation(this._dashcircle, // this,
             keyframeName, secondsForDash, this._dashCircleRadius, this._activeEvent);
 
-          $(this._dashcircle).css('animation-timing-function', 'linear');
-          $(this._dashcircle).css('animation-duration', this._secondsBeforeDashEnd + 's');
-          $(this._dashcircle).css('animation-name', keyframeName);
+          this._dashcircle.style.animationTimingFunction = 'linear';
+          this._dashcircle.style.animationDuration = this._secondsBeforeDashEnd + 's';
+          this._dashcircle.style.animationName = keyframeName;
         }
       }
       /*else {
@@ -366,7 +371,7 @@ var eventBus = require('eventBus');
       if (!this._data)
         return; // For access using onConfigChange
 
-      let productionDisplay = $(this.element).find('.production-in-pie');
+      let productionDisplay = this.element.querySelector('.production-in-pie');
 
       // If display-current-production is true, only show current pieces done
       let displayCurrentOnly = (this.getConfigOrAttribute('display-current-production', 'false') == 'true');
@@ -375,29 +380,29 @@ var eventBus = require('eventBus');
       if (displayCurrentOnly) {
         if (!pulseUtility.isNotDefined(this._data.NbPiecesDoneDuringShift)) {
           let done = Math.floor(this._data.NbPiecesDoneDuringShift * 100) / 100;
-          $(productionDisplay).text(done);
+          productionDisplay.textContent = done;
         }
         else {
-          $(productionDisplay).text('');
+          productionDisplay.textContent = '';
         }
         // Clear secondary display
-        $(this.element).find('.second-production-in-pie').text('');
+        this.element.querySelector('.second-production-in-pie').textContent = '';
         // Remove any efficiency classes
-        $(productionDisplay).removeClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
+        productionDisplay.classList.remove('good-efficiency', 'mid-efficiency', 'bad-efficiency');
         return;
       }
 
       else if (displayCurrentGoal) {
-        const productionDisplay = $(this.element).find('.production-in-pie');
+        const productionDisplay = this.element.querySelector('.production-in-pie');
         if (!pulseUtility.isNotDefined(this._data) && !pulseUtility.isNotDefined(this._data.GoalNowShift)) {
           const goal = Math.floor(this._data.GoalNowShift * 100) / 100;
-          $(productionDisplay).text(goal);
+          productionDisplay.textContent = goal;
         } else {
-          $(productionDisplay).text('');
+          productionDisplay.textContent = '';
         }
         // Clear secondary display and any efficiency classes
-        $(this.element).find('.second-production-in-pie').text('');
-        $(productionDisplay).removeClass('good-efficiency mid-efficiency bad-efficiency');
+        this.element.querySelector('.second-production-in-pie').textContent = '';
+        productionDisplay.classList.remove('good-efficiency', 'mid-efficiency', 'bad-efficiency');
         return;
       }
 
@@ -420,27 +425,24 @@ var eventBus = require('eventBus');
               let thresholdtargetproduction = this.getConfigOrAttribute('thresholdtargetproduction', 80);
               // colors and efficiency
               let ratio = this._data.NbPiecesDoneDuringShift / this._data.GoalNowShift;
-              let previousClass = productionDisplay[0].getAttribute('class');
+              let previousClass = productionDisplay.getAttribute('class');
               previousClass = previousClass.replace(' bad-efficiency', '');
               previousClass = previousClass.replace(' mid-efficiency', '');
               previousClass = previousClass.replace(' good-efficiency', '');
               if (ratio < thresholdredproduction / 100) {
-                productionDisplay[0].setAttribute('class', previousClass + ' bad-efficiency');
-                //$(productionDisplay).addClass('bad-efficiency').removeClass('mid-efficiency').removeClass('good-efficiency');
+                productionDisplay.setAttribute('class', previousClass + ' bad-efficiency');
               }
               else {
                 if (ratio < thresholdtargetproduction / 100) {
-                  productionDisplay[0].setAttribute('class', previousClass + ' mid-efficiency');
-                  //$(productionDisplay).addClass('mid-efficiency').removeClass('bad-efficiency').removeClass('good-efficiency');
+                  productionDisplay.setAttribute('class', previousClass + ' mid-efficiency');
                 }
                 else {
-                  productionDisplay[0].setAttribute('class', previousClass + ' good-efficiency');
-                  //$(productionDisplay).addClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
+                  productionDisplay.setAttribute('class', previousClass + ' good-efficiency');
                 }
               }
             }
             else {
-              $(productionDisplay).removeClass('good-efficiency').removeClass('mid-efficiency').removeClass('bad-efficiency');
+              productionDisplay.classList.remove('good-efficiency', 'mid-efficiency', 'bad-efficiency');
             }
           }
           if ('true' == this.getConfigOrAttribute('productionpercentinpie')) {
@@ -454,13 +456,13 @@ var eventBus = require('eventBus');
         }
       }
       if ('' == textPercent) {
-        $(productionDisplay).text(production);
-        $(this.element).find('.second-production-in-pie').text('');
+        productionDisplay.textContent = production;
+        this.element.querySelector('.second-production-in-pie').textContent = '';
       }
       else {
-        $(productionDisplay).text(textPercent);
+        productionDisplay.textContent = textPercent;
         if ('true' != this.getConfigOrAttribute('hidesecondproductiondisplay')) {
-          $(this.element).find('.second-production-in-pie').text(production);
+          this.element.querySelector('.second-production-in-pie').textContent = production;
         }
       }
     }
@@ -624,8 +626,12 @@ var eventBus = require('eventBus');
         }
 
         // Change parent to allow css = Add 'activeeventinpie' (LevelName==Error) in .tile
-        if ('Error' == this._severity)
-          $(this.element).parents('.tile').addClass('activeeventinpie-' + this._severity);
+        if ('Error' == this._severity) {
+          let tileParent = this.element.closest('.tile');
+          if (tileParent) {
+            tileParent.classList.add('activeeventinpie-' + this._severity);
+          }
+        }
 
         return event.Message; // STOPPED / No cycle since...
       }
@@ -676,7 +682,10 @@ var eventBus = require('eventBus');
       this._ringStrokeClass = 'completion-stroke-noinfo';
 
       // Remove 'activeeventinpie' (LevelName==Error) in .tile
-      $(this.element).parents('.tile').removeClass('activeeventinpie-Error');
+      let tileParent = this.element.closest('.tile');
+      if (tileParent) {
+        tileParent.classList.remove('activeeventinpie-Error');
+      }
 
       // Timer
       this._stopDashTimeRefreshTimer();
@@ -730,7 +739,10 @@ var eventBus = require('eventBus');
       if ((this._pie == undefined) || (this._pie == null)) {
         return;
       }
-      $(this._pie).find('.partproductionstatuspie-svg').remove(); // Remove Old SVG
+      let oldSvg = this._pie.querySelector('.partproductionstatuspie-svg');
+      if (oldSvg) {
+        oldSvg.remove();
+      }
 
       // Restore default == this._restoreDefaultValues (); DONE just before
 
@@ -739,14 +751,14 @@ var eventBus = require('eventBus');
         this._height, // height
         'donut', 2 * this._xyPosition, 2 * this._xyPosition);
       svg.setAttribute('class', 'partproductionstatuspie-svg');
-      $(this._pie).prepend(svg); // Before message
+      this._pie.insertBefore(svg, this._pie.firstChild);
 
       let g = document.createElementNS(pulseSvg.get_svgNS(), 'g');
       svg.appendChild(g);
 
       // PIE - rotate
-      $(g).css('transform-origin', 'center');
-      $(g).css('transform', 'rotate(-90deg)');
+      g.style.transformOrigin = 'center';
+      g.style.transform = 'rotate(-90deg)';
 
       // Circle background
       let circleBk = pulseSvg.createSegmentOnDonut(
@@ -796,17 +808,26 @@ var eventBus = require('eventBus');
 
       // Remove old SVG if present
       if (this._pie) {
-        $(this._pie).find('.partproductionstatuspie-svg').remove();
+        let oldSvg = this._pie.querySelector('.partproductionstatuspie-svg');
+        if (oldSvg) {
+          oldSvg.remove();
+        }
       }
 
       // Clear messages
       if (this._messageSpan) {
-        $(this._messageSpan).html('');
+        this._messageSpan.innerHTML = '';
       }
 
       // Clear any displayed texts inside the element
-      $(this.element).find('.time-in-pie').text('');
-      $(this.element).find('.production-in-pie').text('');
+      let timeElem = this.element.querySelector('.time-in-pie');
+      if (timeElem) {
+        timeElem.textContent = '';
+      }
+      let prodElem = this.element.querySelector('.production-in-pie');
+      if (prodElem) {
+        prodElem.textContent = '';
+      }
 
       // Restore default internal values
       this._restoreDefaultValues();
@@ -916,29 +937,35 @@ var eventBus = require('eventBus');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._pie = $('<div></div>').addClass('partproductionstatuspie-progresspie');
-      //let divNextstop = $('<div></div>').addClass('partproductionstatuspie-nextstop');
-      this._content = $('<div></div>').addClass('partproductionstatuspie-content')
-        .append(this._pie);
+      this._pie = document.createElement('div');
+      this._pie.className = 'partproductionstatuspie-progresspie';
+      this._content = document.createElement('div');
+      this._content.className = 'partproductionstatuspie-content';
+      this._content.appendChild(this._pie);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', ' Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', ' Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
-      $(this.element)
-        .append(this._content);
+      this.element.appendChild(this._content);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -954,7 +981,7 @@ var eventBus = require('eventBus');
 
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._pie = undefined;
       this._messageSpan = undefined;
       this._content = undefined;
@@ -985,8 +1012,8 @@ var eventBus = require('eventBus');
     }
 
     displayError(message) {
-      $(this._messageSpan).html(message);
-      //$(this.element).find('.partproductionstatuspie-progresspie').hide();
+      this._messageSpan.innerHTML = message;
+      //this.element.querySelector('.partproductionstatuspie-progresspie').style.display = 'none';
       /*if ('NO_DATA' == statusString) {
         errorMessage = 'No available next stop information';
       }*/
@@ -994,8 +1021,8 @@ var eventBus = require('eventBus');
     }
 
     removeError() {
-      $(this._messageSpan).html('');
-      //$(this.element).find('.partproductionstatuspie-progresspie').show();
+      this._messageSpan.innerHTML = '';
+      //this.element.querySelector('.partproductionstatuspie-progresspie').style.display = '';
     }
 
     get refreshRate() {
@@ -1023,7 +1050,10 @@ var eventBus = require('eventBus');
     refresh(data) {
       this._restoreDefaultValues();
       this._data = data;
-      $(this.element).find('.partproductionstatuspie-progresspie').show();
+      let pie = this.element.querySelector('.partproductionstatuspie-progresspie');
+      if (pie) {
+        pie.style.display = '';
+      }
 
       this._draw();
     }

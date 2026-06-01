@@ -73,15 +73,18 @@ var pulseComponent = require('pulsecomponent');
       this.addClass('pulse-text');
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - No Loader / no error
 
       // Create DOM - Content
-      this._textclock = $('<div>00:00:00</div>').addClass('clock-text');
-      this._content = $('<div></div>').addClass('clock-div')
-        .append(this._textclock);
-      $(this.element).append(this._content);
+      this._textclock = document.createElement('div');
+      this._textclock.className = 'clock-text';
+      this._textclock.textContent = '00:00:00';
+      this._content = document.createElement('div');
+      this._content.className = 'clock-div';
+      this._content.appendChild(this._textclock);
+      this.element.appendChild(this._content);
 
       this._startTime();
 
@@ -97,7 +100,7 @@ var pulseComponent = require('pulsecomponent');
         clearTimeout(this._timerId);
         this._timerId = null;
       }
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._textclock = undefined;
       this._content = undefined;
 
@@ -148,7 +151,7 @@ var pulseComponent = require('pulsecomponent');
           msBeforeNextChange += 1000 * (60 - now.second());
         }
       }
-      this._textclock.html(now.format(stringToDisplay));
+      this._textclock.innerHTML = now.format(stringToDisplay);
       this._timerId = setTimeout(this._startTime.bind(this), msBeforeNextChange);
     }
   }

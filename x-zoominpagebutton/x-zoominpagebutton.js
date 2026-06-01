@@ -60,11 +60,12 @@ var pulseSvg = require('pulseSvg');
       // Listener and dispatchers
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('zoom-in-page');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'zoom-in-page';
+      this.element.appendChild(this._content);
       // Create DOM - Loader - Not useful
       // Create DOM - message for error - Not useful
 
@@ -72,40 +73,39 @@ var pulseSvg = require('pulseSvg');
       pulseSvg.inlineBackgroundSvg(this._content);
 
       // Tooltip
-      //this._content.attr('tooltip', 'group details');
+      //this._content.setAttribute('tooltip', 'group details');
       pulseUtility.addToolTip(this._content, 'group details');
 
       // Click: drill into newgroupid, appending the previously-selected
       // group as the next ancestor.
-      $(this._content).click(
-        function (e) {
-          let url = window.location.href;
-          let newgroupid = $(this.element).attr('group');
-          let currentgroupids = pulseConfig.getArray('group');
+      this._content.addEventListener('click', (e) => {
+        let url = window.location.href;
+        let newgroupid = this.element.getAttribute('group');
+        let currentgroupids = pulseConfig.getArray('group');
 
-          url = pulseUtility.removeURLParameter(url, 'group');
-          url = pulseUtility.changeURLParameter(url, 'machine', '');
+        url = pulseUtility.removeURLParameter(url, 'group');
+        url = pulseUtility.changeURLParameter(url, 'machine', '');
 
-          if (url.includes('?')) url += '&';
-          else url += '?';
-          url += 'group=' + newgroupid;
+        if (url.includes('?')) url += '&';
+        else url += '?';
+        url += 'group=' + newgroupid;
 
-          let ancestorNb = 1;
-          while (url.includes('ancestor' + ancestorNb)) {
-            ancestorNb++;
-          }
-          // When zooming on a tile that is itself one of the currently selected
-          // groups (drill-in on a multi-selection sibling, or self-zoom on the
-          // single selection), the ancestor must be that group, not the first
-          // of the selection — otherwise multi-select [A, ALL] + zoom on ALL
-          // would wrongly produce ancestor=A.
-          let ancestorValue = currentgroupids.includes(newgroupid)
-            ? newgroupid
-            : currentgroupids[0];
-          url += '&ancestor' + ancestorNb + '=' + ancestorValue;
+        let ancestorNb = 1;
+        while (url.includes('ancestor' + ancestorNb)) {
+          ancestorNb++;
+        }
+        // When zooming on a tile that is itself one of the currently selected
+        // groups (drill-in on a multi-selection sibling, or self-zoom on the
+        // single selection), the ancestor must be that group, not the first
+        // of the selection — otherwise multi-select [A, ALL] + zoom on ALL
+        // would wrongly produce ancestor=A.
+        let ancestorValue = currentgroupids.includes(newgroupid)
+          ? newgroupid
+          : currentgroupids[0];
+        url += '&ancestor' + ancestorNb + '=' + ancestorValue;
 
-          window.location.href = url;
-        }.bind(this));
+        window.location.href = url;
+      });
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -145,13 +145,13 @@ var pulseSvg = require('pulseSvg');
     refresh (data) {
       if (true == data.Dynamic) {
         // Hide for the moment -- 202001
-        $(this._content).hide();
+        this._content.style.display = 'none';
       }
       else {
         if (data.Children.length == 0)
-          $(this._content).hide();
+          this._content.style.display = 'none';
         else
-          $(this._content).show();
+          this._content.style.display = '';
       }
     }
 

@@ -29,12 +29,21 @@ require('node_modules/@atsora/pomamo-web-service-simulation/scripts/MissingWorkI
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CycleProgress');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CncAlarm');
 
-$(function () {
+if (document.readyState !== 'loading') {
+  setupDemo();
+} else {
+  document.addEventListener('DOMContentLoaded', setupDemo);
+}
+
+function setupDemo() {
   // Surface clicks so the wiring on machine-context is observable.
   eventBus.EventBus.addEventListener({ element: document.body },
     'machineIdChangeSignal', 'demo',
     function (event) {
       var newId = event.target && event.target.newMachineId;
-      $('#selected-machine').text(newId != null ? String(newId) : '—');
+      let selectedMachineEl = document.getElementById('selected-machine');
+      if (selectedMachineEl) {
+        selectedMachineEl.textContent = newId != null ? String(newId) : '—';
+      }
     });
-});
+}

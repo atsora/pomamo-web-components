@@ -94,10 +94,19 @@ var eventBus = require('eventBus');
       }
 
       if ((this._content != undefined) && (this._content != null)) {
-        $(this._content).height(this._height);
+        this._content.style.height = this._height + 'px';
       }
-      $(this.element).find('.bartimeselection').offset($(this.element).closest('.middle-bar').offset());
-      $(this.element).find('.bartimeselection').height(this._height);
+      let bartimeselection = this.element.querySelector('.bartimeselection');
+      if (bartimeselection) {
+        let middleBar = this.element.closest('.middle-bar');
+        if (middleBar) {
+          let offset = middleBar.getBoundingClientRect();
+          bartimeselection.style.position = 'absolute';
+          bartimeselection.style.left = offset.left + 'px';
+          bartimeselection.style.top = offset.top + 'px';
+        }
+        bartimeselection.style.height = this._height + 'px';
+      }
     }
 
     /**
@@ -106,8 +115,8 @@ var eventBus = require('eventBus');
      * stretches it to 100% of the reason group.
      */
     _effectiveHeight () {
-      if (this._isInBarstack() && this._content != null && this._content.length > 0) {
-        let h = this._content[0].offsetHeight;
+      if (this._isInBarstack() && this._content != null) {
+        let h = this._content.offsetHeight;
         if (h > 0) return h;
       }
       return this._height;
@@ -127,12 +136,12 @@ var eventBus = require('eventBus');
      */
     _draw () {
       if ((this._content == undefined) || (this._content == null)) {
-        //$(content).height(this._height);
         return;
       }
-      $(this._content).find('.bartimeselection-svg').remove(); // Remove Old SVG
+      let oldSvg = this._content.querySelector('.bartimeselection-svg');
+      if (oldSvg) oldSvg.remove(); // Remove Old SVG
 
-      let width = $(this._content).width();
+      let width = this._content.offsetWidth;
       if (width) {
         this._barwidth = width;
       }
@@ -155,7 +164,7 @@ var eventBus = require('eventBus');
         self._clickOnBar(evt);
       };
 
-      $(this._content).append(svg);
+      this._content.appendChild(svg);
 
       if (this.element.hasAttribute('when')) {
         let barbegin = new Date(this._range.lower);
@@ -201,7 +210,7 @@ var eventBus = require('eventBus');
       //let dim = e.getBoundingClientRect(); REPLACED BY this._barwidth;
       let x = evt.offsetX; // clientX - dim.left; // position = (click position) - (left of svg == 0)
       let d_clickTime = new Date(this._range.lower);
-      let barwidth = $(this._content).width()
+      let barwidth = this._content.offsetWidth;
       if (barwidth > 0) {
         let d_begin = new Date(this._range.lower);
         let d_end = new Date(this._range.upper);
@@ -212,7 +221,8 @@ var eventBus = require('eventBus');
         let tmpDateRange = pulseRange.createDateRangeDefaultInclusivity(d_clickTime.toISOString(), d_clickTime.toISOString());
         let atDisplay = pulseUtility.displayDateRange(tmpDateRange, true);
 
-        $('.detailsatdialog-subtitle').html(atDisplay);
+        let subtitle = document.querySelector('.detailsatdialog-subtitle');
+        if (subtitle) subtitle.innerHTML = atDisplay;
         let newWhen = d_clickTime.toISOString();
         // Update red line :
         this.element.setAttribute('when', newWhen);
@@ -282,15 +292,16 @@ var eventBus = require('eventBus');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('bartimeselection-content');
-      //divcontent.height(this._height);
-      let div = $('<div></div>').addClass('bartimeselection')
-        .append(this._content);
-      div.height(this._height);
-      $(this.element).append(div);
+      this._content = document.createElement('div');
+      this._content.className = 'bartimeselection-content';
+      let div = document.createElement('div');
+      div.className = 'bartimeselection';
+      div.appendChild(this._content);
+      div.style.height = this._height + 'px';
+      this.element.appendChild(div);
 
       // Create DOM - Loader
       /*let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
@@ -317,7 +328,7 @@ var eventBus = require('eventBus');
       //this._height = defaultHeight;
       //this._barwidth = 100;
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._messageSpan = undefined;
       this._content = undefined;
 

@@ -86,11 +86,12 @@ var eventBus = require('eventBus');
       } catch (e) { /* no machineselection on this page */ }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('fieldlegends');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'fieldlegends';
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader - probably not in legends... to verify
       /*let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
@@ -114,7 +115,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       this._content = undefined;
@@ -142,12 +143,12 @@ var eventBus = require('eventBus');
     }
 
     displayError (message) {
-      $(this._content).hide();
+      this._content.style.display = 'none';
       // Note that you can use the CSS class .pulse-component-error or .pulse-component-warning instead
     }
 
     removeError () {
-      $(this._content).show();
+      this._content.style.display = '';
     }
 
     // Overload to always refresh value
@@ -180,44 +181,56 @@ var eventBus = require('eventBus');
      * @param {{ Items: Array<{ Field: { Display: string }, Legends: Array<{ Color: string, Display: string }> }> }} data
      */
     refresh (data) {
-      $(this._content).empty();
+      this._content.replaceChildren();
 
       for (let iField = 0; iField < data.Items.length; iField++) {
         let item = data.Items[iField];
 
-        let titleSpan = $('<span></span>').html(item.Field.Display);
-        let divTitle = $('<div></div>').addClass('pulse-legend-title')
-          .append(titleSpan);
-        let divElements = $('<div></div>').addClass('pulse-legend-elements');
-        let divOneLegend = $('<div></div>').addClass('pulse-legend-onelegend')
-          .append(divTitle).append(divElements);
+        let titleSpan = document.createElement('span');
+        titleSpan.innerHTML = item.Field.Display;
+        let divTitle = document.createElement('div');
+        divTitle.className = 'pulse-legend-title';
+        divTitle.appendChild(titleSpan);
+        let divElements = document.createElement('div');
+        divElements.className = 'pulse-legend-elements';
+        let divOneLegend = document.createElement('div');
+        divOneLegend.className = 'pulse-legend-onelegend';
+        divOneLegend.appendChild(divTitle);
+        divOneLegend.appendChild(divElements);
 
         for (let iLegend = 0; iLegend < item.Legends.length; iLegend++) {
           let legend = item.Legends[iLegend];
-          let divIcon = $('<div></div>').addClass('pulse-legend-icon');
+          let divIcon = document.createElement('div');
+          divIcon.className = 'pulse-legend-icon';
           let svg = pulseSvg.createColoredLegend(legend.Color);
           if (svg != null) {
             svg.setAttribute('class', 'fieldlegends-icon');
-            divIcon.append(svg);
+            divIcon.appendChild(svg);
           }
 
-          let span = $('<span></span>').html(legend.Display);
-          let divLabel = $('<div></div>').addClass('pulse-legend-label').append(span);
+          let span = document.createElement('span');
+          span.innerHTML = legend.Display;
+          let divLabel = document.createElement('div');
+          divLabel.className = 'pulse-legend-label';
+          divLabel.appendChild(span);
 
-          let divElement = $('<div></div>').addClass('pulse-legend-element');
-          divElement.append(divIcon).append(divLabel);
+          let divElement = document.createElement('div');
+          divElement.className = 'pulse-legend-element';
+          divElement.appendChild(divIcon);
+          divElement.appendChild(divLabel);
 
-          divElements.append(divElement);
+          divElements.appendChild(divElement);
         }
         for (let i = 0; i < 4; i++) {
-          let divElement = $('<div></div>').addClass('pulse-legend-empty-element-to-align');
-          divElements.append(divElement);
+          let divElement = document.createElement('div');
+          divElement.className = 'pulse-legend-empty-element-to-align';
+          divElements.appendChild(divElement);
         }
 
-        $(this._content).append(divOneLegend);
+        this._content.appendChild(divOneLegend);
 
         // Hack for resize legend
-        $('.legend-content').resize();
+        document.querySelector('.legend-content')?.dispatchEvent(new Event('resize'));
       }
     }
 

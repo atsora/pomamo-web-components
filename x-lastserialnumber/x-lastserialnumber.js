@@ -72,9 +72,9 @@ require('x-revisionprogress/x-revisionprogress');
       switch (attr) {
         case 'machine-id': {
           // For progress : update _mapOfModifications
-          let modifMgr = $('body').find('x-modificationmanager');
-          if (modifMgr.length == 1) {
-            this._mapOfModifications = modifMgr[0].getModifications('serialnumber',
+          let modifMgr = document.querySelector('body x-modificationmanager');
+          if (modifMgr) {
+            this._mapOfModifications = modifMgr.getModifications('serialnumber',
               this.element.getAttribute('machine-id'));
 
             // + REMOVE others with old machineid ? + create progress ? -> TODO later !
@@ -109,34 +109,33 @@ require('x-revisionprogress/x-revisionprogress');
       }
 
       // Get modifications and create listener
-      let modifMgr = $('body').find('x-modificationmanager');
-      if (modifMgr.length == 1) {
-        this._mapOfModifications = modifMgr[0].getModifications('serialnumber',
+      let modifMgr = document.querySelector('body x-modificationmanager');
+      if (modifMgr) {
+        this._mapOfModifications = modifMgr.getModifications('serialnumber',
           this.element.getAttribute('machine-id'));
       }
       eventBus.EventBus.addGlobalEventListener(this,
         'modificationEvent', this.onModificationEvent.bind(this));
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
       // current
-      this._currentText = $('<span></span>').addClass('lastserialnumber-serialnumber-data');
-      this._current = $('<div></div>')
-        .addClass('pulse-cellbar-first')
-        .addClass('pulse-cellbar-current-data')
-        .addClass('clickable') // To change display when hover
-        .append($('<span>'
-          + this.getTranslation('currentserialnumber', 'Serial Number:')
-          + '</span > ')).append(this._currentText);
+      this._currentText = document.createElement('span');
+      this._currentText.className = 'lastserialnumber-serialnumber-data';
+      this._current = document.createElement('div');
+      this._current.className = 'pulse-cellbar-first pulse-cellbar-current-data clickable';
+      let currentLabel = document.createElement('span');
+      currentLabel.innerHTML = this.getTranslation('currentserialnumber', 'Serial Number:');
+      this._current.appendChild(currentLabel);
+      this._current.appendChild(this._currentText);
       // past
-      this._pastdata = $('<div></div>')
-        .addClass('pulse-cellbar-last')
-        .addClass('pulse-cellbar-past-data')
-        .append($('<span>'
-          + this.getTranslation('pastserialnumber', 'Past Data')
-          + '</span>'));
+      this._pastdata = document.createElement('div');
+      this._pastdata.className = 'pulse-cellbar-last pulse-cellbar-past-data';
+      let pastLabel = document.createElement('span');
+      pastLabel.innerHTML = this.getTranslation('pastserialnumber', 'Past Data');
+      this._pastdata.appendChild(pastLabel);
 
       // Tooltips
       let tooltip = this.getTranslation('currentTooltip', '');
@@ -153,38 +152,39 @@ require('x-revisionprogress/x-revisionprogress');
       pulseSvg.createMissingdata(this._pastdata);
 
       // main
-      this._content = $('<div></div>')
-        .addClass('pulse-cellbar-main')
-        .append(this._current)
-        .append(this._pastdata);
+      this._content = document.createElement('div');
+      this._content.className = 'pulse-cellbar-main';
+      this._content.appendChild(this._current);
+      this._content.appendChild(this._pastdata);
       // Append
-      $(this.element)
-        .append(this._content);
+      this.element.appendChild(this._content);
 
       // Clicks
-      this._current.click(
-        function (e) {
-          this.clickOnCurrent(e);
-        }.bind(this)
-      );
-      this._pastdata.click(
-        function (e) {
-          this.clickOnPast(e);
-        }.bind(this)
-      );
+      this._current.addEventListener('click', function (e) {
+        this.clickOnCurrent(e);
+      }.bind(this));
+      this._pastdata.addEventListener('click', function (e) {
+        this.clickOnPast(e);
+      }.bind(this));
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this.element.appendChild(messageDiv);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -194,7 +194,7 @@ require('x-revisionprogress/x-revisionprogress');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._currentText = undefined;
       this._current = undefined;
@@ -208,9 +208,9 @@ require('x-revisionprogress/x-revisionprogress');
     reset () { // Code here to clean the component, for example after a parameter change
       this.removeError();
       // Clean content
-      $(this._pastdata).removeClass('pulse-cellbar-cell-missing');
-      $(this._current).removeClass('pulse-cellbar-cell-missing pulse-cellbar-cell-nodata');
-      $(this._currentText).html('');
+      this._pastdata.classList.remove('pulse-cellbar-cell-missing');
+      this._current.classList.remove('pulse-cellbar-cell-missing', 'pulse-cellbar-cell-nodata');
+      this._currentText.innerHTML = '';
 
       this.switchToNextContext();
     }
@@ -235,7 +235,7 @@ require('x-revisionprogress/x-revisionprogress');
     }
 
     displayError (message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
 
       // update internal value of tag
       this._serialnumber = null;
@@ -247,7 +247,7 @@ require('x-revisionprogress/x-revisionprogress');
     }
 
     removeError () {
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
     }
 
     /**
@@ -279,24 +279,23 @@ require('x-revisionprogress/x-revisionprogress');
     refresh (data) {
 
       // update display of 'Past Data' block
-      $(this._pastdata).removeClass('pulse-cellbar-cell-missing');
+      this._pastdata.classList.remove('pulse-cellbar-cell-missing');
       if (data.DataMissing == true) {
-        $(this._pastdata).addClass('pulse-cellbar-cell-missing');
+        this._pastdata.classList.add('pulse-cellbar-cell-missing');
       }
 
       // update display of 'Serial Number' block
-      $(this._current)
-        .removeClass('pulse-cellbar-cell-missing pulse-cellbar-cell-nodata');
+      this._current.classList.remove('pulse-cellbar-cell-missing', 'pulse-cellbar-cell-nodata');
       if (data.SerialNumber == '0') { //it means that serial number is missing
-        $(this._current).addClass('pulse-cellbar-cell-missing');
-        $(this._currentText).html('Missing');
+        this._current.classList.add('pulse-cellbar-cell-missing');
+        this._currentText.innerHTML = 'Missing';
       }
       else if (data.SerialNumber == '-1') { //it means that there is no serial number
-        $(this._current).addClass('pulse-cellbar-cell-nodata');
-        $(this._currentText).html('No Cycle');
+        this._current.classList.add('pulse-cellbar-cell-nodata');
+        this._currentText.innerHTML = 'No Cycle';
       }
       else { //in this case, serial number has a value
-        $(this._currentText).html(data.SerialNumber);
+        this._currentText.innerHTML = data.SerialNumber;
       }
 
       // update internal value of tag
@@ -336,7 +335,7 @@ require('x-revisionprogress/x-revisionprogress');
         // First time -> create progress bar (hope only 1)
         for (let i = 0; i < modif.ranges.length; i++) {
           let newRevisionProgress =
-            pulseUtility.createjQueryElementWithAttribute('x-revisionprogress', {
+            pulseUtility.createElementWithAttribute('x-revisionprogress', {
               //'period-context': NO MAIN RANGE
               //'range': NO MAIN RANGE
               'revision-id': modif.revisionid,
@@ -344,7 +343,7 @@ require('x-revisionprogress/x-revisionprogress');
               'kind': modif.kind,
               'revision-range': pulseUtility.convertDateRangeForWebService(modif.ranges[i])
             });
-          this._content.append(newRevisionProgress);
+          this._content.appendChild(newRevisionProgress);
         }
       }
       if (event.target.pendingModifications == 0) {
@@ -382,13 +381,14 @@ require('x-revisionprogress/x-revisionprogress');
      * @param {event} e - DOM event
      */
     clickOnCurrent (e) {
-      if ($(this._current).hasClass('pulse-cellbar-cell-nodata')) {
+      if (this._current.classList.contains('pulse-cellbar-cell-nodata')) {
         return;
       }
 
-      let dialog = $('<div></div>').addClass('lastserialnumber-dialog');
+      let dialog = document.createElement('div');
+      dialog.className = 'lastserialnumber-dialog';
 
-      let tag = pulseUtility.createjQueryElementWithAttribute('x-saveserialnumber', {
+      let tag = pulseUtility.createElementWithAttribute('x-saveserialnumber', {
         'machine-id': this.element.getAttribute('machine-id'),
         'datetime': this._datetime,
         'is-begin': this._isbegin,
@@ -396,15 +396,15 @@ require('x-revisionprogress/x-revisionprogress');
         //'serialnumber-context': 'CIP' -> managed by modification
       });
 
-      if (!$(this._current).hasClass('pulse-cellbar-cell-nodata')) {
-        tag.attr('serial-number', $(this._currentText).html());
+      if (!this._current.classList.contains('pulse-cellbar-cell-nodata')) {
+        tag.setAttribute('serial-number', this._currentText.innerHTML);
       }
-      dialog.append(tag);
+      dialog.appendChild(tag);
 
       let saveDialogId = pulseCustomDialog.openDialog(dialog, {
         title: this.getTranslation ('save', 'Save serial number'),
         onOk: function () {
-          tag[0].saveSN(tag[0]);
+          tag.saveSN(tag);
         },
         autoClose: true,
         autoDelete: true
@@ -427,42 +427,47 @@ require('x-revisionprogress/x-revisionprogress');
         return result;
       }
 
-      let dialog = $('<div></div>').addClass('lastserialnumber-dialog');
+      let dialog = document.createElement('div');
+      dialog.className = 'lastserialnumber-dialog';
       let context = new Date().getTime();
       let range = getDefaultDateRange();
       let r = pulseRange.createDateRangeDefaultInclusivity(range[0], range[1]);
 
       let xcyclesinperiod;
       if (this.element.hasAttribute('period-context')) {
-        xcyclesinperiod = pulseUtility.createjQueryElementWithAttribute('x-cyclesinperiod', {
+        xcyclesinperiod = pulseUtility.createElementWithAttribute('x-cyclesinperiod', {
           'period-context': context,
-          'machine-id': $(this.element).attr('machine-id'),
+          'machine-id': this.element.getAttribute('machine-id'),
           'range': pulseUtility.convertDateRangeForWebService(r) //range[0] + ';' + range[1]
         });
       }
       else {
-        xcyclesinperiod = pulseUtility.createjQueryElementWithAttribute('x-cyclesinperiod', {
-          'machine-id': $(this.element).attr('machine-id'),
+        xcyclesinperiod = pulseUtility.createElementWithAttribute('x-cyclesinperiod', {
+          'machine-id': this.element.getAttribute('machine-id'),
           'range': pulseUtility.convertDateRangeForWebService(r) //range[0] + ';' + range[1]
         });
       }
 
-      let datetimerange_div = $('<div></div>').addClass('lastserialnumber-dialog-datetimerange');
+      let datetimerange_div = document.createElement('div');
+      datetimerange_div.className = 'lastserialnumber-dialog-datetimerange';
       let xdatetimerange;
       if (this.element.hasAttribute('period-context')) {
-        xdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
+        xdatetimerange = pulseUtility.createElementWithAttribute('x-datetimerange', {
           'period-context': context,
           'range': pulseUtility.convertDateRangeForWebService(r)  //range[0] + ';' + range[1]
         });
       }
       else {
-        xdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
+        xdatetimerange = pulseUtility.createElementWithAttribute('x-datetimerange', {
           'range': pulseUtility.convertDateRangeForWebService(r)  //range[0] + ';' + range[1]
         });
       }
-      datetimerange_div.append(xdatetimerange);
-      let cyclesinperiod_div = $('<div></div>').addClass('lastserialnumber-cyclesinperiod').append(xcyclesinperiod);
-      dialog.append(datetimerange_div).append(cyclesinperiod_div);
+      datetimerange_div.appendChild(xdatetimerange);
+      let cyclesinperiod_div = document.createElement('div');
+      cyclesinperiod_div.className = 'lastserialnumber-cyclesinperiod';
+      cyclesinperiod_div.appendChild(xcyclesinperiod);
+      dialog.appendChild(datetimerange_div);
+      dialog.appendChild(cyclesinperiod_div);
 
       let saveDialogId = pulseCustomDialog.openDialog(dialog, {
         title: this.getTranslation ('selectPeriod', 'Select a period'),

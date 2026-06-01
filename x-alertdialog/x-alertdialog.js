@@ -39,17 +39,21 @@ var pulseSvg = require('pulseSvg');
      * Icon CSS class is derived from the `type` attribute.
      */
     initialize () {
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       let type = this.element.getAttribute('type') || 'Information';
       let message = this.element.getAttribute('message') || '';
 
-      this._icon = $('<div></div>').addClass('alertdialog-icon customDialogIcon customDialogIcon' + type);
-      this._message = $('<div></div>').addClass('alertdialog-message').html(message);
+      this._icon = document.createElement('div');
+      this._icon.className = 'alertdialog-icon customDialogIcon customDialogIcon' + type;
+      this._message = document.createElement('div');
+      this._message.className = 'alertdialog-message';
+      this._message.innerHTML = message;
 
-      $(this.element).append(this._icon).append(this._message);
+      this.element.appendChild(this._icon);
+      this.element.appendChild(this._message);
 
-      pulseSvg.inlineBackgroundSvg(this._icon[0]);
+      pulseSvg.inlineBackgroundSvg(this._icon);
 
       this.switchToNextContext();
     }

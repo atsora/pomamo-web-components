@@ -81,27 +81,33 @@ var eventBus = require('eventBus');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('sequencebar')
-        .addClass('pulse-cellbar-main'); // To opacity in case of error
+      this._content = document.createElement('div');
+      this._content.classList.add('sequencebar');
+      this._content.classList.add('pulse-cellbar-main'); // To opacity in case of error
 
-      $(this.element)
-        .append(this._content);
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.classList.add('pulse-message');
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.classList.add('pulse-message-div');
+      messageDiv.appendChild(this._messageSpan);
+      this.element.appendChild(messageDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -111,7 +117,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._messageSpan = undefined;
       this._content = undefined;
@@ -139,7 +145,7 @@ var eventBus = require('eventBus');
     }
 
     displayError (message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
 
       /*if ('NO_DATA' == statusString) {
         'No available next stop information'
@@ -162,13 +168,14 @@ var eventBus = require('eventBus');
     }
 
     refresh (data) {
-      $(this._content).empty();
+      this._content.replaceChildren();
 
       if (data.NoEffectiveOperation || data.InvalidCycle) {
         // No useful data
-        let noInfo = $('<div></div>').addClass('sequencebar-machinemodule-noinfo')
-          .html('--');
-        this._content.append(noInfo);
+        let noInfo = document.createElement('div');
+        noInfo.classList.add('sequencebar-machinemodule-noinfo');
+        noInfo.innerHTML = '--';
+        this._content.appendChild(noInfo);
       }
       else {
         if (data.ByMachineModule) {
@@ -178,15 +185,17 @@ var eventBus = require('eventBus');
           }*/
           // For each module
           for (let iMod = 0; iMod < data.ByMachineModule.length; iMod++) {
-            let machineModuleInfo = $('<div></div>').addClass('sequencebar-machinemodule-info');
+            let machineModuleInfo = document.createElement('div');
+            machineModuleInfo.classList.add('sequencebar-machinemodule-info');
             //.attr({'MachineModule': data.ByMachineModule[iMod].MachineModule.Display});
-            this._content.append(machineModuleInfo);
+            this._content.appendChild(machineModuleInfo);
 
             // Display Machine Module if more than 1
             if (data.ByMachineModule.length > 1) {
-              let machineModule = $('<div></div>').addClass('sequencebar-machinemodule');
-              machineModule.html(data.ByMachineModule[iMod].MachineModule.Display);
-              machineModuleInfo.append(machineModule);
+              let machineModule = document.createElement('div');
+              machineModule.classList.add('sequencebar-machinemodule');
+              machineModule.innerHTML = data.ByMachineModule[iMod].MachineModule.Display;
+              machineModuleInfo.appendChild(machineModule);
             }
 
             let currentSeq = 0;
@@ -223,31 +232,33 @@ var eventBus = require('eventBus');
                 } else {
                   title = 'Already ' + (-untilNext) + ' seconds late';
                 }
-                $(obj).attr('title', title);
+                obj.getAttribute('title', title);
               });*/
 
-              let text = $('<div></div>').addClass('sequencebar-text')
-                .html(this.getTranslation('sequence', 'Sequence ')
-                  + currentSeq + '/' + totalSeq);
+              let text = document.createElement('div');
+              text.classList.add('sequencebar-text');
+              text.innerHTML = this.getTranslation('sequence', 'Sequence ')
+                  + currentSeq + '/' + totalSeq;
 
-              let progress = $('<div></div>').addClass('sequencebar-progressbar');
-              let bar = $('<div></div>').addClass('sequencebar-bar').append(progress);
+              let progress = document.createElement('div');
+              progress.classList.add('sequencebar-progressbar');
+              let bar = document.createElement('div');
+              bar.classList.add('sequencebar-bar');
+              bar.appendChild(progress);
               //.({ value: currentProgress, max: totalProgress });
               if (!pulseUtility.isNotDefined(totalDurationInSec) && 0 != totalDurationInSec) {
                 let Width = elapsedDurationInSec / totalDurationInSec;
-                $(progress).animate({
-                  width: 100 * Width + '%'
-                }, 2); // 2 = speed of animation
+                progress.style.width = 100 * Width + '%';
               }
               else { //if (!pulseUtility.isNotDefined(totalSeq) && 0 != totalSeq)
                 let Width = currentSeq / totalSeq;
-                $(progress).animate({
-                  width: 100 * Width + '%'
-                }, 2); // 2 = speed of animation
+                progress.style.width = 100 * Width + '%';
               }
-              let progressandtext = $('<div></div>').addClass('sequencebar-progressandtext')
-                .append(bar).append(text);
-              machineModuleInfo.append(progressandtext);
+              let progressandtext = document.createElement('div');
+              progressandtext.classList.add('sequencebar-progressandtext');
+              progressandtext.appendChild(bar);
+              progressandtext.appendChild(text);
+              machineModuleInfo.appendChild(progressandtext);
 
 
               /*
@@ -259,9 +270,10 @@ var eventBus = require('eventBus');
               });*/
             }
             else {
-              let noInfo = $('<div></div>').addClass('sequencebar-machinemodule-noinfo')
-                .html('N/A');
-              this._content.append(noInfo);
+              let noInfo = document.createElement('div');
+              noInfo.classList.add('sequencebar-machinemodule-noinfo');
+              noInfo.innerHTML = 'N/A';
+              this._content.appendChild(noInfo);
             }
           }
         }
@@ -269,14 +281,20 @@ var eventBus = require('eventBus');
     }
 
     manageSuccess (data) {
-      $(this.element).parent('.pulse-bar-div').show(); // To cancel NotApplicable
-      $(this._content).show();
+      let barDiv = this.element.parentElement;
+      if (barDiv && barDiv.classList.contains('pulse-bar-div')) {
+        barDiv.style.display = '';
+      }
+      this._content.style.display = '';
 
       super.manageSuccess(data); // or this.switchToNextContext(() => this.refresh(data));
     }
 
     manageNotApplicable () {
-      $(this.element).parent('.pulse-bar-div').hide();
+      let barDiv = this.element.parentElement;
+      if (barDiv && barDiv.classList.contains('pulse-bar-div')) {
+        barDiv.style.display = 'none';
+      }
 
       super.manageNotApplicable(); // To hide
     }

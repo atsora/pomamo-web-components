@@ -50,7 +50,7 @@ var pulseComponent = require('pulsecomponent');
      * @param {string|null} textToDisplay - Markdown string, or null (logs a warning).
      */
     setText (textToDisplay) {
-      $(this._content).empty();
+      this._content.replaceChildren();
 
       if (textToDisplay == null) {
         console.warn('Please FILL markdown text ! ');
@@ -61,9 +61,10 @@ var pulseComponent = require('pulsecomponent');
         let md = new MarkdownIt();
         let result = md.render(textToDisplay);
 
-        $(this._content).append(
-          $('<div></div>').addClass('markdowntext-maindiv').html(result)
-        );
+        let div = document.createElement('div');
+        div.className = 'markdowntext-maindiv';
+        div.innerHTML = result;
+        this._content.appendChild(div);
       }
     }
 
@@ -87,11 +88,12 @@ var pulseComponent = require('pulsecomponent');
       // Update here some internal parameters
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('markdowntext-content');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'markdowntext-content';
+      this.element.appendChild(this._content);
 
       // Create DOM - NO Loader / No message
 
@@ -105,7 +107,7 @@ var pulseComponent = require('pulsecomponent');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       this._content = undefined;

@@ -343,6 +343,11 @@ var eventBus = require('eventBus');
       let templateid = this.element.getAttribute('templateid');
       if (templateid == null || templateid === '') return; // no template → nothing to render
 
+      // Toggle a host-level data attribute so the page CSS can collapse the
+      // surrounding wrapper when there's nothing to switch between (≤ 1
+      // machine: tabs would be useless).
+      this.element.dataset.singleMachine = (this._machineIdsArray.length <= 1) ? 'true' : 'false';
+
       // 1. Cleanup: remove rows whose machine-id is no longer in the list.
       //    Mark surviving rows' descendants as disableDeleteWhenDisconnect so
       //    a subsequent re-append doesn't destroy their per-machine state.

@@ -58,7 +58,7 @@ var eventBus = require('eventBus');
       if (pulseUtility.isNumeric(this._motionpercentage) == true) {
         display = this._motionpercentage.toFixed(0) + '%';
       }
-      $(this._textSpan).html(display);
+      this._textSpan.innerHTML = display;
 
     }
 
@@ -132,19 +132,26 @@ var eventBus = require('eventBus');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Loader (?)
-      /*let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);*/
+      /*let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = 'Loading...';
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);*/
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('motionpercentage');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'motionpercentage';
+      this.element.appendChild(this._content);
 
       // + Text span
-      this._textSpan = $('<span></span>').addClass('motionpercentage-text');
-      $(this._content).append(this._textSpan);
+      this._textSpan = document.createElement('span');
+      this._textSpan.className = 'motionpercentage-text';
+      this._content.appendChild(this._textSpan);
 
 
       // Initialization OK => switch to the next context
@@ -155,7 +162,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       this._textSpan = undefined;

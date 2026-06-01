@@ -87,7 +87,7 @@ var eventBus = require('eventBus');
      * @return {number} Width of the content
      */
     get barwidth () {
-      let width = $(this.content).width();
+      let width = this.content ? this.content.offsetWidth : 0;
       if (width) {
         this._barwidth = width;
       }
@@ -124,7 +124,7 @@ var eventBus = require('eventBus');
       // Resize content
       let c = this.content;
       if (typeof c !== 'undefined') {
-        c.height(this._height);
+        c.style.height = this._height + 'px';
       }
     }
 
@@ -291,28 +291,34 @@ var eventBus = require('eventBus');
       this._setAutoHeight();
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // create DOM
       // HTML structure - Content
-      this._content = $('<div></div>').addClass('cncvaluebar-content pulse-bar-content');
-      this._content.height(this._height);
+      this._content = document.createElement('div');
+      this._content.className = 'cncvaluebar-content pulse-bar-content';
+      this._content.style.height = this._height + 'px';
       // HTML structure - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = 'Loading...';
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
-      $(this.element)
-        .addClass('cncvaluebar')
-        .append(this._content);
+      this.element.classList.add('cncvaluebar');
+      this.element.appendChild(this._content);
       //$(window).resize(() => this.draw());
 
       // Dispatchers / Listeners
@@ -336,12 +342,13 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._messageSpan = undefined;
 
       // Remove the content div' SVG
       if (typeof this.content !== 'undefined') {
-        this.content.find('.cncvaluebar-svg').remove();
+        let svg = this.content.querySelector('.cncvaluebar-svg');
+        if (svg) svg.remove();
       }
       this._content = undefined;
 
@@ -405,7 +412,7 @@ var eventBus = require('eventBus');
       let daysBeforeHide = this.getConfigOrAttribute('cncvaluebar.daysbeforehide', 7);
       let isMoreThanXXXdays = ((moment(this._range.upper).diff(moment(this._range.lower))) >= daysBeforeHide * 24 * 60 * 60 * 1000);
       if (isMoreThanXXXdays) {
-        this.content.hide(); // show = when data refresh
+        this.content.style.display = "none"; // show = when data refresh
         this.switchToContext('Loaded'); // To stop refresh until range change
         return;
       }
@@ -475,7 +482,8 @@ var eventBus = require('eventBus');
       if (typeof this.content === 'undefined') {
         return;
       }
-      $(this.element).find('.cncvaluebar-svg').remove(); // Remove Old SVG
+      let svg = this.element.querySelector('.cncvaluebar-svg');
+      if (svg) svg.remove();
     }
 
     /**
@@ -486,11 +494,11 @@ var eventBus = require('eventBus');
 
       // HIDE BAR if no data
       if (!this._data || this._data.length == 0) {
-        this.content.hide();
+        this.content.style.display = "none";
         return;
       }
       else {
-        this.content.show();
+        this.content.style.display = "";
       }
 
       let svg = document.createElementNS(pulseSvg.get_svgNS(), 'svg');
@@ -551,12 +559,13 @@ var eventBus = require('eventBus');
       }
       if (typeof this._messageSpan !== 'undefined') {
         if (this._height > 20)
-          $(this._messageSpan).html(text);
+          this._messageSpan.innerHTML = text;
       }
 
       // Remove the content div' SVG
       /*if (typeof this.content !== 'undefined') {
-        this.content.find('.cncvaluebar-svg').remove();
+        let svg = this.content.querySelector('.cncvaluebar-svg');
+        if (svg) svg.remove();
       }*/
     }
 
@@ -565,7 +574,7 @@ var eventBus = require('eventBus');
      */
     removeError () {
       if (typeof this._messageSpan !== 'undefined') {
-        $(this._messageSpan).html('');
+        this._messageSpan.innerHTML = '';
       }
     }
 
@@ -577,7 +586,7 @@ var eventBus = require('eventBus');
      * @param {Object} event
      */
     onMachineIdChange (event) {
-      $(this.element).attr('machine-id', event.target.newMachineId);
+      this.element.setAttribute('machine-id', event.target.newMachineId);
     }
 
     /**

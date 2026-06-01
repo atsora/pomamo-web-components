@@ -59,26 +59,32 @@ var pulseComponent = require('pulsecomponent');
       // Update here some internal parameters
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('pulse-component-content');
-      $(this.element)
-        .addClass('XXX')
-        .append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'pulse-component-content';
+      this.element.classList.add('XXX');
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = 'Loading...';
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this.element.appendChild(messageDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -94,7 +100,7 @@ var pulseComponent = require('pulsecomponent');
       // Parameters
       this._myparameter = undefined;
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._content = undefined;
 
       super.clearInitialization();
@@ -110,8 +116,8 @@ var pulseComponent = require('pulsecomponent');
 
     displayError (message) {
       // Code here to display the error message
-      // For example:      
-      $(this._content).html(message);
+      // For example:
+      this._content.innerHTML = message;
       // Note that you can use the CSS class .pulse-component-error or .pulse-component-warning instead
     }
 
@@ -166,7 +172,7 @@ var pulseComponent = require('pulsecomponent');
     refresh (data) {
       // Update the component with data which is returned by the web service in case of success
       // For example:
-      $(this._content).html(data.Name);
+      this._content.innerHTML = data.Name;
     }
 
     manageSuccess (data) {
@@ -201,14 +207,14 @@ var pulseComponent = require('pulsecomponent');
       super.startLoading();
       // Code here to display a loading message
       // For example:
-      $(this._content).html('...');
+      this._content.innerHTML = '...';
       // Note that you can use the CSS class .pulse-component-loading instead
     }
 
     endLoading () {
       // Code here to remove the loading message. Only required if startLoading is implemented
       // For example:
-      $(this._content).html('');
+      this._content.innerHTML = '';
       super.endLoading();
     }
 

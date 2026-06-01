@@ -64,23 +64,26 @@ require('x-datetimerange/x-datetimerange');
           this.start();
           break;
         case 'serial-number': {
-          $(this._serialNumberInput).val(newVal);
+          this._serialNumberInput.value = newVal;
 
           //place cursor at end of text when input get focus
-          $(this._serialNumberInput).focus(function () {
+          this._serialNumberInput.addEventListener('focus', function () {
             this.selectionStart = this.selectionEnd = this.value.length;
           });
           //each time dialog box get focus, focus is send to input text it contents
           try {
-            $(this).closest('.dialog').on('dialogfocus', function (event, ui) {
-              $(this._serialNumberInput).focus();
-            });
+            let dialog = this.element.closest('.dialog');
+            if (dialog) {
+              dialog.addEventListener('dialogfocus', (event, ui) => {
+                this._serialNumberInput.focus();
+              });
+            }
           }
           catch (e) {
             // Do nothing
           }
           //Give focus to it input text
-          $(this._serialNumberInput).focus();
+          this._serialNumberInput.focus();
         } break;
         case 'range': {
           let pos = newVal.indexOf(';');
@@ -99,14 +102,14 @@ require('x-datetimerange/x-datetimerange');
         this._rangeBegin = isoBegin;
         this._rangeEnd = isoEnd;
 
-        $(this._xdatetimerange).setAttribute(
+        this._xdatetimerange.setAttribute(
           'range',
           this._rangeBegin + ';' + this._rangeEnd);
       }
     }
 
     saveSN () {
-      let serialNumber = $(this._serialNumberInput).val();
+      let serialNumber = this._serialNumberInput.value;
 
       let machid = this.element.getAttribute('machine-id'); // Should be copied. This.element disappear before request answer
       let url = this.getConfigOrAttribute('path', '')
@@ -157,22 +160,25 @@ require('x-datetimerange/x-datetimerange');
       // Listener
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // tmp disable CLEAN this.element -> TO remove in v 7.0
-      //$(this.element).addClass('disableDeleteWhenDisconnect');
+      //this.element.classList.add('disableDeleteWhenDisconnect');
 
       // Create DOM - Content
-      this._serialNumberInput = $('<input type="text" placeholder="Serial number..." autofocus></input>').val($(this).attr('serial-number'));
-      let divinputtext = $('<div></div>').addClass('saveserialnumber-inputtext')
-        .append(this._serialNumberInput);
+      this._serialNumberInput = document.createElement('input');
+      this._serialNumberInput.type = 'text';
+      this._serialNumberInput.placeholder = 'Serial number...';
+      this._serialNumberInput.autofocus = true;
+      this._serialNumberInput.value = this.element.getAttribute('serial-number') || '';
+      let divinputtext = document.createElement('div');
+      divinputtext.className = 'saveserialnumber-inputtext';
+      divinputtext.appendChild(this._serialNumberInput);
 
       //place cursor at end of text when input get focus
-      //divinputtext.find('input')
-      this._serialNumberInput.focus(
-        function () {
-          this.selectionStart = this.selectionEnd = this.value.length;
-        });
+      this._serialNumberInput.addEventListener('focus', function () {
+        this.selectionStart = this.selectionEnd = this.value.length;
+      });
 
       if (!(this._rangeBegin) || !(this._rangeEnd)) {
         if (this.element.hasAttribute('range')) {
@@ -185,36 +191,48 @@ require('x-datetimerange/x-datetimerange');
 
       let r = pulseRange.createDateRangeDefaultInclusivity(this._rangeBegin, this._rangeEnd);
 
-      this._xdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
+      this._xdatetimerange = pulseUtility.createElementWithAttribute('x-datetimerange', {
         'range': pulseUtility.convertDateRangeForWebService(r), // this._rangeBegin + ';' + this._rangeEnd,
         'noteditable': 'true',
         'period-context': 'saveserialnumber' + this.element.getAttribute('machine-id')
       });
-      let divdaterange = $('<div></div>').addClass('saveserialnumber-daterange')
-        .append(this._xdatetimerange);
+      let divdaterange = document.createElement('div');
+      divdaterange.className = 'saveserialnumber-daterange';
+      divdaterange.appendChild(this._xdatetimerange);
 
-      this._content = $('<div></div>').addClass('saveserialnumber')
-        .append(divdaterange).append(divinputtext);
+      this._content = document.createElement('div');
+      this._content.className = 'saveserialnumber';
+      this._content.appendChild(divdaterange);
+      this._content.appendChild(divinputtext);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
-      $(this.element).append(this._content);
+      this.element.appendChild(this._content);
 
       // Each time dialog box get focus, focus is send to input text it contents
       try {
-        $(this).closest('.dialog').on('dialogfocus', function (event, ui) {
-          this._serialNumberInput.focus();
-        });
+        let dialog = this.element.closest('.dialog');
+        if (dialog) {
+          dialog.addEventListener('dialogfocus', (event, ui) => {
+            this._serialNumberInput.focus();
+          });
+        }
       }
       catch (e) {
         // Do nothing
@@ -230,7 +248,7 @@ require('x-datetimerange/x-datetimerange');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._serialNumberInput = undefined;
       this._xdatetimerange = undefined;

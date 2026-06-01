@@ -60,11 +60,12 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
       this.addClass('pulse-icon');
 
       // In case of clone, need to be empty:
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('show-running-btn');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'show-running-btn';
+      this.element.appendChild(this._content);
 
       pulseSvg.inlineBackgroundSvg(this._content);
 
@@ -72,12 +73,12 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
 
       // Visibility: show based on config
       if (pulseConfig.getBool('showRunningButton'))
-        $(this._content).show();
+        this._content.style.display = '';
       else
-        $(this._content).hide();
+        this._content.style.display = 'none';
 
       // Click: open running dialog for the configured group or machine
-      $(this._content).click(
+      this._content.addEventListener('click',
         function (e) {
           let groupId;
           if (this.element.hasAttribute('group')) {
@@ -105,9 +106,9 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
     onConfigChange (event) {
       if (event.target.config == 'showRunningButton') {
         if (pulseConfig.getBool('showRunningButton'))
-          $(this._content).show();
+          this._content.style.display = '';
         else
-          $(this._content).hide();
+          this._content.style.display = 'none';
       }
     }
 

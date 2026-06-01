@@ -119,10 +119,10 @@ require('x-datetimepicker/x-datetimepicker');
             if (this._endDTP != undefined) {
               if ((this.element.hasAttribute('possible-no-end')) &&
                 (this.element.getAttribute('possible-no-end').toUpperCase() == 'TRUE')) {
-                this._endDTP[0].setAttribute('nullable', true);
+                this._endDTP.setAttribute('nullable', true);
               }
               else {
-                this._endDTP[0].removeAttribute('nullable');
+                this._endDTP.removeAttribute('nullable');
               }
             }
           }
@@ -130,12 +130,12 @@ require('x-datetimepicker/x-datetimepicker');
         case 'not-editable':
           if (this.isInitialized()) {
             if (newVal == 'true') {
-              let editable = $(this.element).find('datetimerange-editable');
-              editable.removeClass('datetimerange-editable');
+              let editable = this.element.querySelector('.datetimerange-editable');
+              if (editable) editable.classList.remove('datetimerange-editable');
             }
             else {
-              let display = $(this.element).find('datetimerange-display');
-              display.addClass('datetimerange-editable');
+              let display = this.element.querySelector('.datetimerange-display');
+              if (display) display.classList.add('datetimerange-editable');
             }
             this._showHideButtons();
           }
@@ -164,35 +164,46 @@ require('x-datetimepicker/x-datetimepicker');
       this.addClass('pulse-text');
 
       let _addButtonToToolbar = function (toolbar, btnClass) {
-        let svg = $('<div></div>').addClass('datetimerange-btn').addClass(btnClass);
-        let btn = $('<li></li>').addClass('datetimerange-li-btn').append(svg);
-        toolbar.append(btn);
+        let svg = document.createElement('div');
+        svg.classList.add('datetimerange-btn', btnClass);
+        let btn = document.createElement('li');
+        btn.classList.add('datetimerange-li-btn');
+        btn.appendChild(svg);
+        toolbar.appendChild(btn);
         pulseSvg.inlineBackgroundSvg(svg);
         return btn;
       }
 
       // Single toolbar laid out as: [<] [date] [>]  [🔍+] [🔍-]
-      let toolbar = $('<ol></ol>').addClass('datetimerange-toolbar');
+      let toolbar = document.createElement('ol');
+      toolbar.classList.add('datetimerange-toolbar');
 
       // [<] previous
       let prev_btn = _addButtonToToolbar(toolbar, 'datetimerange-button-previous');
-      prev_btn.click(
+      prev_btn.addEventListener('click',
         function () {
           this._clickAndChangeRange('previous');
         }.bind(this));
 
       // [date] range display wrapped in an <li> so it participates in the flex toolbar
-      let rangedisplay = $('<div></div>').addClass('datetimerange-rangedisplay');
+      let rangedisplay = document.createElement('div');
+      rangedisplay.classList.add('datetimerange-rangedisplay');
 
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      rangedisplay.append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      rangedisplay.appendChild(loaderDiv);
 
-      let display = $('<div></div>').addClass('datetimerange-display');
+      let display = document.createElement('div');
+      display.classList.add('datetimerange-display');
       if (this.element.getAttribute('not-editable') != 'true') {
-        display.addClass('datetimerange-editable');
+        display.classList.add('datetimerange-editable');
       }
-      display.click(
+      display.addEventListener('click',
         function (e) {
           if ((!this.element.hasAttribute('not-editable')) &&
             (this.element.getAttribute('not-editable') != 'true')) {
@@ -200,38 +211,43 @@ require('x-datetimepicker/x-datetimepicker');
           }
         }.bind(this)
       );
-      rangedisplay.append(display);
+      rangedisplay.appendChild(display);
 
-      let displayLi = $('<li></li>').addClass('datetimerange-li-display').append(rangedisplay);
-      toolbar.append(displayLi);
+      let displayLi = document.createElement('li');
+      displayLi.classList.add('datetimerange-li-display');
+      displayLi.appendChild(rangedisplay);
+      toolbar.appendChild(displayLi);
 
       // [>] next
       let next_btn = _addButtonToToolbar(toolbar, 'datetimerange-button-next');
-      next_btn.click(
+      next_btn.addEventListener('click',
         function () {
           this._clickAndChangeRange('next');
         }.bind(this));
 
       // Visual gap between navigation group and zoom group
-      let spacer = $('<li></li>').addClass('datetimerange-li-spacer');
-      toolbar.append(spacer);
+      let spacer = document.createElement('li');
+      spacer.classList.add('datetimerange-li-spacer');
+      toolbar.appendChild(spacer);
 
       // [🔍+] zoom in
       let zoomin_btn = _addButtonToToolbar(toolbar, 'datetimerange-button-zoomin');
-      zoomin_btn.click(
+      zoomin_btn.addEventListener('click',
         function () {
           this._clickAndChangeRange('zoomin');
         }.bind(this));
 
       // [🔍-] zoom out
       let zoomout_btn = _addButtonToToolbar(toolbar, 'datetimerange-button-zoomout');
-      zoomout_btn.click(
+      zoomout_btn.addEventListener('click',
         function () {
           this._clickAndChangeRange('zoomout');
         }.bind(this));
 
-      let div = $('<div></div>').addClass('datetimerange').append(toolbar);
-      $(this.element).append(div);
+      let div = document.createElement('div');
+      div.classList.add('datetimerange');
+      div.appendChild(toolbar);
+      this.element.appendChild(div);
 
       // Listener and dispatchers
       if (this.element.hasAttribute('datetime-context')) {
@@ -268,7 +284,7 @@ require('x-datetimepicker/x-datetimepicker');
       //this._dateRange = undefined; NO -> problem in save SN
 
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       super.clearInitialization();
     }
@@ -305,10 +321,12 @@ require('x-datetimepicker/x-datetimepicker');
     }
 
     displayError (message) {
-      $(this.element).find('datetimerange-display').html(this.getTranslation('errorColon', 'Error: '));
+      let display = this.element.querySelector('.datetimerange-display');
+      if (display) display.innerHTML = this.getTranslation('errorColon', 'Error: ');
     }
     removeError () {
-      $(this.element).find('datetimerange-display').html('');
+      let display = this.element.querySelector('.datetimerange-display');
+      if (display) display.innerHTML = '';
     }
 
     /////////////////////
@@ -347,41 +365,37 @@ require('x-datetimepicker/x-datetimepicker');
      * Show or Hide Buttons
      */
     _showHideButtons () {
-      /* let prev_btn = $(this.element).find('.datetimerange-button-previous');
-      let next_btn = $(this.element).find('.datetimerange-button-next');
-      let zoomout_btn = $(this.element).find('.datetimerange-button-zoomout');
-      let zoomin_btn = $(this.element).find('.datetimerange-button-zoomin');*/
-
-      if ((this.element.getAttribute('hide-buttons') != 'true') &&
+      let btns = this.element.querySelectorAll('.datetimerange-li-btn');
+      let show = (this.element.getAttribute('hide-buttons') != 'true') &&
         (this.element.getAttribute('not-editable') != 'true') &&
         ((this.element.getAttribute('min-begin') == undefined) || (this.element.getAttribute('min-begin') == null)) &&
-        ((this.element.getAttribute('max-end') == undefined) || (this.element.getAttribute('max-end') == null))) {
-        // Show Btns
-        $(this.element).find('.datetimerange-li-btn').show();
-      }
-      else {
-        // Hide Btns
-        $(this.element).find('.datetimerange-li-btn').hide();
+        ((this.element.getAttribute('max-end') == undefined) || (this.element.getAttribute('max-end') == null));
+      for (let i = 0; i < btns.length; i++) {
+        btns[i].style.display = show ? '' : 'none';
       }
     }
 
     _displayRange () {
-      let disp = $(this.element).find('.datetimerange-display');
+      let disp = this.element.querySelector('.datetimerange-display');
       // Read display-mode directly from attribute so the value is always current
       // even if the attribute was set before connection / before initialize().
       let displayMode = this.element.getAttribute('display-mode') || this._displayMode || 'range';
       if (displayMode === 'shift') {
         let shiftLabel = this.element.getAttribute('shift-label') || '';
         if (shiftLabel) {
-          let span = $('<span></span>')
-            .addClass('datetimerange-display-shift')
-            .text(shiftLabel);
-          $(disp).empty().append(span);
+          let span = document.createElement('span');
+          span.className = 'datetimerange-display-shift';
+          span.textContent = shiftLabel;
+          if (disp != null) {
+            disp.replaceChildren(span);
+          }
           return;
         }
         // fallback to range format if no shift-label
       }
-      $(disp).html(pulseUtility.displayDateRange(this._dateRange));
+      if (disp != null) {
+        disp.innerHTML = pulseUtility.displayDateRange(this._dateRange);
+      }
     }
     /**
       * Dispatch signal, but not too often
@@ -493,21 +507,21 @@ require('x-datetimepicker/x-datetimepicker');
       if (this._beginDTP != undefined) {
         // Min begin
         if (this.element.hasAttribute('min-begin')) {
-          this._beginDTP[0].setAttribute('mindatetime', this.element.getAttribute('min-begin'));
+          this._beginDTP.setAttribute('mindatetime', this.element.getAttribute('min-begin'));
         }
         else {
-          this._beginDTP[0].removeAttribute('mindatetime');
+          this._beginDTP.removeAttribute('mindatetime');
         }
         // Max begin
         if (this.element.hasAttribute('max-begin')) {
-          this._beginDTP[0].setAttribute('maxdatetime', this.element.getAttribute('max-begin'));
+          this._beginDTP.setAttribute('maxdatetime', this.element.getAttribute('max-begin'));
         }
         else {
           if (this.element.hasAttribute('max-end')) {
-            this._beginDTP[0].setAttribute('maxdatetime', this.element.getAttribute('max-end'));
+            this._beginDTP.setAttribute('maxdatetime', this.element.getAttribute('max-end'));
           }
           else {
-            this._beginDTP[0].removeAttribute('maxdatetime');
+            this._beginDTP.removeAttribute('maxdatetime');
           }
         }
       }
@@ -515,23 +529,23 @@ require('x-datetimepicker/x-datetimepicker');
       if (this._endDTP != undefined) {
         // Min end
         if (this.element.hasAttribute('min-end')) {
-          this._endDTP[0].setAttribute('mindatetime', this.element.getAttribute('min-end'));
+          this._endDTP.setAttribute('mindatetime', this.element.getAttribute('min-end'));
         }
         else {
           if (this.element.hasAttribute('min-begin')) {
-            this._endDTP[0].setAttribute('mindatetime', this.element.getAttribute('min-begin'));
+            this._endDTP.setAttribute('mindatetime', this.element.getAttribute('min-begin'));
           }
           else {
-            this._endDTP[0].removeAttribute('mindatetime');
+            this._endDTP.removeAttribute('mindatetime');
           }
         }
 
         // Max end
         if (this.element.hasAttribute('max-end')) {
-          this._endDTP[0].setAttribute('maxdatetime', this.element.getAttribute('max-end'));
+          this._endDTP.setAttribute('maxdatetime', this.element.getAttribute('max-end'));
         }
         else {
-          this._endDTP[0].removeAttribute('maxdatetime');
+          this._endDTP.removeAttribute('maxdatetime');
         }
       }
       this._showHideButtons();
@@ -632,9 +646,11 @@ require('x-datetimepicker/x-datetimepicker');
         || (this._dateRange.upper != null && this._dateRange.upper.getSeconds() != 0);
 
       // Info div, on top
-      this._infotext = $('<span></span>').addClass('datetimerange-dialog-span-info');
-      let infodiv = $('<div></div>').addClass('datetimerange-dialog-div-info')
-        .append(this._infotext);
+      this._infotext = document.createElement('span');
+      this._infotext.className = 'datetimerange-dialog-span-info';
+      let infodiv = document.createElement('div');
+      infodiv.className = 'datetimerange-dialog-div-info';
+      infodiv.appendChild(this._infotext);
       let infoText = '';
       if (isSplit) {
         if (this.element.hasAttribute('min-begin')) {
@@ -648,12 +664,14 @@ require('x-datetimepicker/x-datetimepicker');
           }
         }
       }
-      this._infotext.html(infoText);
+      this._infotext.innerHTML = infoText;
 
       // Warning message
-      this._warningtext = $('<span></span>').addClass('datetimerange-dialog-span-warning');
-      let warningdiv = $('<div></div>').addClass('datetimerange-dialog-div-warning')
-        .append(this._warningtext);
+      this._warningtext = document.createElement('span');
+      this._warningtext.className = 'datetimerange-dialog-span-warning';
+      let warningdiv = document.createElement('div');
+      warningdiv.className = 'datetimerange-dialog-div-warning';
+      warningdiv.appendChild(this._warningtext);
 
       // BEGIN DTP
       let begintimepickerOptions = {};
@@ -674,14 +692,16 @@ require('x-datetimepicker/x-datetimepicker');
         begintimepickerOptions.showseconds = 'show-seconds';
       }
 
-      this._beginDTP = pulseUtility.createjQueryElementWithAttribute('x-datetimepicker',
+      this._beginDTP = pulseUtility.createElementWithAttribute('x-datetimepicker',
         begintimepickerOptions);
-      this._beginDTP[0].addEventListener('change', this.onChangeDateTime.bind(this), false);
+      this._beginDTP.addEventListener('change', this.onChangeDateTime.bind(this), false);
 
-      let beginDiv = $('<div>').addClass('datetimepicker-begindiv').append(this._beginDTP);
-      let divinputbegin = $('<div></div>')
-        .addClass('datetimerange-dialog-divinputbegin')
-        .append(beginDiv);
+      let beginDiv = document.createElement('div');
+      beginDiv.className = 'datetimepicker-begindiv';
+      beginDiv.appendChild(this._beginDTP);
+      let divinputbegin = document.createElement('div');
+      divinputbegin.className = 'datetimerange-dialog-divinputbegin';
+      divinputbegin.appendChild(beginDiv);
 
       // END DTP — always has a concrete value; "no end" managed by external checkbox
       let endDefault = (this._dateRange.upper != null)
@@ -704,13 +724,16 @@ require('x-datetimepicker/x-datetimepicker');
         endtimepickerOptions.showseconds = 'show-seconds';
       }
 
-      this._endDTP = pulseUtility.createjQueryElementWithAttribute('x-datetimepicker',
+      this._endDTP = pulseUtility.createElementWithAttribute('x-datetimepicker',
         endtimepickerOptions);
-      this._endDTP[0].addEventListener('change', this.onChangeDateTime.bind(this), false);
+      this._endDTP.addEventListener('change', this.onChangeDateTime.bind(this), false);
 
-      let endDiv = $('<div>').addClass('datetimepicker-enddiv').append(this._endDTP);
-      let divinputend = $('<div></div>').addClass('datetimerange-dialog-divinputend')
-        .append(endDiv);
+      let endDiv = document.createElement('div');
+      endDiv.className = 'datetimepicker-enddiv';
+      endDiv.appendChild(this._endDTP);
+      let divinputend = document.createElement('div');
+      divinputend.className = 'datetimerange-dialog-divinputend';
+      divinputend.appendChild(endDiv);
 
       // NO-END CHECKBOX — shown only when possible-no-end is set
       this._noEndCheckbox = null;
@@ -718,33 +741,41 @@ require('x-datetimepicker/x-datetimepicker');
       if (possibleNoEnd) {
         let isNoEnd = (this._dateRange.upper == null);
         let checkboxId = 'dtr-noend-' + Date.now().toString(36);
-        this._noEndCheckbox = $('<input>').attr({ type: 'checkbox', id: checkboxId });
+        this._noEndCheckbox = document.createElement('input');
+        this._noEndCheckbox.type = 'checkbox';
+        this._noEndCheckbox.id = checkboxId;
         if (isNoEnd) {
-          this._noEndCheckbox.prop('checked', true);
-          endDiv.addClass('datetimerange-dtp-disabled');
+          this._noEndCheckbox.checked = true;
+          endDiv.classList.add('datetimerange-dtp-disabled');
         }
-        let noEndLabel = $('<label>').attr('for', checkboxId)
-          .html(this.getTranslation('noEnd', 'No end date'));
-        noEndDiv = $('<div></div>').addClass('datetimerange-dialog-noend')
-          .append(this._noEndCheckbox).append(noEndLabel);
+        let noEndLabel = document.createElement('label');
+        noEndLabel.setAttribute('for', checkboxId);
+        noEndLabel.innerHTML = this.getTranslation('noEnd', 'No end date');
+        noEndDiv = document.createElement('div');
+        noEndDiv.className = 'datetimerange-dialog-noend';
+        noEndDiv.appendChild(this._noEndCheckbox);
+        noEndDiv.appendChild(noEndLabel);
 
-        this._noEndCheckbox.on('change', () => {
-          let checked = this._noEndCheckbox.prop('checked');
-          endDiv.toggleClass('datetimerange-dtp-disabled', checked);
+        this._noEndCheckbox.addEventListener('change', () => {
+          let checked = this._noEndCheckbox.checked;
+          endDiv.classList.toggle('datetimerange-dtp-disabled', checked);
           this.onChangeDateTime();
         });
       }
 
-      let pickersRow = $('<div></div>').addClass('datetimerange-dialog-pickers-row')
-        .append(divinputbegin).append(divinputend);
+      let pickersRow = document.createElement('div');
+      pickersRow.className = 'datetimerange-dialog-pickers-row';
+      pickersRow.appendChild(divinputbegin);
+      pickersRow.appendChild(divinputend);
 
-      let divinput = $('<div></div>').addClass('datetimerange-dialog-divinput')
-        .append(infodiv)
-        .append(pickersRow);
+      let divinput = document.createElement('div');
+      divinput.className = 'datetimerange-dialog-divinput';
+      divinput.appendChild(infodiv);
+      divinput.appendChild(pickersRow);
       if (noEndDiv) {
-        divinput.append(noEndDiv);
+        divinput.appendChild(noEndDiv);
       }
-      divinput.append(warningdiv);
+      divinput.appendChild(warningdiv);
 
       // ADD BOUNDS
       this._setBeginEndBound();
@@ -772,33 +803,34 @@ require('x-datetimepicker/x-datetimepicker');
      * To display warning message or not
      */
     onChangeDateTime () {
-      let isNoEnd = this._noEndCheckbox && this._noEndCheckbox.prop('checked');
+      let isNoEnd = this._noEndCheckbox && this._noEndCheckbox.checked;
+      let okBtn = document.querySelector('#' + this._settingsDialogId + ' .customDialogOk');
 
-      if (!this._beginDTP[0].isValid() || (!isNoEnd && !this._endDTP[0].isValid())) {
-        this._warningtext.html(this.getTranslation('invalidDatesError', 'Please, input valid dates'));
-        $('#' + this._settingsDialogId + ' .customDialogOk')[0].setAttribute('disabled', 'disabled');
+      if (!this._beginDTP.isValid() || (!isNoEnd && !this._endDTP.isValid())) {
+        this._warningtext.innerHTML = this.getTranslation('invalidDatesError', 'Please, input valid dates');
+        if (okBtn) okBtn.setAttribute('disabled', 'disabled');
         return;
       }
       if (isNoEnd) {
-        this._warningtext.html('');
-        $('#' + this._settingsDialogId + ' .customDialogOk').removeAttr('disabled');
+        this._warningtext.innerHTML = '';
+        if (okBtn) okBtn.removeAttribute('disabled');
         return;
       }
-      let begin = new Date(this._beginDTP[0].getISOValue());
-      let end = new Date(this._endDTP[0].getISOValue());
+      let begin = new Date(this._beginDTP.getISOValue());
+      let end = new Date(this._endDTP.getISOValue());
       if (end < begin) {
-        this._warningtext.html(this.getTranslation('endBeforeStartError', 'End date/time is before start date/time'));
-        $('#' + this._settingsDialogId + ' .customDialogOk')[0].setAttribute('disabled', 'disabled');
+        this._warningtext.innerHTML = this.getTranslation('endBeforeStartError', 'End date/time is before start date/time');
+        if (okBtn) okBtn.setAttribute('disabled', 'disabled');
         return;
       }
       if (end > begin) {
-        this._warningtext.html('');
-        $('#' + this._settingsDialogId + ' .customDialogOk').removeAttr('disabled');
+        this._warningtext.innerHTML = '';
+        if (okBtn) okBtn.removeAttribute('disabled');
         return;
       }
       else {
-        this._warningtext.html(this.getTranslation('emptyPeriodMessage', 'Warning! Empty period'));
-        $('#' + this._settingsDialogId + ' .customDialogOk')[0].setAttribute('disabled', 'disabled');
+        this._warningtext.innerHTML = this.getTranslation('emptyPeriodMessage', 'Warning! Empty period');
+        if (okBtn) okBtn.setAttribute('disabled', 'disabled');
         return;
       }
     }
@@ -807,18 +839,18 @@ require('x-datetimepicker/x-datetimepicker');
      * Callback (called after validate button)
      */
     _callback_validate_settings () {
-      if (!this._beginDTP[0].isValid()) {
+      if (!this._beginDTP.isValid()) {
         pulseCustomDialog.openDialog(this.getTranslation('startNotValidError', 'Start date/time is not valid.'), { type: 'Error' });
         return false;
       }
-      if (!this._endDTP[0].isValid()) {
+      if (!this._endDTP.isValid()) {
         pulseCustomDialog.openDialog(this.getTranslation('endNotValidError', 'End date/time is not valid.'), { type: 'Error' });
         return false;
       }
 
-      let beginDateTime = new Date(this._beginDTP[0].getISOValue());
-      let isNoEnd = this._noEndCheckbox && this._noEndCheckbox.prop('checked');
-      let endDateTime = isNoEnd ? null : new Date(this._endDTP[0].getISOValue());
+      let beginDateTime = new Date(this._beginDTP.getISOValue());
+      let isNoEnd = this._noEndCheckbox && this._noEndCheckbox.checked;
+      let endDateTime = isNoEnd ? null : new Date(this._endDTP.getISOValue());
 
       // Is min date in the limits?
       if (this.element.hasAttribute('min-begin') &&

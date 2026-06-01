@@ -41,9 +41,10 @@ require('x-machinedisplay/x-machinedisplay');
 
     initialize () {
       this.addClass('pulse-text');
-      $(this.element).empty();
-      this._content = $('<div></div>').addClass('ancestors-content');
-      $(this.element).append(this._content);
+      this.element.replaceChildren();
+      this._content = document.createElement('div');
+      this._content.className = 'ancestors-content';
+      this.element.appendChild(this._content);
 
       let baseUrl = window.location.href.split('?')[0];
       let appContext = pulseUtility.getURLParameter(window.location.href, 'AppContext');
@@ -66,20 +67,19 @@ require('x-machinedisplay/x-machinedisplay');
         // children) and must render both the home link for X and X as the final
         // current-group name.
 
-        let divMachine = $('<a></a>')
-          .addClass('ancestors-machine-div')
-          .addClass('ancestors-' + ancestorNb);
+        let divMachine = document.createElement('a');
+        divMachine.className = 'ancestors-machine-div ancestors-' + ancestorNb;
 
         let href = baseUrl + '?' + baseParams + accumulatedAncestorsQuery + 'group=' + ancestorVal;
-        $(divMachine).attr('href', href);
+        divMachine.setAttribute('href', href);
 
         if (ancestorNb > 1) {
-          let xtag = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
+          let xtag = pulseUtility.createElementWithAttribute('x-machinedisplay', {
             'group': ancestorVal
           });
-          divMachine.append(xtag);
+          divMachine.appendChild(xtag);
         }
-        $(this._content).append(divMachine);
+        this._content.appendChild(divMachine);
 
         if (ancestorNb == 1) pulseSvg.inlineBackgroundSvg(divMachine);
 
@@ -95,30 +95,28 @@ require('x-machinedisplay/x-machinedisplay');
       // If it's level 1 (Home), we want it to remain a clickable link
       // to allow "reloading" the root page even if we're already there.
       if (ancestorNb == 1) {
-        divMachine = $('<a></a>');
+        divMachine = document.createElement('a');
         // Link points to current group (reload effect)
         let href = baseUrl + '?' + baseParams + 'group=' + currentGroup;
-        $(divMachine).attr('href', href);
+        divMachine.setAttribute('href', href);
       }
       else {
         // For levels > 1, the last element remains non-clickable text
-        divMachine = $('<div></div>');
+        divMachine = document.createElement('div');
       }
 
-      divMachine
-        .addClass('ancestors-machine-div')
-        .addClass('ancestors-' + ancestorNb);
+      divMachine.className = 'ancestors-machine-div ancestors-' + ancestorNb;
 
-      $(this._content).append(divMachine);
+      this._content.appendChild(divMachine);
 
       if (ancestorNb == 1) {
         pulseSvg.inlineBackgroundSvg(divMachine);
       }
       else {
-        let xtag = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
+        let xtag = pulseUtility.createElementWithAttribute('x-machinedisplay', {
           'group': currentGroup
         });
-        divMachine.append(xtag);
+        divMachine.appendChild(xtag);
       }
 
       this.switchToNextContext();

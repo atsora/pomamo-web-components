@@ -19,7 +19,7 @@ require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonOnlySl
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/SaveMachineStateTemplate');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision');
 
-$(function () {
+if (document.readyState !== 'loading') {
   var log = document.getElementById('event-log');
   if (!log) return;
   var lines = [];
@@ -29,4 +29,16 @@ $(function () {
     lines.push('[' + new Date().toLocaleTimeString() + '] ' + src + ' → range=' + (range || '(none)'));
     log.textContent = lines.join('\n');
   });
-});
+} else {
+  document.addEventListener('DOMContentLoaded', function () {
+    var log = document.getElementById('event-log');
+    if (!log) return;
+    var lines = [];
+    document.body.addEventListener('stopperiods-range', function (e) {
+      var src = e.target.id || e.target.tagName;
+      var range = e.detail && e.detail.range;
+      lines.push('[' + new Date().toLocaleTimeString() + '] ' + src + ' → range=' + (range || '(none)'));
+      log.textContent = lines.join('\n');
+    });
+  });
+}

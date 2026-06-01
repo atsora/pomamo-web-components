@@ -67,7 +67,7 @@ var eventBus = require('eventBus');
       return self;
     }
 
-    get content () { return $(this.element).find('.highlightperiodsbar-content'); }
+    get content () { return this.element.querySelector('.highlightperiodsbar-content'); }
 
     /**
      * Associated native Javascript Date range
@@ -86,7 +86,7 @@ var eventBus = require('eventBus');
     }
 
     get barwidth () {
-      let width = $(this.content).width();
+      let width = this.content ? this.content.offsetWidth : null;
       if (width) {
         this._barwidth = width;
       }
@@ -105,8 +105,8 @@ var eventBus = require('eventBus');
         this._height = h;
       }
       let c = this.content;
-      if (typeof c !== 'undefined') {
-        c.height(this._height);
+      if (typeof c !== 'undefined' && c) {
+        c.style.height = this._height + 'px';
       }
     }
     _setAutoHeight () {
@@ -157,14 +157,14 @@ var eventBus = require('eventBus');
       this._setAutoHeight();
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM
-      let divcontent = $('<div></div>').addClass('highlightperiodsbar-content');
-      divcontent.height(this.height);
-      $(this.element)
-        .addClass('highlightperiodsbar')
-        .append(divcontent);
+      let divcontent = document.createElement('div');
+      divcontent.className = 'highlightperiodsbar-content';
+      divcontent.style.height = this.height + 'px';
+      this.element.classList.add('highlightperiodsbar');
+      this.element.appendChild(divcontent);
       /*$(window).resize(() => this._draw());
       divcontent.resize(() => this._draw());*/
 
@@ -192,7 +192,7 @@ var eventBus = require('eventBus');
 
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       //this._content = undefined;
@@ -254,7 +254,8 @@ var eventBus = require('eventBus');
       if (typeof this.content == 'undefined') {
         return;
       }
-      $(this.element).find('.highlightperiodsbar-svg').remove(); // Remove old SVG
+      let svgs = this.element.querySelectorAll('.highlightperiodsbar-svg');
+      svgs.forEach(svg => svg.remove());
     }
 
     _draw () {

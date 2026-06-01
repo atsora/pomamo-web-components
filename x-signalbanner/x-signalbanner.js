@@ -54,26 +54,28 @@ var pulseLogin = require('pulseLogin');
     initialize () {
       this.addClass('xsignalbanner-host');
 
-      $(this.element).empty();
+      this.element.replaceChildren();
 
-      this._container = $('<div></div>').addClass('xsignalbanner-container');
+      this._container = document.createElement('div');
+      this._container.classList.add('xsignalbanner-container');
 
-      this._stack = $('<div></div>')
-        .addClass('xsignalbanner-stack')
-        .css('display', 'none');
+      this._stack = document.createElement('div');
+      this._stack.classList.add('xsignalbanner-stack');
+      this._stack.style.display = 'none';
 
-      this._errorDiv = $('<div></div>')
-        .addClass('xsignalbanner-error')
-        .css('display', 'none');
+      this._errorDiv = document.createElement('div');
+      this._errorDiv.classList.add('xsignalbanner-error');
+      this._errorDiv.style.display = 'none';
 
-      this._container.append(this._stack).append(this._errorDiv);
-      $(this.element).append(this._container);
+      this._container.appendChild(this._stack);
+      this._container.appendChild(this._errorDiv);
+      this.element.appendChild(this._container);
 
       this.switchToNextContext();
     }
 
     clearInitialization () {
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._container = undefined;
       this._stack = undefined;
       this._errorDiv = undefined;
@@ -131,8 +133,14 @@ var pulseLogin = require('pulseLogin');
     }
 
     _hideAll () {
-      if (this._stack) $(this._stack).css('display', 'none').empty();
-      if (this._errorDiv) $(this._errorDiv).text('').css('display', 'none');
+      if (this._stack) {
+        this._stack.style.display = 'none';
+        this._stack.replaceChildren();
+      }
+      if (this._errorDiv) {
+        this._errorDiv.textContent = '';
+        this._errorDiv.style.display = 'none';
+      }
     }
 
     // Hide silently on AJAX errors / failures: a missing /Signal/ response
@@ -147,13 +155,16 @@ var pulseLogin = require('pulseLogin');
 
     displayError (text) {
       if (!this._errorDiv) return;
-      $(this._stack).css('display', 'none').empty();
-      $(this._errorDiv).text(text).css('display', '');
+      this._stack.style.display = 'none';
+      this._stack.replaceChildren();
+      this._errorDiv.textContent = text;
+      this._errorDiv.style.display = '';
     }
 
     removeError () {
       if (!this._errorDiv) return;
-      $(this._errorDiv).text('').css('display', 'none');
+      this._errorDiv.textContent = '';
+      this._errorDiv.style.display = 'none';
     }
 
     get refreshRate () {
@@ -177,26 +188,27 @@ var pulseLogin = require('pulseLogin');
         ? data.Messages.filter(m => m && typeof m.Message === 'string')
         : [];
 
-      $(this._stack).empty();
+      this._stack.replaceChildren();
 
       if (messages.length === 0) {
-        $(this._stack).css('display', 'none');
+        this._stack.style.display = 'none';
         return;
       }
 
       messages.forEach(m => {
-        const row = $('<div></div>').addClass('xsignalbanner-row');
+        const row = document.createElement('div');
+        row.classList.add('xsignalbanner-row');
         let fg = m.FgColor;
         if (m.BgColor) {
-          row.css('background-color', m.BgColor);
+          row.style.backgroundColor = m.BgColor;
           if (!fg) fg = _bestContrast(m.BgColor);
         }
-        if (fg) row.css('color', fg);
-        row.text(m.Message);
-        $(this._stack).append(row);
+        if (fg) row.style.color = fg;
+        row.textContent = m.Message;
+        this._stack.appendChild(row);
       });
 
-      $(this._stack).css('display', '');
+      this._stack.style.display = '';
     }
   }
 

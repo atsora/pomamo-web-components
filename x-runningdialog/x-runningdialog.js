@@ -52,12 +52,13 @@ require('x-tr/x-tr');
     }
 
     initialize () {
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       let groupId = this.element.getAttribute('group');
 
       // Hidden template cloned by x-grouplist for each machine in the group.
-      let hiddenTemplate = $('\
+      let hiddenTemplate = document.createElement('div');
+      hiddenTemplate.innerHTML = '\
 <div class="one_machine_cell" id="boxtocloneRunningDialog"> \
   <div class="div-machine"> \
     <x-machinedisplay></x-machinedisplay> \
@@ -78,27 +79,33 @@ require('x-tr/x-tr');
     <x-motionpercentage motion-context="motion_machine" period-context="runningdialog"></x-motionpercentage> \
     <x-motiontime motion-context="motion_machine" period-context="runningdialog"></x-motiontime> \
   </div> \
-</div>');
-      let hiddenWrapper = $('<div class="hidden-content"></div>').append(hiddenTemplate);
+</div>';
+      let hiddenWrapper = document.createElement('div');
+      hiddenWrapper.className = 'hidden-content';
+      hiddenWrapper.appendChild(hiddenTemplate.firstElementChild);
 
       // Header: period toolbar + clock (same pattern as running page)
-      let header = $('\
+      let header = document.createElement('div');
+      header.innerHTML = '\
 <div class="running-header"> \
   <x-periodtoolbar period-context="runningdialog"></x-periodtoolbar> \
   <div class="div-datetime"> \
     <label class="label-current"><x-tr key="content.currentColon" default="Current:"></x-tr></label> \
     <x-clock display-seconds="false"></x-clock> \
   </div> \
-</div>');
+</div>';
 
       // Main tile: datetime graduation + grouplist (1 column, group-scoped)
-      let tile = $('\
+      let tile = document.createElement('div');
+      tile.innerHTML = '\
 <div class="tile"> \
   <x-datetimegraduation period-context="runningdialog"></x-datetimegraduation> \
   <x-grouplist templateid="boxtocloneRunningDialog" no-rotation donotwarngroupreload="true" group="' + groupId + '"></x-grouplist> \
-</div>');
+</div>';
 
-      $(this.element).append(hiddenWrapper).append(header).append(tile);
+      this.element.appendChild(hiddenWrapper);
+      this.element.appendChild(header.firstElementChild);
+      this.element.appendChild(tile.firstElementChild);
 
       // Apply currentdisplay visibility toggles (same logic as running page)
       let addProductionMachining = pulseConfig.getBool('currentdisplay.displayjobshiftpartcount', false);
@@ -106,11 +113,14 @@ require('x-tr/x-tr');
       let displayShift = pulseConfig.getBool('currentdisplay.displayshift', true);
       let displayCNCValue = pulseConfig.getBool('currentdisplay.displaycncvalue', true);
 
-      let $el = $(this.element);
-      $el.find('x-productionmachiningstatus').toggle(addProductionMachining);
-      $el.find('x-lastworkinformation').toggle(displayJob);
-      $el.find('x-lastshift').toggle(displayShift);
-      $el.find('x-currentcncvalue').toggle(displayCNCValue);
+      let productionStatus = this.element.querySelector('x-productionmachiningstatus');
+      if (productionStatus) productionStatus.style.display = addProductionMachining ? '' : 'none';
+      let jobInfo = this.element.querySelector('x-lastworkinformation');
+      if (jobInfo) jobInfo.style.display = displayJob ? '' : 'none';
+      let shift = this.element.querySelector('x-lastshift');
+      if (shift) shift.style.display = displayShift ? '' : 'none';
+      let cncValue = this.element.querySelector('x-currentcncvalue');
+      if (cncValue) cncValue.style.display = displayCNCValue ? '' : 'none';
 
       this.switchToNextContext();
     }

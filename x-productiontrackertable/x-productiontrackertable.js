@@ -108,26 +108,32 @@ var eventBus = require('eventBus');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('productiontrackertable-content');
+      this._content = document.createElement('div');
+      this._content.classList.add('productiontrackertable-content');
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', ' Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.innerHTML = this.getTranslation('loadingDots', ' Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.classList.add('pulse-message');
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.classList.add('pulse-message-div');
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
-      $(this.element)
-        .append(this._content);
+      this.element.appendChild(this._content);
 
       // Listeners
       if (this.element.hasAttribute('period-context')) {
@@ -149,7 +155,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._table = undefined;
       this._messageSpan = undefined;
       this._content = undefined;
@@ -212,9 +218,11 @@ var eventBus = require('eventBus');
     }
 
     displayError (message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
 
-      $(this._table).remove();
+      if (this._table) {
+        this._table.remove();
+      }
       this._table = undefined;
 
       this._resetAllData();
@@ -232,7 +240,7 @@ var eventBus = require('eventBus');
     }
 
     removeError () {
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
     }
 
     get refreshRate () {
@@ -281,7 +289,7 @@ var eventBus = require('eventBus');
     }
 
     _cleanDisplay () {
-      $(this._content).empty();
+      this._content.replaceChildren();
       this._table = undefined;
 
       this._resetAllData();
@@ -314,27 +322,27 @@ var eventBus = require('eventBus');
       const fitMode = fitModeAttr || (this.element.closest('.appcontext-live') ? 'contain' : 'scroll-y');
 
       // Pass 1: measure at reference font, apply initial scale with safety margin.
-      this._table.css('font-size', BASE + 'px');
-      const natW = this._table[0].scrollWidth;
-      const natH = this._table[0].scrollHeight;
+      this._table.style.fontSize = BASE + 'px';
+      const natW = this._table.scrollWidth;
+      const natH = this._table.scrollHeight;
       if (natW === 0 || natH === 0) return;
 
       const scale1 = fitMode === 'scroll-y'
         ? wrapperW / natW
         : Math.min(wrapperW / natW, wrapperH / natH);
       let font = Math.max(5, Math.min(BASE * 1.9, BASE * scale1 * 0.95));
-      this._table.css('font-size', font + 'px');
+      this._table.style.fontSize = font + 'px';
 
       // Pass 2: verify the rendered grid actually fits. If it still overflows, tighten.
       // Subtract 1px from wrapper dimensions to absorb subpixel rounding (scrollWidth/Height return integers).
       if (fitMode !== 'scroll-y') {
-        const realW = this._table[0].scrollWidth;
-        const realH = this._table[0].scrollHeight;
+        const realW = this._table.scrollWidth;
+        const realH = this._table.scrollHeight;
         if (realW > 0 && realH > 0) {
           const overflowScale = Math.min((wrapperW - 1) / realW, (wrapperH - 1) / realH);
           if (overflowScale < 1) {
             font = Math.max(5, font * overflowScale);
-            this._table.css('font-size', font + 'px');
+            this._table.style.fontSize = font + 'px';
           }
         }
       }
@@ -369,89 +377,119 @@ var eventBus = require('eventBus');
 
         if ((this._table == undefined) || (this._table == null)) {
           // FIRST Time = create table and fill data
-          this._table = $('<div></div>').addClass('productiontrackertable-table');
-          this._content.append(this._table);
+          this._table = document.createElement('div');
+          this._table.className = 'productiontrackertable-table';
+          this._content.appendChild(this._table);
 
           // Resize text
           //this._resize();
 
           // Header 1 - hourly / summary
-          let text = $('<div></div>').addClass('text-position').html(this.getTranslation('hourly', 'hourly'));
-          let hourly = $('<div></div>').addClass('header').addClass('header-hourly')
-            .append(text);
+          let text = document.createElement('div');
+          text.className = 'text-position';
+          text.innerHTML = this.getTranslation('hourly', 'hourly');
+          let hourly = document.createElement('div');
+          hourly.className = 'header header-hourly';
+          hourly.appendChild(text);
 
-          text = $('<div></div>').addClass('text-position').html(this.getTranslation('cumulative', 'cumulative'));
-          let summary = $('<div></div>').addClass('header').addClass('header-summary')
-            .append(text);
-          this._table.append(hourly).append(summary);
+          text = document.createElement('div');
+          text.className = 'text-position';
+          text.innerHTML = this.getTranslation('cumulative', 'cumulative');
+          let summary = document.createElement('div');
+          summary.className = 'header header-summary';
+          summary.appendChild(text);
+          this._table.appendChild(hourly);
+          this._table.appendChild(summary);
 
           if (showreservecapacity == 'true') {
-            this._table.addClass('with-reserve-capacity');
+            this._table.classList.add('with-reserve-capacity');
 
             // Reserve capacity columns headers
-            text = $('<div></div>').addClass('text-position').html(this.getTranslation('partsToMachine', 'parts to machine')); // Remaining parts to machine
-            let parts = $('<div></div>').addClass('header').addClass('header-capacity')
-              .append(text);
+            text = document.createElement('div');
+            text.className = 'text-position';
+            text.innerHTML = this.getTranslation('partsToMachine', 'parts to machine');
+            let parts = document.createElement('div');
+            parts.className = 'header header-capacity';
+            parts.appendChild(text);
 
-            text = $('<div></div>').addClass('text-position').html(this.getTranslation('capacity', 'capacity')); // Remaining capacity
-            let capacity = $('<div></div>').addClass('header').addClass('header-capacity')
-              .append(text);
+            text = document.createElement('div');
+            text.className = 'text-position';
+            text.innerHTML = this.getTranslation('capacity', 'capacity');
+            let capacity = document.createElement('div');
+            capacity.className = 'header header-capacity';
+            capacity.appendChild(text);
 
-            text = $('<div></div>').addClass('text-position').html(this.getTranslation('reserveCapacity', 'reserve capacity'));
-            let reserve = $('<div></div>').addClass('header').addClass('header-capacity')
-              .append(text);
-            this._table.append(parts).append(capacity).append(reserve);
+            text = document.createElement('div');
+            text.className = 'text-position';
+            text.innerHTML = this.getTranslation('reserveCapacity', 'reserve capacity');
+            let reserve = document.createElement('div');
+            reserve.className = 'header header-capacity';
+            reserve.appendChild(text);
+            this._table.appendChild(parts);
+            this._table.appendChild(capacity);
+            this._table.appendChild(reserve);
           }
 
           // Header 2 - (Actual / Target ) x 2
-          text = $('<div></div>').addClass('text-position')
-            .html(this.getTranslation('actual', 'actual'));
-          let hrActual = $('<div></div>').addClass('header')
-            .addClass('header-hourly-actual')
-            .append(text);
+          text = document.createElement('div');
+          text.className = 'text-position';
+          text.innerHTML = this.getTranslation('actual', 'actual');
+          let hrActual = document.createElement('div');
+          hrActual.className = 'header header-hourly-actual';
+          hrActual.appendChild(text);
 
-          text = $('<div></div>').addClass('text-position')
-            .html(this.getTranslation('target', 'target'));
-          let hrTarget = $('<div></div>').addClass('header')
-            .addClass('header-target-actual')
-            .append(text);
+          text = document.createElement('div');
+          text.className = 'text-position';
+          text.innerHTML = this.getTranslation('target', 'target');
+          let hrTarget = document.createElement('div');
+          hrTarget.className = 'header header-target-actual';
+          hrTarget.appendChild(text);
 
-          text = $('<div></div>').addClass('text-position')
-            .html(this.getTranslation('actual', 'actual'));
-          let sumActual = $('<div></div>').addClass('header')
-            .addClass('header-summary-actual')
-            .append(text);
+          text = document.createElement('div');
+          text.className = 'text-position';
+          text.innerHTML = this.getTranslation('actual', 'actual');
+          let sumActual = document.createElement('div');
+          sumActual.className = 'header header-summary-actual';
+          sumActual.appendChild(text);
 
-          text = $('<div></div>').addClass('text-position')
-            .html(this.getTranslation('target', 'target'));
-          let sumTarget = $('<div></div>').addClass('header')
-            .addClass('header-summary-target')
-            .append(text);
-          this._table.append(hrActual).append(hrTarget)
-            .append(sumActual).append(sumTarget);
+          text = document.createElement('div');
+          text.className = 'text-position';
+          text.innerHTML = this.getTranslation('target', 'target');
+          let sumTarget = document.createElement('div');
+          sumTarget.className = 'header header-summary-target';
+          sumTarget.appendChild(text);
+          this._table.appendChild(hrActual);
+          this._table.appendChild(hrTarget);
+          this._table.appendChild(sumActual);
+          this._table.appendChild(sumTarget);
 
           if (showreservecapacity == 'true') {
             // Reserve capacity columns values at start in headers
-            let parts = $('<div></div>').addClass('text-position');
+            let parts = document.createElement('div');
+            parts.className = 'text-position';
             this._globalTarget = this._data.GlobalTarget;
-            parts.html(Math.round(this._globalTarget));
-            let hrParts = $('<div></div>').addClass('header')
-              .addClass('header-capacity-value')
-              .append(parts);
+            parts.innerHTML = Math.round(this._globalTarget);
+            let hrParts = document.createElement('div');
+            hrParts.className = 'header header-capacity-value';
+            hrParts.appendChild(parts);
 
-            let capa = $('<div></div>').addClass('text-position');
+            let capa = document.createElement('div');
+            capa.className = 'text-position';
             this._globalCapacity = this._data.ProductionCapacity;
-            capa.html(Math.round(this._globalCapacity));
-            let hrCapa = $('<div></div>').addClass('header')
-              .addClass('header-capacity-value')
-              .append(capa);
+            capa.innerHTML = Math.round(this._globalCapacity);
+            let hrCapa = document.createElement('div');
+            hrCapa.className = 'header header-capacity-value';
+            hrCapa.appendChild(capa);
 
-            let reserve = $('<div></div>').addClass('text-position');
-            reserve.html(Math.round(this._globalCapacity - this._globalTarget));
-            let hrReserve = $('<div></div>').addClass('header')
-              .addClass('header-capacity-value')
-              .append(reserve);
-            this._table.append(hrCapa).append(hrParts).append(hrReserve);
+            let reserve = document.createElement('div');
+            reserve.className = 'text-position';
+            reserve.innerHTML = Math.round(this._globalCapacity - this._globalTarget);
+            let hrReserve = document.createElement('div');
+            hrReserve.className = 'header header-capacity-value';
+            hrReserve.appendChild(reserve);
+            this._table.appendChild(hrCapa);
+            this._table.appendChild(hrParts);
+            this._table.appendChild(hrReserve);
           }
 
           // Clean storage
@@ -502,49 +540,67 @@ var eventBus = require('eventBus');
           let reserveCapacity = remainingCapacity - remainingParts;
 
           // Update DOM
-          let hourlyActualForThisRange = $(this._table).find('.hourly-actual[range="' + isoRange + '"]'); // " is mandatory because of range format
+          let hourlyActualForThisRange = this._table.querySelector('.hourly-actual[range="' + isoRange + '"]');
 
-          if (hourlyActualForThisRange.length == 0) {
+          if (!hourlyActualForThisRange) {
             // Not defined = create rows
             // Create DOM
-            let text = $('<div></div>').addClass('text-range').html(pulseUtility.displayDateRange(isoRange, false));
-            let rangeHeader = $('<div></div>').addClass('header-range').addClass('header')
-              .attr('range', isoRange)
-              .append(text);
-            let hActual = $('<div></div>').addClass('hourly-actual')
-              .attr('range', isoRange);
-            let hTarget = $('<div></div>').addClass('hourly-target')
-              .attr('range', isoRange);
-            let sActual = $('<div></div>').addClass('summary-actual')
-              .attr('range', isoRange);
-            let sTarget = $('<div></div>').addClass('summary-target')
-              .attr('range', isoRange);
-            this._table.append(rangeHeader).append(hActual).append(hTarget)
-              .append(sActual).append(sTarget);
+            let text = document.createElement('div');
+            text.className = 'text-range';
+            text.innerHTML = pulseUtility.displayDateRange(isoRange, false);
+            let rangeHeader = document.createElement('div');
+            rangeHeader.className = 'header-range header';
+            rangeHeader.setAttribute('range', isoRange);
+            rangeHeader.appendChild(text);
+            let hActual = document.createElement('div');
+            hActual.className = 'hourly-actual';
+            hActual.setAttribute('range', isoRange);
+            let hTarget = document.createElement('div');
+            hTarget.className = 'hourly-target';
+            hTarget.setAttribute('range', isoRange);
+            let sActual = document.createElement('div');
+            sActual.className = 'summary-actual';
+            sActual.setAttribute('range', isoRange);
+            let sTarget = document.createElement('div');
+            sTarget.className = 'summary-target';
+            sTarget.setAttribute('range', isoRange);
+            this._table.appendChild(rangeHeader);
+            this._table.appendChild(hActual);
+            this._table.appendChild(hTarget);
+            this._table.appendChild(sActual);
+            this._table.appendChild(sTarget);
 
             // Fill data in DOM - rounded
-            text = $('<div></div>').addClass('text-position').html(Math.round(actual));
-            hActual.append(text);
-            text = $('<div></div>').addClass('text-position').html(Math.round(target));
-            hTarget.append(text);
-            text = $('<div></div>').addClass('text-position').html(Math.round(cumulActual));
-            sActual.append(text);
-            text = $('<div></div>').addClass('text-position').html(Math.round(cumulTarget));
-            sTarget.append(text);
+            text = document.createElement('div');
+            text.className = 'text-position';
+            text.innerHTML = Math.round(actual);
+            hActual.appendChild(text);
+            text = document.createElement('div');
+            text.className = 'text-position';
+            text.innerHTML = Math.round(target);
+            hTarget.appendChild(text);
+            text = document.createElement('div');
+            text.className = 'text-position';
+            text.innerHTML = Math.round(cumulActual);
+            sActual.appendChild(text);
+            text = document.createElement('div');
+            text.className = 'text-position';
+            text.innerHTML = Math.round(cumulTarget);
+            sTarget.appendChild(text);
 
             // Add color when needed
             // color : actual / target
             if (!pulseUtility.isNotDefined(target) && target > 0) {
               let ratio = actual / target;
               if (ratio < thresholdredproduction / 100) {
-                $(hActual).addClass('bad-efficiency');
+                hActual.classList.add('bad-efficiency');
               }
               else {
                 if (ratio < thresholdtargetproduction / 100) {
-                  $(hActual).addClass('mid-efficiency');
+                  hActual.classList.add('mid-efficiency');
                 }
                 else {
-                  $(hActual).addClass('good-efficiency');
+                  hActual.classList.add('good-efficiency');
                 }
               }
             }
@@ -552,76 +608,101 @@ var eventBus = require('eventBus');
             if (!pulseUtility.isNotDefined(cumulTarget) && target > 0) {
               let ratio = cumulActual / cumulTarget;
               if (ratio < thresholdredproduction / 100) {
-                $(sActual).addClass('bad-efficiency');
+                sActual.classList.add('bad-efficiency');
               }
               else {
                 if (ratio < thresholdtargetproduction / 100) {
-                  $(sActual).addClass('mid-efficiency');
+                  sActual.classList.add('mid-efficiency');
                 }
                 else {
-                  $(sActual).addClass('good-efficiency');
+                  sActual.classList.add('good-efficiency');
                 }
               }
             }
 
             if (showreservecapacity == 'true') {
-              let partsDiv = $('<div></div>').addClass('remaining-parts')
-                .attr('range', isoRange);
-              let capacityDiv = $('<div></div>').addClass('remaining-capacity')
-                .attr('range', isoRange);
-              let reserveDiv = $('<div></div>').addClass('reserve-capacity')
-                .attr('range', isoRange);
-              this._table.append(partsDiv).append(capacityDiv).append(reserveDiv);
+              let partsDiv = document.createElement('div');
+              partsDiv.className = 'remaining-parts';
+              partsDiv.setAttribute('range', isoRange);
+              let capacityDiv = document.createElement('div');
+              capacityDiv.className = 'remaining-capacity';
+              capacityDiv.setAttribute('range', isoRange);
+              let reserveDiv = document.createElement('div');
+              reserveDiv.className = 'reserve-capacity';
+              reserveDiv.setAttribute('range', isoRange);
+              this._table.appendChild(partsDiv);
+              this._table.appendChild(capacityDiv);
+              this._table.appendChild(reserveDiv);
 
-              text = $('<div></div>').addClass('text-position').html(Math.round(remainingParts));
-              partsDiv.append(text);
-              text = $('<div></div>').addClass('text-position').html(Math.round(remainingCapacity));
-              capacityDiv.append(text);
-              text = $('<div></div>').addClass('text-position').html(Math.round(reserveCapacity));
-              reserveDiv.append(text);
+              text = document.createElement('div');
+              text.className = 'text-position';
+              text.innerHTML = Math.round(remainingParts);
+              partsDiv.appendChild(text);
+              text = document.createElement('div');
+              text.className = 'text-position';
+              text.innerHTML = Math.round(remainingCapacity);
+              capacityDiv.appendChild(text);
+              text = document.createElement('div');
+              text.className = 'text-position';
+              text.innerHTML = Math.round(reserveCapacity);
+              reserveDiv.appendChild(text);
             }
           }
           else {
             // cells are defined, fill them - rounded !!!
-            $(hourlyActualForThisRange).find('.text-position')
-              .html(Math.round(actual));
-            $(this._table).find('.hourly-target[range="' + isoRange + '"]')
-              .find('.text-position')
-              .html(Math.round(target));
-            $(this._table).find('.summary-actual[range="' + isoRange + '"]')
-              .find('.text-position')
-              .html(Math.round(cumulActual));
-            $(this._table).find('.summary-target[range="' + isoRange + '"]')
-              .find('.text-position')
-              .html(Math.round(cumulTarget));
+            let textPos = hourlyActualForThisRange.querySelector('.text-position');
+            if (textPos) textPos.innerHTML = Math.round(actual);
+
+            let hTarget = this._table.querySelector('.hourly-target[range="' + isoRange + '"]');
+            if (hTarget) {
+              textPos = hTarget.querySelector('.text-position');
+              if (textPos) textPos.innerHTML = Math.round(target);
+            }
+
+            let sActual = this._table.querySelector('.summary-actual[range="' + isoRange + '"]');
+            if (sActual) {
+              textPos = sActual.querySelector('.text-position');
+              if (textPos) textPos.innerHTML = Math.round(cumulActual);
+            }
+
+            let sTarget = this._table.querySelector('.summary-target[range="' + isoRange + '"]');
+            if (sTarget) {
+              textPos = sTarget.querySelector('.text-position');
+              if (textPos) textPos.innerHTML = Math.round(cumulTarget);
+            }
 
             if (showreservecapacity == 'true') {
-              $(this._table).find('.remaining-parts[range="' + isoRange + '"]')
-                .find('.text-position')
-                .html(Math.round(remainingParts));
-              $(this._table).find('.remaining-capacity[range="' + isoRange + '"]')
-                .find('.text-position')
-                .html(Math.round(remainingCapacity));
-              $(this._table).find('.reserve-capacity[range="' + isoRange + '"]')
-                .find('.text-position')
-                .html(Math.round(reserveCapacity));
+              let remainingParts = this._table.querySelector('.remaining-parts[range="' + isoRange + '"]');
+              if (remainingParts) {
+                textPos = remainingParts.querySelector('.text-position');
+                if (textPos) textPos.innerHTML = Math.round(remainingParts);
+              }
+              let remainingCap = this._table.querySelector('.remaining-capacity[range="' + isoRange + '"]');
+              if (remainingCap) {
+                textPos = remainingCap.querySelector('.text-position');
+                if (textPos) textPos.innerHTML = Math.round(remainingCapacity);
+              }
+              let reserveCap = this._table.querySelector('.reserve-capacity[range="' + isoRange + '"]');
+              if (reserveCap) {
+                textPos = reserveCap.querySelector('.text-position');
+                if (textPos) textPos.innerHTML = Math.round(reserveCapacity);
+              }
             }
 
             // Add color when needed
-            $(hourlyActualForThisRange).removeClass('bad-efficiency')
-              .removeClass('mid-efficiency').removeClass('good-efficiency');
+            hourlyActualForThisRange.classList.remove('bad-efficiency', 'mid-efficiency', 'good-efficiency');
             // color : actual / target
             if (!pulseUtility.isNotDefined(target) && target > 0) {
               let ratio = actual / target;
               if (ratio < thresholdredproduction / 100) {
-                $(hourlyActualForThisRange).addClass('bad-efficiency');
+                hourlyActualForThisRange.classList.add('bad-efficiency');
               }
               else {
                 if (ratio < thresholdtargetproduction / 100) {
-                  $(hourlyActualForThisRange).addClass('mid-efficiency');
+                  hourlyActualForThisRange.classList.add('mid-efficiency');
                 }
                 else {
-                  $(hourlyActualForThisRange).addClass('good-efficiency');
+                  hourlyActualForThisRange.classList.add('good-efficiency');
                 }
               }
             }
@@ -629,17 +710,17 @@ var eventBus = require('eventBus');
             if (!pulseUtility.isNotDefined(cumulTarget) && target > 0) {
               let ratio = cumulActual / cumulTarget;
 
-              let summaryActualForThisRange = $(this._table).find('.summary-actual[range="' + isoRange + '"]');
+              let summaryActualForThisRange = this._table.querySelector('.summary-actual[range="' + isoRange + '"]');
 
               if (ratio < thresholdredproduction / 100) {
-                $(summaryActualForThisRange).addClass('bad-efficiency');
+                summaryActualForThisRange.classList.add('bad-efficiency');
               }
               else {
                 if (ratio < thresholdtargetproduction / 100) {
-                  $(summaryActualForThisRange).addClass('mid-efficiency');
+                  summaryActualForThisRange.classList.add('mid-efficiency');
                 }
                 else {
-                  $(summaryActualForThisRange).addClass('good-efficiency');
+                  summaryActualForThisRange.classList.add('good-efficiency');
                 }
               }
             }
@@ -729,41 +810,43 @@ var eventBus = require('eventBus');
         let thresholdtargetproduction = this.getConfigOrAttribute('thresholdtargetproduction', 80);
 
         // Remove colors
-        let hourlyActuals = $(this._table).find('.hourly-actual');
-        let summaryActuals = $(this._table).find('.summary-actual');
-        hourlyActuals.removeClass('bad-efficiency')
-          .removeClass('mid-efficiency').removeClass('good-efficiency');
-        summaryActuals.removeClass('bad-efficiency')
-          .removeClass('mid-efficiency').removeClass('good-efficiency');
+        let hourlyActuals = this._table.querySelectorAll('.hourly-actual');
+        let summaryActuals = this._table.querySelectorAll('.summary-actual');
+        hourlyActuals.forEach(el => el.classList.remove('bad-efficiency', 'mid-efficiency', 'good-efficiency'));
+        summaryActuals.forEach(el => el.classList.remove('bad-efficiency', 'mid-efficiency', 'good-efficiency'));
 
         // Add colors when needed
         for (let iAct = 0; iAct < hourlyActuals.length; iAct++) {
           // Get range
           let isoRange = hourlyActuals[iAct].getAttribute('range');
           // Find actual / target div
-          let hourlyTargetForThisRange = $(this._table).find('.hourly-target[range="' + isoRange + '"]');
-          let summaryActualForThisRange = $(this._table).find('.summary-actual[range="' + isoRange + '"]');
-          let summaryTargetForThisRange = $(this._table).find('.summary-target[range="' + isoRange + '"]');
+          let hourlyTargetForThisRange = this._table.querySelector('.hourly-target[range="' + isoRange + '"]');
+          let summaryActualForThisRange = this._table.querySelector('.summary-actual[range="' + isoRange + '"]');
+          let summaryTargetForThisRange = this._table.querySelector('.summary-target[range="' + isoRange + '"]');
 
           // Find actual / target values
-          let actual = $(hourlyActuals[iAct]).find('.text-position')[0].innerText;
-          let target = $(hourlyTargetForThisRange).find('.text-position')[0].innerText;
-          let cumulActual = $(summaryActualForThisRange).find('.text-position')[0].innerText;
-          let cumulTarget = $(summaryTargetForThisRange).find('.text-position')[0].innerText;
+          let actualEl = hourlyActuals[iAct].querySelector('.text-position');
+          let actual = actualEl ? actualEl.innerText : 0;
+          let targetEl = hourlyTargetForThisRange ? hourlyTargetForThisRange.querySelector('.text-position') : null;
+          let target = targetEl ? targetEl.innerText : 0;
+          let cumulActualEl = summaryActualForThisRange ? summaryActualForThisRange.querySelector('.text-position') : null;
+          let cumulActual = cumulActualEl ? cumulActualEl.innerText : 0;
+          let cumulTargetEl = summaryTargetForThisRange ? summaryTargetForThisRange.querySelector('.text-position') : null;
+          let cumulTarget = cumulTargetEl ? cumulTargetEl.innerText : 0;
 
           // Add colors
           // color : actual / target
           if (!pulseUtility.isNotDefined(target) && target > 0) {
             let ratio = actual / target;
             if (ratio < thresholdredproduction / 100) {
-              $(hourlyActuals[iAct]).addClass('bad-efficiency');
+              hourlyActuals[iAct].classList.add('bad-efficiency');
             }
             else {
               if (ratio < thresholdtargetproduction / 100) {
-                $(hourlyActuals[iAct]).addClass('mid-efficiency');
+                hourlyActuals[iAct].classList.add('mid-efficiency');
               }
               else {
-                $(hourlyActuals[iAct]).addClass('good-efficiency');
+                hourlyActuals[iAct].classList.add('good-efficiency');
               }
             }
           }
@@ -771,17 +854,17 @@ var eventBus = require('eventBus');
           if (!pulseUtility.isNotDefined(cumulTarget) && target > 0) {
             let ratio = cumulActual / cumulTarget;
 
-            let summaryActualForThisRange = $(this._table).find('.summary-actual[range="' + isoRange + '"]');
+            let summaryActualForThisRange = this._table.querySelector('.summary-actual[range="' + isoRange + '"]');
 
             if (ratio < thresholdredproduction / 100) {
-              $(summaryActualForThisRange).addClass('bad-efficiency');
+              summaryActualForThisRange.classList.add('bad-efficiency');
             }
             else {
               if (ratio < thresholdtargetproduction / 100) {
-                $(summaryActualForThisRange).addClass('mid-efficiency');
+                summaryActualForThisRange.classList.add('mid-efficiency');
               }
               else {
-                $(summaryActualForThisRange).addClass('good-efficiency');
+                summaryActualForThisRange.classList.add('good-efficiency');
               }
             }
           }

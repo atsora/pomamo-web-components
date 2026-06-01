@@ -12,9 +12,9 @@ require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetRangeArou
 
 var eventBus = require('eventBus');
 
-$(function () {
+document.addEventListener('DOMContentLoaded', function () {
   // Hour-based periodmanagers dispatch their range synchronously during init —
-  // earlier than this $(ready) callback. Listen first, then nudge each
+  // earlier than this DOMContentLoaded callback. Listen first, then nudge each
   // periodmanager with `askForDateTimeRangeEvent` so it re-emits.
   document.querySelectorAll('.range-output').forEach(function (el) {
     var ctx = el.getAttribute('data-context');

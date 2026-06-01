@@ -122,19 +122,25 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._reasoncolor = null; // To force refresh display
       this._modecategory = null;
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('pulse-icon-content');
-      $(this.element).addClass('reasonbutton')
-        .append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'pulse-icon-content';
+      this.element.classList.add('reasonbutton');
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', ' Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', ' Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -147,7 +153,7 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
       this._modecategory = null; // To force refresh display
 
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       this._content = undefined;
@@ -176,7 +182,10 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
       this._displayIcon(null, null);
 
       // Remove css in parent too
-      $(this.element).parents('.tile').removeClass('reasonbutton-severity-error');
+      let tileParent = this.element.closest('.tile');
+      if (tileParent) {
+        tileParent.classList.remove('reasonbutton-severity-error');
+      }
     }
 
     get refreshRate() {
@@ -216,14 +225,20 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
           this._modecategory = null;
         }
 
-        $(this.element).find('.reasonbutton-svg').remove(); // Remove Old SVG
+        let oldSvg = this.element.querySelector('.reasonbutton-svg');
+        if (oldSvg) {
+          oldSvg.remove();
+        }
 
         // New div for svg
-        let svgDiv = $('<div></div>').addClass('reasonbutton-svg');
+        let svgDiv = document.createElement('div');
+        svgDiv.className = 'reasonbutton-svg';
         let modeClass = pulseSvg.getMachineModeClass(this._modecategory);
-        svgDiv.addClass(modeClass);
-        svgDiv.css('color', this._reasoncolor);
-        $(this._content).append(svgDiv);
+        if (modeClass) {
+          svgDiv.classList.add(modeClass);
+        }
+        svgDiv.style.color = this._reasoncolor;
+        this._content.appendChild(svgDiv);
 
         pulseSvg.inlineBackgroundSvg(svgDiv);
       }
@@ -269,16 +284,19 @@ const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
       this._displayIcon(data.Reason.Color, data.MachineMode.Category.Id);
 
       // Change parent to allow css = Add 'reasonbutton-severity-error' in .tile [RAM Precision]
-      if (!pulseUtility.isNotDefined(data.Severity)) {
-        if ('Error' == data.Severity.LevelName) {
-          $(this.element).parents('.tile').addClass('reasonbutton-severity-error');
+      let tileParent = this.element.closest('.tile');
+      if (tileParent) {
+        if (!pulseUtility.isNotDefined(data.Severity)) {
+          if ('Error' == data.Severity.LevelName) {
+            tileParent.classList.add('reasonbutton-severity-error');
+          }
+          else {
+            tileParent.classList.remove('reasonbutton-severity-error');
+          }
         }
         else {
-          $(this.element).parents('.tile').removeClass('reasonbutton-severity-error');
+          tileParent.classList.remove('reasonbutton-severity-error');
         }
-      }
-      else {
-        $(this.element).parents('.tile').removeClass('reasonbutton-severity-error');
       }
 
     }

@@ -79,9 +79,9 @@ require('x-stopclassification/x-stopclassification');
         case 'machine-id':
           if (this.isInitialized()) {
             // For progress : update _mapOfModifications
-            let modifMgr = $('body').find('x-modificationmanager');
-            if (modifMgr.length == 1) {
-              this._mapOfModifications = modifMgr[0].getModifications('reason',
+            let modifMgr = document.body.querySelector('x-modificationmanager');
+            if (modifMgr) {
+              this._mapOfModifications = modifMgr.getModifications('reason',
                 this.element.getAttribute('machine-id'));
 
               // + REMOVE others with old machineid ? + create progress ? -> TODO later !
@@ -119,7 +119,7 @@ require('x-stopclassification/x-stopclassification');
       // Update here some internal parameters
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // listeners
       if (this.element.hasAttribute('period-context')) {
@@ -147,9 +147,9 @@ require('x-stopclassification/x-stopclassification');
       }
 
       // Get modifications and create listener
-      let modifMgr = $('body').find('x-modificationmanager');
-      if (modifMgr.length == 1) {
-        this._mapOfModifications = modifMgr[0].getModifications('reason',
+      let modifMgr = document.body.querySelector('x-modificationmanager');
+      if (modifMgr) {
+        this._mapOfModifications = modifMgr.getModifications('reason',
           this.element.getAttribute('machine-id'));
       }
       // Create modifications listener
@@ -160,16 +160,16 @@ require('x-stopclassification/x-stopclassification');
       // Reason
 
       // Past reason
-      let pastreasonlabel = $('<span></span>');
-      pastreasonlabel.append(this.getTranslation('pastReasonData', 'Past motion status details'));
+      let pastreasonlabel = document.createElement('span');
+      pastreasonlabel.textContent = this.getTranslation('pastReasonData', 'Past motion status details');
 
       let interrogationPastMark = document.createElement('i');
       interrogationPastMark.setAttribute('class', 'fa-solid fa-circle-question');
       interrogationPastMark.setAttribute('id', 'questionmarkpastcell');
-      let divpastreason = $('<div></div>').addClass('pulse-cellbar-last')
-        .addClass('pulse-cellbar-past-data')
-        .append(interrogationPastMark)
-        .append(pastreasonlabel);
+      let divpastreason = document.createElement('div');
+      divpastreason.className = 'pulse-cellbar-last pulse-cellbar-past-data';
+      divpastreason.appendChild(interrogationPastMark);
+      divpastreason.appendChild(pastreasonlabel);
 
       pulseUtility.addToolTip(divpastreason,
         this.getTranslation('pastTooltip', 'Look or change past reason details'));
@@ -178,30 +178,34 @@ require('x-stopclassification/x-stopclassification');
       pulseSvg.createMissingdata(divpastreason);
 
       // Main
-      this._content = $('<div></div>')
-        .addClass('pulse-cellbar-main')
-        .append(divpastreason);
+      this._content = document.createElement('div');
+      this._content.className = 'pulse-cellbar-main';
+      this._content.appendChild(divpastreason);
 
-      $(this.element).append(this._content);
+      this.element.appendChild(this._content);
 
-      divpastreason.click(
-        function (e) {
-          this.clickOnPast(e);
-        }.bind(this)
-      );
+      divpastreason.addEventListener('click', (e) => {
+        this.clickOnPast(e);
+      });
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this.element.appendChild(messageDiv);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -211,7 +215,7 @@ require('x-stopclassification/x-stopclassification');
     clearInitialization() {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._messageSpan = undefined;
       this._content = undefined;
@@ -222,8 +226,10 @@ require('x-stopclassification/x-stopclassification');
     reset() { // Code here to clean the component, for example after a parameter change
       this.removeError();
       // Clean content
-      $(this.element).find('.pulse-cellbar-past-data')
-        .removeClass('pulse-cellbar-cell-missing');
+      let pastDataCell = this.element.querySelector('.pulse-cellbar-past-data');
+      if (pastDataCell) {
+        pastDataCell.classList.remove('pulse-cellbar-cell-missing');
+      }
 
       this.switchToNextContext();
     }
@@ -263,7 +269,9 @@ require('x-stopclassification/x-stopclassification');
     }
 
     displayError(message) {
-      $(this._messageSpan).html(message);
+      if (this._messageSpan) {
+        this._messageSpan.innerHTML = message;
+      }
 
       this._requiredReason = null;
       eventBus.EventBus.dispatchToContext('reasonStatusChange',
@@ -272,7 +280,9 @@ require('x-stopclassification/x-stopclassification');
     }
 
     removeError() {
-      $(this._messageSpan).html('');
+      if (this._messageSpan) {
+        this._messageSpan.innerHTML = '';
+      }
     }
 
     /**
@@ -309,27 +319,41 @@ require('x-stopclassification/x-stopclassification');
 
       //Set state of "past data" part in widget
       this._requiredReason = data.IsUnansweredPeriod;
+      let pastDataCell = this.element.querySelector('.pulse-cellbar-past-data');
+      let questionMark = this.element.querySelector('#questionmarkpastcell');
+      let pastDataSpan = pastDataCell ? pastDataCell.querySelector('span') : null;
+
       if (data.IsUnansweredPeriod == true) {
-        $(this.element).find('.pulse-cellbar-past-data')
-          .addClass('pulse-cellbar-cell-missing')
-        $(this.element).find('#questionmarkpastcell').show();
+        if (pastDataCell) {
+          pastDataCell.classList.add('pulse-cellbar-cell-missing');
+        }
+        if (questionMark) {
+          questionMark.style.display = '';
+        }
         let stopNumber = "";
         if (data.IsUnansweredPeriod) {
           stopNumber = data.UnansweredPeriodsNumber.toString();
         }
-        if (data.UnansweredPeriodsNumber <= 1) {
-          this.element.querySelector('.pulse-cellbar-past-data span').textContent = stopNumber + " " + this.getTranslation('dataToClassified', 'STOP to be classified');
-        }
-        else {
-          this.element.querySelector('.pulse-cellbar-past-data span').textContent = stopNumber + " " + this.getTranslation('dataToClassifiedPlural', 'STOPS to be classified');
+        if (pastDataSpan) {
+          if (data.UnansweredPeriodsNumber <= 1) {
+            pastDataSpan.textContent = stopNumber + " " + this.getTranslation('dataToClassified', 'STOP to be classified');
+          }
+          else {
+            pastDataSpan.textContent = stopNumber + " " + this.getTranslation('dataToClassifiedPlural', 'STOPS to be classified');
+          }
         }
         status = true;
       }
       else {
-        $(this.element).find('.pulse-cellbar-past-data')
-          .removeClass('pulse-cellbar-cell-missing')
-        $(this.element).find('#questionmarkpastcell').hide();
-        this.element.querySelector('.pulse-cellbar-past-data span').textContent = this.getTranslation('pastReasonData', 'Past motion status details');
+        if (pastDataCell) {
+          pastDataCell.classList.remove('pulse-cellbar-cell-missing');
+        }
+        if (questionMark) {
+          questionMark.style.display = 'none';
+        }
+        if (pastDataSpan) {
+          pastDataSpan.textContent = this.getTranslation('pastReasonData', 'Past motion status details');
+        }
       }
       eventBus.EventBus.dispatchToContext('reasonStatusChange',
         this.element.getAttribute('status-context'),

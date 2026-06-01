@@ -75,8 +75,8 @@ require('x-reasonsubdetails/x-reasonsubdetails');
     get content () { return this._content; } // Optional
 
     _cleanDisplay () {
-      $(this._reasonContent).empty();
-      $(this._modeContent).empty();
+      this._reasonContent.replaceChildren();
+      this._modeContent.replaceChildren();
     }
 
     attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
@@ -85,9 +85,9 @@ require('x-reasonsubdetails/x-reasonsubdetails');
         case 'machine-id':
           if (this.isInitialized()) {
             // For progress : update _mapOfModifications
-            let modifMgr = $('body').find('x-modificationmanager');
-            if (modifMgr.length == 1) {
-              this._mapOfModifications = modifMgr[0].getModifications('reason',
+            let modifMgr = document.querySelector('body x-modificationmanager');
+            if (modifMgr) {
+              this._mapOfModifications = modifMgr.getModifications('reason',
                 this.element.getAttribute('machine-id'));
 
               // + REMOVE others with old machineid ? + create progress ? -> TODO later !
@@ -184,9 +184,9 @@ require('x-reasonsubdetails/x-reasonsubdetails');
       }
 
       // Get modifications and create listener
-      let modifMgr = $('body').find('x-modificationmanager');
-      if (modifMgr.length == 1) {
-        this._mapOfModifications = modifMgr[0].getModifications('reason',
+      let modifMgr = document.querySelector('body x-modificationmanager');
+      if (modifMgr) {
+        this._mapOfModifications = modifMgr.getModifications('reason',
           this.element.getAttribute('machine-id'));
       }
       // Create modifications listener
@@ -194,49 +194,70 @@ require('x-reasonsubdetails/x-reasonsubdetails');
         'modificationEvent', this.onModificationEvent.bind(this));
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>')
-        .addClass('detailed-main');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'detailed-main';
+      this.element.appendChild(this._content);
 
       { // Reasons
         let title = this.getTranslation('detailsViewSubTitles.reason', 'motion status');
-        let spanTitle = $('<span></span>').addClass('detailedreasonat-title-span')
-          .html(title);
-        let divTitle = $('<div></div>').addClass('detailed-title').append(spanTitle);
-        this._reasonContent = $('<div></div>').addClass('detailed-content');
-        this._divReason = $('<div></div>').addClass('detailedreasonat')
-          .append(divTitle).append(this._reasonContent);
-        $(this._content).append(this._divReason);
+        let spanTitle = document.createElement('span');
+        spanTitle.className = 'detailedreasonat-title-span';
+        spanTitle.innerHTML = title;
+        let divTitle = document.createElement('div');
+        divTitle.className = 'detailed-title';
+        divTitle.appendChild(spanTitle);
+        this._reasonContent = document.createElement('div');
+        this._reasonContent.className = 'detailed-content';
+        this._divReason = document.createElement('div');
+        this._divReason.className = 'detailedreasonat';
+        this._divReason.appendChild(divTitle);
+        this._divReason.appendChild(this._reasonContent);
+        this._content.appendChild(this._divReason);
 
         // Create DOM - Loader
-        let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-        let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-        $(this._divReason).append(loaderDiv);
+        let loader = document.createElement('div');
+        loader.className = 'pulse-loader';
+        loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+        loader.style.display = 'none';
+        let loaderDiv = document.createElement('div');
+        loaderDiv.className = 'pulse-loader-div';
+        loaderDiv.appendChild(loader);
+        this._divReason.appendChild(loaderDiv);
 
         // Create DOM - message for error - no need to store, can be removed
-        let messageSpan = $('<span></span>')
-          .addClass('pulse-message').html('');
-        let messageDiv = $('<div></div>')
-          .addClass('pulse-message-div')
-          .append(messageSpan);
-        $(this._reasonContent).append(messageDiv);
+        let messageSpan = document.createElement('span');
+        messageSpan.className = 'pulse-message';
+        messageSpan.innerHTML = '';
+        let messageDiv = document.createElement('div');
+        messageDiv.className = 'pulse-message-div';
+        messageDiv.appendChild(messageSpan);
+        this._reasonContent.appendChild(messageDiv);
       }
       { // Machine Mode
         let title = this.getTranslation('detailsViewSubTitles.machinemode', 'machine mode');
-        let spanTitle = $('<span></span>').addClass('detailedmodeat-title-span')
-          .html(title);
-        let divTitle = $('<div></div>').addClass('detailed-title').append(spanTitle);
-        this._modeContent = $('<div></div>').addClass('detailed-content');
-        this._divMode = $('<div></div>').addClass('detailedmodeat')
-          .append(divTitle).append(this._modeContent);
-        $(this._content).append(this._divMode);
+        let spanTitle = document.createElement('span');
+        spanTitle.className = 'detailedmodeat-title-span';
+        spanTitle.innerHTML = title;
+        let divTitle = document.createElement('div');
+        divTitle.className = 'detailed-title';
+        divTitle.appendChild(spanTitle);
+        this._modeContent = document.createElement('div');
+        this._modeContent.className = 'detailed-content';
+        this._divMode = document.createElement('div');
+        this._divMode.className = 'detailedmodeat';
+        this._divMode.appendChild(divTitle);
+        this._divMode.appendChild(this._modeContent);
+        this._content.appendChild(this._divMode);
 
         // Create DOM - Loader below
-        let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-        $(this._divMode).append(loader);
+        let loader = document.createElement('div');
+        loader.className = 'pulse-loader';
+        loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+        loader.style.display = 'none';
+        this._divMode.appendChild(loader);
       }
 
       // Initialization OK => switch to the next context
@@ -249,7 +270,7 @@ require('x-reasonsubdetails/x-reasonsubdetails');
       this._dateRange = undefined;
 
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._divReason = undefined;
       this._reasonContent = undefined;
@@ -307,21 +328,24 @@ require('x-reasonsubdetails/x-reasonsubdetails');
     displayError (message) {
       this._cleanDisplay();
 
-      let messageSpan = $(this.element).find('.pulse-message');
-      if (messageSpan.length == 0) {
+      let messageSpan = this.element.querySelector('.pulse-message');
+      if (messageSpan == null) {
         // Create DOM - message for error
-        messageSpan = $('<span></span>')
-          .addClass('pulse-message');
-        let messageDiv = $('<div></div>')
-          .addClass('pulse-message-div')
-          .append(messageSpan);
-        $(this._reasonContent).append(messageDiv);
+        messageSpan = document.createElement('span');
+        messageSpan.className = 'pulse-message';
+        let messageDiv = document.createElement('div');
+        messageDiv.className = 'pulse-message-div';
+        messageDiv.appendChild(messageSpan);
+        this._reasonContent.appendChild(messageDiv);
       }
-      $(messageSpan).html(message);
+      messageSpan.innerHTML = message;
     }
 
     removeError () {
-      $(this.element).find('.pulse-message').html('');
+      let messageSpan = this.element.querySelector('.pulse-message');
+      if (messageSpan) {
+        messageSpan.innerHTML = '';
+      }
     }
 
     getShortUrl () {
@@ -348,18 +372,22 @@ require('x-reasonsubdetails/x-reasonsubdetails');
     }
 
     refresh (data) {
-      $(this.element).find('.detailed-content').empty(); // = Both
+      let contents = this.element.querySelectorAll('.detailed-content');
+      contents.forEach(c => c.replaceChildren());
 
       if (0 < data.ReasonOnlySlots.length) {
-        let divRange = $('<div></div>').addClass('detailed-range');
-        this._divReasonDisplay = $('<div></div>').addClass('detailed-data');
+        let divRange = document.createElement('div');
+        divRange.className = 'detailed-range';
+        this._divReasonDisplay = document.createElement('div');
+        this._divReasonDisplay.className = 'detailed-data';
         // RANGE
         //??? = data.ReasonOnlySlots[0].Range; // Not useful
         this._singleReasonRange = pulseRange.createDateRangeFromString(data.ReasonOnlySlots[0].Range);
         let rangeDisplay = pulseUtility.displayDateRange(this._singleReasonRange, true);
-        let spanRange = $('<span></span>').addClass('detailedreasonat-range-span')
-          .html(rangeDisplay);
-        $(divRange).append(spanRange);
+        let spanRange = document.createElement('span');
+        spanRange.className = 'detailedreasonat-range-span';
+        spanRange.innerHTML = rangeDisplay;
+        divRange.appendChild(spanRange);
 
         // reason (...)
         let reasonDisplay = data.ReasonOnlySlots[0].Display;
@@ -373,9 +401,10 @@ require('x-reasonsubdetails/x-reasonsubdetails');
           reasonDisplay = '(Score:' + score + ') ' + reasonDisplay;
         }
 
-        let spanReason = $('<span></span>').addClass('detailedreasonat-reason')
-          .html(reasonDisplay);
-        $(this._divReasonDisplay).append(spanReason);
+        let spanReason = document.createElement('span');
+        spanReason.className = 'detailedreasonat-reason';
+        spanReason.innerHTML = reasonDisplay;
+        this._divReasonDisplay.appendChild(spanReason);
 
         if ((reasonDisplay != 'Motion')
           || ('true' == this.getConfigOrAttribute('showAutoReasonsWhenMotion'))) {
@@ -392,23 +421,25 @@ require('x-reasonsubdetails/x-reasonsubdetails');
               }
             }
             if (number >= 1) {
-              let moreReasonTextSpan = $('<span></span>').html(moreReasonText);
-              moreReasonTextSpan.attr('title', this.getTranslation('seeAllReasons', 'Click to see all reasons'));
-              let moreReasonTextButton = $('<div></div>').addClass('detailed-more-auto-reason')
-                .append(moreReasonTextSpan);
+              let moreReasonTextSpan = document.createElement('span');
+              moreReasonTextSpan.innerHTML = moreReasonText;
+              moreReasonTextSpan.title = this.getTranslation('seeAllReasons', 'Click to see all reasons');
+              let moreReasonTextButton = document.createElement('div');
+              moreReasonTextButton.classList.add('detailed-more-auto-reason');
+              moreReasonTextButton.appendChild(moreReasonTextSpan);
 
               // Sub details for reason (in popup)
-              $(moreReasonTextButton).click(function (evt) {
-                let reasonsubdetails = pulseUtility.createjQueryElementWithAttribute('x-reasonsubdetails', {
+              moreReasonTextButton.addEventListener('click', function (evt) {
+                let reasonsubdetails = pulseUtility.createElementWithAttribute('x-reasonsubdetails', {
                   'machine-id': this.element.getAttribute('machine-id'),
                   'when': this.element.getAttribute('when'),
                   'clientX': evt.clientX,
                   'clientY': evt.clientY
                 });
-                $(this.element).append(reasonsubdetails);
+                this.element.appendChild(reasonsubdetails);
               }.bind(this));
 
-              $(this._divReasonDisplay).append(moreReasonTextButton);
+              this._divReasonDisplay.appendChild(moreReasonTextButton);
             }
           }
         }
@@ -418,53 +449,58 @@ require('x-reasonsubdetails/x-reasonsubdetails');
           ('false' == this.getConfigOrAttribute('detailedreasonat.hideChangeReasonButton', 'false'))) {
           // Add button = before text display -> float right
           let changeText = this.getTranslation('changebutton', 'Change');
-          let changeButton = $('<a></a>').addClass('detailed-button')
-            .html(changeText);
+          let changeButton = document.createElement('a');
+          changeButton.classList.add('detailed-button');
+          changeButton.innerHTML = changeText;
           //let saveTitle = this.getTranslation('savereason.saveReasonTitle', 'Set reason');
           let self = this;
-          $(changeButton).click(function (e) {
+          changeButton.addEventListener('click', function (e) {
             // Hide Popup
-            $('.popup-block').fadeOut(); // Never called. But to keep in case of display in popup
+            document.querySelectorAll('.popup-block').forEach(el => pulseUtility.fadeOut(el)); // Never called. But to keep in case of display in popup
             // Open Save Dlg - displayMode="force-all" to show all slots for context
             pulseDetailsPopup.openChangeReasonDialog(self, self._singleReasonRange, //self._dateRange,
               true, undefined, 'force-all');
           });
-          $(this._divReasonDisplay).append(changeButton);
+          this._divReasonDisplay.appendChild(changeButton);
         }
 
         // Append
-        $(this._reasonContent)
-          .append(divRange).append(this._divReasonDisplay);
+        this._reasonContent.appendChild(divRange);
+        this._reasonContent.appendChild(this._divReasonDisplay);
 
         // MODES
-        $(this._modeContent).empty();
-        $(this._divMode).hide();
+        this._modeContent.replaceChildren();
+        this._divMode.style.display = 'none';
         let isoWhen = this.element.getAttribute('when');
         let rangeWhen = pulseRange.createDateRangeDefaultInclusivity(isoWhen, isoWhen);
         for (let iMode = 0; iMode < data.ReasonOnlySlots[0].MachineModes.length; iMode++) {
           let isoRangeMode = data.ReasonOnlySlots[0].MachineModes[iMode].Range;
           let rangeMode = pulseRange.createDateRangeFromString(isoRangeMode);
           if (pulseRange.overlaps(rangeMode, rangeWhen)) {
-            $(this._divMode).show();
-            let divRangeMode = $('<div></div>').addClass('detailed-range');
-            let divMode = $('<div></div>').addClass('detailed-data');
+            this._divMode.style.display = '';
+            let divRangeMode = document.createElement('div');
+            divRangeMode.classList.add('detailed-range');
+            let divMode = document.createElement('div');
+            divMode.classList.add('detailed-data');
             // RANGE
             this._rangeMode = isoRangeMode;
             let tmpRange = pulseRange.createDateRangeFromString(isoRangeMode);
             let rangeDisplay = pulseUtility.displayDateRange(tmpRange, true);
-            let spanRange = $('<span></span>').addClass('detailedmodeat-range-span')
-              .html(rangeDisplay);
-            $(divRangeMode).append(spanRange);
+            let spanRange = document.createElement('span');
+            spanRange.classList.add('detailedmodeat-range-span');
+            spanRange.innerHTML = rangeDisplay;
+            divRangeMode.appendChild(spanRange);
 
             // Mode
             let modeDisplay = data.ReasonOnlySlots[0].MachineModes[iMode].Display;
-            let spanMode = $('<span></span>').addClass('detailedmodeat-modes')
-              .html(modeDisplay);
-            $(divMode).append(spanMode);
+            let spanMode = document.createElement('span');
+            spanMode.classList.add('detailedmodeat-modes');
+            spanMode.innerHTML = modeDisplay;
+            divMode.appendChild(spanMode);
 
             // Append
-            $(this._modeContent)
-              .append(divRangeMode).append(divMode);
+            this._modeContent.appendChild(divRangeMode);
+            this._modeContent.appendChild(divMode);
           }
         }
       }
@@ -503,13 +539,13 @@ require('x-reasonsubdetails/x-reasonsubdetails');
           if (pulseRange.overlaps(modif.ranges[i], rangeWhen)) {
             // includes 'WHEN' -> show progress
             let newRevisionProgress =
-              pulseUtility.createjQueryElementWithAttribute('x-revisionprogress', {
+              pulseUtility.createElementWithAttribute('x-revisionprogress', {
                 'revision-id': modif.revisionid,
                 'machine-id': event.target.machineid,
                 'kind': modif.kind,
                 'revision-range': pulseUtility.convertDateRangeForWebService(modif.ranges[i])
               });
-            this._divReasonDisplay.append(newRevisionProgress);
+            this._divReasonDisplay.appendChild(newRevisionProgress);
           }
         }
       }

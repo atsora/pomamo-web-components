@@ -75,62 +75,83 @@ var pulseCustomDialog = require('pulseCustomDialog');
       // Listeners and dispatchers
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.classList.add('pulse-message');
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.classList.add('pulse-message-div');
+      messageDiv.appendChild(this._messageSpan);
+      this.element.appendChild(messageDiv);
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('workexplorer-content');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.classList.add('workexplorer-content');
+      this.element.appendChild(this._content);
 
-      let header = $('<div></div>').addClass('workexplorer-header');
-      this._content.append(header);
-      let main = $('<div></div>').addClass('workexplorer-main');
-      this._content.append(main);
+      let header = document.createElement('div');
+      header.classList.add('workexplorer-header');
+      this._content.appendChild(header);
+      let main = document.createElement('div');
+      main.classList.add('workexplorer-main');
+      this._content.appendChild(main);
 
       // Create DOM - Parents
-      this._parents = $('<div></div>').addClass('workexplorer-parents-list');
-      let parentsZone = $('<div></div>').addClass('workexplorer-parents');
-      parentsZone.append(this._parents);
-      header.append(parentsZone);
+      this._parents = document.createElement('div');
+      this._parents.classList.add('workexplorer-parents-list');
+      let parentsZone = document.createElement('div');
+      parentsZone.classList.add('workexplorer-parents');
+      parentsZone.appendChild(this._parents);
+      header.appendChild(parentsZone);
       // Create DOM - Title
-      this._titleKind = $('<div></div>').addClass('workexplorer-title-kind');
-      this._titleDisplay = $('<div></div>').addClass('workexplorer-title-display');
-      this._title = $('<div></div>').addClass('workexplorer-title');
-      this._title.append(this._titleKind).append(this._titleDisplay);
-      this._reloadBtn = $('<button></button>').addClass('workexplorer-button-reload')
-        .html(this.getTranslation('reload', 'Reload'));
-      this._title.append(this._reloadBtn);
-      this._reloadBtn.click(
+      this._titleKind = document.createElement('div');
+      this._titleKind.classList.add('workexplorer-title-kind');
+      this._titleDisplay = document.createElement('div');
+      this._titleDisplay.classList.add('workexplorer-title-display');
+      this._title = document.createElement('div');
+      this._title.classList.add('workexplorer-title');
+      this._title.appendChild(this._titleKind);
+      this._title.appendChild(this._titleDisplay);
+      this._reloadBtn = document.createElement('button');
+      this._reloadBtn.classList.add('workexplorer-button-reload');
+      this._reloadBtn.innerHTML = this.getTranslation('reload', 'Reload');
+      this._title.appendChild(this._reloadBtn);
+      this._reloadBtn.addEventListener('click',
         function () {
           this.start();
         }.bind(this));
-      header.append(this._title);
-      this._reloadBtn.hide();
+      header.appendChild(this._title);
+      this._reloadBtn.style.display = 'none';
       // Create DOM - children
-      this._children = $('<div></div>').addClass('workexplorer-children-list');
-      let childrenZone = $('<div></div>').addClass('workexplorer-children');
-      childrenZone.append(this._children);
-      header.append(childrenZone);
+      this._children = document.createElement('div');
+      this._children.classList.add('workexplorer-children-list');
+      let childrenZone = document.createElement('div');
+      childrenZone.classList.add('workexplorer-children');
+      childrenZone.appendChild(this._children);
+      header.appendChild(childrenZone);
       // Create DOM - Hidden for display
-      let hidden = $('<div></div>').addClass('workexplorer-left-hidden');
-      main.append(hidden);
+      let hidden = document.createElement('div');
+      hidden.classList.add('workexplorer-left-hidden');
+      main.appendChild(hidden);
       // Create DOM - Properties
-      this._properties = $('<div></div>').addClass('workexplorer-properties');
-      main.append(this._properties);
+      this._properties = document.createElement('div');
+      this._properties.classList.add('workexplorer-properties');
+      main.appendChild(this._properties);
       // Create DOM - Buttons
-      this._buttons = $('<div></div>').addClass('workexplorer-buttons');
-      main.append(this._buttons);
+      this._buttons = document.createElement('div');
+      this._buttons.classList.add('workexplorer-buttons');
+      main.appendChild(this._buttons);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -150,14 +171,14 @@ var pulseCustomDialog = require('pulseCustomDialog');
 
     displayError (message) {
       // Code here to display the error message
-      $(this._messageSpan).html(message);
-      $(this._content).hide();
+      this._messageSpan.innerHTML = message;
+      this._content.style.display = 'none';
     }
 
     removeError () {
       // Code here to remove the error message.
-      $(this._messageSpan).html('');
-      $(this._content).show();
+      this._messageSpan.innerHTML = '';
+      this._content.style.display = '';
     }
 
     getShortUrl () {
@@ -171,27 +192,32 @@ var pulseCustomDialog = require('pulseCustomDialog');
     _showKindSelection () {
       for (let iData = 0; iData < this._data.length; iData++) {
         let kind = this._data[iData].Kind;
-        let btn = $('<div></div>').addClass('workexplorer-kind-button');
-        btn.attr('kind', kind).html(kind);
-        this._titleKind.append(btn);
+        let btn = document.createElement('div');
+        btn.classList.add('workexplorer-kind-button');
+        btn.setAttribute('kind', kind);
+        btn.innerHTML = kind;
+        this._titleKind.appendChild(btn);
       }
 
-      $(this._titleKind).find('.workexplorer-kind-button').click(function () {
-        let kind = $(this).attr('kind');
-        $(this).closest('x-workexplorer')[0].setAttribute('kind', kind);
+      let buttons = this._titleKind.querySelectorAll('.workexplorer-kind-button');
+      buttons.forEach(btn => {
+        btn.addEventListener('click', function () {
+          let kind = this.getAttribute('kind');
+          this.closest('x-workexplorer').setAttribute('kind', kind);
+        });
       });
     }
 
     refresh (data) {
       // Clean
-      this._parents.empty();
-      this._titleKind.empty();
-      this._titleDisplay.html('');
-      this._reloadBtn.hide();
-      //this._title.empty(); NEVER ! Maybe revision
-      this._children.empty();
-      this._properties.empty();
-      this._buttons.empty();
+      this._parents.replaceChildren();
+      this._titleKind.replaceChildren();
+      this._titleDisplay.innerHTML = '';
+      this._reloadBtn.style.display = 'none';
+      //this._title.replaceChildren(); NEVER ! Maybe revision
+      this._children.replaceChildren();
+      this._properties.replaceChildren();
+      this._buttons.replaceChildren();
 
       this._data = data;
       this._workStructure = undefined;
@@ -221,142 +247,155 @@ var pulseCustomDialog = require('pulseCustomDialog');
 
           // including 'Name' / 'Code'...
 
-          let propDiv = $('<div></div>').addClass('workexplorer-prop').addClass(prop.Key);
+          let propDiv = document.createElement('div');
+          propDiv.classList.add('workexplorer-prop');
+          propDiv.classList.add(prop.Key);
 
-          let label = $('<label></label>').addClass('workexplorer-label').html(prop.Label);
-          label.attr('for', prop.Key);
-          propDiv.append(label);
+          let label = document.createElement('label');
+          label.classList.add('workexplorer-label');
+          label.innerHTML = prop.Label;
+          label.setAttribute('for', prop.Key);
+          propDiv.appendChild(label);
 
-          let value = $('<div></div>').addClass('workexplorer-value');
+          let value = document.createElement('div');
+          value.classList.add('workexplorer-value');
 
           switch (prop.Format) {
             case 'String': {
-              let input = $('<input></input>').addClass('workexplorer-string');
-              input.attr('type', 'text');
+              let input = document.createElement('input');
+              input.classList.add('workexplorer-string');
+              input.setAttribute('type', 'text');
               // limits
               if (prop.Limits) {
                 if (prop.Limits.Maxsize) {
                   // Max number of chars
-                  input.attr('maxlength', prop.Limits.Maxsize);
+                  input.setAttribute('maxlength', prop.Limits.Maxsize);
                 }
               }
               if (prop.Default) {
-                //input.attr('default', prop.Default);
+                //input.setAttribute('default', prop.Default);
                 input.value = prop.Default;
               }
-              value.append(input);
+              value.appendChild(input);
             } break;
             case 'URL': {
-              let input = $('<input></input>').addClass('workexplorer-URL');
-              input.attr('type', 'url'); // URL -> check format ? Auto
+              let input = document.createElement('input');
+              input.classList.add('workexplorer-URL');
+              input.setAttribute('type', 'url'); // URL -> check format ? Auto
               if (prop.Default) {
-                //input.attr('default', prop.Default);
+                //input.setAttribute('default', prop.Default);
                 input.value = prop.Default;
               }
-              value.append(input);
+              value.appendChild(input);
             } break;
             case 'Integer': {
-              let input = $('<input></input>').addClass('workexplorer-integer');
-              value.attr('type', 'number');
+              let input = document.createElement('input');
+              input.classList.add('workexplorer-integer');
+              value.setAttribute('type', 'number');
               // limits
               if (prop.Limits) {
-                //value.attr('limits', prop.Limits);
+                //value.setAttribute('limits', prop.Limits);
                 if (prop.Limits.Min) {
-                  input.attr('min', prop.Limits.Min);
+                  input.setAttribute('min', prop.Limits.Min);
                 }
                 if (prop.Limits.Max) {
-                  input.attr('max', prop.Limits.Max);
+                  input.setAttribute('max', prop.Limits.Max);
                 }
                 if (prop.Limits.Step) {
-                  input.attr('step', prop.Limits.Step);
+                  input.setAttribute('step', prop.Limits.Step);
                 }
               }
               if (prop.Default) {
-                //input.attr('default', prop.Default);
+                //input.setAttribute('default', prop.Default);
                 input.value = prop.Default;
               }
-              value.append(input);
+              value.appendChild(input);
             } break;
             case 'Float': { // ????? text ?
-              let input = $('<input></input>').addClass('workexplorer-float');
-              value.attr('type', 'number');
+              let input = document.createElement('input');
+              input.classList.add('workexplorer-float');
+              value.setAttribute('type', 'number');
               // limits
               if (prop.Limits) {
-                //value.attr('limits', prop.Limits);
+                //value.setAttribute('limits', prop.Limits);
                 if (prop.Limits.Min) {
-                  input.attr('min', prop.Limits.Min);
+                  input.setAttribute('min', prop.Limits.Min);
                 }
                 if (prop.Limits.Max) {
-                  input.attr('max', prop.Limits.Max);
+                  input.setAttribute('max', prop.Limits.Max);
                 }
               }
               if (prop.Default) {
-                //input.attr('default', prop.Default);
+                //input.setAttribute('default', prop.Default);
                 input.value = prop.Default;
               }
-              value.append(input);
+              value.appendChild(input);
             } break;
             case 'Duration': {
               // Days
-              let days = $('<input></input>').addClass('workexplorer-days');
-              days.attr('type', 'number');
+              let days = document.createElement('input');
+              days.classList.add('workexplorer-days');
+              days.setAttribute('type', 'number');
               // limits
               if (prop.Limits) {
                 if (prop.Limits.Min) {
-                  days.attr('min', prop.Limits.Min);
+                  days.setAttribute('min', prop.Limits.Min);
                 }
                 if (prop.Limits.Max) {
-                  days.attr('max', prop.Limits.Max);
+                  days.setAttribute('max', prop.Limits.Max);
                   if (prop.Limits.Max < 24 * 60 * 60) { // 24h
-                    days.hide();
+                    days.style.display = 'none';
                   }
                 }
                 /*if (prop.Limits.Step) {
-                  days.attr('step', prop.Limits.Step);
+                  days.setAttribute('step', prop.Limits.Step);
                 }*/
               }
               if (prop.Default) {
-                //value.attr('default', prop.Default);
+                //value.setAttribute('default', prop.Default);
                 if (prop.Default <= 24 * 60 * 60) { // 24h
-                  days.attr('default', 0);
+                  days.setAttribute('default', 0);
                 }
                 else {
-                  days.attr('default', Math.floor(prop.Default / (24 * 60 * 60)));
+                  days.setAttribute('default', Math.floor(prop.Default / (24 * 60 * 60)));
                 }
               }
               if (prop.Required) {
-                days.addClass('required');
+                days.classList.add('required');
               }
               if (prop.ReadOnly && true == prop.ReadOnly) {
-                days.addClass('readonly');
+                days.classList.add('readonly');
               }
-              days.attr('name', prop.Key);
-              days.attr('propformat', prop.Format);
-              value.append(days);
+              days.setAttribute('name', prop.Key);
+              days.setAttribute('propformat', prop.Format);
+              value.appendChild(days);
 
               // span 'days'
-              let unit = $('<span></span>').addClass('workexplorer-unit').html('days');
-              value.append(unit);
+              let unit = document.createElement('span');
+              unit.classList.add('workexplorer-unit');
+              unit.innerHTML = 'days';
+              value.appendChild(unit);
               if (prop.Limits) {
                 if (prop.Limits.Max) {
-                  days.attr('max', prop.Limits.Max);
+                  days.setAttribute('max', prop.Limits.Max);
                   if (prop.Limits.Max < 24 * 60 * 60) { // 24h
-                    unit.hide();
+                    unit.style.display = 'none';
                   }
                 }
               }
 
               // Time
-              let time = $('<input></input>').addClass('workexplorer-duration');
-              time.attr('type', 'time');
+              let time = document.createElement('input');
+              time.classList.add('workexplorer-duration');
+              time.setAttribute('type', 'time');
               // limits
               if (prop.Limits) {
                 if (prop.Limits.Min) {
-                  time.attr('min', pulseUtility.secondsToHHMMSS(prop.Limits.Min));
+                  time.setAttribute('min', pulseUtility.secondsToHHMMSS(prop.Limits.Min));
                 }
                 if (prop.Limits.Max) {
                   if (prop.Limits.Max < 24 * 60 * 60) { // 24h
-                    time.attr('max', pulseUtility.secondsToHHMMSS(prop.Limits.Max));
+                    time.setAttribute('max', pulseUtility.secondsToHHMMSS(prop.Limits.Max));
                   }
                 }
                 if (prop.Limits.Step) {
@@ -368,80 +407,90 @@ var pulseCustomDialog = require('pulseCustomDialog');
               }
               if (prop.Default) {
                 if (prop.Default < 24 * 60 * 60) { // 24h
-                  time.attr('default', pulseUtility.secondsToHHMMSS(prop.Default));
+                  time.setAttribute('default', pulseUtility.secondsToHHMMSS(prop.Default));
                 }
                 else {
-                  time.attr('default', pulseUtility.secondsToHHMMSS(prop.Default % (24 * 60 * 60)));
-                  //time.value(pulseUtility.secondsToHHMMSS(prop.Default % (24 * 60 * 60)));
+                  time.setAttribute('default', pulseUtility.secondsToHHMMSS(prop.Default % (24 * 60 * 60)));
+                  //time.value = pulseUtility.secondsToHHMMSS(prop.Default % (24 * 60 * 60));
                 }
               }
-              value.append(time);
+              value.appendChild(time);
             } break;
             case 'Enum': {
-              let input = $('<select></select>').addClass('workexplorer-enum');
+              let input = document.createElement('select');
+              input.classList.add('workexplorer-enum');
               // limits
               if (prop.Limits) {
-                //value.attr('limits', prop.Limits);
+                //value.setAttribute('limits', prop.Limits);
                 if (prop.Limits.Enum) {
                   for (let iEnum = 0; iEnum < prop.Limits.Enum.length; iEnum++) {
                     let display = prop.Limits.Enum[iEnum];
-                    input.append('<option id="workexplorer-' + display + '" value="' + display + '">' + display + '</option>');
+                    let option = document.createElement('option');
+                    option.setAttribute('id', 'workexplorer-' + display);
+                    option.setAttribute('value', display);
+                    option.textContent = display;
+                    input.appendChild(option);
                   }
                 }
                 if (prop.Default) {
                   // Set default selection
-                  input.val(prop.Default);
+                  input.value = prop.Default;
                 }
               }
-              value.append(input);
+              value.appendChild(input);
             } break;
             case 'Boolean': {
-              let input = $('<input></input>').addClass('workexplorer-bool');
-              input.attr('type', 'checkbox');
+              let input = document.createElement('input');
+              input.classList.add('workexplorer-bool');
+              input.setAttribute('type', 'checkbox');
               if (prop.Limits) {
                 if (prop.Limits.Nullable) {
                   // TO DO : Add check box 'No Value'
                 }
               }
               if (prop.Default) {
-                input.prop('checked', prop.Default);
+                input.checked = prop.Default;
               }
-              value.append(input);
+              value.appendChild(input);
             } break;
             case 'Table': {
               // Not defined yet !
-              let span = $('<span></span>').html('Not defined yet ! ');
-              value.append(span);
+              let span = document.createElement('span');
+              span.innerHTML = 'Not defined yet ! ';
+              value.appendChild(span);
             } break;
 
           } // end switch format
 
           // Common
           if (prop.Required) {
-            value.addClass('required');
+            value.classList.add('required');
           }
           if (prop.ReadOnly && true == prop.ReadOnly) {
-            value.addClass('readonly');
+            value.classList.add('readonly');
           }
-          value.attr('name', prop.Key);
-          value.attr('propformat', prop.Format);
-          propDiv.append(value);
+          value.setAttribute('name', prop.Key);
+          value.setAttribute('propformat', prop.Format);
+          propDiv.appendChild(value);
 
           // Commmon : unit
           if (prop.Unit) {
-            let unit = $('<span></span>').addClass('workexplorer-unit').html(prop.Unit);
-            value.append(unit);
+            let unit = document.createElement('span');
+            unit.classList.add('workexplorer-unit');
+            unit.innerHTML = prop.Unit;
+            value.appendChild(unit);
           }
 
           // Common + add change button - disabled for the moment
           if (!prop.ReadOnly) { // false or undefined
-            value = $('<div></div>').addClass('workexplorer-prop-button');
-            value.attr('name', prop.Key);
-            value.attr('propformat', prop.Format);
-            propDiv.append(value);
+            value = document.createElement('div');
+            value.classList.add('workexplorer-prop-button');
+            value.setAttribute('name', prop.Key);
+            value.setAttribute('propformat', prop.Format);
+            propDiv.appendChild(value);
           }
 
-          this._properties.append(propDiv);
+          this._properties.appendChild(propDiv);
 
         }
       }
@@ -455,11 +504,12 @@ var pulseCustomDialog = require('pulseCustomDialog');
       // Buttons
       // If 'id' is not defined -> 'NEW'
       if (!this.element.hasAttribute('id')) {
-        let newBtn = $('<button></button>').addClass('workexplorer-button-new')
-          .html(this.getTranslation('saveNew', 'Save New'));
-        this._buttons.append(newBtn);
+        let newBtn = document.createElement('button');
+        newBtn.classList.add('workexplorer-button-new');
+        newBtn.innerHTML = this.getTranslation('saveNew', 'Save New');
+        this._buttons.appendChild(newBtn);
 
-        newBtn.click(
+        newBtn.addEventListener('click',
           function () {
             this._saveNew();
           }.bind(this));
@@ -492,43 +542,46 @@ var pulseCustomDialog = require('pulseCustomDialog');
       // data.Kind == attr
 
       // HEADER : title / revisions
-      this._titleDisplay.html(data.Display);
-      this._reloadBtn.show();
+      this._titleDisplay.innerHTML = data.Display;
+      this._reloadBtn.style.display = '';
 
       // PARENTS
-      this._parents.empty();
+      this._parents.replaceChildren();
       if (data.Parents) {
         for (let iParent = 0; iParent < data.Parents.length; iParent++) {
-          let selection = $('<div></div>').addClass('workexplorer-single-parent')
-            .attr('Id', data.Parents[iParent].Id)
-            .attr('Kind', data.Parents[iParent].Kind);
+          let selection = document.createElement('div');
+          selection.classList.add('workexplorer-single-parent');
+          selection.setAttribute('Id', data.Parents[iParent].Id);
+          selection.setAttribute('Kind', data.Parents[iParent].Kind);
           if (data.Parents[iParent].Order) {
-            selection.attr('Order', data.Parents[iParent].Order);
-            $(selection).css('order', data.Parents[iParent].Order);
+            selection.setAttribute('Order', data.Parents[iParent].Order);
+            selection.style.order = data.Parents[iParent].Order;
           }
 
-          let row = $('<div></div>').addClass('workexplorer-parent-row');
-          //row.append($('<div class="reorderHighlight"></div>'));  // smartphone ?
-          //row.append($('<div class="reorderUpButton"></div>'));   // smartphone ?
-          //row.append($('<div class="reorderDownButton"></div>')); // smartphone ?
-          //row.append($('<div class="reorderButton"></div>'));
+          let row = document.createElement('div');
+          row.classList.add('workexplorer-parent-row');
+          //row.appendChild(document.createElement('div')).className = 'reorderHighlight';  // smartphone ?
+          //row.appendChild(document.createElement('div')).className = 'reorderUpButton';   // smartphone ?
+          //row.appendChild(document.createElement('div')).className = 'reorderDownButton'; // smartphone ?
+          //row.appendChild(document.createElement('div')).className = 'reorderButton';
 
-          let spanDisplay = $('<span></span>').addClass('workexplorer-parent-display')
-            .html(data.Parents[iParent].Display);
-          $(spanDisplay).attr('kind', data.Parents[iParent].Id);
-          $(spanDisplay).attr('itemid', data.Parents[iParent].Kind);
+          let spanDisplay = document.createElement('span');
+          spanDisplay.classList.add('workexplorer-parent-display');
+          spanDisplay.innerHTML = data.Parents[iParent].Display;
+          spanDisplay.setAttribute('kind', data.Parents[iParent].Id);
+          spanDisplay.setAttribute('itemid', data.Parents[iParent].Kind);
 
-          //let removeButton = $('<div></div>').addClass('remove-button');
-          row.append(spanDisplay); //.append(removeButton);
+          //let removeButton = document.createElement('div'); removeButton.className = 'remove-button';
+          row.appendChild(spanDisplay); //row.appendChild(removeButton);
 
-          selection.append(row);
-          this._parents.append(selection);
+          selection.appendChild(row);
+          this._parents.appendChild(selection);
 
           // click = reload page with new display
-          spanDisplay.click(
+          spanDisplay.addEventListener('click',
             function () {
-              let kind = $(this).attr('kind');
-              let itemid = $(this).attr('itemid');
+              let kind = this.getAttribute('kind');
+              let itemid = this.getAttribute('itemid');
 
               let href = window.location.href;
               href = pulseUtility.changeURLParameter(href, 'kind', kind);
@@ -538,7 +591,7 @@ var pulseCustomDialog = require('pulseCustomDialog');
         }
       }
       // CHILDREN
-      this._children.empty();
+      this._children.replaceChildren();
       if (data.Children) {
         for (let iChild = 0; iChild < data.Children.length; iChild++) {
           data.Children[iChild].Id;
@@ -546,35 +599,38 @@ var pulseCustomDialog = require('pulseCustomDialog');
           data.Children[iChild].Display;
           data.Children[iChild].Order;
 
-          let selection = $('<div></div>').addClass('workexplorer-child')
-            .attr('Id', data.Children[iChild].Id)
-            .attr('Kind', data.Children[iChild].Kind);
+          let selection = document.createElement('div');
+          selection.classList.add('workexplorer-child');
+          selection.setAttribute('Id', data.Children[iChild].Id);
+          selection.setAttribute('Kind', data.Children[iChild].Kind);
           if (data.Children[iChild].Order) {
-            selection.attr('Order', data.Children[iChild].Order);
-            $(selection).css('order', data.Children[iChild].Order);
+            selection.setAttribute('Order', data.Children[iChild].Order);
+            selection.style.order = data.Children[iChild].Order;
           }
 
-          let row = $('<div></div>').addClass('workexplorer-child-row');
-          //row.append($('<div class="reorderHighlight"></div>'));  // smartphone ?
-          //row.append($('<div class="reorderUpButton"></div>'));   // smartphone ?
-          //row.append($('<div class="reorderDownButton"></div>')); // smartphone ?
-          //row.append($('<div class="reorderButton"></div>'));
+          let row = document.createElement('div');
+          row.classList.add('workexplorer-child-row');
+          //row.appendChild(document.createElement('div')).className = 'reorderHighlight';  // smartphone ?
+          //row.appendChild(document.createElement('div')).className = 'reorderUpButton';   // smartphone ?
+          //row.appendChild(document.createElement('div')).className = 'reorderDownButton'; // smartphone ?
+          //row.appendChild(document.createElement('div')).className = 'reorderButton';
 
-          let spanDisplay = $('<span></span>').addClass('workexplorer-child-display')
-            .html(data.Children[iChild].Display);
-          $(spanDisplay).attr('kind', data.Children[iChild].Id);
-          $(spanDisplay).attr('itemid', data.Children[iChild].Kind);
-          //let removeButton = $('<div></div>').addClass('remove-button');
-          row.append(spanDisplay); //.append(removeButton);
+          let spanDisplay = document.createElement('span');
+          spanDisplay.classList.add('workexplorer-child-display');
+          spanDisplay.innerHTML = data.Children[iChild].Display;
+          spanDisplay.setAttribute('kind', data.Children[iChild].Id);
+          spanDisplay.setAttribute('itemid', data.Children[iChild].Kind);
+          //let removeButton = document.createElement('div'); removeButton.className = 'remove-button';
+          row.appendChild(spanDisplay); //row.appendChild(removeButton);
 
-          selection.append(row);
-          this._children.append(selection);
+          selection.appendChild(row);
+          this._children.appendChild(selection);
 
           // click = reload page with new display
-          spanDisplay.click(
+          spanDisplay.addEventListener('click',
             function () {
-              let kind = $(this).attr('kind');
-              let itemid = $(this).attr('itemid');
+              let kind = this.getAttribute('kind');
+              let itemid = this.getAttribute('itemid');
 
               let href = window.location.href;
               href = pulseUtility.changeURLParameter(href, 'kind', kind);
@@ -589,23 +645,23 @@ var pulseCustomDialog = require('pulseCustomDialog');
           let prop = data.Properties[iProp];
 
           // Find
-          let valueDiv = $(this._properties).find('.workexplorer-value[name="' + prop.Key + '"]');
-          let inputDiv = $(valueDiv).find('input');
+          let valueDiv = this._properties.querySelector('.workexplorer-value[name="' + prop.Key + '"]');
+          let inputDiv = valueDiv.querySelector('input');
 
           // Special set value
-          if ('Boolean' == valueDiv.attr('propformat')) {
-            inputDiv.prop('checked', prop.Value);
+          if ('Boolean' == valueDiv.getAttribute('propformat')) {
+            inputDiv.checked = prop.Value;
           }
-          else if ('Duration' == valueDiv.attr('propformat')) {
-            let days = $(valueDiv).find('.workexplorer-days');
-            let duration = $(valueDiv).find('.workexplorer-duration');
-            duration[0].value = pulseUtility.secondsToHHMMSS(prop.Value % (24 * 60 * 60));
-            days[0].value = Math.floor(prop.Value / (24 * 60 * 60));
+          else if ('Duration' == valueDiv.getAttribute('propformat')) {
+            let days = valueDiv.querySelector('.workexplorer-days');
+            let duration = valueDiv.querySelector('.workexplorer-duration');
+            duration.value = pulseUtility.secondsToHHMMSS(prop.Value % (24 * 60 * 60));
+            days.value = Math.floor(prop.Value / (24 * 60 * 60));
           }
-          else if ('Enum' == valueDiv.attr('propformat')) {
+          else if ('Enum' == valueDiv.getAttribute('propformat')) {
             // Get the select element
-            //let selectElement = document.getElementsByTagName('select');
-            let selectElement = $(valueDiv).find('select')[0];
+            //let selectElement = this._properties.querySelectorAll('select');
+            let selectElement = valueDiv.querySelector('select');
             // Get the options.
             let selectOptions = selectElement.options;
             // Loop through these options using a for loop.
@@ -621,7 +677,7 @@ var pulseCustomDialog = require('pulseCustomDialog');
           }
           else { // Default
             // Default set value (text, number...)
-            inputDiv.val(prop.Value);
+            inputDiv.value = prop.Value;
             // same as inputDiv.value = prop.Value;
           }
         }
@@ -632,12 +688,12 @@ var pulseCustomDialog = require('pulseCustomDialog');
       // Get parents
       let parents = [];
 
-      let parentsDiv = this._parents.find('.workexplorer-single-parent');
+      let parentsDiv = this._parents.querySelectorAll('.workexplorer-single-parent');
       for (let iP = 0; iP < parentsDiv.length; iP++) {
         let aParent = {
-          'Id': parentsDiv[iP].attr('Id'),
-          'Kind': parentsDiv[iP].attr('Kind')
-          //,'Order': parentsDiv[iP].attr('Order')
+          'Id': parentsDiv[iP].getAttribute('Id'),
+          'Kind': parentsDiv[iP].getAttribute('Kind')
+          //,'Order': parentsDiv[iP].getAttribute('Order')
         };
         parents.push(aParent);
       }
@@ -645,12 +701,12 @@ var pulseCustomDialog = require('pulseCustomDialog');
       // Get children
       let children = [];
 
-      let childrenDiv = this._children.find('.workexplorer-child');
+      let childrenDiv = this._children.querySelectorAll('.workexplorer-child');
       for (let iChild = 0; iChild < childrenDiv.length; iChild++) {
         let aChild = {
-          'Id': childrenDiv[iChild].attr('Id'),
-          'Kind': childrenDiv[iChild].attr('Kind')
-          //,'Order': childrenDiv[iChild].attr('Order')
+          'Id': childrenDiv[iChild].getAttribute('Id'),
+          'Kind': childrenDiv[iChild].getAttribute('Kind')
+          //,'Order': childrenDiv[iChild].getAttribute('Order')
         };
         children.push(aChild);
       }
@@ -661,11 +717,11 @@ var pulseCustomDialog = require('pulseCustomDialog');
         for (let iProp = 0; iProp < this._workStructure.Properties.length; iProp++) {
           let prop = this._workStructure.Properties[iProp];
           let key = prop.Key;
-          let propDiv = this._properties.find('.' + key);
+          let propDiv = this._properties.querySelector('.' + key);
           let value = null;
           switch (prop.Format) {
             case 'String': {
-              value = propDiv.find('input').value;
+              value = propDiv.querySelector('input').value;
               // limits
               if (prop.Limits) {
                 if (prop.Limits.Maxsize) {
@@ -678,10 +734,10 @@ var pulseCustomDialog = require('pulseCustomDialog');
               }
             } break;
             case 'URL': {
-              value = propDiv.find('input').value;
+              value = propDiv.querySelector('input').value;
             } break;
             case 'Integer': {
-              value = propDiv.find('input').value;
+              value = propDiv.querySelector('input').value;
               // limits
               if (prop.Limits) {
                 if (prop.Limits.Min) {
@@ -699,7 +755,7 @@ var pulseCustomDialog = require('pulseCustomDialog');
               }
             } break;
             case 'Float': {
-              value = propDiv.find('input').value;
+              value = propDiv.querySelector('input').value;
               // limits
               if (prop.Limits) {
                 if (prop.Limits.Min) {
@@ -717,8 +773,8 @@ var pulseCustomDialog = require('pulseCustomDialog');
               }
             } break;
             case 'Duration': {
-              let days = propDiv.find('.workexplorer-days').value;
-              let time = propDiv.find('.workexplorer-time').value;
+              let days = propDiv.querySelector('.workexplorer-days').value;
+              let time = propDiv.querySelector('.workexplorer-time').value;
 
               value = pulseUtility.HHMMSStoSeconds(time) + days * 24 * 60 * 60;
               // limits
@@ -742,11 +798,11 @@ var pulseCustomDialog = require('pulseCustomDialog');
               }
             } break;
             case 'Enum': {
-              let select = propDiv.find('select');
+              let select = propDiv.querySelector('select');
               value = select.options[select.selectedIndex].value;
             } break;
             case 'Boolean': {
-              value = propDiv.find('input').prop('checked');
+              value = propDiv.querySelector('input').checked;
             } break;
             default: {
               // Do nothing

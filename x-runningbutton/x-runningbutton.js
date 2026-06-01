@@ -106,19 +106,25 @@ var eventBus = require('eventBus');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._isRunningClass = null; // To force refresh display
       this._modecategory = null;
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('pulse-icon-content');
-      $(this.element).addClass('runningbutton')
-        .append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'pulse-icon-content';
+      this.element.classList.add('runningbutton');
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', ' Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', ' Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -131,7 +137,7 @@ var eventBus = require('eventBus');
       this._modecategory = null;
 
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       this._content = undefined;
@@ -184,16 +190,23 @@ var eventBus = require('eventBus');
         this._modecategory = category;
       }
       if (needToRefreshDisplay) {
-        $(this.element).find('.runningbutton-svg').remove(); // Remove Old SVG
+        let oldSvg = this.element.querySelector('.runningbutton-svg');
+        if (oldSvg) {
+          oldSvg.remove();
+        }
 
         // New div for svg
-        let svgDiv = $('<div></div>').addClass('runningbutton-svg');
+        let svgDiv = document.createElement('div');
+        svgDiv.className = 'runningbutton-svg';
         let modeClass = pulseSvg.getMachineModeClass(this._modecategory);
-        svgDiv.addClass(modeClass);
-        //svgDiv.css('color', this._reasoncolor);
+        // Guard null/empty tokens: classList.add(null) silently adds literal
+        // "null" class; classList.add('') throws DOMException. Both happen
+        // when _displayIcon(null, null) fires via displayError.
+        if (modeClass) svgDiv.classList.add(modeClass);
+        //svgDiv.style.color = this._reasoncolor;
         // Add a class for the color
-        svgDiv.addClass(this._isRunningClass);
-        $(this._content).append(svgDiv);
+        if (this._isRunningClass) svgDiv.classList.add(this._isRunningClass);
+        this._content.appendChild(svgDiv);
 
         pulseSvg.inlineBackgroundSvg(svgDiv);
       }

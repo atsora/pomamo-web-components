@@ -46,7 +46,7 @@ require('x-loginpassword/x-loginpassword');
      * Binds the click handler on `_loginButton` to call `_openDialog`.
      */
     _defineClickButtons () {
-      this._loginButton.click(
+      this._loginButton.addEventListener('click',
         function () {
           this._openDialog();
         }.bind(this));
@@ -57,7 +57,7 @@ require('x-loginpassword/x-loginpassword');
      * Dialog is configured with no OK/cancel buttons, auto-close, and full-screen on smartphone.
      */
     _openDialog () {
-      let chgePass = pulseUtility.createjQueryElementWithAttribute('x-loginpassword', {});
+      let chgePass = pulseUtility.createElementWithAttribute('x-loginpassword', {});
 
       pulseCustomDialog.openDialog(chgePass, {
         title: this.getTranslation ('login', 'Login'),
@@ -75,19 +75,21 @@ require('x-loginpassword/x-loginpassword');
       // Attributes
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Loader -> Not needed here
 
       // Create DOM - BUTTON
-      this._loginSpan = $('<span></span>').addClass('loginpasswordbutton-span')
-        .html(this.getTranslation('label', 'Login with user/password'));
+      this._loginSpan = document.createElement('span');
+      this._loginSpan.className = 'loginpasswordbutton-span';
+      this._loginSpan.innerHTML = this.getTranslation('label', 'Login with user/password');
       //this._loginIcon = $('<span></span>').addClass('loginpasswordbutton-icon');
-      this._loginButton = $('<div></div>').addClass('loginpasswordbutton-button')
-        .append(this._loginSpan);//.append(this._loginIcon);
-      this._loginButton.attr('title', this.getTranslation('tooltip', 'Login Password'));
+      this._loginButton = document.createElement('div');
+      this._loginButton.className = 'loginpasswordbutton-button';
+      this._loginButton.appendChild(this._loginSpan);//.append(this._loginIcon);
+      this._loginButton.setAttribute('title', this.getTranslation('tooltip', 'Login Password'));
 
-      $(this.element).append(this._loginButton);
+      this.element.appendChild(this._loginButton);
 
       //pulseSvg.inlineBackgroundSvg('.loginpasswordbutton-icon');
       // Create DOM - NO message for error

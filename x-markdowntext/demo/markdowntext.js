@@ -48,7 +48,13 @@ var SAMPLE_3 = [
   'End of report.'
 ].join('\n');
 
-$(function () {
+if (document.readyState !== 'loading') {
+  initMarkdownDemo();
+} else {
+  document.addEventListener('DOMContentLoaded', initMarkdownDemo);
+}
+
+function initMarkdownDemo() {
   // Populate the 3 static samples on page load.
   var s1 = document.querySelector('.md-sample-1');
   if (s1 && typeof s1.setText === 'function') s1.setText(SAMPLE_1);
@@ -58,8 +64,15 @@ $(function () {
   if (s3 && typeof s3.setText === 'function') s3.setText(SAMPLE_3);
 
   // Live editor — type + SHOW.
-  $('.showtextbutton').click(function () {
-    var message = $('.inputtext')[0].value;
-    $('.outputtext')[0].setText(message);
-  });
-});
+  var showBtn = document.querySelector('.showtextbutton');
+  if (showBtn) {
+    showBtn.addEventListener('click', function () {
+      var inputEl = document.querySelector('.inputtext');
+      var outputEl = document.querySelector('.outputtext');
+      if (inputEl && outputEl && typeof outputEl.setText === 'function') {
+        var message = inputEl.value;
+        outputEl.setText(message);
+      }
+    });
+  }
+}

@@ -413,7 +413,8 @@ class PulseStateComponent extends PulseComponent {
       switch (childDisplay) {
         case 'block':
           blockElementFound = true;
-          if ($(child).is(':visible')) {
+          // $(child).is(':visible') equivalent: takes some space in layout
+          if (child.offsetWidth > 0 || child.offsetHeight > 0 || child.getClientRects().length > 0) {
             return true;
           }
           else {
@@ -921,7 +922,7 @@ class PulseInitializedComponent extends PulseStateComponent {
    */
   disconnectedCallback () {
     if (this.isStarted) {
-      let disableDeleteElements = $(this.element).hasClass('disableDeleteWhenDisconnect');
+      let disableDeleteElements = this.element.classList.contains('disableDeleteWhenDisconnect');
       //if (disableDeleteElements.length == 0) {
       if (!disableDeleteElements) {
         if (this._fullDeleteWhenDisconnect) {

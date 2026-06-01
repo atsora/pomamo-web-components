@@ -250,17 +250,19 @@ var eventBus = require('eventBus');
     }
 
     _drawEmpty() { /* To clean the bar */
-      $(this._content).find('.productionbar-svg').remove(); // Remove Old SVG
+      let svg = this._content.querySelector('.productionbar-svg');
+      if (svg) svg.remove(); // Remove Old SVG
     }
 
     _draw() {
-      $(this._content).find('.productionbar-svg').remove(); // Remove Old SVG
+      let existingSvg = this._content.querySelector('.productionbar-svg');
+      if (existingSvg) existingSvg.remove(); // Remove Old SVG
       //  Parameters
       let cursorWidth = 8.0;
       let cursorOffsetTop = cursorWidth;
       let cursorOffsetBottom = cursorWidth;
       let tickDivision = 10;
-      let width = $(this._content).width();
+      let width = this._content.offsetWidth;
       if (width) {
         this._barwidth = width;
       }
@@ -326,7 +328,7 @@ var eventBus = require('eventBus');
         + this._barwidth + ' ' + this._height);
       svg.setAttribute('preserveAspectRatio', 'none');
       svg.setAttribute('class', 'productionbar-svg');
-      $(this._content).prepend(svg); // Before message
+      this._content.insertBefore(svg, this._content.firstChild); // Before message
 
       // Create the cursor
       let g = document.createElementNS(pulseSvg.get_svgNS(), 'g');
@@ -472,7 +474,7 @@ var eventBus = require('eventBus');
     clearInitialization() {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._messageSpan = undefined;
       this._textDisplay = undefined;
@@ -611,14 +613,14 @@ var eventBus = require('eventBus');
       if (this._content) {
         this._content.style.display = 'none';
       }
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
     }
 
     removeError() {
       if (this._content) {
         this._content.style.display = '';
       }
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
     }
 
     /**

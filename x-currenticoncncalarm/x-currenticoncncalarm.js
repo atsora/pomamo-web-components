@@ -66,10 +66,10 @@ var eventBus = require('eventBus');
           //if (oldVal != newVal)
           {
             if (newVal == 'true') {
-              $(this._content).addClass('active');
+              this._content.classList.add('active');
             }
             else {
-              $(this._content).removeClass('active');
+              this._content.classList.remove('active');
             }
             //this.displayAlarm(); // Refresh with active or not active display
           }
@@ -113,15 +113,15 @@ var eventBus = require('eventBus');
       this._createListenersDispatchers();
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM
-      this._content = $('<div></div>').addClass('pulse-icon-content');
-      $(this.element)//.addClass('XXX')
-        .append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'pulse-icon-content';
+      this.element.appendChild(this._content);
       if ((this.element.hasAttribute('active')) &&
         (this.element.getAttribute('active') == 'true')) {
-        $(this._content).addClass('active');
+        this._content.classList.add('active');
       }
 
       // Initialization OK => switch to the next context
@@ -132,7 +132,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       //this._messageSpan = undefined;
       this._content = undefined;
 
@@ -146,7 +146,7 @@ var eventBus = require('eventBus');
 
     reset () {
       // Clean component
-      $(this._content).empty();
+      this._content.replaceChildren();
       // Remove Error
       //this.removeError();
 
@@ -210,7 +210,7 @@ var eventBus = require('eventBus');
       if (!this._connected) { // == is connected
         return false;
       }
-      if ($(this.element).is(':visible')) {
+      if (this.element.offsetParent !== null) {
         return true;
       }
       return false;
@@ -280,35 +280,38 @@ var eventBus = require('eventBus');
       if (this._content != undefined) {
         if (this._image != undefined)
           pulseUtility.removeToolTip(this._image);
-        $(this._content).empty();
+        this._content.replaceChildren();
       }
     }
 
     displayAlarm () {
       if (this._content != undefined) {
-        $(this._content).empty();
+        this._content.replaceChildren();
         //true / false / not set
         if (true == this._focus) {
-          this._image = $('<div></div>').addClass('pulse-icon-cncalarm')
-            .addClass('pulse-icon-cncalarm-focused');
+          this._image = document.createElement('div');
+          this._image.className = 'pulse-icon-cncalarm pulse-icon-cncalarm-focused';
         }
         else if (false == this._focus) {
-          this._image = $('<div></div>').addClass('pulse-icon-cncalarm')
-            .addClass('pulse-icon-cncalarm-ignored');
+          this._image = document.createElement('div');
+          this._image.className = 'pulse-icon-cncalarm pulse-icon-cncalarm-ignored';
         }
         else {
-          this._image = $('<div></div>').addClass('pulse-icon-cncalarm')
-            .addClass('pulse-icon-cncalarm-unknown');
+          this._image = document.createElement('div');
+          this._image.className = 'pulse-icon-cncalarm pulse-icon-cncalarm-unknown';
         }
-        $(this._content).append(this._image);
+        this._content.appendChild(this._image);
         pulseSvg.inlineBackgroundSvg(this._image);
 
 
         let showAlarmBelowIcon = this.getConfigOrAttribute('showAlarmBelowIcon', false);
         if (showAlarmBelowIcon == 'true') {
-          let text = $('<div></div>').addClass('currenticoncncalarm-text')
-            .html(this._mainDisplay);
-          $(this._content).append(text);
+          let text = document.createElement('div');
+          text.className = 'currenticoncncalarm-text';
+          // Guard null/undefined — `innerHTML = undefined` stringifies to "undefined"
+          // (unlike jQuery `.html(undefined)` which was a no-op getter).
+          if (this._mainDisplay != null) text.innerHTML = this._mainDisplay;
+          this._content.appendChild(text);
         }
         // Always :
         this._changeAlarmTooltip();
@@ -379,7 +382,10 @@ var eventBus = require('eventBus');
           }
         }
         else {
-          $(this.element).find('.currenticoncncalarm-text').remove();
+          let textElem = this.element.querySelector('.currenticoncncalarm-text');
+          if (textElem) {
+            textElem.remove();
+          }
         }
       }
       if (event.target.config == 'showUnknownAlarm') {

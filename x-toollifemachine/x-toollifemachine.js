@@ -110,16 +110,17 @@ this.restoreDeleteWhenDisconnect ():
     }
 
     _createDivForSingleTool (spanOrLink, RemainingCycles) {
-      let singletool = $('<div></div>')
-        .addClass('toollifemachine-singletool-div')
-        .append(spanOrLink);
+      let singletool = document.createElement('div');
+      singletool.className = 'toollifemachine-singletool-div';
+      singletool.appendChild(spanOrLink);
 
       if ('true' == this.getConfigOrAttribute('displayremainingcyclesbelowtool')
         || true == this.getConfigOrAttribute('displayremainingcyclesbelowtool')) {
         if (!pulseUtility.isNotDefined(RemainingCycles)) {
-          let remainingCycles = $('<span></span>').addClass('toollifemachine-remaining-cycles-span')
-            .html(RemainingCycles);
-          singletool.append(remainingCycles);
+          let remainingCycles = document.createElement('span');
+          remainingCycles.className = 'toollifemachine-remaining-cycles-span';
+          remainingCycles.innerHTML = RemainingCycles;
+          singletool.appendChild(remainingCycles);
         }
       }
 
@@ -132,8 +133,8 @@ this.restoreDeleteWhenDisconnect ():
         case 'machine-id':
           if (this.isInitialized()) {
             //reset component interface
-            $(this._operationDiv).empty();
-            $(this._toolsDiv).empty();
+            this._operationDiv.replaceChildren();
+            this._toolsDiv.replaceChildren();
 
             // Change link
             this._linkInErrorString =
@@ -156,7 +157,8 @@ this.restoreDeleteWhenDisconnect ():
               fullLink = this._linkInErrorString +
                 '&WebAppParamsDateTime=current_1_day';
             }
-            $(this.element).find('.toollifemachine-linkreport').attr('href', fullLink);
+            let links = this.element.querySelectorAll('.toollifemachine-linkreport');
+            links.forEach(link => link.setAttribute('href', fullLink));
             // End change link
 
             this.start();
@@ -228,19 +230,19 @@ this.restoreDeleteWhenDisconnect ():
       this._changeToolLabelName();
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM
       // DOM - OPERATION
-      this._operationDiv = $('<div></div>')
-        .addClass('pulse-cellbar-first')
-        .addClass('pulse-cellbar-current-data'); // Operation is added later
+      this._operationDiv = document.createElement('div');
+      this._operationDiv.className = 'pulse-cellbar-first pulse-cellbar-current-data'; // Operation is added later
 
       // Next expiration
-      /*let spanNextExp = $('<span></span>').addClass('toollifemachine-next-expiration-span');
-      let divNextExp = $('<div></div>')
-                        .addClass('toollifemachine-next-expiration')
-                        .append(spanNextExp);*/
+      /*let spanNextExp = document.createElement('span');
+      spanNextExp.className = 'toollifemachine-next-expiration-span';
+      let divNextExp = document.createElement('div');
+      divNextExp.className = 'toollifemachine-next-expiration';
+      divNextExp.appendChild(spanNextExp);*/
 
       // Link to report
       this._linkInErrorString = this.getConfigOrAttribute('reportpath', 'http://lctr:8080/pulsereporting/'); // Default
@@ -251,36 +253,41 @@ this.restoreDeleteWhenDisconnect ():
         '&ShowAll=false';
 
       // DOM - Tools
-      this._toolsDiv = $('<div></div>')
-        .addClass('pulse-cellbar-last')
-        .addClass('toollifemachine-tools');
+      this._toolsDiv = document.createElement('div');
+      this._toolsDiv.className = 'pulse-cellbar-last toollifemachine-tools';
       // DOM - Tools in ERROR
-      /*let divToolsInError = $('<div></div>')
-        .addClass('toollifemachine-tools-in-error');
+      /*let divToolsInError = document.createElement('div');
+      divToolsInError.className = 'toollifemachine-tools-in-error';
       // DOM - Tools in WARNING or SOON expired
-      let divToolsSoonExp = $('<div></div>')
-        .addClass('toollifemachine-tools-soon-expired');*/
+      let divToolsSoonExp = document.createElement('div');
+      divToolsSoonExp.className = 'toollifemachine-tools-soon-expired';*/
 
       // Main bar
-      this._content = $('<div></div>')
-        .addClass('pulse-cellbar-main') // was pulse-component-main
-        .append(this._operationDiv)
-        .append(this._toolsDiv);
+      this._content = document.createElement('div');
+      this._content.className = 'pulse-cellbar-main'; // was pulse-component-main
+      this._content.appendChild(this._operationDiv);
+      this._content.appendChild(this._toolsDiv);
 
-      $(this.element).append(this._content);
+      this.element.appendChild(this._content);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this.element.appendChild(messageDiv);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -290,7 +297,7 @@ this.restoreDeleteWhenDisconnect ():
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._operationDiv = undefined;
       this._toolsDiv = undefined;
@@ -322,15 +329,15 @@ this.restoreDeleteWhenDisconnect ():
     }
 
     displayError (message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
 
       // clean
-      //$(this._toolsDiv).empty();
-      //$(this._operationDiv).empty(); // tmp Hack waiting for REAL overlay
+      //this._toolsDiv.replaceChildren();
+      //this._operationDiv.replaceChildren(); // tmp Hack waiting for REAL overlay
     }
 
     removeError () {
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
     }
 
     get refreshRate () {
@@ -388,8 +395,9 @@ this.restoreDeleteWhenDisconnect ():
 
       svg.appendChild(g);
 
-      let crtSoonTitle = $('<div></div>').addClass('toollifemachine-soon-title')
-        .append(svg);
+      let crtSoonTitle = document.createElement('div');
+      crtSoonTitle.className = 'toollifemachine-soon-title';
+      crtSoonTitle.appendChild(svg);
       return crtSoonTitle;
     }
 
@@ -410,23 +418,24 @@ this.restoreDeleteWhenDisconnect ():
         (new Date()).getTime() + this._diffServerTimeMinusNowMSec);
 
       // Clean
-      $(this._toolsDiv).empty(); // Tools
+      this._toolsDiv.replaceChildren(); // Tools
 
       // Left Block = operation
-      $(this._operationDiv).empty();
+      this._operationDiv.replaceChildren();
       if (data.Operation && data.Operation.DocumentLink) {
-        let linkOperation = $('<a></a>').addClass('toollifemachine-operation-span-or-link')
-          .html(this._current_display);
+        let linkOperation = document.createElement('a');
+        linkOperation.className = 'toollifemachine-operation-span-or-link';
+        linkOperation.innerHTML = this._current_display;
         //.attr('href', ???); -> DoneLater
-        linkOperation.attr('target', '_blank'); // To open in a new tab
-        linkOperation.attr('href', data.Operation.DocumentLink);
-        $(this._operationDiv).append(linkOperation);
+        linkOperation.setAttribute('target', '_blank'); // To open in a new tab
+        linkOperation.setAttribute('href', data.Operation.DocumentLink);
+        this._operationDiv.appendChild(linkOperation);
       }
       else {
-        let spanOperation = $('<span></span>')
-          .addClass('toollifemachine-operation-span-or-link')
-          .html(this._current_display);
-        $(this._operationDiv).append(spanOperation);
+        let spanOperation = document.createElement('span');
+        spanOperation.className = 'toollifemachine-operation-span-or-link';
+        spanOperation.innerHTML = this._current_display;
+        this._operationDiv.appendChild(spanOperation);
       }
 
       // To order display between machines
@@ -457,26 +466,24 @@ this.restoreDeleteWhenDisconnect ():
       for (let iTool = 0; iTool < data.Tools.length; iTool++) {
         if (data.Tools[iTool].Expired) {
           nbExpiredTools += 1;
-          let linkTool = $('<a></a>').addClass('toollifemachine-tool-span')
-            .addClass('toollifemachine-tool-in-error-span')
-            .addClass('toollifemachine-linkreport')
-            .html(data.Tools[iTool].Display);
-          linkTool.attr('href', fullLink);
-          linkTool.attr('target', '_blank'); // To open in a new tab
+          let linkTool = document.createElement('a');
+          linkTool.className = 'toollifemachine-tool-span toollifemachine-tool-in-error-span toollifemachine-linkreport';
+          linkTool.innerHTML = data.Tools[iTool].Display;
+          linkTool.setAttribute('href', fullLink);
+          linkTool.setAttribute('target', '_blank'); // To open in a new tab
 
           if (data.Tools[iTool].Group) {
-            linkTool.addClass('toollifemachine-tool-isgroup');
+            linkTool.classList.add('toollifemachine-tool-isgroup');
           }
           else {
             if (data.Tools[iTool].ActiveSisterTool)
-              linkTool.addClass('toollifemachine-tool-active');
+              linkTool.classList.add('toollifemachine-tool-active');
             if (data.Tools[iTool].ValidSisterTools)
-              linkTool.addClass('toollifemachine-tool-validsistertool');
+              linkTool.classList.add('toollifemachine-tool-validsistertool');
           }
 
-          //$(this._toolsDiv).show();
-          $(this._toolsDiv)
-            .append(this._createDivForSingleTool(linkTool, data.Tools[iTool].RemainingCycles));
+          //this._toolsDiv.style.display = '';
+          this._toolsDiv.appendChild(this._createDivForSingleTool(linkTool, data.Tools[iTool].RemainingCycles));
         }
         else { // Not expired
           if (!this._showexpiredonly) {
@@ -499,7 +506,7 @@ this.restoreDeleteWhenDisconnect ():
               line.setAttribute('y2', '45');
               line.setAttribute('class', 'toollife-separator-line');
               svg.appendChild(line);
-              $(this._toolsDiv).append(svg);
+              this._toolsDiv.appendChild(svg);
             }
             nbNotExpiredTools += 1;
             if (data.Tools[iTool].ExpirationDateTimeRange) {
@@ -514,7 +521,7 @@ this.restoreDeleteWhenDisconnect ():
                   //toollifemachine-soon-title-svg
                   let crtSoonTitle = this._createSoonTitleSVG(this._displayRanges[iRange].display);
 
-                  $(this._toolsDiv).append(crtSoonTitle);
+                  this._toolsDiv.appendChild(crtSoonTitle);
                   noToolSinceLastTitle = true;
                 }
                 iRange++;
@@ -524,43 +531,43 @@ this.restoreDeleteWhenDisconnect ():
               }
               if (diffTimeMSec < this._displayRanges[iRange].minutes * 1000 * 60) { // should be true here
                 // add span
-                let spanTool = $('<span></span>').addClass('toollifemachine-tool-span')
-                  .html(data.Tools[iTool].Display);
+                let spanTool = document.createElement('span');
+                spanTool.className = 'toollifemachine-tool-span';
+                spanTool.innerHTML = data.Tools[iTool].Display;
                 if (data.Tools[iTool].Warning) {
-                  spanTool.addClass('toollifemachine-tool-warn-span');
+                  spanTool.classList.add('toollifemachine-tool-warn-span');
                 }
                 if (data.Tools[iTool].Group) {
-                  spanTool.addClass('toollifemachine-tool-isgroup');
+                  spanTool.classList.add('toollifemachine-tool-isgroup');
                 }
                 else {
                   if (data.Tools[iTool].ActiveSisterTool)
-                    spanTool.addClass('toollifemachine-tool-active');
+                    spanTool.classList.add('toollifemachine-tool-active');
                   if (data.Tools[iTool].ValidSisterTools)
-                    spanTool.addClass('toollifemachine-tool-validsistertool');
+                    spanTool.classList.add('toollifemachine-tool-validsistertool');
                 }
-                $(this._toolsDiv)
-                  .append(this._createDivForSingleTool(spanTool, data.Tools[iTool].RemainingCycles));
+                this._toolsDiv.appendChild(this._createDivForSingleTool(spanTool, data.Tools[iTool].RemainingCycles));
                 noToolSinceLastTitle = false;
               }
             }
             else { // NO daterange
               if (data.Tools[iTool].Warning) { // Warning without time - free display
-                let spanTool = $('<span></span>').addClass('toollifemachine-tool-span')
-                  .html(data.Tools[iTool].Display);
-                spanTool.addClass('toollifemachine-tool-warn-span');
+                let spanTool = document.createElement('span');
+                spanTool.className = 'toollifemachine-tool-span';
+                spanTool.innerHTML = data.Tools[iTool].Display;
+                spanTool.classList.add('toollifemachine-tool-warn-span');
 
                 if (data.Tools[iTool].Group) {
-                  spanTool.addClass('toollifemachine-tool-isgroup');
+                  spanTool.classList.add('toollifemachine-tool-isgroup');
                 }
                 else {
                   if (data.Tools[iTool].ActiveSisterTool)
-                    spanTool.addClass('toollifemachine-tool-active');
+                    spanTool.classList.add('toollifemachine-tool-active');
                   if (data.Tools[iTool].ValidSisterTools)
-                    spanTool.addClass('toollifemachine-tool-validsistertool');
+                    spanTool.classList.add('toollifemachine-tool-validsistertool');
                 }
 
-                $(this._toolsDiv)
-                  .append(this._createDivForSingleTool(spanTool, data.Tools[iTool].RemainingCycles));
+                this._toolsDiv.appendChild(this._createDivForSingleTool(spanTool, data.Tools[iTool].RemainingCycles));
               }
             }
           }
@@ -571,7 +578,7 @@ this.restoreDeleteWhenDisconnect ():
         if ((this._displayRanges[iRange].display != '') &&
           (iRange < this._displayRanges.length)) {
           let crtSoonTitle = this._createSoonTitleSVG(this._displayRanges[iRange].display);
-          $(this._toolsDiv).append(crtSoonTitle);
+          this._toolsDiv.appendChild(crtSoonTitle);
         }
       }
 
@@ -609,7 +616,8 @@ this.restoreDeleteWhenDisconnect ():
       else {
         fullLink += '&WebAppParamsDateTime=current_1_day';
       }
-      $(this.element).find('.toollifemachine-linkreport').attr('href', fullLink);
+      let links = this.element.querySelectorAll('.toollifemachine-linkreport');
+      links.forEach(link => link.setAttribute('href', fullLink));
     }
 
     /**

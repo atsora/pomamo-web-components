@@ -65,7 +65,7 @@ var eventBus = require('eventBus');
         this.onTokenHaschanged.bind(this));
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // No DOM
 

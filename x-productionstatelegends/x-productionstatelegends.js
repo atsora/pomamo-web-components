@@ -52,11 +52,12 @@ var pulseUtility = require('pulseUtility');
       this.addClass('pulse-text');
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('productionstatelegends');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.classList.add('productionstatelegends');
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader - probably not in legends... to verify
       /*let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
@@ -80,7 +81,7 @@ var pulseUtility = require('pulseUtility');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       this._content = undefined;
@@ -89,12 +90,12 @@ var pulseUtility = require('pulseUtility');
     }
 
     displayError (message) {
-      $(this._content).hide();
+      this._content.style.display = 'none';
       // Note that you can use the CSS class .pulse-component-error or .pulse-component-warning instead
     }
 
     removeError () {
-      $(this._content).show();
+      this._content.style.display = '';
     }
 
     /** Always visible — legend fetches regardless of DOM scroll position. */
@@ -119,14 +120,19 @@ var pulseUtility = require('pulseUtility');
      * @param {{ Items: Array<{ Color: string, Display: string, ProductionStates: Array<{ Display: string }> }> }} data
      */
     refresh (data) {
-      $(this._content).empty();
+      this._content.replaceChildren();
 
-      let titleSpan = $('<span></span>').html(this.getTranslation('title', 'Production state'));
-      let divTitle = $('<div></div>').addClass('pulse-legend-title')
-        .append(titleSpan);
-      let divElements = $('<div></div>').addClass('pulse-legend-elements');
-      let divOneLegend = $('<div></div>').addClass('pulse-legend-onelegend')
-        .append(divTitle).append(divElements);
+      let titleSpan = document.createElement('span');
+      titleSpan.innerHTML = this.getTranslation('title', 'Production state');
+      let divTitle = document.createElement('div');
+      divTitle.classList.add('pulse-legend-title');
+      divTitle.appendChild(titleSpan);
+      let divElements = document.createElement('div');
+      divElements.classList.add('pulse-legend-elements');
+      let divOneLegend = document.createElement('div');
+      divOneLegend.classList.add('pulse-legend-onelegend');
+      divOneLegend.appendChild(divTitle);
+      divOneLegend.appendChild(divElements);
 
       for (let i = 0; i < data.Items.length; i++) {
         let item = data.Items[i];
@@ -141,41 +147,51 @@ var pulseUtility = require('pulseUtility');
           colorWithoutSharp = colorWithoutSharp.slice(1);
         }
 
-        let divIcon = $('<div></div>').addClass('pulse-legend-icon');
+        let divIcon = document.createElement('div');
+        divIcon.classList.add('pulse-legend-icon');
         let svg = pulseSvg.createColoredLegend(item.Color, null);
         if (svg != null) {
           svg.setAttribute('class', 'productionstatelegends-icon');
           // Add Tooltip
-          pulseUtility.addToolTip(svg, this.allGroupsDisplay); // Is it working ?
-          divIcon.append(svg);
+          pulseUtility.addToolTip(svg, allGroupsDisplay);
+          divIcon.appendChild(svg);
         }
 
-        let span = $('<span></span>').html(item.Display)
-          .addClass('productionstatelegends-label-' + colorWithoutSharp)
-          .attr('title', allGroupsDisplay);
-        let divLabel = $('<div></div>').addClass('pulse-legend-label')
-          .append(span);
+        let span = document.createElement('span');
+        span.innerHTML = item.Display;
+        span.classList.add('productionstatelegends-label-' + colorWithoutSharp);
+        span.setAttribute('title', allGroupsDisplay);
+        let divLabel = document.createElement('div');
+        divLabel.classList.add('pulse-legend-label');
+        divLabel.appendChild(span);
 
         // To show "Idle" instead of a long string. Used in RTD
         // (To remove if possible after some tests)
-        let spanLabelAlt = $('<span></span>').addClass('productionstatelegends-label-alt-' + colorWithoutSharp)
-          .attr('title', allGroupsDisplay); // tooltip
-        divLabel.append(spanLabelAlt);
+        let spanLabelAlt = document.createElement('span');
+        spanLabelAlt.classList.add('productionstatelegends-label-alt-' + colorWithoutSharp);
+        spanLabelAlt.setAttribute('title', allGroupsDisplay); // tooltip
+        divLabel.appendChild(spanLabelAlt);
 
-        let divElement = $('<div></div>').addClass('pulse-legend-element');
-        divElement.append(divIcon).append(divLabel);
-        divElements.append(divElement);
+        let divElement = document.createElement('div');
+        divElement.classList.add('pulse-legend-element');
+        divElement.appendChild(divIcon);
+        divElement.appendChild(divLabel);
+        divElements.appendChild(divElement);
       }
 
       for (let i = 0; i < 4; i++) {
-        let divElement = $('<div></div>').addClass('pulse-legend-empty-element-to-align');
-        divElements.append(divElement);
+        let divElement = document.createElement('div');
+        divElement.classList.add('pulse-legend-empty-element-to-align');
+        divElements.appendChild(divElement);
       }
 
-      $(this._content).append(divOneLegend);
+      this._content.appendChild(divOneLegend);
 
       // Hack for resize legend
-      $('.legend-content').resize();
+      let legendContent = document.querySelector('.legend-content');
+      if (legendContent) {
+        legendContent.dispatchEvent(new Event('resize'));
+      }
     }
   }
 

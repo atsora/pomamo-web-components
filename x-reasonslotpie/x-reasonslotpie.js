@@ -64,11 +64,13 @@ var eventBus = require('eventBus');
     }
 
     _drawEmpty () { /* To clean the bar */
-      $(this._content).find('.reasonslotpie-svg').remove(); // Remove Old SVG
+      let svgs = this._content.querySelectorAll('.reasonslotpie-svg');
+      svgs.forEach(svg => svg.remove());
     }
 
     _draw () {
-      $(this._content).find('.reasonslotpie-svg').remove(); // Remove Old SVG
+      let svgs = this._content.querySelectorAll('.reasonslotpie-svg');
+      svgs.forEach(svg => svg.remove());
 
       // Define pie main color -> this._statusColor
 
@@ -85,13 +87,13 @@ var eventBus = require('eventBus');
       this._height = 150; // for compatibility -> to remove
       let svg = pulseSvg.createBase(this._height, this._height,
         'reasonslotpie-svg', 2 * xyPosition, 2 * xyPosition);
-      $(this._pie).prepend(svg); // Before message
+      this._pie.insertBefore(svg, this._pie.firstChild);
       let g = document.createElementNS(pulseSvg.get_svgNS(), 'g');
       svg.appendChild(g);
 
       // PIE - rotate
-      $(g).css('transform-origin', 'center');
-      $(g).css('transform', 'rotate(-90deg)');
+      g.style.transformOrigin = 'center';
+      g.style.transform = 'rotate(-90deg)';
 
       // Circle in the middle (to allow writing something)
       let circleMiddle = pulseSvg.createCircle(xyPosition, xyPosition,
@@ -277,27 +279,36 @@ var eventBus = require('eventBus');
       //this._setHeight();
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
 
       // Create DOM - Content
-      this._pie = $('<div></div>').addClass('reasonslotpie-pie');
-      this._content = $('<div></div>').addClass('reasonslotpie-content').append(this._pie);
+      this._pie = document.createElement('div');
+      this._pie.className = 'reasonslotpie-pie';
+      this._content = document.createElement('div');
+      this._content.className = 'reasonslotpie-content';
+      this._content.appendChild(this._pie);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._pie).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._pie.appendChild(messageDiv);
 
-      $(this.element).append(this._content);
+      this.element.appendChild(this._content);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -307,7 +318,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._pie = undefined;
       this._messageSpan = undefined;
@@ -383,13 +394,13 @@ var eventBus = require('eventBus');
     }
 
     displayError (message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
 
       //this._drawEmpty();
     }
 
     removeError () {
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
     }
 
     get refreshRate () {
@@ -549,7 +560,10 @@ var eventBus = require('eventBus');
     onTextChangeEvent (event) {
       this._textToDisplay = event.target.text;
       // DISPLAY Time
-      $(this._content).find('.time-in-pie').text(this._textToDisplay);
+      let elem = this._content.querySelector('.time-in-pie');
+      if (elem) {
+        elem.textContent = this._textToDisplay;
+      }
     }
 
     /**

@@ -46,60 +46,86 @@ require('x-datetimerange/x-datetimerange');
     }
 
     initialize () {
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       let machid = this.element.getAttribute('machine-id');
       let range = this.element.getAttribute('range') || '';
       let reasonName = this.element.getAttribute('reason-name') || '';
       let detailsRequired = this.element.getAttribute('details-required') === 'true';
 
-      let machineDisplay = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
+      let machineDisplay = pulseUtility.createElementWithAttribute('x-machinedisplay', {
         'machine-id': machid
       });
-      let divMachine = $('<div></div>').addClass('reasoncommentdialog-machine')
-        .append($('<div></div>').addClass('reasoncommentdialog-label').html(this.getTranslation('machineColon', 'Machine: ')))
-        .append(machineDisplay);
+      let divMachine = document.createElement('div');
+      divMachine.classList.add('reasoncommentdialog-machine');
+      let machineLabel = document.createElement('div');
+      machineLabel.classList.add('reasoncommentdialog-label');
+      machineLabel.innerHTML = this.getTranslation('machineColon', 'Machine: ');
+      divMachine.appendChild(machineLabel);
+      divMachine.appendChild(machineDisplay);
 
-      let tagDatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
+      let tagDatetimerange = pulseUtility.createElementWithAttribute('x-datetimerange', {
         'range': range,
         'hide-buttons': 'true',
         'not-editable': 'true',
         'period-context': 'reasoncomment' + machid
       });
-      let divDatetimerange = $('<div></div>').addClass('reasoncommentdialog-period')
-        .append($('<div></div>').addClass('reasoncommentdialog-label').html(this.getTranslation('periodColon', 'Period: ')))
-        .append(tagDatetimerange);
+      let divDatetimerange = document.createElement('div');
+      divDatetimerange.classList.add('reasoncommentdialog-period');
+      let periodLabel = document.createElement('div');
+      periodLabel.classList.add('reasoncommentdialog-label');
+      periodLabel.innerHTML = this.getTranslation('periodColon', 'Period: ');
+      divDatetimerange.appendChild(periodLabel);
+      divDatetimerange.appendChild(tagDatetimerange);
 
-      let divReason = $('<div></div>').addClass('reasoncommentdialog-reason')
-        .append($('<div></div>').addClass('reasoncommentdialog-label').html(this.getTranslation('reasonColon', 'Reason: ')))
-        .append($('<span></span>').addClass('reasoncommentdialog-reason-name').html(reasonName));
+      let divReason = document.createElement('div');
+      divReason.classList.add('reasoncommentdialog-reason');
+      let reasonLabel = document.createElement('div');
+      reasonLabel.classList.add('reasoncommentdialog-label');
+      reasonLabel.innerHTML = this.getTranslation('reasonColon', 'Reason: ');
+      divReason.appendChild(reasonLabel);
+      let reasonName_span = document.createElement('span');
+      reasonName_span.classList.add('reasoncommentdialog-reason-name');
+      reasonName_span.innerHTML = reasonName;
+      divReason.appendChild(reasonName_span);
 
-      this._textarea = $('<textarea name="details-comment" placeholder="Details..."></textarea>').attr('maxlength', 255);
-      this._textarea.keydown(function (event) {
+      this._textarea = document.createElement('textarea');
+      this._textarea.setAttribute('name', 'details-comment');
+      this._textarea.setAttribute('placeholder', 'Details...');
+      this._textarea.setAttribute('maxlength', '255');
+      this._textarea.addEventListener('keydown', function (event) {
         if (event.keyCode == 13) {
-          $('a.dialog-button-frame-validate').click();
+          let btn = document.querySelector('a.dialog-button-frame-validate');
+          if (btn) btn.click();
         }
       });
-      let divDetails = $('<div></div>').addClass('reasoncommentdialog-details').append(this._textarea);
+      let divDetails = document.createElement('div');
+      divDetails.classList.add('reasoncommentdialog-details');
+      divDetails.appendChild(this._textarea);
 
-      $(this.element)
-        .append(divMachine)
-        .append(divDatetimerange)
-        .append(divReason)
-        .append(divDetails);
+      this.element.appendChild(divMachine);
+      this.element.appendChild(divDatetimerange);
+      this.element.appendChild(divReason);
+      this.element.appendChild(divDetails);
 
       if (detailsRequired) {
         let self = this;
         setTimeout(function () {
-          let okBtn = $(self.element).closest('.customDialog').find('.customDialogOk');
-          okBtn.attr('disabled', 'disabled');
-          self._textarea.on('keyup paste input', function () {
-            if ($(this).val().length === 0) {
-              okBtn.attr('disabled', 'disabled');
+          let customDialog = self.element.closest('.customDialog');
+          let okBtn = customDialog ? customDialog.querySelector('.customDialogOk') : null;
+          if (okBtn) {
+            okBtn.setAttribute('disabled', 'disabled');
+            self._textarea.addEventListener('keyup', updateButtonState);
+            self._textarea.addEventListener('paste', updateButtonState);
+            self._textarea.addEventListener('input', updateButtonState);
+          }
+          function updateButtonState() {
+            if (self._textarea.value.length === 0) {
+              okBtn.setAttribute('disabled', 'disabled');
             } else {
-              okBtn.removeAttr('disabled');
+              okBtn.removeAttribute('disabled');
             }
-          });
+          }
         }, 0);
       }
 
@@ -108,7 +134,7 @@ require('x-datetimerange/x-datetimerange');
 
     /** Current textarea value (user-entered comment). */
     getDetails () {
-      return this._textarea ? this._textarea.val() : '';
+      return this._textarea ? this._textarea.value : '';
     }
 
     displayError (message) { }

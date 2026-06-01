@@ -50,7 +50,7 @@ var eventBus = require('eventBus');
     get content () { return this._content; } // Optional
 
     _cleanDisplay () {
-      $(this._detailedContent).empty();
+      this._detailedContent.replaceChildren();
     }
 
     attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
@@ -106,36 +106,46 @@ var eventBus = require('eventBus');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>')
-        .addClass('detailed-main');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.classList.add('detailed-main');
+      this.element.appendChild(this._content);
 
       // Title
       let title = this.getTranslation('detailsViewSubTitles.shift', 'shift');
-      let spanTitle = $('<span></span>').addClass('detailedshiftat-title-span')
-        .html(title);
-      let divTitle = $('<div></div>').addClass('detailed-title').append(spanTitle);
-      $(this._content).append(divTitle);
+      let spanTitle = document.createElement('span');
+      spanTitle.classList.add('detailedshiftat-title-span');
+      spanTitle.innerHTML = title;
+      let divTitle = document.createElement('div');
+      divTitle.classList.add('detailed-title');
+      divTitle.appendChild(spanTitle);
+      this._content.appendChild(divTitle);
 
       // Detailed content
-      this._detailedContent = $('<div></div>').addClass('detailed-content');
-      $(this._content).append(this._detailedContent);
+      this._detailedContent = document.createElement('div');
+      this._detailedContent.classList.add('detailed-content');
+      this._content.appendChild(this._detailedContent);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error - no need to store, can be removed
-      let messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(messageSpan);
-      $(this._detailedContent).append(messageDiv);
+      let messageSpan = document.createElement('span');
+      messageSpan.classList.add('pulse-message');
+      messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.classList.add('pulse-message-div');
+      messageDiv.appendChild(messageSpan);
+      this._detailedContent.appendChild(messageDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -146,7 +156,7 @@ var eventBus = require('eventBus');
       // Parameters
       // DOM
       this._cleanDisplay();
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._detailedContent = undefined;
       this._content = undefined;
@@ -189,21 +199,22 @@ var eventBus = require('eventBus');
     displayError (message) {
       this._cleanDisplay();
 
-      let messageSpan = $(this.element).find('.pulse-message');
-      if (messageSpan.length == 0) {
+      let messageSpan = this.element.querySelector('.pulse-message');
+      if (!messageSpan) {
         // Create DOM - message for error
-        messageSpan = $('<span></span>')
-          .addClass('pulse-message');
-        let messageDiv = $('<div></div>')
-          .addClass('pulse-message-div')
-          .append(messageSpan);
-        $(this._detailedContent).append(messageDiv);
+        messageSpan = document.createElement('span');
+        messageSpan.classList.add('pulse-message');
+        let messageDiv = document.createElement('div');
+        messageDiv.classList.add('pulse-message-div');
+        messageDiv.appendChild(messageSpan);
+        this._detailedContent.appendChild(messageDiv);
       }
-      $(messageSpan).html(message);
+      messageSpan.innerHTML = message;
     }
 
     removeError () {
-      $(this.element).find('.pulse-message').html('');
+      let messageEl = this.element.querySelector('.pulse-message');
+      if (messageEl) messageEl.innerHTML = '';
     }
 
     getShortUrl () {
@@ -212,29 +223,32 @@ var eventBus = require('eventBus');
     }
 
     refresh (data) {
-      $(this._detailedContent).empty();
+      this._detailedContent.replaceChildren();
 
       // tmp Hack to display shift (only work IN defined shift)
       let display = data.RangeDisplay; //data.List[0].ShiftDisplay;
       if (display != '') {
-        let divRange = $('<div></div>').addClass('detailed-range');
-        let divDetails = $('<div></div>').addClass('detailed-data');
+        let divRange = document.createElement('div');
+        divRange.classList.add('detailed-range');
+        let divDetails = document.createElement('div');
+        divDetails.classList.add('detailed-data');
 
         let tmpRange = pulseRange.createDateRangeDefaultInclusivity(data.DateTimeRange.Begin, data.DateTimeRange.End);
         let rangeDisplay = pulseUtility.displayDateRange(tmpRange, true);
-        let spanRange = $('<span></span>').addClass('detailedshiftat-range-span')
-          .html(rangeDisplay);
-        $(divRange).append(spanRange);
+        let spanRange = document.createElement('span');
+        spanRange.classList.add('detailedshiftat-range-span');
+        spanRange.innerHTML = rangeDisplay;
+        divRange.appendChild(spanRange);
 
         // DETAILS
         //let display = data.RangeDisplay; //data.List[0].ShiftDisplay;
-        let spanDisplay = $('<span></span>').addClass('detailed-single-data')
-          .html(display);
-        $(divDetails).append(spanDisplay);
+        let spanDisplay = document.createElement('span');
+        spanDisplay.classList.add('detailed-single-data');
+        spanDisplay.innerHTML = display;
+        divDetails.appendChild(spanDisplay);
 
-        $(this._detailedContent)
-          .append(divRange)
-          .append(divDetails);
+        this._detailedContent.appendChild(divRange);
+        this._detailedContent.appendChild(divDetails);
       }
     }
 

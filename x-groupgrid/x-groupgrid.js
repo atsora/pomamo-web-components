@@ -6,6 +6,7 @@
  */
 var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
+var pulseConfig = require('pulseConfig');
 var state = require('state');
 var eventBus = require('eventBus');
 
@@ -43,8 +44,40 @@ var eventBus = require('eventBus');
       const self = super(...args);
       self._content = undefined;
       self._machineIdsArray = [];
+      // Subset of `_machineIdsArray` actually mounted in the DOM. `null` =
+      // no pagination yet known; `_buildItems` falls back to the first slice
+      // of size `machinesperpage` in live mode, or the full list otherwise.
+      // Updated on each `updateVisibleMachines` event from the rotation engine.
+      self._visibleMachineIds = null;
       self._dynamic = false;
       return self;
+    }
+
+    /**
+     * Returns the machine ids that should actually be mounted in the DOM.
+     *
+     * In non-live mode (or when no rotation is needed) the full list is used.
+     * In live mode with rotation active, the rotation engine drives
+     * `_visibleMachineIds` via `updateVisibleMachines`; before the first
+     * event arrives we pre-slice the first page so initial mount stays bounded.
+     */
+    _getActiveIds() {
+      let tmpContexts = pulseUtility.getURLParameterValues(window.location.href, 'AppContext');
+      let isLive = tmpContexts && tmpContexts.includes('live');
+      if (!isLive) return this._machineIdsArray;
+
+      let isDefault = pulseConfig.getBool('defaultlayout', true);
+      let perPage = isDefault ? 100 : pulseConfig.getInt('machinesperpage', 12);
+      if (perPage < 1) perPage = 12;
+      if (this._machineIdsArray.length <= perPage) return this._machineIdsArray;
+
+      if (this._visibleMachineIds && this._visibleMachineIds.length > 0) {
+        let visibleSet = new Set(this._visibleMachineIds.map(id => String(id).trim()));
+        return this._machineIdsArray.filter(id => visibleSet.has(String(id).trim()));
+      }
+
+      // No visibility event yet: pre-mount only the first page.
+      return this._machineIdsArray.slice(0, perPage);
     }
 
     get content() { return this._content; }
@@ -55,28 +88,36 @@ var eventBus = require('eventBus');
 
     initialize() {
       this.addClass('pulse-groupgrid');
-      $(this.element).empty();
+      this.element.replaceChildren();
 
-      this._content = $('<div></div>').addClass('groupgrid-main');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.classList.add('groupgrid-main');
+      this.element.appendChild(this._content);
 
-      // Loader DOM kept (hidden) — surfaced by CSS via `.pulse-component-loading`.
-      let loader = $('<div></div>').addClass('pulse-loader')
-        .html(this.getTranslation('loadingDots', 'Loading...')).hide();
-      $(this._content).append($('<div></div>').addClass('pulse-loader-div').append(loader));
-      this._messageSpan = $('<span></span>').addClass('pulse-message');
-      this._messageDiv = $('<div></div>').addClass('pulse-message-div').append(this._messageSpan);
-      $(this._content).append(this._messageDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.textContent = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.classList.add('pulse-message');
+      this._messageDiv = document.createElement('div');
+      this._messageDiv.classList.add('pulse-message-div');
+      this._messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(this._messageDiv);
 
       if (eventBus.EventBus.addEventListener) {
-        eventBus.EventBus.addEventListener(this, 'updateVisibleMachines', 'PAGE', this.onUpdateVisibility);
+        eventBus.EventBus.addEventListener(this, 'updateVisibleMachines', 'PAGE', this.onUpdateVisibility.bind(this));
       }
 
       this.switchToNextContext();
     }
 
     clearInitialization() {
-      $(this.element).empty();
+      this.element.replaceChildren();
       this.removeError();
       this._messageSpan = undefined;
       this._messageDiv = undefined;
@@ -85,6 +126,7 @@ var eventBus = require('eventBus');
       // `listChanged` short-circuit in manageSuccess() must rebuild on the
       // next success even if the new ids happen to match the previous run.
       this._machineIdsArray = [];
+      this._visibleMachineIds = null;
       super.clearInitialization();
     }
 
@@ -131,94 +173,88 @@ var eventBus = require('eventBus');
      * the reference alive (class removed after 500 ms via `_removeDisable`).
      */
     _buildItems() {
-      let container = $(this._content);
       let templateId = this.element.getAttribute('templateid') || 'boxtoclone';
 
-      // Mark survivors before any DOM mutation, then remove items not in new list
-      let self = this;
-      container.find('.groupgrid-item').each(function () {
-        let machineId = String($(this).attr('machine-id')).trim();
-        let found = self._machineIdsArray.some(id => String(id).trim() === machineId);
+      // Only mount what the rotation engine considers active. Items for
+      // machines on other pages are removed so their per-machine components
+      // stop polling until the rotation brings them back.
+      let activeIds = this._getActiveIds();
+      let activeStrIds = activeIds.map(id => String(id).trim());
+
+      let items = this._content.querySelectorAll('.groupgrid-item');
+      items.forEach(item => {
+        let machineId = String(item.getAttribute('machine-id')).trim();
+        let found = activeStrIds.includes(machineId);
         if (!found) {
-          $(this).remove();
+          item.remove();
         } else {
-          $(this).find('*').addClass('disableDeleteWhenDisconnect');
+          let allDescendants = item.querySelectorAll('*');
+          allDescendants.forEach(el => el.classList.add('disableDeleteWhenDisconnect'));
         }
       });
 
       if (this._machineIdsArray.length === 0) {
         this.displayError(this.getTranslation('groupArray.noMachine', 'No machine in selection'));
-        $(this._content).attr('data-count', 0);
+        this._content.setAttribute('data-count', 0);
         return;
       }
       this.removeError();
 
-      // Add or reuse items in order. Only re-append an existing item if it's
-      // not already at the right position — append() detaches and re-attaches
-      // the element, triggering disconnect/reconnect on every cloned
-      // per-machine component.
-      for (let i = 0; i < this._machineIdsArray.length; i++) {
-        let machineId = String(this._machineIdsArray[i]).trim();
-        let existing = container.find(".groupgrid-item[machine-id='" + machineId + "']");
-        if (existing.length > 0) {
-          let items = container.find('.groupgrid-item');
-          if (items[i] !== existing[0]) {
-            container.append(existing[0]);
+      for (let i = 0; i < activeStrIds.length; i++) {
+        let machineId = activeStrIds[i];
+        let existing = this._content.querySelector(".groupgrid-item[machine-id='" + machineId + "']");
+        if (existing) {
+          let currentItems = this._content.querySelectorAll('.groupgrid-item');
+          if (currentItems[i] !== existing) {
+            this._content.appendChild(existing);
           }
         } else {
           let itemContent = pulseUtility.cloneWithNewMachineId(templateId, machineId);
-          let item = $('<div></div>')
-            .addClass('groupgrid-item')
-            .attr('machine-id', machineId)
-            .append(itemContent);
-          container.append(item);
+          let item = document.createElement('div');
+          item.classList.add('groupgrid-item');
+          item.setAttribute('machine-id', machineId);
+          item.appendChild(itemContent);
+          this._content.appendChild(item);
         }
       }
 
-      $(this._content).attr('data-count', this._machineIdsArray.length);
+      this._content.setAttribute('data-count', activeStrIds.length);
 
       setTimeout(this._removeDisable.bind(this), 500);
     }
 
     _removeDisable() {
-      $(this.element).find('.disableDeleteWhenDisconnect')
-        .removeClass('disableDeleteWhenDisconnect');
+      let elements = this.element.querySelectorAll('.disableDeleteWhenDisconnect');
+      elements.forEach(el => el.classList.remove('disableDeleteWhenDisconnect'));
     }
 
     /**
-     * `updateVisibleMachines` callback: show/hide `.groupgrid-item` divs based
-     * on the carried id list and update `data-count` for CSS sizing.
+     * `updateVisibleMachines` callback: update `_visibleMachineIds` and
+     * rebuild the DOM so only the active page's machines are mounted.
+     * Items leaving the page are removed (their per-machine components stop
+     * polling); items entering the page are cloned fresh from the template.
      */
     onUpdateVisibility(event) {
       let visibleIds = [];
       if (event.target && event.target.machines) visibleIds = event.target.machines;
       else if (event.machines) visibleIds = event.machines;
-      let visibleStrIds = visibleIds.map(id => String(id).trim());
-
-      $(this._content).attr('data-count', visibleStrIds.length);
-
-      $(this._content).find('.groupgrid-item').each(function () {
-        let el = $(this);
-        let id = String(el.attr('machine-id')).trim();
-        if (visibleStrIds.includes(id)) {
-          el.css('display', 'flex');
-        } else {
-          el.hide();
-        }
-      });
+      this._visibleMachineIds = visibleIds.map(id => String(id).trim());
+      if (this._content) {
+        this._buildItems();
+      }
     }
 
     displayError(message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.textContent = message;
       if (this._messageDiv) {
-        this._messageDiv.addClass('force-visibility');
+        this._messageDiv.classList.add('force-visibility');
       }
     }
 
     removeError() {
-      $(this._messageSpan).html('');
+      this._messageSpan.textContent = '';
       if (this._messageDiv) {
-        this._messageDiv.removeClass('force-visibility');
+        this._messageDiv.classList.remove('force-visibility');
       }
     }
 

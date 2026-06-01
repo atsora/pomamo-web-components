@@ -10,14 +10,14 @@ pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
 var eventBus = require('eventBus');
 
-$(function () {
+document.addEventListener('DOMContentLoaded', function () {
   console.log('document loaded begin');
 
-  $('#displayBtn').click(function () {
-    let id = $('#messageId').val();
-    let message = $('#messageText').val();
-    let time = $('#timeDuration').val();
-    let level = $('#messageLevel').val();
+  document.getElementById('displayBtn').addEventListener('click', function () {
+    let id = document.getElementById('messageId').value;
+    let message = document.getElementById('messageText').value;
+    let time = document.getElementById('timeDuration').value;
+    let level = document.getElementById('messageLevel').value;
 
     let messageInfo = {
       'message': message,
@@ -29,7 +29,7 @@ $(function () {
     if (time != 'permanent') {
       messageInfo.time = time;
     }
-    if ('withreload' == $('#reload').val()) {
+    if ('withreload' == document.getElementById('reload').value) {
       messageInfo.reloadURL = window.location.href;
     }
     messageInfo.clickToClose = true;

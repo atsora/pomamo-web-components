@@ -104,29 +104,36 @@ require('x-modificationmanager/x-modificationmanager');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
       // Create dialog
-      this._dialog = $('<div></div>').addClass('savemachinestatetemplate-dialog');
-      let MST_CB = $('<div></div>')
-        .addClass('savemachinestatetemplate-dialog-div-select');
+      this._dialog = document.createElement('div');
+      this._dialog.className = 'savemachinestatetemplate-dialog';
+      let MST_CB = document.createElement('div');
+      MST_CB.className = 'savemachinestatetemplate-dialog-div-select';
 
       // Combobox
       this._MSTselectCB = document.createElement('ul');
       this._MSTselectCB.classList.add('savemachinestatetemplate-cells-list');
-      MST_CB.append(this._MSTselectCB);
+      MST_CB.appendChild(this._MSTselectCB);
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(MST_CB).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      MST_CB.appendChild(loaderDiv);
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(MST_CB).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      MST_CB.appendChild(messageDiv);
 
       let rangeForDisplay = pulseRange.createDefaultInclusivity(new Date(), null);
       if (this.element.hasAttribute('range')) {
@@ -149,25 +156,32 @@ require('x-modificationmanager/x-modificationmanager');
       }
       this._initalDate = rangeForDisplay;
       // FROM / TO = datetimerange
-      this._dtRange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
+      this._dtRange = pulseUtility.createElementWithAttribute('x-datetimerange', {
         'possible-no-end': (isoend == null),
         'range': pulseUtility.convertDateRangeForWebService(rangeForDisplay),
         'period-context': 'savemst' + this.element.getAttribute('machine-id'),
         'hide-buttons': 'true'
       });
 
-      let svg = $('<div></div>').addClass('savemachinestatetemplate-home-svg');
-      let homeBtn = $('<div></div>').addClass('savemachinestatetemplate-home-btn').append(svg);
+      let svg = document.createElement('div');
+      svg.className = 'savemachinestatetemplate-home-svg';
+      let homeBtn = document.createElement('div');
+      homeBtn.className = 'savemachinestatetemplate-home-btn';
+      homeBtn.appendChild(svg);
       pulseSvg.inlineBackgroundSvg(svg);
       pulseUtility.addToolTip(homeBtn, this.getTranslation('homeBtn', 'home'));
       var self = this;
-      homeBtn.click(function () {
-        self._dtRange[0].setAttribute('range', pulseUtility.convertDateRangeForWebService(rangeForDisplay));
+      homeBtn.addEventListener('click', function () {
+        self._dtRange.setAttribute('range', pulseUtility.convertDateRangeForWebService(rangeForDisplay));
       });
 
-      let rangeDiv = $('<div></div>').addClass('savemachinestatetemplate-dialog-dtp-div').append(homeBtn).append(this._dtRange);
+      let rangeDiv = document.createElement('div');
+      rangeDiv.className = 'savemachinestatetemplate-dialog-dtp-div';
+      rangeDiv.appendChild(homeBtn);
+      rangeDiv.appendChild(this._dtRange);
 
-      this._dialog.append(rangeDiv).append(MST_CB);
+      this._dialog.appendChild(rangeDiv);
+      this._dialog.appendChild(MST_CB);
 
       this._mstId = this.element.getAttribute('mst-id');
 
@@ -201,7 +215,7 @@ require('x-modificationmanager/x-modificationmanager');
     clearInitialization() {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._dialog = undefined;
       this._MSTselectCB = undefined;
@@ -233,7 +247,7 @@ require('x-modificationmanager/x-modificationmanager');
     }
 
     displayError(message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
     }
 
     removeError() {
@@ -304,7 +318,7 @@ require('x-modificationmanager/x-modificationmanager');
 
     _save(cell) {
       this._optionSelected = cell.getAttribute('id');
-      let range = $(this._dtRange)[0].getRangeString();
+      let range = this._dtRange.getRangeString();
       let newMST = this._optionSelected;
       let machid = this.element.getAttribute('machine-id'); // Should be copied. This.element disappear before request answer
       let url = this.getConfigOrAttribute('path', '') + 'MachineStateTemplateMachineAssociation/Save?MachineId=' + machid
@@ -331,7 +345,7 @@ require('x-modificationmanager/x-modificationmanager');
       console.info('MOS revision id=' + revisionId);
 
       // Store modification
-      let rangeString = $(this._dtRange)[0].getRangeString();
+      let rangeString = this._dtRange.getRangeString();
       let range = pulseRange.createDateRangeFromString(rangeString);
       let ranges = [];
       ranges.push(range);

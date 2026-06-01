@@ -83,11 +83,12 @@ var eventBus = require('eventBus');
       }*/
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('workinfo-content');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'workinfo-content';
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader -> Not needed here
       //let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
@@ -126,7 +127,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       this._content = undefined;
@@ -135,7 +136,7 @@ var eventBus = require('eventBus');
     }
 
     displayError (message) {
-      $(this._content).empty();
+      this._content.replaceChildren();
       this._displayedWorkInformations = null;
       console.error('x-workinfo: ' + message);
     }
@@ -149,7 +150,7 @@ var eventBus = require('eventBus');
      */
     onOperationChange (event) {
       if (pulseUtility.isNotDefined(event.target.workinformations)) {
-        $(this._content).empty();
+        this._content.replaceChildren();
         this._displayedWorkInformations = null;
         return;
       }
@@ -170,7 +171,7 @@ var eventBus = require('eventBus');
       }
 
       if (needToRefresh) {
-        $(this._content).empty();
+        this._content.replaceChildren();
         let operationDisplay = ''; // Will be changed with operationslot.display ASAP
         for (const workInformation of event.target.workinformations) {
           if (workInformation.Value) {
@@ -178,9 +179,10 @@ var eventBus = require('eventBus');
           }
         } // end for
         // SINGLE display for all kind
-        let div = $('<div></div>').addClass('workinfo-singledata')
-          .html(operationDisplay);
-        $(this._content).append(div);
+        let div = document.createElement('div');
+        div.className = 'workinfo-singledata';
+        div.innerHTML = operationDisplay;
+        this._content.appendChild(div);
         this._displayedWorkInformations = event.target.workinformations;
       }
     }

@@ -75,14 +75,16 @@ var eventBus = require('eventBus');
       }
     }
     _drawEmpty () { /* To clean the bar */
-      $(this._content).find('.runningslotpie-svg').remove(); // Remove Old SVG
+      let svgs = this._content.querySelectorAll('.runningslotpie-svg');
+      svgs.forEach(svg => svg.remove());
     }
 
     _draw () {
       if ((this._content == undefined) || (this._content == null)) {
         return;
       }
-      $(this._content).find('.runningslotpie-svg').remove(); // Remove Old SVG
+      let svgs = this._content.querySelectorAll('.runningslotpie-svg');
+      svgs.forEach(svg => svg.remove());
 
       //  Used sizes
       let circleRadius = 160;
@@ -97,13 +99,13 @@ var eventBus = require('eventBus');
       this._height = 100; // For compatibility (and shadow)
       let svg = pulseSvg.createBase(this._height, this._height,
         'runningslotpie-svg', 2 * xyPosition, 2 * xyPosition);
-      $(this._content).prepend(svg); // Before message
+      this._content.insertBefore(svg, this._content.firstChild);
       let g = document.createElementNS(pulseSvg.get_svgNS(), 'g');
       svg.appendChild(g);
 
       // PIE - rotate
-      $(g).css('transform-origin', 'center');
-      $(g).css('transform', 'rotate(-90deg)');
+      g.style.transformOrigin = 'center';
+      g.style.transform = 'rotate(-90deg)';
 
       // Circle in the middle (to allow writing something)
       let circleMiddle = pulseSvg.createCircle(xyPosition, xyPosition,
@@ -299,28 +301,36 @@ var eventBus = require('eventBus');
       // Height -> removed
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('runningslotpie-content');
-      let div = $('<div></div>').addClass('runningslotpie')
-        .append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'runningslotpie-content';
+      let div = document.createElement('div');
+      div.className = 'runningslotpie';
+      div.appendChild(this._content);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', ' Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', ' Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
-      $(this.element).append(div);
+      this.element.appendChild(div);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -330,7 +340,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._messageSpan = undefined;
       this._content = undefined;
@@ -393,12 +403,12 @@ var eventBus = require('eventBus');
     }
 
     displayError (message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
       //this._drawEmpty();
     }
 
     removeError () {
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
     }
 
     get refreshRate () {
@@ -481,7 +491,7 @@ var eventBus = require('eventBus');
 
         this._runningslots[i] = runningSlot;
       }
-      $(this._content).show();
+      this._content.style.display = '';
 
       let context = this.element.getAttribute('motion-context');
       if (this.element.hasAttribute('machine-id')) {
@@ -556,7 +566,10 @@ var eventBus = require('eventBus');
         bottomTextToDisplay = this._textToDisplay;
       }
       // DISPLAY Time
-      $(this.element).find('.time-in-pie').text(bottomTextToDisplay);
+      let elem = this.element.querySelector('.time-in-pie');
+      if (elem) {
+        elem.textContent = bottomTextToDisplay;
+      }
     }
     /**
      * Event bus callback triggered when param changes

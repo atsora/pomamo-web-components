@@ -65,7 +65,7 @@ require('x-datetimepicker/x-datetimepicker');
         //case 'group':
         case 'machine-id':
           if (this.isInitialized()) {
-            $(this._labelmachine).html(this.element.getAttribute('machine-id'));
+            this._labelmachine.innerHTML = this.element.getAttribute('machine-id');
             this.start();
           }
           break;
@@ -82,8 +82,8 @@ require('x-datetimepicker/x-datetimepicker');
     }
 
     _clickOnAdd () {
-      let date = this._dateTimePicker[0].getISOValue();
-      let text = this._milestonesInput[0].value;
+      let date = this._dateTimePicker.getISOValue();
+      let text = this._milestonesInput.value;
 
       // Call ajax
       let url = this.getConfigOrAttribute('path', '')
@@ -107,7 +107,7 @@ require('x-datetimepicker/x-datetimepicker');
       }, 0);  // 1000);
 
       // Clean text
-      this._milestonesInput[0].value = '';
+      this._milestonesInput.value = '';
 
       // Close Dialog if exists
       pulseCustomDialog.close('x-milestonesadd');
@@ -138,47 +138,59 @@ require('x-datetimepicker/x-datetimepicker');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('milestonesadd-content');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'milestonesadd-content';
+      this.element.appendChild(this._content);
 
       // Machine id - for tests
-      this._labelmachine = $('<label></label>').addClass('milestonesadd-machine');
-      $(this._content).append(this._labelmachine);
+      this._labelmachine = document.createElement('label');
+      this._labelmachine.className = 'milestonesadd-machine';
+      this._content.appendChild(this._labelmachine);
+
       // Inputs
-      let inputFields = $('<div></div>').addClass('milestonesadd-inputs');
-      $(this._content).append(inputFields);
+      let inputFields = document.createElement('div');
+      inputFields.className = 'milestonesadd-inputs';
+      this._content.appendChild(inputFields);
+
       // Day
-      let dayLabel = $('<label></label>').addClass('milestonesadd-label')
-        .html(this.getTranslation('whenColon', 'When: '));
-      this._dateTimePicker = pulseUtility.createjQueryElementWithAttribute('x-datetimepicker', {});
-      let dayInput = $('<div></div>').addClass('milestonesadd-input')
-        .append(this._dateTimePicker);
-      let dayRow = $('<div></div>').addClass('milestonesadd-row')
-        .append(dayLabel).append(dayInput);
-      $(inputFields).append(dayRow);
+      let dayLabel = document.createElement('label');
+      dayLabel.className = 'milestonesadd-label';
+      dayLabel.innerHTML = this.getTranslation('whenColon', 'When: ');
+      this._dateTimePicker = pulseUtility.createElementWithAttribute('x-datetimepicker', {});
+      let dayInput = document.createElement('div');
+      dayInput.className = 'milestonesadd-input';
+      dayInput.appendChild(this._dateTimePicker);
+      let dayRow = document.createElement('div');
+      dayRow.className = 'milestonesadd-row';
+      dayRow.appendChild(dayLabel);
+      dayRow.appendChild(dayInput);
+      inputFields.appendChild(dayRow);
 
       // Text
-      let milestonesLabel = $('<label></label>').addClass('milestonesadd-label')
-        .html(this.getTranslation ('shortDescriptionColon', 'Short description:' ));
-      this._milestonesInput = $('<input></input>').addClass('milestonesadd-input');
-      let milestonesRow = $('<div></div>').addClass('milestonesadd-row')
-        .append(milestonesLabel).append(this._milestonesInput);
-      $(inputFields).append(milestonesRow);
+      let milestonesLabel = document.createElement('label');
+      milestonesLabel.className = 'milestonesadd-label';
+      milestonesLabel.innerHTML = this.getTranslation('shortDescriptionColon', 'Short description:');
+      this._milestonesInput = document.createElement('input');
+      this._milestonesInput.className = 'milestonesadd-input';
+      let milestonesRow = document.createElement('div');
+      milestonesRow.className = 'milestonesadd-row';
+      milestonesRow.appendChild(milestonesLabel);
+      milestonesRow.appendChild(this._milestonesInput);
+      inputFields.appendChild(milestonesRow);
 
       // Button
-      this._button = $('<button></button>').addClass('milestonesadd-button')
-        .html('ADD');
-      let buttonDiv = $('<div></div>').addClass('milestonesadd-button-div')
-        .append(this._button);
-      $(this._content).append(buttonDiv);
+      this._button = document.createElement('button');
+      this._button.className = 'milestonesadd-button';
+      this._button.innerHTML = 'ADD';
+      let buttonDiv = document.createElement('div');
+      buttonDiv.className = 'milestonesadd-button-div';
+      buttonDiv.appendChild(this._button);
+      this._content.appendChild(buttonDiv);
 
-      this._button.click(
-        function () {
-          this._clickOnAdd();
-        }.bind(this));
+      this._button.addEventListener('click', this._clickOnAdd.bind(this));
 
       // Create DOM - No Loader
       // Create DOM - No message for error
@@ -197,7 +209,7 @@ require('x-datetimepicker/x-datetimepicker');
       // Parameters
 
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._content = undefined;
 
       super.clearInitialization();
@@ -218,26 +230,23 @@ require('x-datetimepicker/x-datetimepicker');
         return;
       }
 
-      this._labelmachine.html(this.element.getAttribute('machine-id'));
+      this._labelmachine.innerHTML = this.element.getAttribute('machine-id');
 
       this.switchToNextContext();
     }
 
     displayError (message) {
       // Disable
-      this._dateTimePicker.prop('disabled', true);
-      this._milestonesInput.prop('disabled', true);
-      this._button.prop('disabled', true);
+      this._dateTimePicker.disabled = true;
+      this._milestonesInput.disabled = true;
+      this._button.disabled = true;
     }
 
     removeError () {
       // Enable
-      this._dateTimePicker.prop('disabled', false);
-      this._milestonesInput.prop('disabled', false);
-      this._button.prop('disabled', false);
-      // Todo try without jquery :
-      //document.querySelector('.input-checkbox').disabled = true;
-      //document.querySelectorAll('.input-checkbox').forEach(el => el.disabled = true);
+      this._dateTimePicker.disabled = false;
+      this._milestonesInput.disabled = false;
+      this._button.disabled = false;
     }
 
     // Callback events

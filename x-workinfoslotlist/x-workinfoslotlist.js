@@ -109,7 +109,7 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
     }
 
     cleanTable (table) {
-      this._table.empty();
+      this._table.replaceChildren();
     }
 
     fillTable () {
@@ -145,39 +145,45 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
         let range = pulseRange.createDateRangeFromString(tmpRange);*/
         let tmpRange = pulseRange.createDateRangeDefaultInclusivity(item.Begin, item.End);
 
-        let tr = $('<div></div>')//.addClass('selectable')
-          .addClass('workinfoslotlist-tr')
-          .attr({
-            'operationslot-id': item.OperationSlotId,
-            'begin': item.Begin,
-            'end': item.End,
-            'range': pulseUtility.convertDateRangeForWebService(tmpRange)
-          });
+        let tr = document.createElement('div');
+        tr.className = 'workinfoslotlist-tr';
+        tr.setAttribute('operationslot-id', item.OperationSlotId);
+        tr.setAttribute('begin', item.Begin);
+        tr.setAttribute('end', item.End);
+        tr.setAttribute('range', pulseUtility.convertDateRangeForWebService(tmpRange));
 
-        /*let tdCheck = ($('<div></div>').addClass('workinfoslotlist-td-check'));
+        /*let tdCheck = document.createElement('div');
+        tdCheck.className = 'workinfoslotlist-td-check';
         if (item.IsSelectable == undefined || item.IsSelectable) {
-          tdCheck.append($("<input type='checkbox'></input>").addClass('table-check'));
+          let checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.className = 'table-check';
+          tdCheck.appendChild(checkbox);
         }*/
 
-        /*let tdReasonButton = $('<div></div>').addClass('workinfoslotlist-td-icon');
+        /*let tdReasonButton = document.createElement('div');
+        tdReasonButton.className = 'workinfoslotlist-td-icon';
         if (catId > 0) {
           let svg = pulseSvg.getMachineMode....
         }*/
 
         let displayedRange = pulseUtility.displayDateRange(tmpRange);
-        let tdRange = $('<div></div>').html(displayedRange)
-          .addClass('workinfoslotlist-td-range');
-        //.addClass('workinfoslotlist-td-click-change');
-        let desc = $('<div></div>').addClass('workinfoslotlist-td-desc').append(tdRange);
+        let tdRange = document.createElement('div');
+        tdRange.innerHTML = displayedRange;
+        tdRange.className = 'workinfoslotlist-td-range';
+        let desc = document.createElement('div');
+        desc.className = 'workinfoslotlist-td-desc';
+        desc.appendChild(tdRange);
 
         for (let workinfo of item.WorkInformations) {
-          let textbox = $('<div></div>').attr('kind', workinfo.Kind)
-            .addClass('workinfoslotlist-td-workinfo')
-            .html('...');
-          desc.append(textbox);
+          let textbox = document.createElement('div');
+          textbox.setAttribute('kind', workinfo.Kind);
+          textbox.className = 'workinfoslotlist-td-workinfo';
+          textbox.innerHTML = '...';
+          desc.appendChild(textbox);
         }
-        tr.append(desc);
-        this._table.append(tr);
+        tr.appendChild(desc);
+        this._table.appendChild(tr);
 
         this._displayWorkInformations(tr, item.WorkInformations, this._data.Config);
       }
@@ -195,45 +201,45 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
         let lastValue = workinformations[n - 1].Value;
 
         if (firstValue) { //Level 1 has value
-          tablerow.find('[kind="' + workinformations[0].Kind + '"]')
-            .addClass('hasvalue') // selectable')
-            .html(firstValue);
+          let elem = tablerow.querySelector('[kind="' + workinformations[0].Kind + '"]');
+          elem.classList.add('hasvalue');
+          elem.innerHTML = firstValue;
 
           if (lastValue) { //Level 3 has value
             _appendLevel2(tablerow, workinformations);
-            tablerow.find('[kind="' + workinformations[n - 1].Kind + '"]')
-              .addClass('hasvalue') // selectable')
-              .html(lastValue);
+            let elem2 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
+            elem2.classList.add('hasvalue');
+            elem2.innerHTML = lastValue;
           }
           else { //Level 3 is missing
             if (!_isLevel2Null(workinformations)) { // Some workinformation at level are not null
               _appendLevel2(tablerow, workinformations);
 
               if (config.OperationFromCnc) { //if operation data comme from CNC
-                tablerow.find('[kind="' + workinformations[n - 1].Kind + '"]')
-                  .addClass('nodata')
-                  .attr('missing', workinformations[n - 1].Kind)
-                  .html('No Operation');
+                let elem3 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
+                elem3.classList.add('nodata');
+                elem3.setAttribute('missing', workinformations[n - 1].Kind);
+                elem3.innerHTML = 'No Operation';
               }
               else { //if operation data comme from Operator
-                tablerow.find('[kind="' + workinformations[n - 1].Kind + '"]')
-                  .addClass('missing') // selectable')
-                  .attr('missing', workinformations[n - 1].Kind)
-                  .html('Missing Operation');
+                let elem3 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
+                elem3.classList.add('missing');
+                elem3.setAttribute('missing', workinformations[n - 1].Kind);
+                elem3.innerHTML = 'Missing Operation';
               }
             }
             else {
               if (config.OperationFromCnc) { //if operation data comme from CNC
-                tablerow.find('[kind="' + workinformations[n - 1].Kind + '"]')
-                  .addClass('nodata')
-                  .attr('missing', workinformations[n - 1].Kind)
-                  .html('No Operation');
+                let elem3 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
+                elem3.classList.add('nodata');
+                elem3.setAttribute('missing', workinformations[n - 1].Kind);
+                elem3.innerHTML = 'No Operation';
               }
               else { //if operation data comme from Operator
-                tablerow.find('[kind="' + workinformations[n - 1].Kind + '"]')
-                  .addClass('missing') // selectable')
-                  .attr('missing', _getLevel2Kind(workinformations).join(',') + ',' + workinformations[n - 1].Kind)
-                  .html('Missing Operation');
+                let elem3 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
+                elem3.classList.add('missing');
+                elem3.setAttribute('missing', _getLevel2Kind(workinformations).join(',') + ',' + workinformations[n - 1].Kind);
+                elem3.innerHTML = 'Missing Operation';
               }
             }
           }
@@ -243,27 +249,27 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
 
             if (!_isLevel2Null(workinformations)) {
               _appendLevel2(tablerow, workinformations);
-              tablerow.find('[kind="' + workinformations[0].Kind + '"]')
-                .addClass('missing') // selectable')
-                .attr('missing', workinformations[0].Kind)
-                .html('Missing');
+              let elem4 = tablerow.querySelector('[kind="' + workinformations[0].Kind + '"]');
+              elem4.classList.add('missing');
+              elem4.setAttribute('missing', workinformations[0].Kind);
+              elem4.innerHTML = 'Missing';
             }
             else if (!config.OnePartPerWorkOrder) { //if not only one part is assigned to a WorkOrder
               _appendLevel2(tablerow, workinformations);
-              tablerow.find('[kind="' + workinformations[0].Kind + '"]')
-                .addClass('missing') // selectable')
-                .attr('missing', workinformations[0].Kind)
-                .html('Missing');
+              let elem4 = tablerow.querySelector('[kind="' + workinformations[0].Kind + '"]');
+              elem4.classList.add('missing');
+              elem4.setAttribute('missing', workinformations[0].Kind);
+              elem4.innerHTML = 'Missing';
             }
             else {
-              tablerow.find('[kind="' + workinformations[0].Kind + '"]')
-                .addClass('missing') // selectable')
-                .attr('missing', workinformations[0].Kind + ',' + _getLevel2Kind(workinformations).join(','))
-                .html('Missing');
+              let elem4 = tablerow.querySelector('[kind="' + workinformations[0].Kind + '"]');
+              elem4.classList.add('missing');
+              elem4.setAttribute('missing', workinformations[0].Kind + ',' + _getLevel2Kind(workinformations).join(','));
+              elem4.innerHTML = 'Missing';
             }
-            tablerow.find('[kind="' + workinformations[n - 1].Kind + '"]')
-              .addClass('hasvalue') // selectable')
-              .html(lastValue);
+            let elem5 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
+            elem5.classList.add('hasvalue');
+            elem5.innerHTML = lastValue;
           }
           else { //Level 3 is missing
             let m = workinformations[0].Kind;
@@ -271,15 +277,15 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
               m += ',' + workinformations[i].Kind;
             }
             if (config.OperationFromCnc) { //if operation data comme from CNC
-              tablerow.find('[kind="' + workinformations[n - 1].Kind + '"]')
-                .addClass('nodata')
-                .html('No Operation');
+              let elem6 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
+              elem6.classList.add('nodata');
+              elem6.innerHTML = 'No Operation';
             }
             else { //if operation data come from Operator
-              tablerow.find('[kind="' + workinformations[n - 1].Kind + '"]')
-                .addClass('missing') // selectable')
-                .attr('missing', m)
-                .html('Missing Operation');
+              let elem6 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
+              elem6.classList.add('missing');
+              elem6.setAttribute('missing', m);
+              elem6.innerHTML = 'Missing Operation';
             }
           }
         }
@@ -305,16 +311,15 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
       // Inside  _displayWorkInformations
       function _appendLevel2 (tablerow, workinformations) {
         for (let i = 1; i < (workinformations.length - 1); i++) {
+          let elem = tablerow.querySelector('[kind="' + workinformations[i].Kind + '"]');
           if (workinformations[i].Value) {
-            tablerow.find('[kind="' + workinformations[i].Kind + '"]')
-              .addClass('hasvalue') // selectable')
-              .html(workinformations[i].Value);
+            elem.classList.add('hasvalue');
+            elem.innerHTML = workinformations[i].Value;
           }
           else {
-            tablerow.find('[kind="' + workinformations[i].Kind + '"]')
-              .addClass('missing') // selectable')
-              .attr('missing', workinformations[i].Kind)
-              .html('Missing');
+            elem.classList.add('missing');
+            elem.setAttribute('missing', workinformations[i].Kind);
+            elem.innerHTML = 'Missing';
           }
         }
       }
@@ -373,63 +378,77 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
 
       // - x-datetimerange: to leave before all the others (why ?)
-      let datetimerangeDiv = $('<div></div>').addClass('workinfoslotlist-datetimerange');
-      let xdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
+      let datetimerangeDiv = document.createElement('div');
+      datetimerangeDiv.className = 'workinfoslotlist-datetimerange';
+      let xdatetimerange = pulseUtility.createElementWithAttribute('x-datetimerange', {
         'range': this.range.toString(d => d.toISOString()),
         'period-context': 'WISL' + this.element.getAttribute('machine-id')
         //,'not-editable' : 'true', ???
         //'hide-buttons' :'true' ???
       });
-      datetimerangeDiv.append(xdatetimerange);
+      datetimerangeDiv.appendChild(xdatetimerange);
 
-      let fixedHeaderDiv = $('<div></div>').addClass('fixed-header')
-        .append('<div class="workinfoslotlist-header-label">1. Time range</div>')
-        //.append('<div class="workinfoslotlist-header-label">1. Select a time range</div>')
-        .append(datetimerangeDiv)
-        .append('<div class="workinfoslotlist-header-label">2. Work informations periods</div>');
-      //.append('<div class="workinfoslotlist-header-label">2. Select one work information periods</div>');
+      let fixedHeaderDiv = document.createElement('div');
+      fixedHeaderDiv.className = 'fixed-header';
+      let headerLabel1 = document.createElement('div');
+      headerLabel1.className = 'workinfoslotlist-header-label';
+      headerLabel1.innerHTML = '1. Time range';
+      fixedHeaderDiv.appendChild(headerLabel1);
+      fixedHeaderDiv.appendChild(datetimerangeDiv);
+      let headerLabel2 = document.createElement('div');
+      headerLabel2.className = 'workinfoslotlist-header-label';
+      headerLabel2.innerHTML = '2. Work informations periods';
+      fixedHeaderDiv.appendChild(headerLabel2);
 
       // - x-operationslotbar + x-highlightperiodsbar
-      let operationBar = pulseUtility.createjQueryElementWithAttribute('x-operationslotbar', {
+      let operationBar = pulseUtility.createElementWithAttribute('x-operationslotbar', {
         'machine-id': this.element.getAttribute('machine-id'),
         'period-context': 'WISL' + this.element.getAttribute('machine-id'),
         'height': 15,
         'range': this.range.toString(d => d.toISOString())
       });
-      let operationBorder = $('<div></div>').addClass('pulse-bar-div').append(operationBar);
-      let barDiv = $('<div></div>').addClass('workinfoslotlist-bar')
-        .append(operationBorder);//.append(highlightBar);
-      fixedHeaderDiv.append(barDiv);
+      let operationBorder = document.createElement('div');
+      operationBorder.className = 'pulse-bar-div';
+      operationBorder.appendChild(operationBar);
+      let barDiv = document.createElement('div');
+      barDiv.className = 'workinfoslotlist-bar';
+      barDiv.appendChild(operationBorder);
+      fixedHeaderDiv.appendChild(barDiv);
 
       // - table
-      let divdata = $('<div></div>')
-        .addClass('workinfoslotlist-data');
+      let divdata = document.createElement('div');
+      divdata.className = 'workinfoslotlist-data';
       // Scrollable-content
-      let divScrollable = $('<div></div>').addClass('scrollable-content')
-        .append(divdata);
-
-      // Warning "No selectable periods in the specified range"
-      /*let warningDiv = $('<div></div>').addClass('workinfoslotlist-warning').html('No selectable periods on the specified range');*/
+      let divScrollable = document.createElement('div');
+      divScrollable.className = 'scrollable-content';
+      divScrollable.appendChild(divdata);
 
       // - main
-      let maindiv = $('<div></div>')
-        .addClass('workinfoslotlist')
-        .append(fixedHeaderDiv)
-        //.append(topDiv)
-        .append(divScrollable);
-      //.append(warningDiv);
+      let maindiv = document.createElement('div');
+      maindiv.className = 'workinfoslotlist';
+      maindiv.appendChild(fixedHeaderDiv);
+      maindiv.appendChild(divScrollable);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      // Original jQuery: `$(this._content).append(loaderDiv)` — `this._content`
+      // has never been assigned, so jQuery turned this into a silent no-op.
+      // Vanilla `.appendChild` throws on undefined, so we attach the loader to
+      // the host element directly (same pattern as x-reasonslotlist).
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
 
-      $(this.element).append(maindiv);
+      this.element.appendChild(maindiv);
 
       // listeners / dispatchers
       eventBus.EventBus.addEventListener(this, 'dateTimeRangeChangeEvent',
@@ -442,7 +461,7 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       this._content = undefined;
@@ -459,6 +478,40 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
     }
 
     /**
+     * Validates `machine-id` (required, integer) and `range` (required, non-empty).
+     * Same checks as initialize() — kept in sync intentionally because the
+     * state machine calls initialize() FIRST (and initialize() needs the
+     * params validated to build the DOM safely), then validateParameters().
+     */
+    validateParameters () {
+      if (!this.element.hasAttribute('machine-id')) {
+        this.switchToKey('Error',
+          () => this.displayError(this.getTranslation('error.selectMachine', 'Please select a machine')),
+          () => this.removeError());
+        return;
+      }
+      if (!pulseUtility.isInteger(this.element.getAttribute('machine-id'))) {
+        this.switchToKey('Error',
+          () => this.displayError(this.getTranslation('error.invalidMachineId', 'Invalid machine-id')),
+          () => this.removeError());
+        return;
+      }
+      this._setAutoRange();
+      if (this.range == undefined || this.range.isEmpty()) {
+        if (this.element.hasAttribute('period-context')) {
+          eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent',
+            this.element.getAttribute('period-context'));
+        }
+        else {
+          eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
+        }
+        this.switchToKey('Error', () => this.displayError('invalid range'), () => this.removeError());
+        return;
+      }
+      this.switchToNextContext();
+    }
+
+    /**
      * @override
      */
     refresh (data) {
@@ -468,41 +521,45 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
         (!pulseRange.equals(newRange, this._range, (a, b) => (a >= b) && (a <= b)))) {
         this._range = newRange;
       } */
-      /*let divfilter = $(this.element).find('.workinfoslotlist div.workinfoslotlist-filter').first();
+      /*let divfilter = this.element.querySelector('.workinfoslotlist div.workinfoslotlist-filter').first();
       divfilter.show();*/
 
-      this._table = $(this.element).find('.workinfoslotlist div.workinfoslotlist-data').first();
-      this._table.empty()
-        .removeClass('workinfoslotlist-error')
-        .addClass('workinfoslotlist-table  pulse-selection-table-container');
+      this._table = this.element.querySelector('.workinfoslotlist div.workinfoslotlist-data');
+      this._table.replaceChildren();
+      this._table.classList.remove('workinfoslotlist-error');
+      this._table.classList.add('workinfoslotlist-table');
+      this._table.classList.add('pulse-selection-table-container');
 
       this._data = data;
 
       // Fill the table
       this.fillTable();
 
-      let datetimerangeDiv = $(this.element).find('.workinfoslotlist-datetimerange');
-      datetimerangeDiv.empty();
-      let xdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange',
+      let datetimerangeDiv = this.element.querySelector('.workinfoslotlist-datetimerange');
+      datetimerangeDiv.replaceChildren();
+      let xdatetimerange = pulseUtility.createElementWithAttribute('x-datetimerange',
         {
           'range': this.range.toString(d => d.toISOString()),
           'period-context': 'WISL' + this.element.getAttribute('machine-id')
         });
-      datetimerangeDiv.append(xdatetimerange);
+      datetimerangeDiv.appendChild(xdatetimerange);
     }
 
     /**
      * @override
      */
     displayError (text) {
-      let divfilter = $(this.element).find('.workinfoslotlist div.workinfoslotlist-filter').first();
-      divfilter.hide();
+      let divfilter = this.element.querySelector('.workinfoslotlist div.workinfoslotlist-filter');
+      if (divfilter) divfilter.style.display = 'none';
 
-      this._table = $(this.element).find('.workinfoslotlist div.workinfoslotlist-data').first();
-      this._table.empty()
-        .removeClass('workinfoslotlist-table pulse-selection-table-container')
-        .addClass('workinfoslotlist-error');
-      this._table.append('<div>' + text + '</div>');
+      this._table = this.element.querySelector('.workinfoslotlist div.workinfoslotlist-data');
+      this._table.replaceChildren();
+      this._table.classList.remove('workinfoslotlist-table');
+      this._table.classList.remove('pulse-selection-table-container');
+      this._table.classList.add('workinfoslotlist-error');
+      let div = document.createElement('div');
+      div.innerHTML = text;
+      this._table.appendChild(div);
     }
 
     /**
@@ -516,17 +573,19 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
      * @override
      */
     startLoading () {
-      $(this.element).find('.workinfoslotlist').hide();
+      let wisl = this.element.querySelector('.workinfoslotlist');
+      if (wisl) wisl.style.display = 'none';
       super.startLoading();
-      //pulseCustomDialogs.showLoadingDialog($(this.component));
+      //pulseCustomDialogs.showLoadingDialog(this.component);
     }
 
     /**
      * @override
      */
     endLoading () {
-      //pulseCustomDialogs.hideLoadingDialog($(this.component));
-      $(this.element).find('.workinfoslotlist').show();
+      //pulseCustomDialogs.hideLoadingDialog(this.component);
+      let wisl = this.element.querySelector('.workinfoslotlist');
+      if (wisl) wisl.style.display = '';
       super.endLoading();
     }
 
@@ -538,6 +597,10 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
      * @param {Object} event
      */
     onDateTimeRangeChange (event) {
+      // Bail if our host is no longer in the document — see x-classifiedreasonslotlist
+      // for the full rationale (zombie listener race between dialog close and
+      // dispatched event). Match x-barstack:109 convention.
+      if (!this.element || !this.element.isConnected) return;
       let newRange = event.target.daterange;
 
       if (!pulseRange.equals(newRange, this._range, (a, b) => a.getTime() == b.getTime())) {
@@ -573,8 +636,8 @@ require('x-highlightperiodsbar/x-highlightperiodsbar');
     }
 
     _getRangeFromRowWithCurrent (row) {
-      let range = $(row).attr('range');
-      let current = $(row).attr('current');
+      let range = row.getAttribute('range');
+      let current = row.getAttribute('current');
       return this._getRangeWithCurrent(range, current);
     }
   }

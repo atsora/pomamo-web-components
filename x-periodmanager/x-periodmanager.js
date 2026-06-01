@@ -203,7 +203,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._messageSpan = undefined;
       this._content = undefined;

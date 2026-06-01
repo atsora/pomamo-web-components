@@ -100,7 +100,7 @@ require('x-saveserialnumber/x-saveserialnumber');
     *
     */
     _fillTable (table, list, checked) {
-      table.empty();
+      table.replaceChildren();
       //loop through list of cycles
       for (let i = 0; i < list.length; i++) {
         //if we have checked to only display cycles without serial number
@@ -109,38 +109,45 @@ require('x-saveserialnumber/x-saveserialnumber');
         if (checked && (list[i].SerialNumber))
           continue;
         //add cycle properties to row attributes
-        let tr = $('<tr></tr>').attr({
-          'cycleid': list[i].CycleId,
-          'begin': list[i].Begin,
-          'end': list[i].End,
-          'estimated-begin': list[i].EstimatedBegin,
-          'estimated-end': list[i].EstimatedEnd,
-          'serial-number': list[i].SerialNumber
-        })
-          .addClass('selectable');
+        let tr = document.createElement('tr');
+        tr.setAttribute('cycleid', list[i].CycleId);
+        tr.setAttribute('begin', list[i].Begin);
+        tr.setAttribute('end', list[i].End);
+        tr.setAttribute('estimated-begin', list[i].EstimatedBegin);
+        tr.setAttribute('estimated-end', list[i].EstimatedEnd);
+        tr.setAttribute('serial-number', list[i].SerialNumber);
+        tr.className = 'selectable';
         //display date range of currentcycle
         let tmpRange = pulseRange.createDateRangeDefaultInclusivity(list[i].Begin, list[i].End);
-        tr.append($('<td></td>').html(pulseUtility.displayDateRange(tmpRange)));
+        let td1 = document.createElement('td');
+        td1.innerHTML = pulseUtility.displayDateRange(tmpRange);
+        tr.appendChild(td1);
         //display workinformations of operationslot related to current cycle
         for (let j = 0; j < list[i].WorkInformations.length; j++) {
+          let td = document.createElement('td');
           if (list[i].WorkInformations[j].Value) {
-            tr.append($('<td></td>').html(list[i].WorkInformations[j].Value));
+            td.innerHTML = list[i].WorkInformations[j].Value;
           }
           else {
-            tr.append($('<td></td>').html('...'));
+            td.innerHTML = '...';
           }
+          tr.appendChild(td);
         }
         //display serial number of current cycle or 'Missing' if it do not have
+        let tdSn = document.createElement('td');
+        tdSn.className = 'serialnumber';
         if (list[i].SerialNumber) {
-          tr.append($('<td></td>').addClass('serialnumber').html(list[i].SerialNumber));
+          tdSn.innerHTML = list[i].SerialNumber;
         }
         else {
-          tr.append($('<td></td>').addClass('serialnumber missing').html(this.getTranslation('missing', 'Missing')));
+          tdSn.classList.add('missing');
+          tdSn.innerHTML = this.getTranslation('missing', 'Missing');
         }
-        table.append(tr);
+        tr.appendChild(tdSn);
+        table.appendChild(tr);
 
         // Click
-        tr.click(
+        tr.addEventListener('click',
           function (e) {
             this.clickOnRow(e);
           }.bind(this)
@@ -174,27 +181,31 @@ require('x-saveserialnumber/x-saveserialnumber');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>')
-        .addClass('cyclesinperiod-content');
+      this._content = document.createElement('div');
+      this._content.className = 'cyclesinperiod-content';
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
-      $(this.element)
-        //.addClass('cyclesinperiod')
-        .append(this._content);
+      this.element.appendChild(this._content);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -204,7 +215,7 @@ require('x-saveserialnumber/x-saveserialnumber');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._messageSpan = undefined;
       this._content = undefined;
 
@@ -252,13 +263,13 @@ require('x-saveserialnumber/x-saveserialnumber');
     }
 
     displayError (message) {
-      $(this._content).empty();
+      this._content.replaceChildren();
 
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
     }
 
     removeError () {
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
     }
 
     getShortUrl () {
@@ -281,11 +292,11 @@ require('x-saveserialnumber/x-saveserialnumber');
       this._range = pulseRange.createDateRangeDefaultInclusivity(data.Begin, data.End);
 
       //remove table which display information of cycles
-      $(this._content).empty()
-        .addClass('pulse-selection-table-container');
+      this._content.replaceChildren();
+      this._content.classList.add('pulse-selection-table-container');
 
-      let table = $('<table></table>');
-      $(this._content).append(table);
+      let table = document.createElement('table');
+      this._content.appendChild(table);
       //if data contains cycles, we build table to display them
       if (data.List.length > 0) {
         this._fillTable(table, data.List, false);
@@ -313,17 +324,18 @@ require('x-saveserialnumber/x-saveserialnumber');
      */
     clickOnRow (e) {
       let td = e.target;
-      let tr = $(td).parent();
+      let tr = td.parentElement;
       //create x-saveserialnumber component and put it in dialog box
-      let dialog = $('<div></div>').addClass('lastserialnumber-dialog');
+      let dialog = document.createElement('div');
+      dialog.className = 'lastserialnumber-dialog';
 
       let opts;
-      if (!$(tr)[0].hasAttribute('estimated-begin')) {
+      if (!tr.hasAttribute('estimated-begin')) {
         opts = {
           'machine-id': this.element.getAttribute('machine-id'),
-          'datetime': $(tr)[0].getAttribute('begin'),
-          'serial-number': $(tr)[0].getAttribute('serial-number'),
-          'range': $(tr)[0].getAttribute('begin') + ';' + $(tr)[0].getAttribute('end'),
+          'datetime': tr.getAttribute('begin'),
+          'serial-number': tr.getAttribute('serial-number'),
+          'range': tr.getAttribute('begin') + ';' + tr.getAttribute('end'),
           'is-begin': 'is-begin'
           //,'serialnumber-context': 'CIP'  -> managed by modification
         };
@@ -331,22 +343,22 @@ require('x-saveserialnumber/x-saveserialnumber');
       else {
         opts = {
           'machine-id': this.element.getAttribute('machine-id'),
-          'datetime': $(tr)[0].getAttribute('end'),
-          'serial-number': $(tr)[0].getAttribute('serial-number'),
-          'range': $(tr)[0].getAttribute('begin') + ';' + $(tr)[0].getAttribute('end')
+          'datetime': tr.getAttribute('end'),
+          'serial-number': tr.getAttribute('serial-number'),
+          'range': tr.getAttribute('begin') + ';' + tr.getAttribute('end')
           //'serialnumber-context': 'CIP' -> managed by modification
         };
       }
 
-      this._saveSNtag = pulseUtility.createjQueryElementWithAttribute('x-saveserialnumber', opts);
-      dialog.append(this._saveSNtag);
+      this._saveSNtag = pulseUtility.createElementWithAttribute('x-saveserialnumber', opts);
+      dialog.appendChild(this._saveSNtag);
 
       pulseCustomDialog.openDialog(dialog, {
         title: this.getTranslation ('saveSerialNumber', 'Save serial number'),
         onOk: //function (xsaveinperiod, xsaveSNtag) { // to avoid closure
           //return
           function () {
-            $(this._saveSNtag)[0].save();
+            this._saveSNtag.save();
             //this.load(); -> sn-context after progress in ssn
           }.bind(this), //(this, this._saveSNtag), /* end of onOk */
         onCancel: //function (xsaveinperiod) { // to avoid closure

@@ -138,13 +138,13 @@ require('x-stopclassification/x-stopclassification');
             if (this.element.hasAttribute('autocreate-stopclassification')) {
                 let existing = this.element.querySelector('x-stopclassification');
                 if (!existing) {
-                    let xstopclassification = pulseUtility.createjQueryElementWithAttribute('x-stopclassification', {
+                    let xstopclassification = pulseUtility.createElementWithAttribute('x-stopclassification', {
                         'machine-id': this.element.getAttribute('machine-id'),
                         'range': selectedRangeStr,
                         'fullRange': this.element.getAttribute('range')
                     });
                     // Append as child
-                    $(this.element).append(xstopclassification);
+                    this.element.appendChild(xstopclassification);
                 }
                 else {
                     existing.setAttribute('machine-id', this.element.getAttribute('machine-id'));

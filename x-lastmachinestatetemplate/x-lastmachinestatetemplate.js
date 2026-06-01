@@ -75,12 +75,14 @@ require('x-revisionprogress/x-revisionprogress');
         let last1January = new Date(((new Date()).getFullYear()), 1, 1, 0, 0, 0, 0);
         numberToOrder = (last1January.getTime() - since.getTime()) / 1000 / 60; // To lower number
       }
-      let parentsToOrder = $(this.element).parents('.group-single');
-      $(parentsToOrder).css('order', Math.round(numberToOrder));
+      let parentsToOrder = this.element.closest('.group-single');
+      if (parentsToOrder) {
+        parentsToOrder.style.order = Math.round(numberToOrder);
+      }
     }
 
     /*getSinceISO () {
-      let setups = $(this.element).find('x-setupmachine');
+      let setups = this.element.querySelector('x-setupmachine');
       if (setups.length > 0) {
         return setups[0].getSinceISO();
       }
@@ -94,13 +96,14 @@ require('x-revisionprogress/x-revisionprogress');
       switch (attr) {
         case 'machine-id': {
           // CLEAN display
-          $(this._MST_current).html('');
-          $(this.element).find('x-setupmachine').remove();
+          this._MST_current.innerHTML = '';
+          let setupmachines = this.element.querySelectorAll('x-setupmachine');
+          setupmachines.forEach(el => el.remove());
 
           // For progress : update _mapOfModifications
-          let modifMgr = $('body').find('x-modificationmanager');
-          if (modifMgr.length == 1) {
-            this._mapOfModifications = modifMgr[0].getModifications('MST',
+          let modifMgr = document.body.querySelector('x-modificationmanager');
+          if (modifMgr) {
+            this._mapOfModifications = modifMgr.getModifications('MST',
               this.element.getAttribute('machine-id'));
 
             // + REMOVE others with old machineid ? + create progress ? -> TODO later !
@@ -136,9 +139,9 @@ require('x-revisionprogress/x-revisionprogress');
           this.onMachineIdChange.bind(this));
       }
       // Get modifications and create listener
-      let modifMgr = $('body').find('x-modificationmanager');
-      if (modifMgr.length == 1) {
-        this._mapOfModifications = modifMgr[0].getModifications('MST',
+      let modifMgr = document.body.querySelector('x-modificationmanager');
+      if (modifMgr) {
+        this._mapOfModifications = modifMgr.getModifications('MST',
           this.element.getAttribute('machine-id'));
       }
       // Create modifications listener
@@ -146,41 +149,44 @@ require('x-revisionprogress/x-revisionprogress');
         'modificationEvent', this.onModificationEvent.bind(this));
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._MST_current = $('<div></div>')
-        .addClass('pulse-cellbar-first')
-        .addClass('pulse-cellbar-current-data')
-        .addClass('lastmachinestate-current-click') // new class to avoid propagation in setup bar
-        .addClass('clickable');
-      //this._between = $('<div></div>').addClass('pulse-cellbar-between');
-      this._content = $('<div></div>')
-        .addClass('pulse-cellbar-main')
-        .append(this._MST_current); //.append(this._between);
+      this._MST_current = document.createElement('div');
+      this._MST_current.className = 'pulse-cellbar-first pulse-cellbar-current-data lastmachinestate-current-click clickable';
+      //this._between = document.createElement('div');
+      //this._between.className = 'pulse-cellbar-between';
+      this._content = document.createElement('div');
+      this._content.className = 'pulse-cellbar-main';
+      this._content.appendChild(this._MST_current);
+      //this._content.appendChild(this._between);
 
-      $(this.element)
-        //.addClass('XXX')
-        .append(this._content);
+      this.element.appendChild(this._content);
 
       // Clicks
-      this._MST_current.click(
+      this._MST_current.addEventListener('click',
         function (e) {
           this.clickOnCurrent(e);
         }.bind(this)
       );
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this.element.appendChild(messageDiv);
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -190,7 +196,7 @@ require('x-revisionprogress/x-revisionprogress');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._MST_current = undefined;
       this._messageSpan = undefined;
@@ -221,7 +227,7 @@ require('x-revisionprogress/x-revisionprogress');
       this._currentMST_display = '';
       this._currentMST_id = null;
 
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
     }
 
     removeError () {
@@ -248,8 +254,9 @@ require('x-revisionprogress/x-revisionprogress');
 
     refresh (data) {
       // Clean
-      $(this._messageSpan).html('');
-      $(this.element).find('x-setupmachine').remove();
+      this._messageSpan.innerHTML = '';
+      let setupmachines = this.element.querySelectorAll('x-setupmachine');
+      setupmachines.forEach(el => el.remove());
 
       // Display data
       if (data.MachineStateTemplateSlots.length >= 1) {
@@ -267,32 +274,33 @@ require('x-revisionprogress/x-revisionprogress');
       if (this._currentMST_category != 2) {
         let textToDisplay = this.getTranslation('lastmachinestatetemplate.scheduledStatus', 'Scheduled status:') + ' ';
         textToDisplay += this._currentMST_display;
-        $(this._MST_current).html(textToDisplay);
-        $(this._content).show();
-        $(this.element).find('x-setupmachine').remove();
+        this._MST_current.innerHTML = textToDisplay;
+        this._content.style.display = '';
+        let setupmachines = this.element.querySelectorAll('x-setupmachine');
+        setupmachines.forEach(el => el.remove());
 
         this._orderUsingSince();
       }
       else { // hide + show setup
-        if ($(this.element).find('x-setupmachine').length == 0) {
+        if (this.element.querySelector('x-setupmachine') == null) {
           let setupmachine;
           if (this.element.hasAttribute('machine-context')) {
-            setupmachine = pulseUtility.createjQueryElementWithAttribute('x-setupmachine', {
+            setupmachine = pulseUtility.createElementWithAttribute('x-setupmachine', {
               'machine-id': this.element.getAttribute('machine-id'),
               'machine-context': this.element.getAttribute('machine-context')
             });
           }
           else { // NO machine-context
-            setupmachine = pulseUtility.createjQueryElementWithAttribute('x-setupmachine', {
+            setupmachine = pulseUtility.createElementWithAttribute('x-setupmachine', {
               'machine-id': this.element.getAttribute('machine-id')
             });
           }
-          $(this.element).append(setupmachine);
+          this.element.appendChild(setupmachine);
         }
         else {
-          //$(this.element).find('x-setupmachine').show();
+          //this.element.querySelector('x-setupmachine').style.display = '';
         }
-        $(this._content).hide();
+        this._content.style.display = 'none';
       }
 
       //Set state of "past data" part in widget -> later ?
@@ -331,7 +339,7 @@ require('x-revisionprogress/x-revisionprogress');
             && (modif.ranges[i].upper == null || modif.ranges[i].upper > now)) { // == is Current
 
             let newRevisionProgress =
-              pulseUtility.createjQueryElementWithAttribute('x-revisionprogress', {
+              pulseUtility.createElementWithAttribute('x-revisionprogress', {
                 //'period-context': NO MAIN RANGE
                 //'range': NO MAIN RANGE
                 'revision-id': modif.revisionid,
@@ -367,7 +375,8 @@ require('x-revisionprogress/x-revisionprogress');
      */
     onReload (event) {
       this._forceReload = true;
-      $(this.element).find('x-setupmachine').remove();
+      let setupmachines = this.element.querySelectorAll('x-setupmachine');
+      setupmachines.forEach(el => el.remove());
 
       this.start();
     }
@@ -387,15 +396,16 @@ require('x-revisionprogress/x-revisionprogress');
      * @param {event} e - DOM event
      */
     clickOnCurrent (e) {
-      $(this.element).find('x-savemachinestatetemplate').remove();
+      let savemsts = this.element.querySelectorAll('x-savemachinestatetemplate');
+      savemsts.forEach(el => el.remove());
 
-      let saveMST = pulseUtility.createjQueryElementWithAttribute('x-savemachinestatetemplate', {
-        'machine-id': $(this.element).attr('machine-id'),
+      let saveMST = pulseUtility.createElementWithAttribute('x-savemachinestatetemplate', {
+        'machine-id': this.element.getAttribute('machine-id'),
         //'range': this._current_MST, // NO !
         'mst-id': this._currentMST_id,
         'period-context': 'savemst' + this.element.getAttribute('machine-id')
       });
-      $(this.element).append(saveMST);
+      this.element.appendChild(saveMST);
     }
 
   }

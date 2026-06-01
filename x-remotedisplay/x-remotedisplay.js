@@ -70,11 +70,12 @@ var eventBus = require('eventBus');
       }
 
       // In case of clone, need to be empty:
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('remotedisplay-content');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.classList.add('remotedisplay-content');
+      this.element.appendChild(this._content);
 
       // Subscribe to display change events
       if (this.element.hasAttribute('display-context')) {
@@ -90,7 +91,7 @@ var eventBus = require('eventBus');
     }
 
     clearInitialization () {
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._content = undefined;
       super.clearInitialization();
     }
@@ -104,16 +105,16 @@ var eventBus = require('eventBus');
     onDisplayChange (event) {
       this._display = event.target.Display;
       if (pulseUtility.isNotDefined(this._display)) {
-        $(this._content).html('');
+        this._content.innerHTML = '';
       }
       else {
-        $(this._content).html(this._display);
+        this._content.innerHTML = this._display;
       }
       if (!pulseUtility.isNotDefined(event.target.ClassToAdd)) {
-        $(this._content).addClass(event.target.ClassToAdd);
+        this._content.classList.add(event.target.ClassToAdd);
       }
       if (!pulseUtility.isNotDefined(event.target.ClassToRemove)) {
-        $(this._content).removeClass(event.target.ClassToRemove);
+        this._content.classList.remove(event.target.ClassToRemove);
       }
     }
 

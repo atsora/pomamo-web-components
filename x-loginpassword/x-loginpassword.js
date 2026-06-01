@@ -66,20 +66,19 @@ var pulseUtility = require('pulseUtility');
     }
 
     _defineClickButtons () {
-      this._loginButton.click(
-        function () {
-          this._ckeckLoginIsValid();
-        }.bind(this));
+      this._loginButton.addEventListener('click', function () {
+        this._ckeckLoginIsValid();
+      }.bind(this));
 
       // Changing password hides error message
-      this._passEdit.change(function () {
+      this._passEdit.addEventListener('change', function () {
         this.removeError();
       }.bind(this));
 
       // Press 'enter' after passwords == press button
-      $(this._passEdit).keyup(function (event) {
+      this._passEdit.addEventListener('keyup', function (event) {
         if (event.keyCode == 13) {
-          $(this._loginButton).click();
+          this._loginButton.click();
         }
       }.bind(this));
     }
@@ -88,8 +87,8 @@ var pulseUtility = require('pulseUtility');
       let useLogin = pulseConfig.getBool('useLogin', false);
 
       if (!useLogin) {
-        if ('dev' == this._loginEdit.val()
-          && 'devPassword' == this._passEdit.val()) {
+        if ('dev' == this._loginEdit.value
+          && 'devPassword' == this._passEdit.value) {
           let data = {
             Login: 'dev',
             Role: 'dev',
@@ -99,9 +98,9 @@ var pulseUtility = require('pulseUtility');
           return;
         }
 
-        if (('Support' == this._loginEdit.val()
-          || 'support' == this._loginEdit.val())
-          && 'supportPassword' == this._passEdit.val()) {
+        if (('Support' == this._loginEdit.value
+          || 'support' == this._loginEdit.value)
+          && 'supportPassword' == this._passEdit.value) {
           let data = {
             Login: 'support',
             Role: 'support',
@@ -112,8 +111,8 @@ var pulseUtility = require('pulseUtility');
         }
       }
 
-      let login = this._loginEdit.val();
-      let pass = this._passEdit.val();
+      let login = this._loginEdit.value;
+      let pass = this._passEdit.value;
 
       let url = this.getConfigOrAttribute('path', '')
         + 'UserPermissions/Post'; //?Login=' + login;
@@ -156,7 +155,7 @@ var pulseUtility = require('pulseUtility');
       // Re-log
       role = role.toLowerCase();
 
-      let useSessionCookie = !this._stayConnectedCheck.is(':checked');
+      let useSessionCookie = !this._stayConnectedCheck.checked;
       pulseLogin.storeLoginRoleFromRefreshDTO(data, useSessionCookie);
       // cookie PulseLogin / PulseRole
 
@@ -184,64 +183,79 @@ var pulseUtility = require('pulseUtility');
       // Attributes
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Loader -> Not needed here
 
       // Create DOM - LOGIN Content
       const loginInputId = 'loginpassword-login-input';
-      this._loginEdit = $('<input></input>').addClass('loginpassword-login-input')
-        .attr('type', 'text')
-        .attr('id', loginInputId);
-      let loginLabel = $('<label></label>').addClass('loginpassword-login-label')
-        .attr('for', loginInputId)
-        .html(this.getTranslation('user', 'User:'));
-      let loginRow = $('<div></div>').addClass('loginpassword-row')
-        .append(loginLabel)
-        .append(this._loginEdit);
+      this._loginEdit = document.createElement('input');
+      this._loginEdit.className = 'loginpassword-login-input';
+      this._loginEdit.type = 'text';
+      this._loginEdit.id = loginInputId;
+      let loginLabel = document.createElement('label');
+      loginLabel.className = 'loginpassword-login-label';
+      loginLabel.setAttribute('for', loginInputId);
+      loginLabel.innerHTML = this.getTranslation('user', 'User:');
+      let loginRow = document.createElement('div');
+      loginRow.className = 'loginpassword-row';
+      loginRow.appendChild(loginLabel);
+      loginRow.appendChild(this._loginEdit);
 
       const passInputId = 'loginpassword-password-input';
-      this._passEdit = $('<input></input>').addClass('loginpassword-password-input')
-        .attr('type', 'password')
-        .attr('id', passInputId);
-      let passLabel = $('<label></label>').addClass('loginpassword-password-label')
-        .attr('for', passInputId)
-        .html(this.getTranslation('password', 'Password:'));
-      let passRow = $('<div></div>').addClass('loginpassword-row')
-        .append(passLabel)
-        .append(this._passEdit);
+      this._passEdit = document.createElement('input');
+      this._passEdit.className = 'loginpassword-password-input';
+      this._passEdit.type = 'password';
+      this._passEdit.id = passInputId;
+      let passLabel = document.createElement('label');
+      passLabel.className = 'loginpassword-password-label';
+      passLabel.setAttribute('for', passInputId);
+      passLabel.innerHTML = this.getTranslation('password', 'Password:');
+      let passRow = document.createElement('div');
+      passRow.className = 'loginpassword-row';
+      passRow.appendChild(passLabel);
+      passRow.appendChild(this._passEdit);
 
       const stayConnectedInputId = 'loginpassword-stay-connected';
-      this._stayConnectedCheck = $('<input type="checkbox" name="stay-connected"></input>')
-        .attr('id', stayConnectedInputId)
-        .addClass('loginpassword-stay-connected');
-      let stayConnectedLabel = $('<label></label>')
-        .addClass('loginpassword-stay-connected-label')
-        .attr('for', stayConnectedInputId)
-        .html(this.getTranslation('stayConnected', 'Stay connected'));
-      let stayConnectedDiv = $('<div"></div>').addClass('loginpassword-stay-connected-div')
-        .append(this._stayConnectedCheck).append(stayConnectedLabel);
+      this._stayConnectedCheck = document.createElement('input');
+      this._stayConnectedCheck.type = 'checkbox';
+      this._stayConnectedCheck.name = 'stay-connected';
+      this._stayConnectedCheck.id = stayConnectedInputId;
+      this._stayConnectedCheck.className = 'loginpassword-stay-connected';
+      let stayConnectedLabel = document.createElement('label');
+      stayConnectedLabel.className = 'loginpassword-stay-connected-label';
+      stayConnectedLabel.setAttribute('for', stayConnectedInputId);
+      stayConnectedLabel.innerHTML = this.getTranslation('stayConnected', 'Stay connected');
+      let stayConnectedDiv = document.createElement('div');
+      stayConnectedDiv.className = 'loginpassword-stay-connected-div';
+      stayConnectedDiv.appendChild(this._stayConnectedCheck);
+      stayConnectedDiv.appendChild(stayConnectedLabel);
 
-      this._changeContent = $('<div></div>').addClass('loginpassword-content')
-        .append(loginRow).append(passRow).append(stayConnectedDiv);
+      this._changeContent = document.createElement('div');
+      this._changeContent.className = 'loginpassword-content';
+      this._changeContent.appendChild(loginRow);
+      this._changeContent.appendChild(passRow);
+      this._changeContent.appendChild(stayConnectedDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      this._messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._changeContent).append(this._messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      this._messageDiv = document.createElement('div');
+      this._messageDiv.className = 'pulse-message-div';
+      this._messageDiv.appendChild(this._messageSpan);
+      this._changeContent.appendChild(this._messageDiv);
 
       // Add button AFTER message
-      this._loginButton = $('<button></button>').addClass('loginpassword-button')
-        .html(this.getTranslation('loginButton', 'Login'));
-      let divBtn = $('<div></div>').addClass('loginpassword-button-div')
-        .append(this._loginButton);
-      this._changeContent.append(divBtn);
+      this._loginButton = document.createElement('button');
+      this._loginButton.className = 'loginpassword-button';
+      this._loginButton.innerHTML = this.getTranslation('loginButton', 'Login');
+      let divBtn = document.createElement('div');
+      divBtn.className = 'loginpassword-button-div';
+      divBtn.appendChild(this._loginButton);
+      this._changeContent.appendChild(divBtn);
 
-      $(this.element)
-        .append(this._changeContent);
+      this.element.appendChild(this._changeContent);
 
       // DO NOT display login
 
@@ -254,13 +268,13 @@ var pulseUtility = require('pulseUtility');
     }
 
     displayError (message) {
-      $(this._messageDiv).show();
-      $(this._messageSpan).html(message);
+      this._messageDiv.style.display = '';
+      this._messageSpan.innerHTML = message;
     }
 
     removeError () {
-      $(this._messageDiv).hide();
-      $(this._messageSpan).html('');
+      this._messageDiv.style.display = 'none';
+      this._messageSpan.innerHTML = '';
     }
 
     /**

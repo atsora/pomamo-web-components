@@ -101,57 +101,69 @@ require('x-milestonesadd/x-milestonesadd');
         this.onMilestonesChange.bind(this));
       1
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('milestonesmanager-content');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.classList.add('milestonesmanager-content');
+      this.element.appendChild(this._content);
 
       // Machines
       // was x-machineselector
       // OR
-      this._machinesDisplay = $('<div></div>').addClass('milestonesmanager-machines-div');
+      this._machinesDisplay = document.createElement('div');
+      this._machinesDisplay.classList.add('milestonesmanager-machines-div');
       // Keep id for demo
       if (!this.element.hasAttribute('machine-id')) {
-        this._machinesDisplay.html(this.element.getAttribute('machine-id'));
+        this._machinesDisplay.innerHTML = this.element.getAttribute('machine-id');
       }
 
       // -> in header
-      let header = $('<div></div>').addClass('milestonesmanager-header')
-        .append(this._machinesDisplay);
-      $(this._content).append(header);
+      let header = document.createElement('div');
+      header.classList.add('milestonesmanager-header');
+      header.appendChild(this._machinesDisplay);
+      this._content.appendChild(header);
 
       // Range
-      this._rangeDisplay = pulseUtility.createjQueryElementWithAttribute('x-datetimerange',
+      this._rangeDisplay = pulseUtility.createElementWithAttribute('x-datetimerange',
         {
           'period-context': this._myPeriodContext
         });
-      let rangediv = $('<div></div>').addClass('milestonesmanager-range-div')
-        .append(this._rangeDisplay);
-      $(this._content).append(rangediv);
-      //let div = $('<div></div>').addClass('daterange').append(rangediv)
+      let rangediv = document.createElement('div');
+      rangediv.classList.add('milestonesmanager-range-div');
+      rangediv.appendChild(this._rangeDisplay);
+      this._content.appendChild(rangediv);
+      //let div = document.createElement('div'); div.className = 'daterange'; div.appendChild(rangediv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.classList.add('pulse-message');
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.classList.add('pulse-message-div');
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
       // Table
-      this._table = $('<div></div>')//.addClass('pulse-table')
-        .addClass('milestonesmanager-table');
-      this._tableScroll = $('<div></div>').addClass('milestonesmanager-table-scroll')
-        .append(this._table);
-      this._tableDiv = $('<div></div>').addClass('milestonesmanager-table-div')
-        .append(this._tableScroll);
-      $(this._content).append(this._tableDiv);
+      this._table = document.createElement('div'); //.className = 'pulse-table';
+      this._table.classList.add('milestonesmanager-table');
+      this._tableScroll = document.createElement('div');
+      this._tableScroll.classList.add('milestonesmanager-table-scroll');
+      this._tableScroll.appendChild(this._table);
+      this._tableDiv = document.createElement('div');
+      this._tableDiv.classList.add('milestonesmanager-table-div');
+      this._tableDiv.appendChild(this._tableScroll);
+      this._content.appendChild(this._tableDiv);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -168,7 +180,7 @@ require('x-milestonesadd/x-milestonesadd');
       //this._myparameter = undefined;
 
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._content = undefined;
 
       super.clearInitialization();
@@ -191,7 +203,7 @@ require('x-milestonesadd/x-milestonesadd');
     }
 
     displayError (message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
     }
 
     removeError () {
@@ -209,7 +221,7 @@ require('x-milestonesadd/x-milestonesadd');
         url += 'ALL';
       }
       // RANGE
-      let rangeStr = this._rangeDisplay[0].getRangeString();
+      let rangeStr = this._rangeDisplay.getRangeString();
       if (rangeStr != undefined
         && '' != this.rangeStr) {
         url += firstParam ? '?' : '&';
@@ -227,42 +239,49 @@ require('x-milestonesadd/x-milestonesadd');
       this._dateRange = pulseRange.createDateRangeFromString(data.Range);
 
       // Update display if needed
-      this._rangeDisplay[0].setAttribute('range', stringRange);
+      this._rangeDisplay.setAttribute('range', stringRange);
 
       // Fill Table
-      $(this._table).empty();
+      this._table.replaceChildren();
 
       // Header
-      let header = $('<div></div>').addClass('pulse-row')
-        .addClass('header')
-        .addClass('milestonesmanager-row-header');
-      $(this._table).append(header);
+      let header = document.createElement('div');
+      header.classList.add('pulse-row');
+      header.classList.add('header');
+      header.classList.add('milestonesmanager-row-header');
+      this._table.appendChild(header);
 
-      let hRemove = $('<div></div>').addClass('pulse-td')
-        .addClass('header')
-        .addClass('milestonesmanager-td-remove');
-      $(header).append(hRemove);
-      let hMachine = $('<div></div>').addClass('pulse-td')
-        .addClass('header')
-        .addClass('milestonesmanager-td-machine')
-        .html(this.getTranslation ('machine', 'Machine'));
-      $(header).append(hMachine);
-      let hDay = $('<div></div>').addClass('pulse-td')
-        .addClass('header')
-        .addClass('milestonesmanager-td-day')
-        .html(this.getTranslation('day', 'Day'));
-      $(header).append(hDay);
-      let hText = $('<div></div>').addClass('pulse-td')
-        .addClass('header')
-        .addClass('milestonesmanager-td-milestone')
-        .html(this.getTranslation ('description', 'Description'));
-      $(header).append(hText);
+      let hRemove = document.createElement('div');
+      hRemove.classList.add('pulse-td');
+      hRemove.classList.add('header');
+      hRemove.classList.add('milestonesmanager-td-remove');
+      header.appendChild(hRemove);
+      let hMachine = document.createElement('div');
+      hMachine.classList.add('pulse-td');
+      hMachine.classList.add('header');
+      hMachine.classList.add('milestonesmanager-td-machine');
+      hMachine.innerHTML = this.getTranslation ('machine', 'Machine');
+      header.appendChild(hMachine);
+      let hDay = document.createElement('div');
+      hDay.classList.add('pulse-td');
+      hDay.classList.add('header');
+      hDay.classList.add('milestonesmanager-td-day');
+      hDay.innerHTML = this.getTranslation('day', 'Day');
+      header.appendChild(hDay);
+      let hText = document.createElement('div');
+      hText.classList.add('pulse-td');
+      hText.classList.add('header');
+      hText.classList.add('milestonesmanager-td-milestone');
+      hText.innerHTML = this.getTranslation ('description', 'Description');
+      header.appendChild(hText);
 
       // ADD
-      this._addButton = $('<div></div>').addClass('milestonesmanager-add-button');
-      let btnDiv = $('<div></div>').addClass('milestonesmanager-add-div')
-        .append(this._addButton);
-      hText.append(btnDiv);
+      this._addButton = document.createElement('div');
+      this._addButton.classList.add('milestonesmanager-add-button');
+      let btnDiv = document.createElement('div');
+      btnDiv.classList.add('milestonesmanager-add-div');
+      btnDiv.appendChild(this._addButton);
+      hText.appendChild(btnDiv);
 
       pulseSvg.inlineBackgroundSvg(this._addButton); // To use good background
 
@@ -270,45 +289,51 @@ require('x-milestonesadd/x-milestonesadd');
       for (let iMach = 0; iMach < data.Machines.length; iMach++) {
         // Reverse order
         for (let iMil = data.Machines[iMach].Milestones.length - 1; iMil >= 0; iMil--) {
-          let row = $('<div></div>').addClass('pulse-row')
-            .addClass('milestonesmanager-row');
-          $(this._table).append(row);
+          let row = document.createElement('div');
+          row.classList.add('pulse-row');
+          row.classList.add('milestonesmanager-row');
+          this._table.appendChild(row);
 
-          let removeButton = $('<div></div>')
-            .addClass('milestonesmanager-td-remove-button') // remove-button
-            //.attr('machineid', data.Machines[iMach].Id)
-            .attr('id', data.Machines[iMach].Milestones[iMil].Id);
-          let remove = $('<div></div>').addClass('pulse-td')
-            .addClass('milestonesmanager-td-remove') // remove-button
-            //.attr('machineid', data.Machines[iMach].Id)
-            .attr('id', data.Machines[iMach].Milestones[iMil].Id)
-            .append(removeButton);
-          $(row).append(remove);
-          let machine = $('<div></div>').addClass('pulse-td')
-            .addClass('milestonesmanager-td-machine')
-            .html(data.Machines[iMach].Display);
-          $(row).append(machine);
+          let removeButton = document.createElement('div');
+          removeButton.classList.add('milestonesmanager-td-remove-button'); // remove-button
+          //removeButton.setAttribute('machineid', data.Machines[iMach].Id);
+          removeButton.setAttribute('id', data.Machines[iMach].Milestones[iMil].Id);
+          let remove = document.createElement('div');
+          remove.classList.add('pulse-td');
+          remove.classList.add('milestonesmanager-td-remove'); // remove-button
+          //remove.setAttribute('machineid', data.Machines[iMach].Id);
+          remove.setAttribute('id', data.Machines[iMach].Milestones[iMil].Id);
+          remove.appendChild(removeButton);
+          row.appendChild(remove);
+          let machine = document.createElement('div');
+          machine.classList.add('pulse-td');
+          machine.classList.add('milestonesmanager-td-machine');
+          machine.innerHTML = data.Machines[iMach].Display;
+          row.appendChild(machine);
 
           pulseSvg.inlineBackgroundSvg(removeButton); // To use good background
 
-          let datetime = $('<div></div>').addClass('pulse-td')
-            .addClass('milestonesmanager-td-datetime')
-            .html(pulseUtility.displayDate(
-              data.Machines[iMach].Milestones[iMil].DateTime, false));
-          $(row).append(datetime);
-          let text = $('<div></div>').addClass('pulse-td')
-            .addClass('milestonesmanager-td-milestone')
-            .html(data.Machines[iMach].Milestones[iMil].Message);
-          $(row).append(text);
+          let datetime = document.createElement('div');
+          datetime.classList.add('pulse-td');
+          datetime.classList.add('milestonesmanager-td-datetime');
+          datetime.innerHTML = pulseUtility.displayDate(
+            data.Machines[iMach].Milestones[iMil].DateTime, false);
+          row.appendChild(datetime);
+          let text = document.createElement('div');
+          text.classList.add('pulse-td');
+          text.classList.add('milestonesmanager-td-milestone');
+          text.innerHTML = data.Machines[iMach].Milestones[iMil].Message;
+          row.appendChild(text);
         }
       }
 
       // Click on remove
-      $(this.element).find('.milestonesmanager-td-remove-button').click(
-        function (e) {
-          let rem = $(e.target).closest('.milestonesmanager-td-remove-button');
+      let removeButtons = this.element.querySelectorAll('.milestonesmanager-td-remove-button');
+      removeButtons.forEach(btn => {
+        btn.addEventListener('click', function (e) {
+          let rem = e.target.closest('.milestonesmanager-td-remove-button');
 
-          let id = rem[0].getAttribute('id');
+          let id = rem.getAttribute('id');
 
           // Call ajax
           let url = this.getConfigOrAttribute('path', '')
@@ -319,17 +344,18 @@ require('x-milestonesadd/x-milestonesadd');
             this._removeError.bind(this),
             this._removeFail.bind(this));
         }.bind(this));
+      });
 
       // Click on add
-      $(this.element).find('.milestonesmanager-add-button').click(
-        function (e) {
+      this.element.querySelector('.milestonesmanager-add-button').addEventListener('click', function (e) {
           let milestonesAdd =
-            pulseUtility.createjQueryElementWithAttribute('x-milestonesadd', {
+            pulseUtility.createElementWithAttribute('x-milestonesadd', {
               //'machine-context': this._myMachineContext
               'machine-id': this.element.getAttribute('machine-id')
             });
-          let addPosition = $('<div></div>').addClass('milestonesmanager-add-div')
-            .append(milestonesAdd);
+          let addPosition = document.createElement('div');
+          addPosition.classList.add('milestonesmanager-add-div');
+          addPosition.appendChild(milestonesAdd);
 
           let dialogId = pulseCustomDialog.openDialog(addPosition, {
             title: this.getTranslation ('add', 'Add milestone'),
@@ -348,7 +374,7 @@ require('x-milestonesadd/x-milestonesadd');
       // Manage progress bar ???
 
       // Clean display
-      $(this._table).empty();
+      this._table.replaceChildren();
 
       // relaod
       this.start();
@@ -381,7 +407,7 @@ require('x-milestonesadd/x-milestonesadd');
       if ((this._dateRange == undefined) || (!pulseRange.equals(newRange, this._dateRange, (a, b) => (a >= b) && (a <= b)))) {
         this._dateRange = newRange;
 
-        $(this._table).empty();
+        this._table.replaceChildren();
         this.start();
       }
     }

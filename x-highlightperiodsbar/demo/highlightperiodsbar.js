@@ -18,15 +18,15 @@ function todayIso (hour, minute) {
   return d.toISOString();
 }
 
-$(function () {
-  $('#HL_1').get(0).addRange(pulseRange.createDateRangeFromString(
+document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('HL_1').addRange(pulseRange.createDateRangeFromString(
     '[' + todayIso(8) + ',' + todayIso(12) + ')'));
 
-  $('#HL_2').get(0).addRange(pulseRange.createDateRangeFromString(
+  document.getElementById('HL_2').addRange(pulseRange.createDateRangeFromString(
     '[' + todayIso(12) + ',' + todayIso(14) + ')'));
 
-  $('#HL_3').get(0).addRange(pulseRange.createDateRangeFromString(
+  document.getElementById('HL_3').addRange(pulseRange.createDateRangeFromString(
     '[' + todayIso(14) + ',' + todayIso(16) + ')'));
-  $('#HL_3').get(0).addRange(pulseRange.createDateRangeFromString(
+  document.getElementById('HL_3').addRange(pulseRange.createDateRangeFromString(
     '[' + todayIso(9) + ',' + todayIso(10) + ')'));
 });

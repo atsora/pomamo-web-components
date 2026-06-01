@@ -95,13 +95,15 @@ var pulseComponent = require('pulsecomponent');
       this.addClass('pulse-bigdisplay');
 
       // Create DOM - NO Loader
-      let timeDiv = $('<div></div>').addClass('timepicker-timediv');
-      $(this.element).append(timeDiv);
+      let timeDiv = document.createElement('div');
+      timeDiv.classList.add('timepicker-timediv');
+      this.element.appendChild(timeDiv);
 
       // DOM - date
-      this._timeInput = $('<input type="time"></input>')
-        .addClass('timepicker-input-time');
-      timeDiv.append(this._timeInput);
+      this._timeInput = document.createElement('input');
+      this._timeInput.type = 'time';
+      this._timeInput.classList.add('timepicker-input-time');
+      timeDiv.appendChild(this._timeInput);
 
       // With or without seconds
       if (this.element.hasAttribute('showseconds')) {
@@ -120,9 +122,9 @@ var pulseComponent = require('pulsecomponent');
       // if disabled
       this._enabledisableInput();
 
-      this._timeInput.change(function () {
+      this._timeInput.addEventListener('change', function () {
         // Restore default if empty
-        if ('' == this._timeInput[0].value) {
+        if ('' == this._timeInput.value) {
           this._setDefaultTime();
         }
         // Tell parent if needed
@@ -142,7 +144,7 @@ var pulseComponent = require('pulsecomponent');
       // Parameters
 
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       super.clearInitialization();
     }
@@ -159,10 +161,10 @@ var pulseComponent = require('pulsecomponent');
       if (this.element.hasAttribute('disabled')
         && (this.element.getAttribute('disabled') == 'disabled'
           || this.element.getAttribute('disabled') == 'true')) {
-        this._timeInput[0].disabled = true;
+        this._timeInput.disabled = true;
       }
       else {
-        this._timeInput[0].disabled = false;
+        this._timeInput.disabled = false;
       }
     }
 
@@ -178,9 +180,9 @@ var pulseComponent = require('pulsecomponent');
           displayedTime = '0' + displayedTime;
         }
 
-        this._timeInput[0].value = displayedTime; // Works for LAT, but not Paragon Metal
-        //this._timeInput[0].setAttribute('value', displayedTime); //'08:00');
-        //this._timeInput[0].defaultValue = displayedTime;
+        this._timeInput.value = displayedTime; // Works for LAT, but not Paragon Metal
+        //this._timeInput.setAttribute('value', displayedTime); //'08:00');
+        //this._timeInput.defaultValue = displayedTime;
       }
     }
 
@@ -193,7 +195,7 @@ var pulseComponent = require('pulsecomponent');
         /*if (!this.element.hasAttribute('showseconds')) {
           minTime = minTime.substring(0, 5); // Hide sec, not compatible
         }*/
-        this._timeInput[0].setAttribute('min', minTime);
+        this._timeInput.setAttribute('min', minTime);
       }
       if (this.element.hasAttribute('maxtime')) {
         let maxTime = this.element.getAttribute('maxtime');
@@ -203,12 +205,12 @@ var pulseComponent = require('pulsecomponent');
           maxTime = maxTime.substring(0, 5); // Hide sec, not compatible
         }*/
 
-        this._timeInput[0].setAttribute('max', maxTime);
+        this._timeInput.setAttribute('max', maxTime);
       }
     }
 
     isValid () {
-      let val = this._timeInput[0].value;
+      let val = this._timeInput.value;
       let hours = val.substring(0, 2);
       let mins = val.substring(3, 5);
 
@@ -253,7 +255,7 @@ var pulseComponent = require('pulsecomponent');
     }
 
     getValueAsIs () { // HH:mm(:ss)
-      return (this._timeInput[0].value);
+      return (this._timeInput.value);
     }
 
     // Callback events

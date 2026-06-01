@@ -252,7 +252,8 @@ var eventBus = require('eventBus');
 
     /** Removes the existing `.performancebar-svg` without drawing a new one (used on error). */
     _drawEmpty () { /* To clean the bar */
-      $(this._content).find('.performancebar-svg').remove(); // Remove Old SVG
+      let svg = this._content.querySelector('.performancebar-svg');
+      if (svg) svg.remove();
     }
 
     /**
@@ -262,14 +263,15 @@ var eventBus = require('eventBus');
      * When target is not yet loaded (`_targetIsUpdated === false`), uses a full-range gradient.
      */
     _draw () {
-      $(this._content).find('.performancebar-svg').remove(); // Remove Old SVG
+      let existingSvg = this._content.querySelector('.performancebar-svg');
+      if (existingSvg) existingSvg.remove();
 
       //  Parameters
       let cursorWidth = 8.0;
       let cursorOffsetTop = cursorWidth;
       let cursorOffsetBottom = cursorWidth;
       let tickDivision = 10;
-      let width = $(this._content).width();
+      let width = this._content.offsetWidth;
       if (width) {
         this._barwidth = width;
       }
@@ -347,7 +349,7 @@ var eventBus = require('eventBus');
         + this._barwidth + ' ' + this._height);
       svg.setAttribute('preserveAspectRatio', 'none');
       svg.setAttribute('class', 'performancebar-svg');
-      $(this._content).prepend(svg); // Before message
+      this._content.insertBefore(svg, this._content.firstChild);
 
       // Create the cursor
       let g = document.createElementNS(pulseSvg.get_svgNS(), 'g');
@@ -453,28 +455,36 @@ var eventBus = require('eventBus');
       this._setHeight();
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // HTML structure - Content
-      this._content = $('<div></div>').addClass('performancebar-content');
-      this._content.height(this._height);
-      let div = $('<div></div>').addClass('performancebar')
-        .append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'performancebar-content';
+      this._content.style.height = this._height + 'px';
+      let div = document.createElement('div');
+      div.className = 'performancebar';
+      div.appendChild(this._content);
 
       // HTML structure - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
-      $(this.element).append(div);
+      this.element.appendChild(div);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -484,7 +494,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._messageSpan = undefined;
       this._content = undefined;
@@ -556,13 +566,13 @@ var eventBus = require('eventBus');
     }
 
     displayError (message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
 
       //this._drawEmpty();
     }
 
     removeError () {
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
     }
 
     /**

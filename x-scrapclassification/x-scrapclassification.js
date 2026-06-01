@@ -245,7 +245,7 @@ require('x-savescrapreason/x-savescrapreason');
 
       this._content.appendChild(partsContent);
 
-      this.savescrapreason = pulseUtility.createjQueryElementWithAttribute('x-savescrapreason', { 'machine-id': this.element.getAttribute('machine-id'), 'range': this._dateRange });
+      this.savescrapreason = pulseUtility.createElementWithAttribute('x-savescrapreason', { 'machine-id': this.element.getAttribute('machine-id'), 'range': this._dateRange });
       this._content.appendChild(this.savescrapreason[0]);
     }
 

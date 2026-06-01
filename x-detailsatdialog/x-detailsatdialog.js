@@ -45,7 +45,7 @@ require('x-barstack/x-barstack');
     }
 
     initialize () {
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       let machineid = this.element.getAttribute('machine-id');
       let whenIso = this.element.getAttribute('when');
@@ -53,30 +53,37 @@ require('x-barstack/x-barstack');
 
       let fullRange = pulseRange.createDateRangeFromString(rangeStr);
 
-      let title = $('<div></div>').addClass('detailsatdialog-title');
-      let content = $('<div></div>').addClass('detailsatdialog-content');
+      let title = document.createElement('div');
+      title.className = 'detailsatdialog-title';
+      let content = document.createElement('div');
+      content.className = 'detailsatdialog-content';
 
-      let xMachine = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
+      let xMachine = pulseUtility.createElementWithAttribute('x-machinedisplay', {
         'machine-id': machineid
       });
 
       let tmpDateRange = pulseRange.createDateRangeDefaultInclusivity(whenIso, whenIso);
       let atDisplay = pulseUtility.displayDateRange(tmpDateRange, true);
-      let spanAt = $('<span></span>').addClass('detailsatdialog-subtitle').html(atDisplay);
+      let spanAt = document.createElement('span');
+      spanAt.className = 'detailsatdialog-subtitle';
+      spanAt.innerHTML = atDisplay;
 
-      let xPeriodBar = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
+      let xPeriodBar = pulseUtility.createElementWithAttribute('x-datetimerange', {
         'period-context': 'details',
-        'range': fullRange.lower.toISOString() + ';' + fullRange.upper.toISOString(),
+        'range': fullRange.toString(d => d.toISOString()),
         'datetime-context': 'details',
         'when': whenIso
       });
-      title.append(xMachine).append(spanAt).append(xPeriodBar);
-      $(this.element).append(title).append(content);
+      title.appendChild(xMachine);
+      title.appendChild(spanAt);
+      title.appendChild(xPeriodBar);
+      this.element.appendChild(title);
+      this.element.appendChild(content);
 
       // Graduation + bars — appended after title is in DOM for correct width
-      let xGraduation = pulseUtility.createjQueryElementWithAttribute('x-datetimegraduation', {
+      let xGraduation = pulseUtility.createElementWithAttribute('x-datetimegraduation', {
         'period-context': 'details',
-        'range': fullRange.lower.toISOString() + ';' + fullRange.upper.toISOString()
+        'range': fullRange.toString(d => d.toISOString())
       });
 
       let configArray = pulseConfig.getArray('showcoloredbar.showdetails');
@@ -120,7 +127,7 @@ require('x-barstack/x-barstack');
       for (let iConfig = 0; iConfig < configArray.length; iConfig++) {
         const tag = configArray[iConfig];
         if (tag === 'x-cncalarmbar' || tag === 'x-redstacklightbar') continue;
-        content.append(pulseUtility.createjQueryElementWithAttribute(tag, {
+        content.appendChild(pulseUtility.createElementWithAttribute(tag, {
           'machine-id': machineid,
           'when': whenIso,
           'datetime-context': 'details',
@@ -130,19 +137,21 @@ require('x-barstack/x-barstack');
       }
 
       let barHeight = 30;
-      let xBarstack = pulseUtility.createjQueryElementWithAttribute('x-barstack', {
+      let xBarstack = pulseUtility.createElementWithAttribute('x-barstack', {
         'machine-id': machineid,
         'period-context': 'details',
         'main-bar': 'reason',
-        'range': fullRange.lower.toISOString() + ';' + fullRange.upper.toISOString(),
+        'range': fullRange.toString(d => d.toISOString()),
         'when': whenIso,
         'datetime-context': 'details',
         'mainbar-showoverwriterequired': 'false'
       });
-      let middlebar = $('<div></div>').addClass('pulse-bar-div')
-        .css('height', barHeight + 'px')
-        .append(xBarstack);
-      title.append(xGraduation).append(middlebar);
+      let middlebar = document.createElement('div');
+      middlebar.className = 'pulse-bar-div';
+      middlebar.style.height = barHeight + 'px';
+      middlebar.appendChild(xBarstack);
+      title.appendChild(xGraduation);
+      title.appendChild(middlebar);
 
       this.switchToNextContext();
     }

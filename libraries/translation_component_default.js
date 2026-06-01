@@ -229,6 +229,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     nextMachine: 'Next machine',
     serverUnreachable: 'Server unreachable'
   },
+  machinetabnav: {
+    previousMachine: 'Previous machine',
+    nextMachine: 'Next machine'
+  },
   milestonesadd: {
     shortDescriptionColon: 'Short description: ',
     whenColon: 'When: '
@@ -411,6 +415,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   stopclassification: {
     title: 'Stops',
     options: 'Advanced Options',
+    reasonDetailsTitle: 'Reason details',
+  },
+  reasoncommentdialog: {
+    machineColon: 'Machine: ',
+    periodColon: 'Period: ',
+    reasonColon: 'Reason: ',
   },
   taskslist: {
     Late: 'Late',
@@ -667,6 +677,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     nextMachine: 'Machine suivante',
     serverUnreachable: 'Serveur inaccessible'
   },
+  machinetabnav: {
+    previousMachine: 'Machine précédente',
+    nextMachine: 'Machine suivante'
+  },
   milestonesadd: {
     shortDescriptionColon: 'Courte description : ',
     whenColon: 'Quand : '
@@ -850,6 +864,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   stopclassification: {
     title: 'Arrêts',
     options: 'Options Avancées',
+    reasonDetailsTitle: 'Détails des raisons',
+  },
+  reasoncommentdialog: {
+    machineColon: 'Machine : ',
+    periodColon: 'Période : ',
+    reasonColon: 'Raison : ',
   },
   taskslist: {
     Late: 'En retard',
@@ -1106,6 +1126,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     nextMachine: 'Nächste Maschine',
     serverUnreachable: 'Server nicht erreichbar'
   },
+  machinetabnav: {
+    previousMachine: 'Vorherige Maschine',
+    nextMachine: 'Nächste Maschine'
+  },
   milestonesadd: {
     shortDescriptionColon: 'Kurzbeschreibung: ',
     whenColon: 'Zeitpunkt: '
@@ -1285,6 +1309,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   stopclassification: {
     title: 'Ungeplante Stillstände',
     options: 'Erweiterte Optionen',
+    reasonDetailsTitle: 'Grunddetails',
+  },
+  reasoncommentdialog: {
+    machineColon: 'Maschine: ',
+    periodColon: 'Zeitraum: ',
+    reasonColon: 'Grund: ',
   },
   taskslist: {
     Late: 'Überfällig',

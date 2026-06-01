@@ -75,10 +75,9 @@ const locales = {
       if (this._content == undefined) {
         return;
       }
-      // clear svg
-      let svg = $(this._content).find('.datetimegraduation-svg');
-      d3.selectAll(svg.toArray()).remove();
-      $(this.element).remove('.datetimegraduation-svg');
+      // clear all existing svg(s) — multiple may accumulate if _draw is called
+      // before the previous one finished (e.g. rapid resize + attribute change).
+      this._content.querySelectorAll('.datetimegraduation-svg').forEach(el => el.remove());
     }
 
     _draw() {
@@ -96,7 +95,10 @@ const locales = {
       let marginleft = 1;
       let marginright = 1;
 
-      this._width = this._mainDiv.width();
+      // Use the inner _content width (no padding) — equivalent to jQuery `.width()`.
+      // `_mainDiv.offsetWidth` includes the host's padding and would overshoot the
+      // drawable area, making the SVG extend past the container.
+      this._width = this._content.offsetWidth;
       let total_width = this._width + marginleft + marginright;
       let total_height = this._height;
       let bar_width = total_width - marginleft - marginright;
@@ -134,12 +136,12 @@ const locales = {
         }
       }
 
-      if ($(this.element).attr('bottom') == 'true') {
+      if (this.element.getAttribute('bottom') == 'true') {
         let xAxis = d3.axisBottom(x).tickFormat(customTickFormat);
         if (nbTicks < 10) {
           xAxis.ticks(nbTicks);
         }
-        let svg = d3.selectAll(this._content.toArray()).append('svg')
+        let svg = d3.select(this._content).append('svg')
           .attr('width', total_width)
           .attr('height', total_height)
           .attr('class', 'datetimegraduation-svg')
@@ -156,7 +158,7 @@ const locales = {
         if (nbTicks < 10) {
           xAxis.ticks(nbTicks);
         }
-        let svg = d3.selectAll(this._content.toArray()).append('svg')
+        let svg = d3.select(this._content).append('svg')
           .attr('width', total_width)
           .attr('height', total_height)
           .attr('class', 'datetimegraduation-svg')
@@ -234,14 +236,16 @@ const locales = {
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('datetimegraduation-content');
+      this._content = document.createElement('div');
+      this._content.className = 'datetimegraduation-content';
 
-      this._mainDiv = $('<div></div>').addClass('datetimegraduation')
-        .append(this._content);
-      $(this.element).append(this._mainDiv);
+      this._mainDiv = document.createElement('div');
+      this._mainDiv.className = 'datetimegraduation';
+      this._mainDiv.appendChild(this._content);
+      this.element.appendChild(this._mainDiv);
 
       // 1st DRAW
       this._draw(); // Before resize
@@ -250,7 +254,7 @@ const locales = {
       var self = this;
 
       // 1. On global window size change
-      $(window).resize(function () {
+      window.addEventListener('resize', () => {
         self._draw();
       });
 
@@ -266,7 +270,7 @@ const locales = {
             }
           }
         });
-        this._resizeObserver.observe(this._mainDiv[0]);
+        this._resizeObserver.observe(this._mainDiv);
       } else {
         // Fallback for old browser (replaces old hack)
         setTimeout(function () {
@@ -290,7 +294,7 @@ const locales = {
       // Parameters
       this._range = undefined;
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._mainDiv = undefined;
       this._content = undefined;
 

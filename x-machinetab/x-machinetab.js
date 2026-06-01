@@ -53,6 +53,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       self._content = undefined;
       self._machineContent = undefined;
       self._iconsDiv = undefined;
+      self._machineDisplayDiv = undefined;
 
       return self;
     }
@@ -66,17 +67,17 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       switch (attr) {
         case 'machine-id':
           if (this.isInitialized()) {
-            let xicon = $(this._iconsDiv).find('.machinetab-icon');
-            for (let iIcon = 0; iIcon < xicon.length; iIcon++) {
-              xicon[iIcon].setAttribute('machine-id', newVal);
-            }
+            let xicons = this._iconsDiv.querySelectorAll('.machinetab-icon');
+            xicons.forEach(icon => {
+              icon.setAttribute('machine-id', newVal);
+            });
             this.start();
           }
           break;
         case 'active':
           if (this.isInitialized()) {
             if (newVal == 'true') {
-              $(this._machineContent).addClass('active');
+              this._machineContent.classList.add('active');
               if (!this.element._isActive) {
                 this.element._isActive = true;
                 this.changeSelectedMachine();
@@ -84,12 +85,12 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
             }
             else {
               this.element._isActive = false;
-              $(this._machineContent).removeClass('active');
+              this._machineContent.classList.remove('active');
             }
-            let xicon = $(this._iconsDiv).find('.machinetab-icon');
-            for (let iIcon = 0; iIcon < xicon.length; iIcon++) {
-              xicon[iIcon].setAttribute('active', newVal);
-            }
+            let xicons = this._iconsDiv.querySelectorAll('.machinetab-icon');
+            xicons.forEach(icon => {
+              icon.setAttribute('active', newVal);
+            });
             this.start();
           }
           break;
@@ -106,26 +107,26 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
               'askForMachineIdSignal', newVal,
               this.onAskForMachineId.bind(this));
 
-            let xicon = $(this._iconsDiv).find('.machinetab-icon');
-            for (let iIcon = 0; iIcon < xicon.length; iIcon++) {
-              xicon[iIcon].setAttribute('machine-context', newVal);
-            }
+            let xicons = this._iconsDiv.querySelectorAll('.machinetab-icon');
+            xicons.forEach(icon => {
+              icon.setAttribute('machine-context', newVal);
+            });
           }
           break;
         case 'period-context':
           if (this.isInitialized()) {
-            let xicon = $(this._iconsDiv).find('.machinetab-icon');
-            for (let iIcon = 0; iIcon < xicon.length; iIcon++) {
-              xicon[iIcon].setAttribute('period-context', newVal);
-            }
+            let xicons = this._iconsDiv.querySelectorAll('.machinetab-icon');
+            xicons.forEach(icon => {
+              icon.setAttribute('period-context', newVal);
+            });
           }
           break;
         case 'status-context':
           if (this.isInitialized()) {
-            let xicon = $(this._iconsDiv).find('.machinetab-icon');
-            for (let iIcon = 0; iIcon < xicon.length; iIcon++) {
-              xicon[iIcon].setAttribute('status-context', newVal);
-            }
+            let xicons = this._iconsDiv.querySelectorAll('.machinetab-icon');
+            xicons.forEach(icon => {
+              icon.setAttribute('status-context', newVal);
+            });
           }
           break;
         default:
@@ -150,28 +151,29 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       this.element._isActive = false; // to know if the tab is already active
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>')
-        .addClass('machinetab-modecolor')
-        .addClass('machinetab-modecolor-undefined'); // default
+      this._content = document.createElement('div');
+      this._content.classList.add('machinetab-modecolor');
+      this._content.classList.add('machinetab-modecolor-undefined'); // default
 
       // DOM - machine display
-      let machDisplayDiv = $('<div></div>')
-        .addClass('machinetab-machine');
-      let xmachinedisplay = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
+      this._machineDisplayDiv = document.createElement('div');
+      this._machineDisplayDiv.classList.add('machinetab-machine');
+      let xmachinedisplay = pulseUtility.createElementWithAttribute('x-machinedisplay', {
         'machine-id': this.element.getAttribute('machine-id')
       });
-      $(machDisplayDiv).append(xmachinedisplay);
+      this._machineDisplayDiv.appendChild(xmachinedisplay);
 
       // DOM - icons
       let icons = ['x-currenticonunansweredreason', 'x-currenticonworkinformation', 'x-currenticonnextstop', 'x-currenticoncncalarm'];
-      this._iconsDiv = $('<div></div>').addClass('machinetab-icons');
+      this._iconsDiv = document.createElement('div');
+      this._iconsDiv.classList.add('machinetab-icons');
       for (let i = 0; i < icons.length; i++) {
         let xicon;
         if (this.element.hasAttribute('period-context')) {
-          xicon = pulseUtility.createjQueryElementWithAttribute(icons[i], {
+          xicon = pulseUtility.createElementWithAttribute(icons[i], {
             'machine-id': this.element.getAttribute('machine-id'),
             'machine-context': this.element.getAttribute('machine-context'),
             'period-context': this.element.getAttribute('period-context'),
@@ -179,20 +181,21 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
           });
         }
         else {
-          xicon = pulseUtility.createjQueryElementWithAttribute(icons[i], {
+          xicon = pulseUtility.createElementWithAttribute(icons[i], {
             'machine-id': this.element.getAttribute('machine-id'),
             'machine-context': this.element.getAttribute('machine-context'),
             'status-context': this.element.getAttribute('status-context')
           });
         }
-        $(xicon).addClass('machinetab-icon');
-        $(this._iconsDiv).append(xicon);
+        xicon.classList.add('machinetab-icon');
+        this._iconsDiv.appendChild(xicon);
       }
 
-      this._machineContent = $('<div></div>')
-        .addClass('machinetab-machine-cell')
-        .append(machDisplayDiv).append(this._iconsDiv);
-      this._machineContent.click(
+      this._machineContent = document.createElement('div');
+      this._machineContent.classList.add('machinetab-machine-cell');
+      this._machineContent.appendChild(this._machineDisplayDiv);
+      this._machineContent.appendChild(this._iconsDiv);
+      this._machineContent.addEventListener('click',
         function (e) {
           this.clickMachineTab(e);
         }.bind(this)
@@ -200,52 +203,53 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
 
       if ((this.element.hasAttribute('active')) &&
         (this.element.getAttribute('active') == 'true')) {
-        $(this._machineContent).addClass('active');
+        this._machineContent.classList.add('active');
         this.clickMachineTab();
       }
       else {
         // Auto-activate the first machinetab inside an x-grouparray, x-grouplist,
         // x-groupgrid or x-machinetabnav wrapper (resolver-autonomous containers).
-        let xgroup = $(this.element).parents('x-grouparray, x-grouplist, x-groupgrid, x-machinetabnav');
-        if (xgroup.length != 0) {
-          let allTabs = $(xgroup).find('x-machinetab');
-          if (allTabs.length != 0) {
+        let xgroup = this.element.closest('x-grouparray, x-grouplist, x-groupgrid, x-machinetabnav');
+        if (xgroup) {
+          let allTabs = xgroup.querySelectorAll('x-machinetab');
+          if (allTabs.length > 0) {
             let firstMachineTab = allTabs[0];
             if (this.element == firstMachineTab) {
-              $(this._machineContent).addClass('active');
+              this._machineContent.classList.add('active');
               this.clickMachineTab();
             }
           }
         }
       }
 
-      $(this.element).append(this._content).append(this._machineContent);
+      this.element.appendChild(this._content);
+      this.element.appendChild(this._machineContent);
 
       // Show / Hide icons
       let componentsToDisplay = pulseConfig.getArray('componentsToDisplay', []);
 
       let posFound = componentsToDisplay.indexOf('x-lastmachinestatus');
       if (-1 == posFound) {
-        $(this.element).find('x-currenticonunansweredreason').hide();
+        this.element.querySelector('x-currenticonunansweredreason').style.display = 'none';
       }
       else {
-        $(this.element).find('x-currenticonunansweredreason').show();
+        this.element.querySelector('x-currenticonunansweredreason').style.display = '';
       }
 
       posFound = componentsToDisplay.indexOf('x-lastworkinformation');
       if (-1 == posFound) {
-        $(this.element).find('x-currenticonworkinformation').hide();
+        this.element.querySelector('x-currenticonworkinformation').style.display = 'none';
       }
       else {
-        $(this.element).find('x-currenticonworkinformation').show();
+        this.element.querySelector('x-currenticonworkinformation').style.display = '';
       }
 
       posFound = componentsToDisplay.indexOf('x-cycleprogressbar');
       if (-1 == posFound) {
-        $(this.element).find('x-currenticonnextstop').hide();
+        this.element.querySelector('x-currenticonnextstop').style.display = 'none';
       }
       else {
-        $(this.element).find('x-currenticonnextstop').show();
+        this.element.querySelector('x-currenticonnextstop').style.display = '';
       }
 
       posFound = componentsToDisplay.indexOf('coloredbar');
@@ -253,14 +257,14 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
         posFound = componentsToDisplay.indexOf('coloredbarwithpercent');
       }
       if (-1 == posFound) {
-        $(this.element).find('x-currenticoncncalarm').hide();
+        this.element.querySelector('x-currenticoncncalarm').style.display = 'none';
       }
       else {
         let showBar = pulseConfig.getBool('showcoloredbar.cncalarm', false);
         if (showBar)
-          $(this.element).find('x-currenticoncncalarm').show();
+          this.element.querySelector('x-currenticoncncalarm').style.display = '';
         else
-          $(this.element).find('x-currenticoncncalarm').hide();
+          this.element.querySelector('x-currenticoncncalarm').style.display = 'none';
       }
 
       // Initialization OK => switch to the next context
@@ -268,9 +272,10 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
     }
 
     clearInitialization() {
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._iconsDiv = undefined;
+      this._machineDisplayDiv = undefined;
       this._machineContent = undefined;
       this._content = undefined;
 
@@ -296,7 +301,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
     }
 
     displayError(message) {
-      $(this._content).addClass('machinetab-modecolor-undefined');
+      this._content.classList.add('machinetab-modecolor-undefined');
     }
 
     removeError() {
@@ -327,9 +332,8 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
      * @param {{ Reason: { Color: string } }} data
      */
     refresh(data) {
-      $(this._content)
-        .removeClass('machinetab-modecolor-undefined')
-        .css('border-right-color', data.Reason.Color);
+      this._content.classList.remove('machinetab-modecolor-undefined');
+      this._content.style.borderRightColor = data.Reason.Color;
     }
 
     // Callback events
@@ -364,7 +368,10 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
         this.element.getAttribute('machine-context'),
         { newMachineId: Number(this.element.getAttribute('machine-id')) });
 
-      $('.pulse-mainarea-full').animate({ scrollTop: 0 }, 'slow');
+      let mainArea = document.querySelector('.pulse-mainarea-full');
+      if (mainArea) {
+        mainArea.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
 
   }

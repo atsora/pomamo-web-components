@@ -67,25 +67,31 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
       // Listener and dispatchers
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      /*this._popup = $('<div></div>').addClass('pulse-reasonsubdetails-popup');
+      /*this._popup = document.createElement('div');
+      this._popup.className = 'pulse-reasonsubdetails-popup';
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._popup).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = 'Loading...';
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._popup.appendChild(loaderDiv);
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._popup).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._popup.appendChild(messageDiv);
 
-      $(this.element)
-        .addClass('reasonsubdetails')
-        .append(this._popup);*/
+      this.element.className = 'reasonsubdetails';
+      this.element.appendChild(this._popup);*/
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -95,7 +101,7 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       //this._content = undefined;
@@ -138,14 +144,16 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
     displayError (message) {
       // Code here to display the error message
       // For example:
-      $(this._content).html(message);
+      if (this._content) {
+        this._content.innerHTML = message;
+      }
       pulseCustomDialog.openDialog(message, { type: 'Error', title: 'Error', onClose: this._close.bind(this) });
     }
     _close () {
       // Close popup
 
       // Remove component
-      $(this.element).remove();
+      this.element.remove();
     }
 
     removeError () {
@@ -175,23 +183,27 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
       var fillMethod = function (popup, data) {
         let showReasonScore = pulseConfig.getBool('reasonsubdetails.showReasonScore', false);
         // Fill popup
-        let popup_content = $('<div></div>').addClass('reasonsubdetails-popupcontent');
+        let popup_content = document.createElement('div');
+        popup_content.className = 'reasonsubdetails-popupcontent';
 
         // Update the component with data which is returned by the web service in case of success
         for (let i = 1 /* Do not display 1st */;
           i < data.ReasonAllAtItems.length; i++) {
 
-          let onereason = $('<div></div>').addClass('reasonsubdetails-onereason');
+          let onereason = document.createElement('div');
+          onereason.className = 'reasonsubdetails-onereason';
 
           //For everybody
-          let display = $('<div></div>').addClass('reasonsubdetails-display')
-            .html(data.ReasonAllAtItems[i].Display);
-          onereason.append(display);
+          let display = document.createElement('div');
+          display.className = 'reasonsubdetails-display';
+          display.innerHTML = data.ReasonAllAtItems[i].Display;
+          onereason.appendChild(display);
 
           if (!pulseUtility.isNotDefined(data.ReasonAllAtItems[i].Details)) {
-            let details = $('<div></div>').addClass('reasonsubdetails-details')
-              .html(data.ReasonAllAtItems[i].Details);
-            onereason.append(details);
+            let details = document.createElement('div');
+            details.className = 'reasonsubdetails-details';
+            details.innerHTML = data.ReasonAllAtItems[i].Details;
+            onereason.appendChild(details);
           }
 
           // AVAILABLE too :
@@ -200,24 +212,32 @@ var pulseDetailsPopup = require('pulsecomponent-detailspopup');
           //data.ReasonAllAtItems[i].Source.UnsafeManualFlag;
 
           // For dev only :
-          let score = $('<span></span>').addClass('reasonsubdetails-score')
-            .html(data.ReasonAllAtItems[i].Score + ' ');
-          let def = $('<span></span>').addClass('reasonsubdetails-default')
-            .html(data.ReasonAllAtItems[i].Source.Default ? 'default ' : 'notDefault ');
-          let auto = $('<span></span>').addClass('reasonsubdetails-auto')
-            .html(data.ReasonAllAtItems[i].Source.Auto ? 'Auto ' : 'NotAuto ');
-          let manu = $('<span></span>').addClass('reasonsubdetails-manual')
-            .html(data.ReasonAllAtItems[i].Source.Manual ? 'Manual ' : 'NotManual ');
-          let dev = $('<div></div>').addClass('reasonsubdetails-dev')
-            .append(score).append(def).append(auto).append(manu);
-          onereason.append(dev);
+          let score = document.createElement('span');
+          score.className = 'reasonsubdetails-score';
+          score.innerHTML = data.ReasonAllAtItems[i].Score + ' ';
+          let def = document.createElement('span');
+          def.className = 'reasonsubdetails-default';
+          def.innerHTML = data.ReasonAllAtItems[i].Source.Default ? 'default ' : 'notDefault ';
+          let auto = document.createElement('span');
+          auto.className = 'reasonsubdetails-auto';
+          auto.innerHTML = data.ReasonAllAtItems[i].Source.Auto ? 'Auto ' : 'NotAuto ';
+          let manu = document.createElement('span');
+          manu.className = 'reasonsubdetails-manual';
+          manu.innerHTML = data.ReasonAllAtItems[i].Source.Manual ? 'Manual ' : 'NotManual ';
+          let dev = document.createElement('div');
+          dev.className = 'reasonsubdetails-dev';
+          dev.appendChild(score);
+          dev.appendChild(def);
+          dev.appendChild(auto);
+          dev.appendChild(manu);
+          onereason.appendChild(dev);
 
-          $(popup_content).append(onereason);
+          popup_content.appendChild(onereason);
 
           if (!showReasonScore)
-            dev.hide();
+            dev.style.display = 'none';
         }
-        popup.append(popup_content);
+        popup.appendChild(popup_content);
       } // end fillMethod
 
       // Event for position

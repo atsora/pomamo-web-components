@@ -186,7 +186,7 @@ var pulseRange = require('pulseRange');
       // Listener and dispatchers
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create NO DOM -> revisionprogress... will display if needed
 

@@ -18,6 +18,11 @@ x-machinetabnav {
   height: 100%;
   box-sizing: border-box;
 
+  // ≤ 1 machine: no useful navigation, hide the whole nav.
+  &[data-single-machine="true"] {
+    display: none;
+  }
+
   .machinetabnav-content {
     display: flex;
     flex-direction: column;

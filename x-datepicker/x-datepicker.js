@@ -59,10 +59,10 @@ var pulseUtility = require('pulseUtility');
           if (this.isInitialized()) {
             if (this.element.hasAttribute('disabled')
               && (newVal == 'disabled' || newVal == 'true')) {
-              this._dateInput[0].disabled = true;
+              this._dateInput.disabled = true;
             }
             else {
-              this._dateInput[0].disabled = false;
+              this._dateInput.disabled = false;
             }
           }
         } break;
@@ -91,19 +91,21 @@ var pulseUtility = require('pulseUtility');
       //this.addClass('pulse-bigdisplay'); -> No
 
       // Create DOM - NO Loader
-      let dateDiv = $('<div></div>').addClass('datepicker-datediv');
-      $(this.element).append(dateDiv);
+      let dateDiv = document.createElement('div');
+      dateDiv.className = 'datepicker-datediv';
+      this.element.appendChild(dateDiv);
 
       // DOM - date
-      this._dateInput = $('<input type="date"></input>')
-        .addClass('datepicker-input-date');
-      dateDiv.append(this._dateInput);
+      this._dateInput = document.createElement('input');
+      this._dateInput.type = 'date';
+      this._dateInput.className = 'datepicker-input-date';
+      dateDiv.appendChild(this._dateInput);
 
       // if disabled
       if (this.element.hasAttribute('disabled')
         && (this.element.getAttribute('disabled') == 'disabled'
           || this.element.getAttribute('disabled') == 'true')) {
-        this._dateInput[0].disabled = true;
+        this._dateInput.disabled = true;
       }
 
       // Fill Date
@@ -112,9 +114,9 @@ var pulseUtility = require('pulseUtility');
       // Set min/max date
       this._fillMinMaxDate();
 
-      this._dateInput.change(function () {
+      this._dateInput.addEventListener('change', function () {
         // Restore default if empty
-        if ('' == this._dateInput[0].value) {
+        if ('' == this._dateInput.value) {
           this._setDefaultDate();
         }
 
@@ -133,7 +135,7 @@ var pulseUtility = require('pulseUtility');
 
     clearInitialization () {
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       super.clearInitialization();
     }
@@ -158,10 +160,10 @@ var pulseUtility = require('pulseUtility');
       let displayedDate = defaultDate.getFullYear() + '-'
         + pulseUtility.leadingZero(defaultDate.getMonth() + 1) + '-'
         + pulseUtility.leadingZero(defaultDate.getDate());
-      
-      this._dateInput[0].value = displayedDate;
-      //this._dateInput[0].setAttribute('value', displayedDate); //'2018-07-22');
-      //this._dateInput[0].defaultValue = displayedDate;
+
+      this._dateInput.value = displayedDate;
+      //this._dateInput.setAttribute('value', displayedDate); //'2018-07-22');
+      //this._dateInput.defaultValue = displayedDate;
     }
 
     _fillMinMaxDate () {
@@ -174,7 +176,7 @@ var pulseUtility = require('pulseUtility');
           + pulseUtility.leadingZero(minDateTime.getMonth() + 1) + '-'
           + pulseUtility.leadingZero(minDateTime.getDate());
         */
-        this._dateInput[0].setAttribute('min', minDate);
+        this._dateInput.setAttribute('min', minDate);
       }
       if (this.element.hasAttribute('maxdate')) {
         let maxDate = this.element.getAttribute('maxdate');
@@ -185,12 +187,12 @@ var pulseUtility = require('pulseUtility');
           + pulseUtility.leadingZero(maxDateTime.getMonth() + 1) + '-'
           + pulseUtility.leadingZero(maxDateTime.getDate());
         */
-        this._dateInput[0].setAttribute('max', maxDate);
+        this._dateInput.setAttribute('max', maxDate);
       }
     }
 
     isValid () {
-      let crtDate = new Date(this._dateInput[0].value);
+      let crtDate = new Date(this._dateInput.value);
       if (this.element.hasAttribute('mindate')) {
         let minDate = new Date(this.element.getAttribute('mindate'));
         if (crtDate < minDate)
@@ -207,11 +209,11 @@ var pulseUtility = require('pulseUtility');
     }
 
     getISOValue () {
-      return pulseUtility.convertDayForWebService(this._dateInput[0].value);
+      return pulseUtility.convertDayForWebService(this._dateInput.value);
     }
 
     getValueAsIs () { //'YYYY-MM-DD
-      return this._dateInput[0].value;
+      return this._dateInput.value;
     }
 
     // Callback events

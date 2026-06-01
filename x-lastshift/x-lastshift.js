@@ -80,23 +80,34 @@ var pulseUtility = require('pulseUtility');
       }*/
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      let linkReport = $('<a></a>').addClass('lastshift-linkreport'); // Keep <a> it to quickly restore any link here
-      linkReport.attr('target', '_blank'); // To open in a new tab
-      linkReport.append($('<span> </span>').addClass('lastshift-shiftlabel'));
-      let divShift = $('<div></div>')
-        .addClass('lastshift-shift')
-        .append(linkReport);
-      this._content = $('<div> </div>').addClass('lastshift')
-        .append(divShift);
+      let linkReport = document.createElement('a');
+      linkReport.classList.add('lastshift-linkreport'); // Keep <a> it to quickly restore any link here
+      linkReport.setAttribute('target', '_blank'); // To open in a new tab
+      let span = document.createElement('span');
+      span.classList.add('lastshift-shiftlabel');
+      span.textContent = ' ';
+      linkReport.appendChild(span);
+      let divShift = document.createElement('div');
+      divShift.classList.add('lastshift-shift');
+      divShift.appendChild(linkReport);
+      this._content = document.createElement('div');
+      this._content.classList.add('lastshift');
+      this._content.textContent = ' ';
+      this._content.appendChild(divShift);
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
-      $(this.element).append(this._content);
+      this.element.appendChild(this._content);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -106,7 +117,7 @@ var pulseUtility = require('pulseUtility');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       this._content = undefined;
@@ -128,7 +139,8 @@ var pulseUtility = require('pulseUtility');
 
     displayError (message) {
       // Hide crt shift
-      $(this.element).find('.lastshift-shiftlabel').html('');
+      let label = this.element.querySelector('.lastshift-shiftlabel');
+      if (label) label.innerHTML = '';
     }
 
     removeError () {
@@ -166,14 +178,17 @@ var pulseUtility = require('pulseUtility');
      * @param {{ Shift?: { Display: string } }} data
      */
     refresh (data) {
-      $(this._content).html(data.Name);
+      this._content.innerHTML = data.Name;
 
 
-      if (data.Shift && data.Shift.Display) {
-        $(this.element).find('.lastshift-shiftlabel').html(data.Shift.Display);
-      }
-      else {
-        $(this.element).find('.lastshift-shiftlabel').html(''); // 'Out of shift');
+      let label = this.element.querySelector('.lastshift-shiftlabel');
+      if (label) {
+        if (data.Shift && data.Shift.Display) {
+          label.innerHTML = data.Shift.Display;
+        }
+        else {
+          label.innerHTML = ''; // 'Out of shift');
+        }
       }
     }
 

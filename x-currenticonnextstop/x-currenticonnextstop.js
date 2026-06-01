@@ -75,10 +75,10 @@ var eventBus = require('eventBus');
           //if (oldValue != newVal)
           {
             if (newVal == 'true') {
-              $(this._content).addClass('active');
+              this._content.classList.add('active');
             }
             else {
-              $(this._content).removeClass('active');
+              this._content.classList.remove('active');
             }
             //this.displayStop(); // Refresh with active or not active display
           }
@@ -118,15 +118,15 @@ var eventBus = require('eventBus');
       this._createListenersDispatchers();
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM
-      this._content = $('<div></div>').addClass('pulse-icon-content');
-      $(this.element)//.addClass('XXX')
-        .append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'pulse-icon-content';
+      this.element.appendChild(this._content);
       if (this.element.hasAttribute('active') &&
         this.element.getAttribute('active') == 'true') {
-        $(this._content).addClass('active');
+        this._content.classList.add('active');
       }
       this.displayStop();
 
@@ -138,7 +138,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       //this._messageSpan = undefined;
       this._content = undefined;
 
@@ -152,7 +152,7 @@ var eventBus = require('eventBus');
 
     reset () {
       // Clean component
-      (this._content).empty();
+      this._content.replaceChildren();
       // Remove Error
       //this.removeError();
 
@@ -248,7 +248,7 @@ var eventBus = require('eventBus');
       if (!this._connected) { // == is connected
         return false;
       }
-      if ($(this.element).is(':visible')) {
+      if ((this.element.offsetWidth > 0 || this.element.offsetHeight > 0 || this.element.getClientRects().length > 0)) {
         return true;
       }
       return false;
@@ -279,39 +279,44 @@ var eventBus = require('eventBus');
       this._untilNextMSec = null;
       this._refDateTime = null;
 
+      let icon = this.element.querySelector('.pulse-icon-next-stop');
+      if (!icon) return;
+      // `classList.remove('')` / `classList.add('')` throw a DOMException — the
+      // tracked state values (`_eventKind`, `_severity`) start empty, so every
+      // swap must be guarded.
+      const swapToken = (oldVal, newVal) => {
+        if (oldVal) icon.classList.remove(oldVal);
+        if (newVal) icon.classList.add(newVal);
+      };
       if (data.ActiveEvents && data.ActiveEvents.length > 0) {
         // Manage active events (STOPPED)
         let event = data.ActiveEvents[0];
         this._refDateTime = new Date(event.DateTime);
         if (this._eventKind != 'activeevent') {
-          $(this.element).find('.pulse-icon-next-stop').removeClass(this._eventKind);
+          swapToken(this._eventKind, 'activeevent');
           this._eventKind = 'activeevent';
-          $(this.element).find('.pulse-icon-next-stop').addClass(this._eventKind);
         }
         if (this._severity != event.Severity.LevelName) {
-          $(this.element).find('.pulse-icon-next-stop').removeClass(this._severity);
+          swapToken(this._severity, event.Severity.LevelName);
           this._severity = event.Severity.LevelName;
-          $(this.element).find('.pulse-icon-next-stop').addClass(this._severity);
         }
         this._untilNextMSec = this._refDateTime.getTime() - this._serverNow.getTime();
 
         // Set No Threshold
-        $(this.element).find('.pulse-icon-next-stop').removeClass('threshold1');
-        $(this.element).find('.pulse-icon-next-stop').removeClass('threshold2');
+        icon.classList.remove('threshold1');
+        icon.classList.remove('threshold2');
       }
       else if (data.ComingEvents && data.ComingEvents.length > 0) {
         // Manage coming events (Stop in / End in...)
         let event = data.ComingEvents[0];
         this._refDateTime = new Date(event.DateTime);
         if (this._eventKind != 'comingevent') {
-          $(this.element).find('.pulse-icon-next-stop').removeClass(this._eventKind);
+          swapToken(this._eventKind, 'comingevent');
           this._eventKind = 'comingevent';
-          $(this.element).find('.pulse-icon-next-stop').addClass(this._eventKind);
         }
         if (this._severity != event.Severity.LevelName) {
-          $(this.element).find('.pulse-icon-next-stop').removeClass(this._severity);
+          swapToken(this._severity, event.Severity.LevelName);
           this._severity = event.Severity.LevelName;
-          $(this.element).find('.pulse-icon-next-stop').addClass(this._severity);
         }
         this._untilNextMSec = this._refDateTime.getTime() - this._serverNow.getTime();
 
@@ -321,33 +326,33 @@ var eventBus = require('eventBus');
         let thresholdClass = '';
         if (this._untilNextMSec / 1000 < this._threshold2) {
           thresholdClass = 'threshold2';
-          $(this.element).find('.pulse-icon-next-stop').removeClass('threshold1');
-          $(this.element).find('.pulse-icon-next-stop').addClass(thresholdClass);
+          icon.classList.remove('threshold1');
+          icon.classList.add(thresholdClass);
         }
         else if (this._untilNextMSec / 1000 < this._threshold1) {
           thresholdClass = 'threshold1';
-          $(this.element).find('.pulse-icon-next-stop').removeClass('threshold2');
-          $(this.element).find('.pulse-icon-next-stop').addClass(thresholdClass);
+          icon.classList.remove('threshold2');
+          icon.classList.add(thresholdClass);
         }
         else {
           // Set No Threshold
-          $(this.element).find('.pulse-icon-next-stop').removeClass('threshold1');
-          $(this.element).find('.pulse-icon-next-stop').removeClass('threshold2');
+          icon.classList.remove('threshold1');
+          icon.classList.remove('threshold2');
         }
 
       }
       else { // NO INFO
         if (this._eventKind != '') {
-          $(this.element).find('.pulse-icon-next-stop').removeClass(this._eventKind);
+          if (this._eventKind) icon.classList.remove(this._eventKind);
           this._eventKind = '';
         }
         if (this._severity != '') {
-          $(this.element).find('.pulse-icon-next-stop').removeClass(this._severity);
+          if (this._severity) icon.classList.remove(this._severity);
           this._severity = '';
         }
         // NO threshold
-        $(this.element).find('.pulse-icon-next-stop').removeClass('threshold1');
-        $(this.element).find('.pulse-icon-next-stop').removeClass('threshold2');
+        icon.classList.remove('threshold1');
+        icon.classList.remove('threshold2');
       }
     }
 
@@ -355,9 +360,10 @@ var eventBus = require('eventBus');
     displayStop () {
       if (this._content != undefined) {
         // Display icon (or not)
-        (this._content).empty();
-        let image = $('<div></div>').addClass('pulse-icon-next-stop');
-        (this._content).append(image);
+        this._content.replaceChildren();
+        let image = document.createElement('div');
+        image.className = 'pulse-icon-next-stop';
+        this._content.appendChild(image);
         pulseSvg.inlineBackgroundSvg(image);
 
         // Tooltips
@@ -393,20 +399,24 @@ var eventBus = require('eventBus');
       if (this.element.hasAttribute('active') &&
         this.element.getAttribute('active') == 'true') {
 
+        let icon = this.element.querySelector('.pulse-icon-next-stop');
+        if (!icon) return;
+        // Guard each swap against empty tokens — see _refresh for the rationale.
+        const swapToken = (oldVal, newVal) => {
+          if (oldVal) icon.classList.remove(oldVal);
+          if (newVal) icon.classList.add(newVal);
+        };
         if (this._eventKind != event.target.eventKind) {
-          $(this.element).find('.pulse-icon-next-stop').removeClass(this._eventKind);
+          swapToken(this._eventKind, event.target.eventKind);
           this._eventKind = event.target.eventKind;
-          $(this.element).find('.pulse-icon-next-stop').addClass(this._eventKind);
         }
         if (this._severity != event.target.severity) {
-          $(this.element).find('.pulse-icon-next-stop').removeClass(this._severity);
+          swapToken(this._severity, event.target.severity);
           this._severity = event.target.severity;
-          $(this.element).find('.pulse-icon-next-stop').addClass(this._severity);
         }
         if (this._thresholdClass != event.target.thresholdClass) {
-          $(this.element).find('.pulse-icon-next-stop').removeClass(this._thresholdClass);
+          swapToken(this._thresholdClass, event.target.thresholdClass);
           this._thresholdClass = event.target.thresholdClass;
-          $(this.element).find('.pulse-icon-next-stop').addClass(this._thresholdClass);
         }
         /* was /
         if (!pulseUtility.isNotDefined(event.target.untilNextStopMSec)) {

@@ -89,7 +89,7 @@ require('x-revisionprogress/x-revisionprogress');
      * @return {number} Width of the content
      */
     get barwidth () {
-      let width = $(this.content).width();
+      let width = this.content ? this.content.offsetWidth : 0;
       if (width) {
         this._barwidth = width;
       }
@@ -206,9 +206,9 @@ require('x-revisionprogress/x-revisionprogress');
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       if (attr == 'machine-id') {
         // For progress : update _mapOfModifications
-        let modifMgr = $('body').find('x-modificationmanager');
-        if (modifMgr.length == 1) {
-          this._mapOfModifications = modifMgr[0].getModifications('MST',
+        let modifMgr = document.body.querySelector('x-modificationmanager');
+        if (modifMgr) {
+          this._mapOfModifications = modifMgr.getModifications('MST',
             this.element.getAttribute('machine-id'));
 
           // + REMOVE others with old machineid ? + create progress ? -> TODO later !
@@ -272,29 +272,35 @@ require('x-revisionprogress/x-revisionprogress');
       this._setAutoHeight();
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // create DOM
       // HTML structure - Content
-      this._content = $('<div></div>').addClass('observationstatebar-content pulse-bar-content');
-      this._content.height(this._height);
+      this._content = document.createElement('div');
+      this._content.className = 'observationstatebar-content pulse-bar-content';
+      this._content.style.height = this._height + 'px';
       // HTML structure - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
-      $(this.element)
-        .addClass('observationstatebar')
-        .append(this._content);
-      //$(window).resize(() => this.draw());
+      this.element.classList.add('observationstatebar');
+      this.element.appendChild(this._content);
+      //window.addEventListener('resize', () => this.draw());
 
       // Dispatchers
       if (this.element.hasAttribute('period-context')) {
@@ -316,9 +322,9 @@ require('x-revisionprogress/x-revisionprogress');
       }
 
       // Get modifications and create listener
-      let modifMgr = $('body').find('x-modificationmanager');
-      if (modifMgr.length == 1) {
-        this._mapOfModifications = modifMgr[0].getModifications('MST',
+      let modifMgr = document.body.querySelector('x-modificationmanager');
+      if (modifMgr) {
+        this._mapOfModifications = modifMgr.getModifications('MST',
           this.element.getAttribute('machine-id'));
 
         // TODO Later + create progress ?
@@ -333,7 +339,7 @@ require('x-revisionprogress/x-revisionprogress');
       // Parameters
       // DOM
       this.cleanContent(); // clean svg
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._messageSpan = undefined;
       this._content = undefined;
@@ -464,7 +470,10 @@ require('x-revisionprogress/x-revisionprogress');
       if (typeof this.content === 'undefined') {
         return;
       }
-      $(this.element).find('.observationstatebar-svg').remove(); // Remove Old SVG
+      let oldSvg = this.element.querySelector('.observationstatebar-svg');
+      if (oldSvg) {
+        oldSvg.remove();
+      }
     }
 
     /**
@@ -475,16 +484,16 @@ require('x-revisionprogress/x-revisionprogress');
 
       // HIDE BAR if no data
       if (!this._data || this._data.length == 0) {
-        this.content.hide();
+        this.content.style.display = 'none';
         return;
       }
       else {
-        this.content.show();
+        this.content.style.display = '';
       }
 
-      // Use the actual rendered height (CSS may override the jQuery-set height via flex layout)
+      // Use the actual rendered height (CSS may override the vanilla DOM-set height via flex layout)
       // to avoid non-uniform SVG scaling with preserveAspectRatio:none
-      let actualHeight = this.content[0].clientHeight || this._height;
+      let actualHeight = this.content.clientHeight || this._height;
 
       let svg = document.createElementNS(pulseSvg.get_svgNS(), 'svg');
       //svg.setAttribute('width', this.barwidth); // NO ! for auto-adapt
@@ -614,12 +623,13 @@ require('x-revisionprogress/x-revisionprogress');
       }
       if (typeof this._messageSpan !== 'undefined') {
         if (this._height > 20)
-          $(this._messageSpan).html(text);
+          this._messageSpan.innerHTML = text;
       }
 
       // Remove the content div' SVG
       /*if (typeof this.content !== 'undefined') {
-        this.content.find('.observationstatebar-svg').remove();
+        let oldSvg = this.content.querySelector('.observationstatebar-svg');
+        if (oldSvg) oldSvg.remove();
       }*/
     }
 
@@ -628,7 +638,7 @@ require('x-revisionprogress/x-revisionprogress');
      */
     removeError () {
       if (typeof this._messageSpan !== 'undefined') {
-        $(this._messageSpan).html('');
+        this._messageSpan.innerHTML = '';
       }
     }
 
@@ -675,7 +685,7 @@ require('x-revisionprogress/x-revisionprogress');
 
         for (let i = 0; i < modif.ranges.length; i++) {
           let newRevisionProgress =
-            pulseUtility.createjQueryElementWithAttribute('x-revisionprogress', {
+            pulseUtility.createElementWithAttribute('x-revisionprogress', {
               'period-context': this.element.getAttribute('period-context'),
               'range': pulseUtility.convertDateRangeForWebService(this._range),
               //was this._range.toString(d => d.toISOString()),
@@ -711,7 +721,7 @@ require('x-revisionprogress/x-revisionprogress');
      * @param {Object} event
      */
     onMachineIdChange (event) {
-      $(this.element).attr('machine-id', event.target.newMachineId);
+      this.element.setAttribute('machine-id', event.target.newMachineId);
     }
 
     /**

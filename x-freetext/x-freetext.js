@@ -48,7 +48,8 @@ var eventBus = require('eventBus');
 
     /** Clears the displayed text. */
     cleanDisplay () {
-      $(this._content).empty();
+      if (this._content == null) return;
+      this._content.replaceChildren();
     }
 
     //get content () { return this._content; } // Optional
@@ -94,11 +95,12 @@ var eventBus = require('eventBus');
       // Update here some internal parameters
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('freetext-content');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'freetext-content';
+      this.element.appendChild(this._content);
 
       // Create DOM - NO Loader / No message
 
@@ -120,7 +122,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       this._content = undefined;
@@ -134,12 +136,18 @@ var eventBus = require('eventBus');
        * @param {Object} event
        */
     onTextChange (event) {
-      if ('' == event.target.text) {
-        $(this._content).empty();
+      // Catch null/undefined as well as empty string — vanilla `innerHTML = undefined`
+      // stringifies to the literal "undefined", unlike jQuery's `.html(undefined)`
+      // which is a no-op getter.
+      let text = event.target.text;
+      if (text == null || text === '') {
+        this._content.replaceChildren();
       }
       else {
-        $(this._content).empty();
-        $(this._content).append($('<span></span>').html(event.target.text));
+        this._content.replaceChildren();
+        let span = document.createElement('span');
+        span.innerHTML = text;
+        this._content.appendChild(span);
       }
     }
   }

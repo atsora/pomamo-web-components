@@ -81,8 +81,10 @@ this.restoreDeleteWhenDisconnect ():
       let last1January = new Date(((new Date()).getFullYear()), 1, 1, 0, 0, 0, 0);
       let numberToOrder = (since.getTime() - last1January.getTime()) / 1000 / 60; // To lower number
 
-      let parentsToOrder = $(this.element).parents('.group-single');
-      $(parentsToOrder).css('order', Math.round(numberToOrder));
+      let parentsToOrder = this.element.closest('.group-single');
+      if (parentsToOrder) {
+        parentsToOrder.style.order = Math.round(numberToOrder);
+      }
     }
 
     attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
@@ -90,12 +92,12 @@ this.restoreDeleteWhenDisconnect ():
       switch (attr) {
         case 'machine-id':
           if (this.isInitialized()) {
-            $(this._operationDiv).empty();
+            this._operationDiv.replaceChildren();
 
             // For progress : update _mapOfModifications
-            let modifMgr = $('body').find('x-modificationmanager');
-            if (modifMgr.length == 1) {
-              this._mapOfModifications = modifMgr[0].getModifications('MST',
+            let modifMgr = document.querySelector('body x-modificationmanager');
+            if (modifMgr) {
+              this._mapOfModifications = modifMgr.getModifications('MST',
                 this.element.getAttribute('machine-id'));
 
               // + REMOVE others with old machineid ? + create progress ? -> TODO later !
@@ -130,50 +132,53 @@ this.restoreDeleteWhenDisconnect ():
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM
-      this._operationDiv = $('<div></div>')
-        .addClass('pulse-cellbar-first')
-        .addClass('pulse-cellbar-current-data');
-      //.addClass('clickable'); // To change display when hover - NO = not clickable
+      this._operationDiv = document.createElement('div');
+      this._operationDiv.className = 'pulse-cellbar-first pulse-cellbar-current-data';
+      //this._operationDiv.classList.add('clickable'); // To change display when hover - NO = not clickable
 
-      this._sinceSpan = $('<span></span>')
-        .addClass('setupmachine-since-span');
-      this._sinceDiv = $('<div></div>')
-        .addClass('pulse-cellbar-last')
-        .addClass('pulse-cellbar-past-data')
-        .append(this._sinceSpan);
-      this._sinceDiv.click(
-        function (e) {
-          this.clickOnPast(e);
-        }.bind(this)
-      );
+      this._sinceSpan = document.createElement('span');
+      this._sinceSpan.className = 'setupmachine-since-span';
+      this._sinceDiv = document.createElement('div');
+      this._sinceDiv.className = 'pulse-cellbar-last pulse-cellbar-past-data';
+      this._sinceDiv.appendChild(this._sinceSpan);
+      this._sinceDiv.addEventListener('click', function (e) {
+        this.clickOnPast(e);
+      }.bind(this));
 
       // Main
-      this._content = $('<div></div>')
-        .addClass('pulse-cellbar-main') // was pulse-component-main
-        .append(this._operationDiv).append(this._sinceDiv);
+      this._content = document.createElement('div');
+      this._content.className = 'pulse-cellbar-main';
+      this._content.appendChild(this._operationDiv);
+      this._content.appendChild(this._sinceDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = 'Loading...';
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
-      $(this.element).append(this._content);
+      this.element.appendChild(this._content);
 
       // Get modifications and create listener
-      let modifMgr = $('body').find('x-modificationmanager');
-      if (modifMgr.length == 1) {
-        this._mapOfModifications = modifMgr[0].getModifications('MST',
+      let modifMgr = document.querySelector('body x-modificationmanager');
+      if (modifMgr) {
+        this._mapOfModifications = modifMgr.getModifications('MST',
           this.element.getAttribute('machine-id'));
 
         // TODO Later + create progress ?
@@ -189,7 +194,7 @@ this.restoreDeleteWhenDisconnect ():
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._operationDiv = undefined;
       this._sinceSpan = undefined;
@@ -220,17 +225,17 @@ this.restoreDeleteWhenDisconnect ():
     }
 
     displayError (message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
 
-      $(this._operationDiv).empty();
+      this._operationDiv.replaceChildren();
       // clean right block
-      $(this._sinceSpan).html('');
-      $(this._sinceDiv).removeClass('bad-efficiency')
-        .removeClass('good-efficiency');
+      this._sinceSpan.innerHTML = '';
+      this._sinceDiv.classList.remove('bad-efficiency');
+      this._sinceDiv.classList.remove('good-efficiency');
     }
 
     removeError () {
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
     }
 
     get refreshRate () {
@@ -261,21 +266,20 @@ this.restoreDeleteWhenDisconnect ():
       this._since = data.Since;
       let getSinceMoment = moment(this._since, moment.ISO_8601);
       let sinceDisplay = getSinceMoment.format('lll');
-      $(this._sinceSpan).html(
-        this.getTranslation('setupsince', 'setup since: ')
-        + sinceDisplay);
+      this._sinceSpan.innerHTML = this.getTranslation('setupsince', 'setup since: ')
+        + sinceDisplay;
 
       // colors and efficiency
       let thresholdinseconds = this.getConfigOrAttribute('thresholdinseconds', 60);
       if (thresholdinseconds != 0) {
         let elapsedTime = moment().diff(getSinceMoment, 'seconds');
         if (elapsedTime > thresholdinseconds) {
-          $(this._sinceDiv).addClass('bad-efficiency')
-            .removeClass('good-efficiency');
+          this._sinceDiv.classList.add('bad-efficiency');
+          this._sinceDiv.classList.remove('good-efficiency');
         }
         else {
-          $(this._sinceDiv).addClass('good-efficiency')
-            .removeClass('bad-efficiency');
+          this._sinceDiv.classList.add('good-efficiency');
+          this._sinceDiv.classList.remove('bad-efficiency');
           //if (elapsedTime < this._updateDelay) {
           // Re-start timer faster -> done in get refreshRate
         }
@@ -283,11 +287,11 @@ this.restoreDeleteWhenDisconnect ():
 
       // Left Block = operation
       //if there is no slot, display ???
-      $(this._operationDiv).empty();
-      let spanOperation = $('<span></span>')
-        .addClass('setupmachine-operation-span')
-        .html(this._current_display);
-      $(this._operationDiv).append(spanOperation);
+      this._operationDiv.replaceChildren();
+      let spanOperation = document.createElement('span');
+      spanOperation.className = 'setupmachine-operation-span';
+      spanOperation.innerHTML = this._current_display;
+      this._operationDiv.appendChild(spanOperation);
 
       this._orderUsingSince();
     }
@@ -321,7 +325,7 @@ this.restoreDeleteWhenDisconnect ():
           if ((modif.ranges[i].lower < now)
             && (modif.ranges[i].upper == null || modif.ranges[i].upper > now)) { // == is Current
             let newRevisionProgress =
-              pulseUtility.createjQueryElementWithAttribute('x-revisionprogress', {
+              pulseUtility.createElementWithAttribute('x-revisionprogress', {
                 //'period-context': NO MAIN RANGE
                 //'range': NO MAIN RANGE
                 'revision-id': modif.revisionid,
@@ -364,7 +368,10 @@ this.restoreDeleteWhenDisconnect ():
      * DOM event callback triggered on a click on PAST button
      */
     clickOnPast () {
-      $(this.element).find('x-savemachinestatetemplate').remove();
+      let existing = this.element.querySelector('x-savemachinestatetemplate');
+      if (existing) {
+        existing.remove();
+      }
 
       let machineId = this.element.getAttribute('machine-id');
       let attrs = {
@@ -376,8 +383,8 @@ this.restoreDeleteWhenDisconnect ():
         let range = pulseRange.createDateRangeDefaultInclusivity(new Date(this._since), null);
         attrs['range'] = pulseUtility.convertDateRangeForWebService(range);
       }
-      let saveMST = pulseUtility.createjQueryElementWithAttribute('x-savemachinestatetemplate', attrs);
-      $(this.element).append(saveMST);
+      let saveMST = pulseUtility.createElementWithAttribute('x-savemachinestatetemplate', attrs);
+      this.element.appendChild(saveMST);
     }
   }
 

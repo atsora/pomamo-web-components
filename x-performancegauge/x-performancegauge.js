@@ -200,11 +200,13 @@ var eventBus = require('eventBus');
     }
 
     _drawEmpty () { // To clean the bar
-      $(this._content).find('.performancegauge-svg').remove(); // Remove Old SVG
+      let oldSvg = this._content.querySelector('.performancegauge-svg');
+      if (oldSvg) oldSvg.remove(); // Remove Old SVG
     }
 
     _draw () {
-      $(this._content).find('.performancegauge-svg').remove(); // Remove Old SVG
+      let oldSvg = this._content.querySelector('.performancegauge-svg');
+      if (oldSvg) oldSvg.remove(); // Remove Old SVG
 
       this._radius = 30; // For Compatibility and shadow
       //  Used sizes
@@ -284,7 +286,7 @@ var eventBus = require('eventBus');
       }
       svg.setAttribute('viewBox', '0 0 ' + (externalRadius * (maxX - minX)) + ' ' + (externalRadius * (maxY - minY)));
       svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      $(this._content).prepend(svg); // Before message
+      this._content.insertBefore(svg, this._content.firstChild); // Before message
 
       // Create the needle
       let centerRadius = externalRadius / 8;
@@ -382,27 +384,35 @@ var eventBus = require('eventBus');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('performancegauge-content');
-      let div = $('<div></div>').addClass('performancegauge')
-        .append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'performancegauge-content';
+      let div = document.createElement('div');
+      div.className = 'performancegauge';
+      div.appendChild(this._content);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
-      $(this.element).append(div);
+      this.element.appendChild(div);
 
       // RESIZE ??? ??????????????????
       // ???????????????????????????????
@@ -423,7 +433,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._messageSpan = undefined;
       this._content = undefined;
@@ -495,13 +505,13 @@ var eventBus = require('eventBus');
     }
 
     displayError (message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
 
       //this._drawEmpty();
     }
 
     removeError () {
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
     }
 
     get refreshRate () {

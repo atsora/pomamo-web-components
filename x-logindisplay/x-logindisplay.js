@@ -46,12 +46,12 @@ var pulseSvg = require('pulseSvg');
      */
     _fillDisplay () {
       if (pulseConfig.currentRoleOrAppContextIsDefined()) {
-        $(this._span).html(pulseConfig.getCurrentUserDisplay());
-        $(this._content).show();
+        this._span.innerHTML = pulseConfig.getCurrentUserDisplay();
+        this._content.style.display = '';
       }
       else {
         // Disable the navigation panel, a role must be chosen first
-        $(this._content).hide();
+        this._content.style.display = 'none';
       }
     }
 
@@ -59,7 +59,7 @@ var pulseSvg = require('pulseSvg');
      * Binds the click handler: cleans the login role and redirects to the login page.
      */
     _defineClick () {
-      $(this._content).click(function (e) {
+      this._content.addEventListener('click', (e) => {
         pulseLogin.cleanLoginRole();
         pulseConfig.goToPageLogin();
       });
@@ -69,16 +69,20 @@ var pulseSvg = require('pulseSvg');
       this.addClass('pulse-text');
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Loader -> Not needed here
 
       // Create DOM - Content
-      this._span = $('<span></span>').addClass('logindisplay-span');
-      this._icon = $('<span></span>').addClass('logindisplay-icon');
-      this._content = $('<div></div>').addClass('logindisplay-content')
-        .append(this._span).append(this._icon);
-      $(this.element).append(this._content);
+      this._span = document.createElement('span');
+      this._span.className = 'logindisplay-span';
+      this._icon = document.createElement('span');
+      this._icon.className = 'logindisplay-icon';
+      this._content = document.createElement('div');
+      this._content.className = 'logindisplay-content';
+      this._content.appendChild(this._span);
+      this._content.appendChild(this._icon);
+      this.element.appendChild(this._content);
 
       this._fillDisplay();
 

@@ -8,7 +8,13 @@ var pulseConfig = require('pulseConfig');
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetRangeAround');
 
-$(function () {
+if (document.readyState !== 'loading') {
+  initDemo();
+} else {
+  document.addEventListener('DOMContentLoaded', initDemo);
+}
+
+function initDemo() {
   var span = document.getElementById('range-display');
   if (!span) return;
   // Poll the toolbar's `range` attribute. Each click on a period/zoom/prev/next
@@ -16,7 +22,7 @@ $(function () {
   var tb = document.getElementById('with-context');
   if (!tb) return;
   var last = null;
-  function tick () {
+  function tick() {
     var current = tb.getAttribute('range') || tb.querySelector('x-datetimerange')?.getAttribute('range') || '';
     if (current !== last) {
       last = current;
@@ -25,4 +31,4 @@ $(function () {
   }
   tick();
   setInterval(tick, 250);
-});
+}

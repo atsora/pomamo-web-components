@@ -17,8 +17,8 @@ require('node_modules/@atsora/pomamo-web-service-simulation/scripts/OperationPro
 
 var eventBus = require('eventBus');
 
-$(function () {
-  $('#dispatch-workinfo').click(function () {
+if (document.readyState !== 'loading') {
+  document.getElementById('dispatch-workinfo').addEventListener('click', function () {
     eventBus.EventBus.dispatchToContext('operationChangeEvent', '999', {
       workinformations: [
         { Kind: 'WorkOrder', Value: 'WO-MANUAL-001' },
@@ -27,4 +27,16 @@ $(function () {
       ]
     });
   });
-});
+} else {
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('dispatch-workinfo').addEventListener('click', function () {
+      eventBus.EventBus.dispatchToContext('operationChangeEvent', '999', {
+        workinformations: [
+          { Kind: 'WorkOrder', Value: 'WO-MANUAL-001' },
+          { Kind: 'Part',      Value: 'PART-MANUAL' },
+          { Kind: 'Operation', Value: 'OP-MANUAL' }
+        ]
+      });
+    });
+  });
+}

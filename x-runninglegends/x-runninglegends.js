@@ -46,74 +46,102 @@ var pulseComponent = require('pulsecomponent');
       this.addClass('pulse-text');
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('runninglegends');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'runninglegends';
+      this.element.appendChild(this._content);
 
-      let titleSpan = $('<span></span>').html(this.getTranslation('title', 'Activity state'));
-      let divTitle = $('<div></div>').addClass('pulse-legend-title')
-        .append(titleSpan);
-      let divElements = $('<div></div>').addClass('pulse-legend-elements');
-      let divOneLegend = $('<div></div>').addClass('pulse-legend-onelegend')
-        .append(divTitle).append(divElements);
+      let titleSpan = document.createElement('span');
+      titleSpan.innerHTML = this.getTranslation('title', 'Activity state');
+      let divTitle = document.createElement('div');
+      divTitle.className = 'pulse-legend-title';
+      divTitle.appendChild(titleSpan);
+
+      let divElements = document.createElement('div');
+      divElements.className = 'pulse-legend-elements';
+
+      let divOneLegend = document.createElement('div');
+      divOneLegend.className = 'pulse-legend-onelegend';
+      divOneLegend.appendChild(divTitle);
+      divOneLegend.appendChild(divElements);
 
       { // RUNNING
-        let divIcon = $('<div></div>').addClass('pulse-legend-icon');
+        let divIcon = document.createElement('div');
+        divIcon.className = 'pulse-legend-icon';
         let svg = pulseSvg.createColoredLegend(null, 'fill-running');
         if (svg != null) {
           svg.setAttribute('class', 'runninglegends-icon');
-          divIcon.append(svg);
+          divIcon.appendChild(svg);
         }
 
-        let span = $('<span></span>').html(
-          this.getTranslation('textrunning', 'Running'));
-        let divLabel = $('<div></div>').addClass('pulse-legend-label').append(span);
+        let span = document.createElement('span');
+        span.innerHTML = this.getTranslation('textrunning', 'Running');
+        let divLabel = document.createElement('div');
+        divLabel.className = 'pulse-legend-label';
+        divLabel.appendChild(span);
 
-        let divElement = $('<div></div>').addClass('pulse-legend-element');
-        divElement.append(divIcon).append(divLabel);
-        divElements.append(divElement);
+        let divElement = document.createElement('div');
+        divElement.className = 'pulse-legend-element';
+        divElement.appendChild(divIcon);
+        divElement.appendChild(divLabel);
+        divElements.appendChild(divElement);
       }
       { // IDLE
-        let divIcon = $('<div></div>').addClass('pulse-legend-icon');
+        let divIcon = document.createElement('div');
+        divIcon.className = 'pulse-legend-icon';
         let svg = pulseSvg.createColoredLegend(null, 'fill-idle');
         if (svg != null) {
           svg.setAttribute('class', 'runninglegends-icon');
-          divIcon.append(svg);
+          divIcon.appendChild(svg);
         }
 
-        let span = $('<span></span>').html(
-          this.getTranslation('textidle', 'Idle'));
-        let divLabel = $('<div></div>').addClass('pulse-legend-label').append(span);
+        let span = document.createElement('span');
+        span.innerHTML = this.getTranslation('textidle', 'Idle');
+        let divLabel = document.createElement('div');
+        divLabel.className = 'pulse-legend-label';
+        divLabel.appendChild(span);
 
-        let divElement = $('<div></div>').addClass('pulse-legend-element');
-        divElement.append(divIcon).append(divLabel);
-        divElements.append(divElement);
+        let divElement = document.createElement('div');
+        divElement.className = 'pulse-legend-element';
+        divElement.appendChild(divIcon);
+        divElement.appendChild(divLabel);
+        divElements.appendChild(divElement);
       }
 
       for (let i = 0; i < 4; i++) {
-        let divElement = $('<div></div>').addClass('pulse-legend-empty-element-to-align');
-        divElements.append(divElement);
+        let divElement = document.createElement('div');
+        divElement.className = 'pulse-legend-empty-element-to-align';
+        divElements.appendChild(divElement);
       }
 
-      $(this._content).append(divOneLegend);
+      this._content.appendChild(divOneLegend);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', ' Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', ' Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
       // Hack for resize legend
-      $('.legend-content').resize();
+      let legendContent = document.querySelector('.legend-content');
+      if (legendContent && legendContent.dispatchEvent) {
+        legendContent.dispatchEvent(new Event('resize'));
+      }
 
       // Listener and dispatchers
 
@@ -125,7 +153,7 @@ var pulseComponent = require('pulsecomponent');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._messageSpan = undefined;
       this._content = undefined;
@@ -134,12 +162,16 @@ var pulseComponent = require('pulsecomponent');
     }
 
     displayError (message) {
-      $(this._content).hide();
+      if (this._content) {
+        this._content.style.display = 'none';
+      }
       // Note that you can use the CSS class .pulse-component-error or .pulse-component-warning instead
     }
 
     removeError () {
-      $(this._content).show();
+      if (this._content) {
+        this._content.style.display = '';
+      }
     }
 
   }

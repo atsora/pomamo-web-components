@@ -74,30 +74,30 @@ var state = require('state');
      * Missing values get a red dot and a `missing` attribute; known values are set as HTML.
      */
     _displayWorkInformations (workinformations, config) {
-      $(this._content).find('.pulse-cellbar-first').remove();
+      [...this._content.querySelectorAll('.pulse-cellbar-first')].forEach(el => el.remove());
 
       for (let i = 0; i < workinformations.length; i++) {
-        let div = $('<div></div>').addClass('pulse-cellbar-first')
-          .addClass('pulse-cellbar-current-data')
-          .attr('kind', workinformations[i].Kind);
+        let div = document.createElement('div');
+        div.className = 'pulse-cellbar-first pulse-cellbar-current-data';
+        div.setAttribute('kind', workinformations[i].Kind);
 
         pulseSvg.createMissingdata(div);
 
-        div.click(
+        div.addEventListener('click',
           function (e) {
             this.clickOnCurrent(e);
           }.bind(this)
         );
 
         if (!pulseUtility.isNotDefined(workinformations[i].Value)) {
-          div.html(workinformations[i].Value);
+          div.innerHTML = workinformations[i].Value;
         }
         else {
-          div.attr('missing', workinformations[i].Kind);
-          div.addClass('pulse-cellbar-cell-missing')
-            .html(workinformations[i].Kind);
+          div.setAttribute('missing', workinformations[i].Kind);
+          div.classList.add('pulse-cellbar-cell-missing');
+          div.innerHTML = workinformations[i].Kind;
         }
-        div.insertBefore(this._between);
+        this._content.insertBefore(div, this._between);
       }
     }
 
@@ -123,7 +123,7 @@ var state = require('state');
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id':
-          $(this._content).find('.pulse-cellbar-first, .pulse-cellbar-last').remove();
+          [...this._content.querySelectorAll('.pulse-cellbar-first, .pulse-cellbar-last')].forEach(el => el.remove());
           this.element.classList.remove('lwi-no-operation');
           this.start();
           break;
@@ -174,24 +174,32 @@ var state = require('state');
       }
 
       // In case of clone, need to be empty
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM
-      this._between = $('<div></div>').addClass('pulse-cellbar-between');
-      this._content = $('<div></div>')
-        .addClass('pulse-cellbar-main').append(this._between);
-      $(this.element).append(this._content);
+      this._between = document.createElement('div');
+      this._between.className = 'pulse-cellbar-between';
+      this._content = document.createElement('div');
+      this._content.className = 'pulse-cellbar-main';
+      this._content.appendChild(this._between);
+      this.element.appendChild(this._content);
 
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this.element.appendChild(messageDiv);
 
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
 
       this.addClass('pulse-lastbar');
 
@@ -200,7 +208,7 @@ var state = require('state');
     }
 
     clearInitialization () {
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._between = undefined;
       this._messageSpan = undefined;
@@ -223,7 +231,7 @@ var state = require('state');
     }
 
     displayError (message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
 
       eventBus.EventBus.dispatchToContext('workinformationStatusChange',
         this.element.getAttribute('status-context'),
@@ -231,7 +239,7 @@ var state = require('state');
     }
 
     removeError () {
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
     }
 
     get refreshRate () {
@@ -249,11 +257,13 @@ var state = require('state');
     refresh (data) {
       let status = false;
       if (data.SlotMissing) {
-        let div = $('<div></div>').addClass('workinformation-slotmissing')
-          .append(this._noOperationDisplay);
-        $('<div></div>').addClass('pulse-cellbar-first')
-          .append(div)
-          .insertBefore(this._between);
+        let div = document.createElement('div');
+        div.className = 'workinformation-slotmissing';
+        div.innerHTML = this._noOperationDisplay;
+        let cellDiv = document.createElement('div');
+        cellDiv.className = 'pulse-cellbar-first';
+        cellDiv.appendChild(div);
+        this._content.insertBefore(cellDiv, this._between);
       }
       else {
         let kinds = [];
@@ -268,11 +278,11 @@ var state = require('state');
         this._displayWorkInformations(data.WorkInformations, data.Config);
       }
 
-      let pastdiv = $('<div></div>').addClass('pulse-cellbar-last')
-        .addClass('pulse-cellbar-past-data')
-        .append($('<span>'
-          + this.getTranslation('pastdata', 'Past Data')
-          + '</span>'));
+      let pastdiv = document.createElement('div');
+      pastdiv.className = 'pulse-cellbar-last pulse-cellbar-past-data';
+      let span = document.createElement('span');
+      span.innerHTML = this.getTranslation('pastdata', 'Past Data');
+      pastdiv.appendChild(span);
 
       let tooltip = this.getTranslation('pastTooltip', '');
       if (tooltip != '') {
@@ -280,16 +290,16 @@ var state = require('state');
       }
       pulseSvg.createMissingdata(pastdiv);
 
-      pastdiv.click(
+      pastdiv.addEventListener('click',
         function (e) {
           this.clickOnPast(e);
         }.bind(this)
       );
       if (data.DataMissing == true) {
-        $(pastdiv).addClass('pulse-cellbar-cell-missing');
+        pastdiv.classList.add('pulse-cellbar-cell-missing');
         status = true;
       }
-      pastdiv.insertAfter(this._between);
+      this._content.insertBefore(pastdiv, this._between.nextSibling);
 
       eventBus.EventBus.dispatchToContext('workinformationStatusChange',
         this.element.getAttribute('status-context'),
@@ -302,7 +312,7 @@ var state = require('state');
      * otherwise clears the signal and delegates to `refresh(data)`.
      */
     manageSuccess (data) {
-      $(this._content).find('.pulse-cellbar-first, .pulse-cellbar-last').remove();
+      [...this._content.querySelectorAll('.pulse-cellbar-first, .pulse-cellbar-last')].forEach(el => el.remove());
 
       if (data.MonitoredMachineOperationBar == 'None') {
         console.info('No operation for this machine : '

@@ -86,24 +86,31 @@ function hexToRGB(hex)
       // listeners/dispatchers
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('stacklight');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'stacklight';
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = 'Loading...';
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -113,8 +120,11 @@ function hexToRGB(hex)
     clearInitialization () {
       // Parameters
       // DOM
-      $(this._content).find('.stacklight-svg').remove(); // Remove Old SVG
-      $(this.element).empty();
+      let svg = this._content.querySelector('.stacklight-svg');
+      if (svg) {
+        svg.remove();
+      }
+      this.element.replaceChildren();
 
       this._messageSpan = undefined;
       this._content = undefined;
@@ -142,7 +152,10 @@ function hexToRGB(hex)
     }
 
     displayError (message) {
-      $(this._content).find('.stacklight-svg').remove();
+      let svg = this._content.querySelector('.stacklight-svg');
+      if (svg) {
+        svg.remove();
+      }
     }
 
     removeError () {
@@ -178,7 +191,8 @@ function hexToRGB(hex)
      * @param {{ ByMachineModule: Array<{ ByField: Array<{ Value: { Lights: Array<{ Status: string, Color: string }> } }> }> }} data
      */
     refresh (data) {
-      $(this._content).find('.stacklight-svg').remove(); // Remove Old SVG
+      let svg = this._content.querySelector('.stacklight-svg'); // Remove Old SVG
+      if (svg) svg.remove();
 
       // data.ByMachineModule[0].MachineModule -> only 1 module
       if ((!pulseUtility.isNotDefined(data.ByMachineModule)) &&
@@ -199,14 +213,16 @@ function hexToRGB(hex)
         let firstSliceY = yRadius + sliceHeight - borderHeight;
 
         // CREATE SVG
+        let parentWidth = this.element.parentElement ? this.element.parentElement.offsetWidth : 0;
+        let parentHeight = this.element.parentElement ? this.element.parentElement.offsetHeight / 2 : 0;
         let svg = pulseSvg.createBase(
-          $(this.element).parent().width(),
-          $(this.element).parent().height() / 2, // 50% to avoid scrollbar on IE & Edge
+          parentWidth,
+          parentHeight, // 50% to avoid scrollbar on IE & Edge
           'top',
           2 * xRadius,
           2 * yRadius + 5 * sliceHeight);
         svg.setAttribute('class', 'stacklight-svg');
-        $(this._content).append(svg);
+        this._content.appendChild(svg);
 
         // Top margin
         let topMargin = (val.length - 5) * sliceHeight / 2;
@@ -241,8 +257,8 @@ function hexToRGB(hex)
 
     manageSuccess (data) {
       // Clear
-      //$(this._content).css('display', 'inline-block');
-      $(this._content).empty(); // To remove svg
+      //this._content.style.display = 'inline-block';
+      this._content.replaceChildren(); // To remove svg
 
       if ((!pulseUtility.isNotDefined(data.ByMachineModule)) &&
         (data.ByMachineModule.length > 0) &&

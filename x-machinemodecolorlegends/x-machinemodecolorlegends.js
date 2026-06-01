@@ -43,11 +43,12 @@ var pulseSvg = require('pulseSvg');
       this.addClass('pulse-text');
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('machinemodecolorlegends');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'machinemodecolorlegends';
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader - probably not in legends... to verify
       /*let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
@@ -71,7 +72,7 @@ var pulseSvg = require('pulseSvg');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       this._content = undefined;
@@ -80,12 +81,12 @@ var pulseSvg = require('pulseSvg');
     }
 
     displayError (message) {
-      $(this._content).hide();
+      this._content.style.display = 'none';
       // Note that you can use the CSS class .pulse-component-error or .pulse-component-warning instead
     }
 
     removeError () {
-      $(this._content).show();
+      this._content.style.display = '';
     }
 
     /** Always visible — legend fetches regardless of DOM scroll position. */
@@ -102,6 +103,13 @@ var pulseSvg = require('pulseSvg');
       return 'MachineModeColorLegend/Get';
     }
 
+    // No parameter validation needed — legend renders the same shape for every
+    // machine. Stub silences the "validateParameters is not defined" warning
+    // and lets the state machine advance.
+    validateParameters () {
+      this.switchToNextContext();
+    }
+
     /**
      * Renders the legend: title + one element per item (colored square SVG + display label).
      * Appends 4 empty filler divs for flexbox alignment, then triggers `.legend-content` resize.
@@ -109,42 +117,57 @@ var pulseSvg = require('pulseSvg');
      * @param {{ Items: Array<{ Color: string, Display: string }> }} data
      */
     refresh (data) {
-      $(this._content).empty();
+      this._content.replaceChildren();
 
-      let titleSpan = $('<span></span>').html(this.getTranslation ('title', 'Machine mode'));
-      let divTitle = $('<div></div>').addClass('pulse-legend-title')
-        .append(titleSpan);
+      let titleSpan = document.createElement('span');
+      titleSpan.innerHTML = this.getTranslation('title', 'Machine mode');
+      let divTitle = document.createElement('div');
+      divTitle.className = 'pulse-legend-title';
+      divTitle.appendChild(titleSpan);
 
-      let divElements = $('<div></div>').addClass('pulse-legend-elements');
-      let divOneLegend = $('<div></div>').addClass('pulse-legend-onelegend')
-        .append(divTitle).append(divElements);
+      let divElements = document.createElement('div');
+      divElements.className = 'pulse-legend-elements';
+      let divOneLegend = document.createElement('div');
+      divOneLegend.className = 'pulse-legend-onelegend';
+      divOneLegend.appendChild(divTitle);
+      divOneLegend.appendChild(divElements);
 
       for (let i = 0; i < data.Items.length; i++) {
         let item = data.Items[i];
-        let divIcon = $('<div></div>').addClass('pulse-legend-icon');
+        let divIcon = document.createElement('div');
+        divIcon.className = 'pulse-legend-icon';
         let svg = pulseSvg.createColoredLegend(item.Color);
         if (svg != null) {
           svg.setAttribute('class', 'machinemodecolorlegends-icon');
-          divIcon.append(svg);
+          divIcon.appendChild(svg);
         }
 
-        let span = $('<span></span>').html(item.Display);
-        let divLabel = $('<div></div>').addClass('pulse-legend-label').append(span);
+        let span = document.createElement('span');
+        span.innerHTML = item.Display;
+        let divLabel = document.createElement('div');
+        divLabel.className = 'pulse-legend-label';
+        divLabel.appendChild(span);
 
-        let divElement = $('<div></div>').addClass('pulse-legend-element');
-        divElement.append(divIcon).append(divLabel);
-        divElements.append(divElement);
+        let divElement = document.createElement('div');
+        divElement.className = 'pulse-legend-element';
+        divElement.appendChild(divIcon);
+        divElement.appendChild(divLabel);
+        divElements.appendChild(divElement);
       }
 
       for (let i = 0; i < 4; i++) {
-        let divElement = $('<div></div>').addClass('pulse-legend-empty-element-to-align');
-        divElements.append(divElement);
+        let divElement = document.createElement('div');
+        divElement.className = 'pulse-legend-empty-element-to-align';
+        divElements.appendChild(divElement);
       }
 
-      $(this._content).append(divOneLegend);
+      this._content.appendChild(divOneLegend);
 
       // Hack for resize legend
-      $('.legend-content').resize();
+      let legendContent = document.querySelector('.legend-content');
+      if (legendContent) {
+        legendContent.dispatchEvent(new Event('resize'));
+      }
     }
   }
 

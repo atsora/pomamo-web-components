@@ -72,14 +72,15 @@ var eventBus = require('eventBus');
         this.onClearMessage.bind(this));
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('xmessage');
+      this._content = document.createElement('div');
+      this._content.className = 'xmessage';
       // Create DOM - No Loader
       // Create DOM - No message for error
 
-      $(this.element).append(this._content);
+      this.element.appendChild(this._content);
 
       // Check if login error exists
       let err = pulseConfig.get('loginError', '');
@@ -112,7 +113,7 @@ var eventBus = require('eventBus');
 
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       this._content = undefined;
@@ -133,7 +134,7 @@ var eventBus = require('eventBus');
       let notFound = true;
       if (!pulseUtility.isNotDefined(data.id)) {
         // if a message with same id already exists, get it and replace text
-        let allAlerts = $('.message-alert');
+        let allAlerts = this._content.querySelectorAll('.message-alert');
         for (let i = 0; i < allAlerts.length; i++) {
           if (allAlerts[i].hasAttribute('message-id'))
             if (allAlerts[i].getAttribute('message-id') == data.id) {
@@ -141,51 +142,57 @@ var eventBus = require('eventBus');
 
               let elem = allAlerts[i];
               if (data.message) {
-                //elem.html(data.message.replace(/\n/g, '<br />'));
-                let msgspan = $(elem).find('.message-span');
-                if (msgspan.length == 0) {
-                  msgspan = $('<span></span>').addClass('message-span');
-                  elem.append(msgspan);
+                //elem.innerHTML = data.message.replace(/\n/g, '<br />');
+                let msgspan = elem.querySelector('.message-span');
+                if (!msgspan) {
+                  msgspan = document.createElement('span');
+                  msgspan.className = 'message-span';
+                  elem.appendChild(msgspan);
                 }
-                $(msgspan).html(data.message.replace(/\n/g, '<br />'));
+                msgspan.innerHTML = data.message.replace(/\n/g, '<br />');
               }
 
               if (data.internalLAT) {
-                let internspan = $(elem).find('.hidden-span');
-                if (internspan.length == 0) {
-                  internspan = $('<span></span>').addClass('hidden-span');
-                  elem.append(internspan);
+                let internspan = elem.querySelector('.hidden-span');
+                if (!internspan) {
+                  internspan = document.createElement('span');
+                  internspan.className = 'hidden-span';
+                  elem.appendChild(internspan);
                 }
-                $(internspan).html(data.internalLAT.replace(/\n/g, '<br />'));
+                internspan.innerHTML = data.internalLAT.replace(/\n/g, '<br />');
               }
             }
         }
       }
       if (notFound) {
         // if not found create new
-        let elem = $('<div></div>').addClass('message-alert');
+        let elem = document.createElement('div');
+        elem.className = 'message-alert';
 
         // Unique Id
         let elemId = 'pulseMessage' + new Date().getTime() + '' + parseInt(Math.random() * 10000, 10);
         elem.id = elemId;
-        $(this._content).append(elem);
+        this._content.appendChild(elem);
 
-        //let closeButton = $('<span></span>').addClass('message-closebtn');
+        //let closeButton = document.createElement('span');
+        //closeButton.className = 'message-closebtn';
         //onclick="this.parentElement.style.display='none';"
-        //elem.append(closeButton);
+        //elem.appendChild(closeButton);
 
         if (data.message) {
-          let msgspan = $('<span></span>').addClass('message-span');
-          msgspan.html(data.message.replace(/\n/g, '<br />'));
-          elem.append(msgspan);
-          //elem.html(data.message.replace(/\n/g, '<br />'));
+          let msgspan = document.createElement('span');
+          msgspan.className = 'message-span';
+          msgspan.innerHTML = data.message.replace(/\n/g, '<br />');
+          elem.appendChild(msgspan);
+          //elem.innerHTML = data.message.replace(/\n/g, '<br />');
         }
-        
+
         if (data.internalLAT) {
-          let internspan = $('<span></span>').addClass('hidden-span');
-          internspan.html(data.internalLAT.replace(/\n/g, '<br />'));
-          elem.append(internspan);
-        }              
+          let internspan = document.createElement('span');
+          internspan.className = 'hidden-span';
+          internspan.innerHTML = data.internalLAT.replace(/\n/g, '<br />');
+          elem.appendChild(internspan);
+        }
 
         let className = 'xmessage-default';
         switch (data.level) {
@@ -202,36 +209,39 @@ var eventBus = require('eventBus');
             className = 'xmessage-default';
         }
 
-        elem.addClass(className);
+        elem.classList.add(className);
 
         if (data.id)
-          elem.attr('message-id', data.id);
+          elem.setAttribute('message-id', data.id);
 
         if (data.clickToClose == true) {
-          elem.addClass('closable');
-          elem.bind('click', function () {
-            $(this).remove();
+          elem.classList.add('closable');
+          elem.addEventListener('click', function () {
+            this.remove();
           });
           // Button "close"
-          var closeBtn = $('<div></div>').addClass('message-close');
-          elem.append(closeBtn);      
-          pulseSvg.inlineBackgroundSvg(closeBtn);    
+          var closeBtn = document.createElement('div');
+          closeBtn.className = 'message-close';
+          elem.appendChild(closeBtn);
+          pulseSvg.inlineBackgroundSvg(closeBtn);
         }
 
         if (!pulseUtility.isNotDefined(data.reloadURL)) {
-          let button = $('<a></a>').addClass('message-reload-button').html('Reload');
-          button.attr('href', data.reloadURL);
-          /*button.bind('click', function () {
+          let button = document.createElement('a');
+          button.className = 'message-reload-button';
+          button.innerHTML = 'Reload';
+          button.setAttribute('href', data.reloadURL);
+          /*button.addEventListener('click', function () {
             // RELOAD
             window.open(data.reloadURL, '_self');
           });*/
-          elem.append(button);
+          elem.appendChild(button);
         }
 
         if (data.time) {
           var alert = elem;
           this._timerId = setTimeout(function () {
-            $(alert).remove();
+            alert.remove();
           }, data.time * 1000);
         }
       }
@@ -245,12 +255,12 @@ var eventBus = require('eventBus');
     clearMessage (id) {
       if (id) {
         // if a message with same id already exists, remove it
-        let allAlerts = $('.message-alert');
+        let allAlerts = this._content.querySelectorAll('.message-alert');
         for (let i = 0; i < allAlerts.length; i++) {
           if (allAlerts[i].hasAttribute('message-id'))
             if (allAlerts[i].getAttribute('message-id') == id) {
               let elem = allAlerts[i];
-              $(elem).remove();
+              elem.remove();
             }
         }
       }
@@ -258,7 +268,8 @@ var eventBus = require('eventBus');
 
     /** Removes all message alert elements from the container. */
     clearAllMessage () {
-      $('message-alert').remove();
+      let alerts = this._content.querySelectorAll('.message-alert');
+      alerts.forEach(alert => alert.remove());
     }
 
     /**

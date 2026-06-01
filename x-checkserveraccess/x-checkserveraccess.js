@@ -58,7 +58,7 @@ var pulseConfig = require('pulseConfig');
       this.addClass('pulse-nodisplay');
       
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._databaseIsDisconnected = false;
 
       // listeners
@@ -83,7 +83,7 @@ var pulseConfig = require('pulseConfig');
     */
     clearInitialization () {
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._databaseIsDisconnected = false;
 

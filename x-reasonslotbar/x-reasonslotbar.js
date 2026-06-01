@@ -182,7 +182,7 @@ require('x-revisionprogress/x-revisionprogress');
      * @return {number} Width of the content
      */
     get barwidth () {
-      let width = $(this.content).width();
+      let width = this.content.offsetWidth;
       if (width) {
         this._barwidth = width;
       }
@@ -205,7 +205,7 @@ require('x-revisionprogress/x-revisionprogress');
       if (this.element.hasAttribute('height')) {
         let c = this.content;
         if (typeof c !== 'undefined') {
-          c.height(this._height);
+          c.style.height = this._height + 'px';
         }
       }
     }
@@ -218,9 +218,9 @@ require('x-revisionprogress/x-revisionprogress');
       if (attr == 'machine-id') {
         if (this.isInitialized()) {
           // For progress : update _mapOfModifications
-          let modifMgr = $('body').find('x-modificationmanager');
-          if (modifMgr.length == 1) {
-            this._mapOfModifications = modifMgr[0].getModifications('reason',
+          let modifMgr = document.body.querySelector('x-modificationmanager');
+          if (modifMgr != null) {
+            this._mapOfModifications = modifMgr.getModifications('reason',
               this.element.getAttribute('machine-id'));
 
             // + REMOVE others with old machineid ? + create progress ? -> TODO later !
@@ -289,33 +289,40 @@ require('x-revisionprogress/x-revisionprogress');
       this.addClass('pulse-slotbar');
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // create DOM
       // HTML structure - Content
-      this._content = $('<div></div>').addClass('reasonslotbar-content pulse-bar-content');
+      this._content = document.createElement('div');
+      this._content.classList.add('reasonslotbar-content');
+      this._content.classList.add('pulse-bar-content');
       if (this.element.hasAttribute('height')) {
-        this._content.height(this._height);
+        this._content.style.height = this._height + 'px';
       }
 
       // HTML structure - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', ' Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.innerHTML = this.getTranslation('loadingDots', ' Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.classList.add('pulse-message');
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.classList.add('pulse-message-div');
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
-      $(this.element)
-        .addClass('reasonslotbar')
-        .append(this._content);
-      //$(window).resize(() => this.draw());
+      this.element.classList.add('reasonslotbar');
+      this.element.appendChild(this._content);
+      //window.addEventListener('resize', () => this.draw());
 
       // Listeners
       if (this.element.hasAttribute('period-context')) {
@@ -336,9 +343,9 @@ require('x-revisionprogress/x-revisionprogress');
       }
 
       // Get modifications and create listener
-      let modifMgr = $('body').find('x-modificationmanager');
-      if (modifMgr.length == 1) {
-        this._mapOfModifications = modifMgr[0].getModifications('reason',
+      let modifMgr = document.body.querySelector('x-modificationmanager');
+      if (modifMgr != null) {
+        this._mapOfModifications = modifMgr.getModifications('reason',
           this.element.getAttribute('machine-id'));
 
         // TODO Later + create progress ?
@@ -353,7 +360,7 @@ require('x-revisionprogress/x-revisionprogress');
       // Parameters
       // DOM
       this.cleanContent(); // clean svg
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._messageSpan = undefined;
       this._content = undefined;
@@ -503,7 +510,10 @@ require('x-revisionprogress/x-revisionprogress');
       if (typeof this.content === 'undefined') {
         return;
       }
-      $(this.element).find('.reasonslotbar-svg').remove(); // Remove Old SVG
+      let svg = this.element.querySelector('.reasonslotbar-svg');
+      if (svg) {
+        svg.remove();
+      }
     }
 
     draw () {
@@ -636,12 +646,14 @@ require('x-revisionprogress/x-revisionprogress');
      */
     displayError (text) {
       if (typeof text == 'undefined') {
-        $(this._messageSpan).html('');
+        if (this._messageSpan) {
+          this._messageSpan.innerHTML = '';
+        }
         return; // No message to display, do not display any error
         // This is the case when no date/time range has been received yet
       }
       if (typeof this._messageSpan !== 'undefined') {
-        $(this._messageSpan).html(text);
+        this._messageSpan.innerHTML = text;
       }
 
       // Remove the content div' SVG
@@ -655,7 +667,7 @@ require('x-revisionprogress/x-revisionprogress');
      */
     removeError () {
       if (typeof this._messageSpan !== 'undefined') {
-        $(this._messageSpan).html('');
+        this._messageSpan.innerHTML = '';
       }
     }
 
@@ -674,7 +686,7 @@ require('x-revisionprogress/x-revisionprogress');
         return;
       }
       else {*/
-      $(this.element).attr('machine-id', event.target.newMachineId); // The attribute change already triggers start()
+      this.element.setAttribute('machine-id', event.target.newMachineId); // The attribute change already triggers start()
       //}
     }
 
@@ -747,7 +759,7 @@ require('x-revisionprogress/x-revisionprogress');
         // First time -> create progress barS
         for (let i = 0; i < modif.ranges.length; i++) {
           let newRevisionProgress =
-            pulseUtility.createjQueryElementWithAttribute('x-revisionprogress', {
+            pulseUtility.createElementWithAttribute('x-revisionprogress', {
               'period-context': this.element.getAttribute('period-context'),
               'range': pulseUtility.convertDateRangeForWebService(this._range),
               //was this._range.toString(d => d.toISOString()),

@@ -116,24 +116,31 @@ require('x-reasonslotpie/x-reasonslotpie');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('defaultpie-content');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.classList.add('defaultpie-content');
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.classList.add('pulse-message');
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.classList.add('pulse-message-div');
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -149,7 +156,7 @@ require('x-reasonslotpie/x-reasonslotpie');
       // Parameters
 
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._content = undefined;
 
       super.clearInitialization();
@@ -169,8 +176,8 @@ require('x-reasonslotpie/x-reasonslotpie');
     }
 
     displayError (message) {
-      //$(this._content).html(message);
-      $(this._messageSpan).html(message);
+      //this._content.innerHTML = message;
+      this._messageSpan.innerHTML = message;
       // Note that you can use the CSS class .pulse-component-error or .pulse-component-warning instead
     }
 
@@ -215,14 +222,14 @@ require('x-reasonslotpie/x-reasonslotpie');
     refresh (data) {
       if (pulseUtility.isNotDefined(data.PieType)) {
         // Clean any present xtag
-        $(this._content).empty();
+        this._content.replaceChildren();
       }
       else {
         let xtagType = 'x-' + data.PieType;
-        let findXtag = $(this.element).find(xtagType);
-        if (findXtag.length != 0) {
+        let findXtag = this.element.querySelector(xtagType);
+        if (findXtag != null) {
           // Clean any present xtag
-          $(this._content).empty();
+          this._content.replaceChildren();
         }
         // Create xtag with attributes
         let attributes;
@@ -247,9 +254,9 @@ require('x-reasonslotpie/x-reasonslotpie');
         }
 
         // Create xtag
-        let xtag = pulseUtility.createjQueryElementWithAttribute(xtagType,
+        let xtag = pulseUtility.createElementWithAttribute(xtagType,
           attributes);
-        $(this._content).append(xtag);
+        this._content.appendChild(xtag);
       }
     }
 

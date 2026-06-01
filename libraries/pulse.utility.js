@@ -510,12 +510,20 @@ exports.displayRangeLowerTime = function (range, seconds) {
  */
 //var appendDateRangeDisplay =
 exports.appendDateRangeDisplay = function (parent, range, seconds) {
+  let parentEl = (typeof parent === 'string') ? document.querySelector(parent) : parent;
+  if (parentEl == null) return false;
+
+  let makeSpan = function (cls, html) {
+    let s = document.createElement('span');
+    s.className = cls;
+    s.innerHTML = html;
+    return s;
+  };
 
   let appendRange = function (parent, beginString, endString) {
-    let spanBegin = $('<span></span>').addClass('range-begin').html(beginString);
-    let spanSep = $('<span></span>').addClass('range-separator').html(' - ');
-    let spanEnd = $('<span></span>').addClass('range-end').html(endString);
-    $(parent).append(spanBegin).append(spanSep).append(spanEnd);
+    parent.appendChild(makeSpan('range-begin', beginString));
+    parent.appendChild(makeSpan('range-separator', ' - '));
+    parent.appendChild(makeSpan('range-end', endString));
   }
 
   let r = pulseRange.convertToDateRange(range);
@@ -526,25 +534,23 @@ exports.appendDateRangeDisplay = function (parent, range, seconds) {
     if (r.lower == null) {
       console.warn('displayDateRange: lower is not defined');
       if (r.upper == null) {
-        appendRange(parent, '-oo', '+oo');
+        appendRange(parentEl, '-oo', '+oo');
         return true;
       }
       else {
-        appendRange(parent, '-oo', displayDate(r.upper, seconds));
+        appendRange(parentEl, '-oo', displayDate(r.upper, seconds));
         return true;
       }
     }
     else { // range.lower not null
       if (r.upper == null) {
-        appendRange(parent, displayDate(r.lower, seconds), pulseConfig.pulseTranslate ('content.inProgress', 'in progress'));
+        appendRange(parentEl, displayDate(r.lower, seconds), pulseConfig.pulseTranslate ('content.inProgress', 'in progress'));
         return true;
       }
       else { // lower and upper are defined
         if (r.lower.getTime() == r.upper.getTime()) {
           // see appendRange - but unique !
-          let spanRange = $('<span></span>').addClass('range-begin-end')
-            .html(displayDate(r.lower, seconds));
-          $(parent).append(spanRange);
+          parentEl.appendChild(makeSpan('range-begin-end', displayDate(r.lower, seconds)));
           return true;
         }
         else {
@@ -552,20 +558,15 @@ exports.appendDateRangeDisplay = function (parent, range, seconds) {
           let end_local = convertDateToMoment(r.upper);
           if (begin_local.isSame(end_local, 'day')) {
             // see appendRange - but unique date - 2 times
-            let spanDate = $('<span></span>').addClass('range-begin-end-date')
-              .html(begin_local.format('ll'));
-            let spanSepDT = $('<span></span>').addClass('range-separator-date-time').html(' ');
-            let spanBegin = $('<span></span>').addClass('range-begin')
-              .html((seconds ? begin_local.format('LTS') : begin_local.format('LT')));
-            let spanSep = $('<span></span>').addClass('range-separator').html(' - ');
-            let spanEnd = $('<span></span>').addClass('range-end')
-              .html((seconds ? end_local.format('LTS') : end_local.format('LT')));
-            $(parent).append(spanDate).append(spanSepDT)
-              .append(spanBegin).append(spanSep).append(spanEnd);
+            parentEl.appendChild(makeSpan('range-begin-end-date', begin_local.format('ll')));
+            parentEl.appendChild(makeSpan('range-separator-date-time', ' '));
+            parentEl.appendChild(makeSpan('range-begin', seconds ? begin_local.format('LTS') : begin_local.format('LT')));
+            parentEl.appendChild(makeSpan('range-separator', ' - '));
+            parentEl.appendChild(makeSpan('range-end', seconds ? end_local.format('LTS') : end_local.format('LT')));
             return true;
           }
           else {
-            appendRange(parent, displayDate(r.lower, seconds), displayDate(r.upper, seconds));
+            appendRange(parentEl, displayDate(r.lower, seconds), displayDate(r.upper, seconds));
             return true;
           }
         }
@@ -1080,7 +1081,7 @@ exports.is24HoursFormat = function () {
  * Function used to return jQuery element with given tag name and attribute
  *
  * @memberof module:pulseUtility
- * @function createjQueryElementWithAttribute
+ * @function createElementWithAttribute
  *
  * @param {string} tagName tag name
  *
@@ -1088,58 +1089,15 @@ exports.is24HoursFormat = function () {
  *
  * @return {DOMElement} a jQuery element
  */
-var createjQueryElementWithAttribute = exports.createjQueryElementWithAttribute = function (tagName, attributes) {
-  let elt = null;
-
-  if (window.navigator.userAgent.includes('Chrome')) {
-    let str = '<' + tagName + ' ';
-    for (let key in attributes) {
-      let value = attributes[key];
-      if (value) {
-        str = str + key + "='" + value + "' ";
-      }
-    }
-    str = str + '></' + tagName + '>';
-    elt = $(str);
-  }
-  else {
-    let domElt = document.createElement(tagName);
-    for (let key in attributes) {
-      let value = attributes[key];
-      if (value) {
-        domElt.setAttribute(key, value);
-      }
-    }
-    elt = $(domElt);
-  }
-
-  /*else
-    let str = '<' + tagName + ' ';
-    for (let key in attributes) {
-      let value = attributes[key];
-      if (value) {
-        str = str + key + "='" + value + "' ";
-      }
-    }
-    str = str + '></' + tagName + '>';
-    elt = $(str);
-  */
-
-  /*if( !(elt.get(0) instanceof PulseComponent) ){
-    console.log("Created element is not an instance of PulseComponent");
-  }*/
-
-  return elt;
-
-  /*
+var createElementWithAttribute = exports.createElementWithAttribute = function (tagName, attributes) {
   let domElt = document.createElement(tagName);
   for (let key in attributes) {
     let value = attributes[key];
-    if(value){
+    if (value) {
       domElt.setAttribute(key, value);
     }
   }
-  return $(domElt);*/
+  return domElt;
 }
 
 /**
@@ -1150,19 +1108,16 @@ var createjQueryElementWithAttribute = exports.createjQueryElementWithAttribute 
  *
  * @param {string} xTagName
  * @param {json} attributes (can be undefined)
- * @return {xTag} true searched element
+ * @return {Element} the searched element
  */
 exports.getOrCreateSingleton = function (xTagName, attributes) {
   let attr = (null == attributes) ? {} : attributes;
-  let tag = $('body').find(xTagName);
-  if (tag.length == 0) {
-    tag = createjQueryElementWithAttribute(xTagName, attr);
-    $('body').append(tag);
+  let tag = document.body.querySelector(xTagName);
+  if (tag == null) {
+    tag = createElementWithAttribute(xTagName, attr);
+    document.body.appendChild(tag);
   }
-  if (tag.length > 0) {
-    return tag[0];
-  }
-  return null; // Hope never !
+  return tag;
 }
 
 /**
@@ -1274,6 +1229,15 @@ exports.getCurrentPageName = function () {
  * Used (at least) by customdialog and machine selection
  */
 exports.createDataManager = function (idName) {
+  // Resolve a string selector or Element to a single Element.
+  // Returns null when nothing matches.
+  function resolve (target) {
+    if (target == null) return null;
+    if (typeof target === 'string') return document.querySelector(target);
+    if (target.nodeType) return target;
+    return null;
+  }
+
   return {
     _idName: idName,
     _id: 0,
@@ -1282,31 +1246,29 @@ exports.createDataManager = function (idName) {
       this._data[this._id] = {};
       return this._id++;
     },
-    initializeIdAttribute: function (selector, id) {
-      $(selector).attr(this._idName, id);
+    initializeIdAttribute: function (target, id) {
+      let el = resolve(target);
+      if (el == null) throw "initializeIdAttribute: target not found";
+      el.setAttribute(this._idName, id);
     },
-    getId: function (selector) {
-      if ($(selector).length) {
-        let attribute = $(selector).attr(this._idName);
-        if (attribute == undefined || attribute === false) {
-          // Search in parents
-          let parent = $(selector)[0].closest('[' + this._idName + ']');
-          if ($(parent).length > 0) {
-            attribute = $(parent).attr(this._idName);
-          }
-          if (attribute == undefined || attribute === false) {
-            throw "Selector '" + selector + "' has no attribute '" + this._idName + "'";
-          }
+    getId: function (target) {
+      let el = resolve(target);
+      if (el == null) throw "Target '" + target + "' doesn't exist";
+      let attribute = el.getAttribute(this._idName);
+      if (attribute == null) {
+        let parent = el.closest('[' + this._idName + ']');
+        if (parent != null) {
+          attribute = parent.getAttribute(this._idName);
         }
-        let id = parseInt(attribute);
-        if (id < 0 || id >= this._id) {
-          throw 'Bad ' + this._idName + " '" + id + "' for selector '" + selector + "'";
+        if (attribute == null) {
+          throw "Element has no attribute '" + this._idName + "'";
         }
-        return id;
       }
-      else {
-        throw "Selector '" + selector + "'doesn't exist";
+      let id = parseInt(attribute);
+      if (id < 0 || id >= this._id) {
+        throw 'Bad ' + this._idName + " '" + id + "'";
       }
+      return id;
     },
     get: function (id) {
       return this._data[id];
@@ -1320,89 +1282,150 @@ exports.createDataManager = function (idName) {
   };
 }
 
-exports.addToolTip = function (element, text) {
-  // Set the tooltip text
-  // Replace $(element).attr('title', text); EVEN in a part of svg
+// Accept an Element OR a string selector. Each matched element gets the tooltip wiring.
+exports.addToolTip = function (target, text) {
+  let elements;
+  if (target == null) return;
+  if (typeof target === 'string') {
+    elements = document.querySelectorAll(target);
+  }
+  else if (target.nodeType) {
+    elements = [target];
+  }
+  else if (typeof target.length === 'number') {
+    // Allow array-like (NodeList, Array)
+    elements = target;
+  }
+  else {
+    return;
+  }
 
-  $(element).attr('tooltip', text);
+  for (let i = 0; i < elements.length; i++) {
+    let el = elements[i];
+    el.setAttribute('tooltip', text);
 
-  // Trigger the display
-  $(element).hover(function () {
-    // Hover over code
-    let tooltip = $(this).attr('tooltip');
-    if (tooltip != null && tooltip.length > 0) {
-      $(this).removeAttr('title'); // In case it is defined by error to avoid 2 tooltips
-      if ($('.mastertooltip').length == 0 && !$(this).hasClass('tooltip_disabled')) {
-        $('<p class="mastertooltip"></p>')
-          .text(tooltip)
-          .appendTo('body')
-          .fadeIn(400);
+    el.addEventListener('mouseenter', function () {
+      let tooltip = this.getAttribute('tooltip');
+      if (tooltip == null || tooltip.length === 0) return;
+      this.removeAttribute('title'); // Avoid double native tooltip
+      if (this.classList.contains('tooltip_disabled')) return;
+      if (document.querySelector('.mastertooltip') != null) return;
+
+      let p = document.createElement('p');
+      p.className = 'mastertooltip';
+      p.textContent = tooltip;
+      // CSS-driven fade-in: start hidden, then animate to visible on next frame
+      p.style.opacity = '0';
+      p.style.transition = 'opacity 0.4s';
+      document.body.appendChild(p);
+      requestAnimationFrame(() => { p.style.opacity = '1'; });
+    });
+
+    el.addEventListener('mouseleave', function () {
+      let existing = document.querySelectorAll('.mastertooltip');
+      for (let j = 0; j < existing.length; j++) existing[j].remove();
+    });
+
+    el.addEventListener('mousemove', function (e) {
+      let tooltipEl = document.querySelector('.mastertooltip');
+      if (tooltipEl == null) return;
+      let winWidth = window.innerWidth;
+      let winHeight = window.innerHeight;
+
+      // X
+      if (e.pageX <= winWidth / 2) {
+        tooltipEl.style.left = (e.pageX + 20) + 'px';
       }
-    }
-  }, function () {
-    // Hover out code
-    $('.mastertooltip').remove();
-  }).mousemove(function (e) {
-    // X
-    if (e.pageX <= $(window).width() / 2) {
-      let mousex = e.pageX + 20; // Get X coordinates
-      $('.mastertooltip').css({ left: mousex });
-    }
-    else {
-      let mousex = e.pageX - 20
-        - $('.mastertooltip').width(); // Get X coordinates
-      $('.mastertooltip').css({ left: mousex });
-    }
+      else {
+        tooltipEl.style.left = (e.pageX - 20 - tooltipEl.offsetWidth) + 'px';
+      }
 
-    // Y
-    if (e.pageY + $('.mastertooltip').height() + 10
-      <= $(window).height()) {
-      let mousey = e.pageY + 10; // Get Y coordinates
-      $('.mastertooltip').css({ top: mousey });
-    }
-    else {
-      // To be tested !!!
-      let mousey = e.pageY - 10 - $('.mastertooltip').height(); // Get Y coordinates
-      $('.mastertooltip').css({ top: mousey });
-    }
-  });
+      // Y
+      if (e.pageY + tooltipEl.offsetHeight + 10 <= winHeight) {
+        tooltipEl.style.top = (e.pageY + 10) + 'px';
+      }
+      else {
+        tooltipEl.style.top = (e.pageY - 10 - tooltipEl.offsetHeight) + 'px';
+      }
+    });
+  }
 }
 
 exports.removeToolTip = function (element) {
-  $(element).removeAttr('title');
-  $('.mastertooltip').remove();
+  if (element != null) {
+    let el = (typeof element === 'string') ? document.querySelector(element) : element;
+    if (el != null && el.removeAttribute) el.removeAttribute('title');
+  }
+  let existing = document.querySelectorAll('.mastertooltip');
+  for (let i = 0; i < existing.length; i++) existing[i].remove();
 }
 
 exports.cloneWithNewMachineId = function (boxtocloneid, newMachineid) {
-  // Copy
-  let copy = $('#' + boxtocloneid).clone(true);
-  // remove boxtocloneid
-  $(copy).removeAttr('id');
-  // Remove all classes linked to cloned component is done in clearDynamicStateContent
-  // == (init state)
-
-  // Set machineid (after all 'remove' to be ready to display)
-  $(copy).attr('machine-id', newMachineid);
-  $(copy).find('*').attr('machine-id', newMachineid);
-
+  let source = document.getElementById(boxtocloneid);
+  if (source == null) return null;
+  let copy = source.cloneNode(true); // deep clone (event handlers are NOT preserved — jQuery .clone(true) did preserve, but native cloneNode does not — components re-bind in connectedCallback)
+  copy.removeAttribute('id');
+  copy.setAttribute('machine-id', newMachineid);
+  let descendants = copy.querySelectorAll('*');
+  for (let i = 0; i < descendants.length; i++) {
+    descendants[i].setAttribute('machine-id', newMachineid);
+  }
   return copy;
 }
 
 exports.cloneWithNewGroupId = function (boxtocloneid, newGroupid, isMachine) {
-  // Copy
-  let copy = $('#' + boxtocloneid).clone(true);
-  // remove boxtocloneid
-  $(copy).removeAttr('id');
-  // Remove all classes linked to cloned component is done in clearDynamicStateContent
-  // == (init state)
-
-  // Set group-id (after all 'remove' to be ready to display)
-  $(copy).attr('group', newGroupid); // not group-id to be able to use getConfigOrAttribute
-  $(copy).find('*').attr('group', newGroupid);
-  if (isMachine == true) {
-    $(copy).find('*').attr('machine-id', newGroupid);
+  let source = document.getElementById(boxtocloneid);
+  if (source == null) return null;
+  let copy = source.cloneNode(true);
+  copy.removeAttribute('id');
+  copy.setAttribute('group', newGroupid);
+  let descendants = copy.querySelectorAll('*');
+  for (let i = 0; i < descendants.length; i++) {
+    descendants[i].setAttribute('group', newGroupid);
+    if (isMachine == true) {
+      descendants[i].setAttribute('machine-id', newGroupid);
+    }
   }
   return copy;
+}
+
+/**
+ * Vanilla fade-out: animate opacity to 0 over `duration` ms then set display:none.
+ * Used to replace jQuery `.fadeOut()` (default 400ms in jQuery).
+ *
+ * @param {Element} el
+ * @param {number} duration in ms (default 400)
+ */
+exports.fadeOut = function (el, duration) {
+  if (el == null) return;
+  if (duration == null) duration = 400;
+  el.style.transition = 'opacity ' + duration + 'ms';
+  el.style.opacity = '0';
+  let onEnd = function () {
+    el.style.display = 'none';
+    el.removeEventListener('transitionend', onEnd);
+  };
+  el.addEventListener('transitionend', onEnd);
+  // Safety: if the element isn't laid out (no transition fires), force-end after duration
+  setTimeout(onEnd, duration + 50);
+}
+
+/**
+ * Vanilla fade-in: set display to '' and animate opacity to 1.
+ * Replaces jQuery `.fadeIn()`.
+ *
+ * @param {Element} el
+ * @param {number} duration in ms (default 400)
+ */
+exports.fadeIn = function (el, duration) {
+  if (el == null) return;
+  if (duration == null) duration = 400;
+  el.style.display = '';
+  el.style.opacity = '0';
+  el.style.transition = 'opacity ' + duration + 'ms';
+  requestAnimationFrame(function () {
+    el.style.opacity = '1';
+  });
 }
 
 exports.getTextChangeContext = function (self) {

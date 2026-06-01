@@ -146,7 +146,7 @@ require('x-freetext/x-freetext');
         clearTimeout(this._retryTimer);
         this._retryTimer = null;
       }
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._editbutton = undefined;
       this._summary = undefined;
       this._messageSpan = undefined;
@@ -155,21 +155,63 @@ require('x-freetext/x-freetext');
 
     initParamForReport(divToFill, name, parameterkey, dataType, parameterType,
       defaultValue, value, required, hidden, helptext) {
-      $(divToFill).addClass('parameter');
-      $(divToFill).append("<input type='hidden' id='name' value='" + name + "' />");
-      $(divToFill).append("<input type='hidden' id='parameterkey' value='" + parameterkey + "' />");
-      $(divToFill).append("<input type='hidden' id='defaultvalue' value='" + defaultValue + "' />");
-      let retInput = $("<input type='hidden' id='value' value='" + value + "' />");
-      $(divToFill).append(retInput);
-      $(divToFill).append("<input type='hidden' id='datatype' value='" + dataType + "' />");
-      $(divToFill).append("<input type='hidden' id='parametertype' value='" + parameterType + "' />");
-      $(divToFill).append("<input type='hidden' id='required' value='" + required + "' />");
-      $(divToFill).append("<input type='hidden' id='helptext' value='" + helptext + "' />");
-      $(divToFill).append("<input type='hidden' id='hidden' value='" + hidden + "' />");
+      divToFill.classList.add('parameter');
+      let input1 = document.createElement('input');
+      input1.type = 'hidden';
+      input1.id = 'name';
+      input1.value = name;
+      divToFill.appendChild(input1);
+      let input2 = document.createElement('input');
+      input2.type = 'hidden';
+      input2.id = 'parameterkey';
+      input2.value = parameterkey;
+      divToFill.appendChild(input2);
+      let input3 = document.createElement('input');
+      input3.type = 'hidden';
+      input3.id = 'defaultvalue';
+      input3.value = defaultValue;
+      divToFill.appendChild(input3);
+      let retInput = document.createElement('input');
+      retInput.type = 'hidden';
+      retInput.id = 'value';
+      retInput.value = value;
+      divToFill.appendChild(retInput);
+      let input4 = document.createElement('input');
+      input4.type = 'hidden';
+      input4.id = 'datatype';
+      input4.value = dataType;
+      divToFill.appendChild(input4);
+      let input5 = document.createElement('input');
+      input5.type = 'hidden';
+      input5.id = 'parametertype';
+      input5.value = parameterType;
+      divToFill.appendChild(input5);
+      let input6 = document.createElement('input');
+      input6.type = 'hidden';
+      input6.id = 'required';
+      input6.value = required;
+      divToFill.appendChild(input6);
+      let input7 = document.createElement('input');
+      input7.type = 'hidden';
+      input7.id = 'helptext';
+      input7.value = helptext;
+      divToFill.appendChild(input7);
+      let input8 = document.createElement('input');
+      input8.type = 'hidden';
+      input8.id = 'hidden';
+      input8.value = hidden;
+      divToFill.appendChild(input8);
       if (parameterkey == 'WEBAPP') {
-        $(divToFill).append("<input type='hidden' id='widget' value='TEXTBOX' />");
-        retInput = $("<input type='hidden' id='" + name + "_value' value= />");
-        $(divToFill).append(retInput);
+        let input9 = document.createElement('input');
+        input9.type = 'hidden';
+        input9.id = 'widget';
+        input9.value = 'TEXTBOX';
+        divToFill.appendChild(input9);
+        retInput = document.createElement('input');
+        retInput.type = 'hidden';
+        retInput.id = name + '_value';
+        retInput.value = '';
+        divToFill.appendChild(retInput);
       }
       return retInput;
     }
@@ -180,51 +222,62 @@ require('x-freetext/x-freetext');
       this._uniquemachine =
         ('true' == this.getConfigOrAttribute('unique-machine', 'false'));
 
-      $(this.element).empty();
+      this.element.replaceChildren();
 
-      this._editbutton = $('<button title="Change machines" role="button" ></button>')
-        .addClass('machineselection-editbutton')
-        .html('edit')
-        .click(
-          function () {
-            this.changeMachineSelection();
-          }.bind(this)
-        );
-      this._summary = $('<div></div>')
-        .addClass('machineselection-summary');
-      $(this.element)
-        .append(this._editbutton).append(this._summary);
+      this._editbutton = document.createElement('button');
+      this._editbutton.title = 'Change machines';
+      this._editbutton.setAttribute('role', 'button');
+      this._editbutton.classList.add('machineselection-editbutton');
+      this._editbutton.textContent = 'edit';
+      this._editbutton.addEventListener('click', () => {
+        this.changeMachineSelection();
+      });
 
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      this._summary = document.createElement('div');
+      this._summary.classList.add('machineselection-summary');
 
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);
+      this.element.appendChild(this._editbutton);
+      this.element.appendChild(this._summary);
+
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.textContent = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
+
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.classList.add('pulse-message');
+      this._messageSpan.textContent = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.classList.add('pulse-message-div');
+      messageDiv.appendChild(this._messageSpan);
+      this.element.appendChild(messageDiv);
 
       if (this.element.hasAttribute('in-report')) {
-        let reportDiv = $('<div></div>').addClass('pulse-report-hidden');
-        $(this.element).append(reportDiv);
+        let reportDiv = document.createElement('div');
+        reportDiv.classList.add('pulse-report-hidden');
+        this.element.appendChild(reportDiv);
 
-        let groupReportDiv = $('<div></div>').addClass('pulse-report-hidden');
+        let groupReportDiv = document.createElement('div');
+        groupReportDiv.classList.add('pulse-report-hidden');
         this.initParamForReport(groupReportDiv,
           'PulseGroups', 'GROUPPOS',
           'STRING',
           'SIMPLE', '', '',
           'false', 'false', '');
-        reportDiv.append(groupReportDiv);
+        reportDiv.appendChild(groupReportDiv);
 
-        let machineReportDiv = $('<div></div>').addClass('pulse-report-hidden');
+        let machineReportDiv = document.createElement('div');
+        machineReportDiv.classList.add('pulse-report-hidden');
         this.initParamForReport(machineReportDiv,
           'PulseMachines', 'MACHINES',
           'STRING',
           'SIMPLE', '', '',
           'false', 'false', '');
-        reportDiv.append(machineReportDiv);
+        reportDiv.appendChild(machineReportDiv);
       }
 
       // Early emit (machine-only fast path): if pulseConfig already holds a direct
@@ -304,121 +357,134 @@ require('x-freetext/x-freetext');
 
       ////////// //////////
       // Page 1  //////////
-      this._dialogPage1 = $('<div></div>').addClass('machineSelectionDialogPart1');
-      let page1 = $('<div></div>').addClass('machineselection-page1');
-      this._dialogPage1.append(page1);
+      this._dialogPage1 = document.createElement('div');
+      this._dialogPage1.classList.add('machineSelectionDialogPart1');
+      let page1 = document.createElement('div');
+      page1.classList.add('machineselection-page1');
+      this._dialogPage1.appendChild(page1);
 
-      let div_buttons = $('<div></div>').addClass('machineselection-buttons');
-      this._clearFilters_button = $('<button></button>')
-        .addClass('machineselection-button')
-        .addClass('machineselection-clearfilters').html(this.getTranslation('clearButton', 'Clear'));
-      this._clearFilters_button.click(function () {
+      let div_buttons = document.createElement('div');
+      div_buttons.classList.add('machineselection-buttons');
+      this._clearFilters_button = document.createElement('button');
+      this._clearFilters_button.classList.add('machineselection-button', 'machineselection-clearfilters');
+      this._clearFilters_button.textContent = this.getTranslation('clearButton', 'Clear');
+      this._clearFilters_button.addEventListener('click', () => {
         this._clearSelection();
-      }.bind(this));
-      div_buttons.append(this._clearFilters_button);
+      });
+      div_buttons.appendChild(this._clearFilters_button);
 
-      let div_switch_buttons = $('<div></div>').addClass('machineselection-switch-group-machines');
-      this._switchToGroups_button = $('<button></button>')
-        .addClass('machineselection-button')
-        .addClass('machineselection-switch-to-groups').html(this.getTranslation('groupsButton', ' by group'));
-      this._switchToGroups_button.click(function () {
-        // Preserve current selection arrays — the user just switches view,
-        // not "start fresh". When they come back from "by machine", the
-        // original group checkboxes are still ticked.
+      let div_switch_buttons = document.createElement('div');
+      div_switch_buttons.classList.add('machineselection-switch-group-machines');
+      this._switchToGroups_button = document.createElement('button');
+      this._switchToGroups_button.classList.add('machineselection-button', 'machineselection-switch-to-groups');
+      this._switchToGroups_button.textContent = this.getTranslation('groupsButton', ' by group');
+      this._switchToGroups_button.addEventListener('click', () => {
         this._switchToGroupSelection();
         this._changeSelectionInCategoryList();
-        // Refresh the page-2 "Selected" list so it reflects the new mode
-        // (group array). Without this it keeps showing the previous mode.
         this._fillSelection();
-      }.bind(this));
-      div_switch_buttons.append(this._switchToGroups_button);
+      });
+      div_switch_buttons.appendChild(this._switchToGroups_button);
 
-      this._switchToMachines_button = $('<button></button>')
-        .addClass('machineselection-button')
-        .addClass('machineselection-switch-to-machines').html(this.getTranslation('machinesButton', ' by machine'));
-      this._switchToMachines_button.click(function () {
-        // Pass clearGroups=false so _switchToMachineSelection keeps the
-        // current group selection. _useMachineButton still calls with the
-        // default (true) when the user explicitly resolves groups to machines.
+      this._switchToMachines_button = document.createElement('button');
+      this._switchToMachines_button.classList.add('machineselection-button', 'machineselection-switch-to-machines');
+      this._switchToMachines_button.textContent = this.getTranslation('machinesButton', ' by machine');
+      this._switchToMachines_button.addEventListener('click', () => {
         this._switchToMachineSelection(false);
         this._changeSelectionInMachineList();
-        // Refresh the page-2 "Selected" list so it reflects the new mode
-        // (machine array). Without this it keeps showing the previous mode.
         this._fillSelection();
-      }.bind(this));
-      div_switch_buttons.append(this._switchToMachines_button);
+      });
+      div_switch_buttons.appendChild(this._switchToMachines_button);
 
-      let div_container_page1 = $('<div></div>')
-        .addClass('machineselection-container-page1');
+      let div_container_page1 = document.createElement('div');
+      div_container_page1.classList.add('machineselection-container-page1');
 
-      div_container_page1.append(div_switch_buttons);
+      div_container_page1.appendChild(div_switch_buttons);
 
-      this._categoryList = $('<div></div>').addClass('machineselection-categorylist');
-      div_container_page1.append(this._categoryList);
+      this._categoryList = document.createElement('div');
+      this._categoryList.classList.add('machineselection-categorylist');
+      div_container_page1.appendChild(this._categoryList);
 
-      this._machinesList = $('<div></div>').addClass('machineselection-machines-list');
-      this._machinesListContainer = $('<div></div>')
-        .addClass('machineselection-machines-list-container')
-        .append(this._machinesList);
+      this._machinesList = document.createElement('div');
+      this._machinesList.classList.add('machineselection-machines-list');
+      this._machinesListContainer = document.createElement('div');
+      this._machinesListContainer.classList.add('machineselection-machines-list-container');
+      this._machinesListContainer.appendChild(this._machinesList);
 
-      this._machinesSearchDiv = $('<div></div>').addClass('machineselection-machines-search-div');
+      this._machinesSearchDiv = document.createElement('div');
+      this._machinesSearchDiv.classList.add('machineselection-machines-search-div');
 
-      this._inputSearch = $('<input></input>').addClass('machineselection-machines-search-input')
-        .attr('type', 'text').attr('placeholder', this.getTranslation('searchDots', 'Search...'));
-      this._machinesSearchDiv.append(this._inputSearch);
+      this._inputSearch = document.createElement('input');
+      this._inputSearch.classList.add('machineselection-machines-search-input');
+      this._inputSearch.type = 'text';
+      this._inputSearch.placeholder = this.getTranslation('searchDots', 'Search...');
+      this._machinesSearchDiv.appendChild(this._inputSearch);
 
-      div_container_page1.append(this._machinesSearchDiv).append(this._machinesListContainer);
+      div_container_page1.appendChild(this._machinesSearchDiv);
+      div_container_page1.appendChild(this._machinesListContainer);
 
-      $(this._inputSearch).on('input', function () {
+      this._inputSearch.addEventListener('input', () => {
         this._showHideMachinesInList();
-      }.bind(this));
+      });
 
-      div_container_page1.append(div_buttons);
-      page1.append(div_container_page1);
+      div_container_page1.appendChild(div_buttons);
+      page1.appendChild(div_container_page1);
 
 
       ////////// //////////
       // Page 2  //////////
-      this._dialogPage2 = $('<div></div>').addClass('machineSelectionDialogPart2');
-      let page2 = $('<div></div>').addClass('machineselection-page2');
-      this._dialogPage2.append(page2);
+      this._dialogPage2 = document.createElement('div');
+      this._dialogPage2.classList.add('machineSelectionDialogPart2');
+      let page2 = document.createElement('div');
+      page2.classList.add('machineselection-page2');
+      this._dialogPage2.appendChild(page2);
 
-      this._selectionTitle = $('<span></span>').addClass('machineselection-title')
-        .html(this.getTranslation('selectedTitle', 'Selected'));
-      this._selectionHeader = $('<div></div>').addClass('machineselection-selection-header')
-        .append(this._selectionTitle);
-      this._selectionList = $('<div></div>').addClass('machineselection-selection-list');
-      this._selectionListContainer = $('<div></div>')
-        .addClass('machineselection-selection-list-container')
-        .append(this._selectionList);
+      this._selectionTitle = document.createElement('span');
+      this._selectionTitle.classList.add('machineselection-title');
+      this._selectionTitle.textContent = this.getTranslation('selectedTitle', 'Selected');
+      this._selectionHeader = document.createElement('div');
+      this._selectionHeader.classList.add('machineselection-selection-header');
+      this._selectionHeader.appendChild(this._selectionTitle);
+      this._selectionList = document.createElement('div');
+      this._selectionList.classList.add('machineselection-selection-list');
+      this._selectionListContainer = document.createElement('div');
+      this._selectionListContainer.classList.add('machineselection-selection-list-container');
+      this._selectionListContainer.appendChild(this._selectionList);
 
-      page2.append(this._selectionHeader).append(this._selectionListContainer);
+      page2.appendChild(this._selectionHeader);
+      page2.appendChild(this._selectionListContainer);
 
-      let previewTitle = $('<span></span>').addClass('machineselection-preview-title')
-        .html('preview machines');
-      this._freeTextLastUpdate = pulseUtility.createjQueryElementWithAttribute('x-freetext', {
+      let previewTitle = document.createElement('span');
+      previewTitle.classList.add('machineselection-preview-title');
+      previewTitle.textContent = 'preview machines';
+      this._freeTextLastUpdate = pulseUtility.createElementWithAttribute('x-freetext', {
         'textchange-context': 'machineselection'
       });
-      this._useMachineButton = $('<div></div>').addClass('machineselection-usemachines-button')
-        .attr('title', this.getTranslation('switchToMachineSelection', 'Switch to machine selection'));
-      this._previewHeader = $('<div></div>').addClass('machineselection-preview-header')
-        .append(previewTitle).append(this._freeTextLastUpdate).append(this._useMachineButton);
-      this._previewList = $('<div></div>').addClass('machineselection-preview-list');
-      this._previewListContainer = $('<div></div>')
-        .addClass('machineselection-preview-list-container')
-        .append(this._previewList);
+      this._useMachineButton = document.createElement('div');
+      this._useMachineButton.classList.add('machineselection-usemachines-button');
+      this._useMachineButton.setAttribute('title', this.getTranslation('switchToMachineSelection', 'Switch to machine selection'));
+      this._previewHeader = document.createElement('div');
+      this._previewHeader.classList.add('machineselection-preview-header');
+      this._previewHeader.appendChild(previewTitle);
+      this._previewHeader.appendChild(this._freeTextLastUpdate);
+      this._previewHeader.appendChild(this._useMachineButton);
+      this._previewList = document.createElement('div');
+      this._previewList.classList.add('machineselection-preview-list');
+      this._previewListContainer = document.createElement('div');
+      this._previewListContainer.classList.add('machineselection-preview-list-container');
+      this._previewListContainer.appendChild(this._previewList);
 
-      page2.append(this._previewHeader).append(this._previewListContainer);
+      page2.appendChild(this._previewHeader);
+      page2.appendChild(this._previewListContainer);
 
       pulseSvg.inlineBackgroundSvg(this._useMachineButton);
 
-      this._useMachineButton.click(function () {
+      this._useMachineButton.addEventListener('click', () => {
         if (this._previewResolvedMachineIds.length > 0) {
           this._machineSelectionArray = this._previewResolvedMachineIds.slice();
           this._changeSelectionInMachineList();
         }
         this._switchToMachineSelection();
-      }.bind(this));
+      });
 
       this._fillCategoryList();
 
@@ -448,7 +514,7 @@ require('x-freetext/x-freetext');
                 { type: 'Error' });
               return;
             }
-            if ($(this._previewList).find('.no-machines').length > 0) {
+            if (this._previewList && this._previewList.querySelector('.no-machines')) {
               let staticOnly = true;
               for (let iGroup = 0; iGroup < this._groupSelectionArray.length; iGroup++) {
                 let groupId = this._groupSelectionArray[iGroup].toString();
@@ -495,29 +561,26 @@ require('x-freetext/x-freetext');
 
       if (this._machinesListContainer == undefined)
         return;
-      this._previewHeader.css('display', 'none');
-      this._previewListContainer.hide();
+      this._previewHeader.style.display = 'none';
+      this._previewListContainer.style.display = 'none';
 
-      this._selectionTitle.html(this.getTranslation('selectedMachines', 'Selected machines'));
+      this._selectionTitle.textContent = this.getTranslation('selectedMachines', 'Selected machines');
 
-      this._machinesSearchDiv.show();
-      this._machinesListContainer.show();
+      this._machinesSearchDiv.style.display = '';
+      this._machinesListContainer.style.display = '';
 
-      // Clear groups only when the caller explicitly asked for it (default
-      // behaviour for _loadSelection and _useMachineButton). Tab-switch button
-      // passes false so the user's group selection is preserved across views.
       if (clearGroups) {
         this._groupSelectionArray = [];
         this._changeSelectionInCategoryList();
       }
-      this._categoryList.hide();
+      this._categoryList.style.display = 'none';
 
       this._changeSelectionInMachineList();
 
-      this._switchToMachines_button.addClass('selected');
-      this._switchToGroups_button.removeClass('selected');
-      this._switchToMachines_button.prop('disabled', true);
-      this._switchToGroups_button.prop('disabled', false);
+      this._switchToMachines_button.classList.add('selected');
+      this._switchToGroups_button.classList.remove('selected');
+      this._switchToMachines_button.disabled = true;
+      this._switchToGroups_button.disabled = false;
     }
 
     /**
@@ -529,20 +592,20 @@ require('x-freetext/x-freetext');
 
       if (this._machinesListContainer == undefined)
         return;
-      this._previewHeader.css('display', 'flex');
-      this._previewListContainer.show();
+      this._previewHeader.style.display = 'flex';
+      this._previewListContainer.style.display = '';
 
-      this._selectionTitle.html(this.getTranslation('selectedGroups', 'Selected groups'));
+      this._selectionTitle.textContent = this.getTranslation('selectedGroups', 'Selected groups');
 
-      this._machinesSearchDiv.hide();
-      this._machinesListContainer.hide();
+      this._machinesSearchDiv.style.display = 'none';
+      this._machinesListContainer.style.display = 'none';
 
-      this._categoryList.show();
+      this._categoryList.style.display = '';
 
-      this._switchToMachines_button.removeClass('selected');
-      this._switchToGroups_button.addClass('selected');
-      this._switchToMachines_button.prop('disabled', false);
-      this._switchToGroups_button.prop('disabled', true);
+      this._switchToMachines_button.classList.remove('selected');
+      this._switchToGroups_button.classList.add('selected');
+      this._switchToMachines_button.disabled = false;
+      this._switchToGroups_button.disabled = true;
     }
 
     /**
@@ -553,47 +616,52 @@ require('x-freetext/x-freetext');
     _addMoveUpDownEvents() {
       var machineselection = this;
 
-      $(this._selectionList).find('.reorderDownButton').click(function () {
-        $(this).parent('.machineselection-selection');
-        let draggedOrder = parseInt($(this).parent().parent().css('order'));
-        let newOrder = draggedOrder + 1;
+      let downButtons = this._selectionList.querySelectorAll('.reorderDownButton');
+      downButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+          let draggedOrder = parseInt(getComputedStyle(this.parentElement.parentElement).order);
+          let newOrder = draggedOrder + 1;
 
-        if (machineselection._useMachineSelection) {
-          if (machineselection._machineSelectionArray.length > 0) {
-            let movedItem = machineselection._machineSelectionArray[draggedOrder];
-            machineselection._machineSelectionArray.splice(draggedOrder, 1);
-            machineselection._machineSelectionArray.splice(newOrder, 0, movedItem);
+          if (machineselection._useMachineSelection) {
+            if (machineselection._machineSelectionArray.length > 0) {
+              let movedItem = machineselection._machineSelectionArray[draggedOrder];
+              machineselection._machineSelectionArray.splice(draggedOrder, 1);
+              machineselection._machineSelectionArray.splice(newOrder, 0, movedItem);
+            }
           }
-        }
-        else {
-          if (machineselection._groupSelectionArray.length > 0) {
-            let movedItem = machineselection._groupSelectionArray[draggedOrder];
-            machineselection._groupSelectionArray.splice(draggedOrder, 1);
-            machineselection._groupSelectionArray.splice(newOrder, 0, movedItem);
+          else {
+            if (machineselection._groupSelectionArray.length > 0) {
+              let movedItem = machineselection._groupSelectionArray[draggedOrder];
+              machineselection._groupSelectionArray.splice(draggedOrder, 1);
+              machineselection._groupSelectionArray.splice(newOrder, 0, movedItem);
+            }
           }
-        }
-        machineselection._fillSelection();
+          machineselection._fillSelection();
+        });
       });
 
-      $(this._selectionList).find('.reorderUpButton').click(function () {
-        let draggedOrder = parseInt($(this).parent().parent().css('order'));
-        let newOrder = draggedOrder - 1;
+      let upButtons = this._selectionList.querySelectorAll('.reorderUpButton');
+      upButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+          let draggedOrder = parseInt(getComputedStyle(this.parentElement.parentElement).order);
+          let newOrder = draggedOrder - 1;
 
-        if (machineselection._useMachineSelection) {
-          if (machineselection._machineSelectionArray.length > 0) {
-            let movedItem = machineselection._machineSelectionArray[draggedOrder];
-            machineselection._machineSelectionArray.splice(draggedOrder, 1);
-            machineselection._machineSelectionArray.splice(newOrder, 0, movedItem);
+          if (machineselection._useMachineSelection) {
+            if (machineselection._machineSelectionArray.length > 0) {
+              let movedItem = machineselection._machineSelectionArray[draggedOrder];
+              machineselection._machineSelectionArray.splice(draggedOrder, 1);
+              machineselection._machineSelectionArray.splice(newOrder, 0, movedItem);
+            }
           }
-        }
-        else {
-          if (machineselection._groupSelectionArray.length > 0) {
-            let movedItem = machineselection._groupSelectionArray[draggedOrder];
-            machineselection._groupSelectionArray.splice(draggedOrder, 1);
-            machineselection._groupSelectionArray.splice(newOrder, 0, movedItem);
+          else {
+            if (machineselection._groupSelectionArray.length > 0) {
+              let movedItem = machineselection._groupSelectionArray[draggedOrder];
+              machineselection._groupSelectionArray.splice(draggedOrder, 1);
+              machineselection._groupSelectionArray.splice(newOrder, 0, movedItem);
+            }
           }
-        }
-        machineselection._fillSelection();
+          machineselection._fillSelection();
+        });
       });
     }
 
@@ -641,17 +709,17 @@ require('x-freetext/x-freetext');
           e.stopPropagation();
         }
         if (dragSrcEl != this) {
-          let draggedOrder = parseInt($(dragSrcEl).css('order'));
+          let draggedOrder = parseInt(getComputedStyle(dragSrcEl).order);
           let dragToTopOrder = undefined;
           let dragToBottomOrder = undefined;
 
-          let toTop = $(this).hasClass('dragOverTop');
+          let toTop = this.classList.contains('dragOverTop');
           if (toTop) {
-            dragToTopOrder = parseInt($(this).css('order'));
+            dragToTopOrder = parseInt(getComputedStyle(this).order);
           }
-          let toBottom = $(this).hasClass('dragOverBottom');
+          let toBottom = this.classList.contains('dragOverBottom');
           if (toBottom) {
-            dragToBottomOrder = parseInt($(this).css('order'));
+            dragToBottomOrder = parseInt(getComputedStyle(this).order);
             if (dragToTopOrder == undefined)
               dragToTopOrder = dragToBottomOrder + 1;
           }
@@ -701,9 +769,8 @@ require('x-freetext/x-freetext');
         elem.addEventListener('dragend', handleDragEnd, false);
       }
 
-      $(machineselection._selectionList).find('.machineselection-selection').each(function () {
-        addEvents(this);
-      });
+      let selectionItems = machineselection._selectionList.querySelectorAll('.machineselection-selection');
+      selectionItems.forEach(elem => addEvents(elem));
     }
 
     /**
@@ -713,69 +780,73 @@ require('x-freetext/x-freetext');
     _fillMachinesList() {
       if (this._machinesList == undefined)
         return;
-      $(this._machinesList).empty();
+      this._machinesList.replaceChildren();
 
       for (let displayClass of this._groupDisplays) {
         if (displayClass[1].singlemachine) {
           let id = displayClass[0];
           let displayStr = displayClass[1].display;
 
-          let addButton = $('<div></div>').addClass('machineselection-add-machine-button')
-            .attr('machine-id', id);
-          let removeButton = $('<div></div>').addClass('machineselection-remove-machine-button')
-            .attr('machine-id', id);
+          let addButton = document.createElement('div');
+          addButton.classList.add('machineselection-add-machine-button');
+          addButton.setAttribute('machine-id', id);
+          let removeButton = document.createElement('div');
+          removeButton.classList.add('machineselection-remove-machine-button');
+          removeButton.setAttribute('machine-id', id);
 
-          let machSpan = $('<span></span>').addClass('machines-display')
-            .html(displayStr);
-          let machDiv = $('<div></div>').addClass('machines-div')
-            .attr('machine-id', id).append(machSpan)
-            .append(addButton).append(removeButton);
+          let machSpan = document.createElement('span');
+          machSpan.classList.add('machines-display');
+          machSpan.textContent = displayStr;
+          let machDiv = document.createElement('div');
+          machDiv.classList.add('machines-div');
+          machDiv.setAttribute('machine-id', id);
+          machDiv.appendChild(machSpan);
+          machDiv.appendChild(addButton);
+          machDiv.appendChild(removeButton);
 
           if (displayClass[1].sortpriority != undefined)
-            machDiv.css('order', displayClass[1].sortpriority);
+            machDiv.style.order = displayClass[1].sortpriority;
 
-          $(this._machinesList).append(machDiv);
+          this._machinesList.appendChild(machDiv);
 
           pulseSvg.inlineBackgroundSvg(addButton);
           pulseSvg.inlineBackgroundSvg(removeButton);
 
-          machDiv.click(function (machineselection) {
-            return function () {
-              let machid = $(this).attr('machine-id');
+          machDiv.addEventListener('click', () => {
+            let machid = machDiv.getAttribute('machine-id');
 
-              if ($(this).hasClass('selected')) {
-                if (machineselection._machineSelectionArray.includes(machid)) {
-                  machineselection._machineSelectionArray =
-                    machineselection._machineSelectionArray.filter(
-                      function (value, index, arr) {
-                        return value != machid;
-                      }
-                    );
-                }
+            if (machDiv.classList.contains('selected')) {
+              if (this._machineSelectionArray.includes(machid)) {
+                this._machineSelectionArray =
+                  this._machineSelectionArray.filter(
+                    function (value, index, arr) {
+                      return value != machid;
+                    }
+                  );
               }
-              else {
-                if (!machineselection._machineSelectionArray.includes(machid))
-                  machineselection._machineSelectionArray.push(machid);
-              }
-              machineselection._changeSelectionInMachineList();
-              machineselection._fillSelection();
             }
-          }(this));
+            else {
+              if (!this._machineSelectionArray.includes(machid))
+                this._machineSelectionArray.push(machid);
+            }
+            this._changeSelectionInMachineList();
+            this._fillSelection();
+          });
         }
       }
     }
 
     /** Filters the machine list display using the current value of `_inputSearch` (case-insensitive substring match). */
     _showHideMachinesInList() {
-      let searchString = $(this._inputSearch)[0].value;
-      let machinesDiv = $(this._machinesList).find('.machines-div');
-      for (let i = 0; i < machinesDiv.length; i++) {
-        let machineDisplay = $(machinesDiv[i]).find('.machines-display').html();
+      let searchString = this._inputSearch.value;
+      let machinesDivs = this._machinesList.querySelectorAll('.machines-div');
+      for (let i = 0; i < machinesDivs.length; i++) {
+        let machineDisplay = machinesDivs[i].querySelector('.machines-display').textContent;
         if (machineDisplay.toLowerCase().includes(searchString.toLowerCase())) {
-          $(machinesDiv[i]).show();
+          machinesDivs[i].style.display = '';
         }
         else {
-          $(machinesDiv[i]).hide();
+          machinesDivs[i].style.display = 'none';
         }
       }
     }
@@ -784,12 +855,13 @@ require('x-freetext/x-freetext');
     _changeSelectionInMachineList() {
       if (this._dialogPage1 == undefined)
         return;
-      $(this._machinesList).find('.machines-div.selected').removeClass('selected');
+      let selectedDivs = this._machinesList.querySelectorAll('.machines-div.selected');
+      selectedDivs.forEach(div => div.classList.remove('selected'));
       for (let i = 0; i < this._machineSelectionArray.length; i++) {
         let machid = this._machineSelectionArray[i];
-        let machDivs = $(this._machinesList).find('.machines-div[machine-id=' + machid + ']');
-        if (machDivs.length > 0) {
-          machDivs.addClass('selected');
+        let machDiv = this._machinesList.querySelector('.machines-div[machine-id="' + machid + '"]');
+        if (machDiv) {
+          machDiv.classList.add('selected');
         }
       }
     }
@@ -802,14 +874,18 @@ require('x-freetext/x-freetext');
      * Wrapper required because the dialog is detached from the host element.
      */
     _buildLoadingSpinner() {
-      let wrapper = $('<div></div>').addClass('machineselection-loading-wrapper');
-      let loaderHost = $('<div></div>')
-        .addClass('pulse-bigdisplay').addClass('pulse-component-loading')
-        .addClass('machineselection-loading-spinner-host');
-      let loader = $('<div></div>').addClass('pulse-loader')
-        .html(this.getTranslation('loadingDots', 'Loading...'));
-      loaderHost.append($('<div></div>').addClass('pulse-loader-div').append(loader));
-      wrapper.append(loaderHost);
+      let wrapper = document.createElement('div');
+      wrapper.classList.add('machineselection-loading-wrapper');
+      let loaderHost = document.createElement('div');
+      loaderHost.classList.add('pulse-bigdisplay', 'pulse-component-loading', 'machineselection-loading-spinner-host');
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.textContent = this.getTranslation('loadingDots', 'Loading...');
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      loaderHost.appendChild(loaderDiv);
+      wrapper.appendChild(loaderHost);
       return wrapper;
     }
 
@@ -822,30 +898,20 @@ require('x-freetext/x-freetext');
     _fillSelection() {
       if (this._selectionList == undefined)
         return;
-      $(this._selectionList).empty();
+      this._selectionList.replaceChildren();
 
-      // Data not yet fetched (refresh() hasn't run) → show a self-contained SVG
-      // spinner instead of the misleading "No selection" placeholder. The
-      // normal fill flow runs again from refresh() → _loadSelection() once
-      // the data arrives.
-      // We rely on `_machinesFromService === undefined`: `_groups` defaults to
-      // [] in the constructor (truthy), so `!this._groups` never matches the
-      // initial state. `_machinesFromService` stays undefined until refresh()
-      // runs, making it the reliable "data fetched yet?" signal.
       if (this._machinesFromService === undefined) {
-        this._selectionList.append(this._buildLoadingSpinner());
-        // Show the spinner in the category tree as long as it has no real
-        // category items yet (the `categorylist-full` wrapper may exist as a
-        // leftover from a previous refresh — we don't trust it as a signal).
-        if (this._categoryList && this._categoryList.find('.machineselection-category').length === 0) {
-          this._categoryList.empty().append(this._buildLoadingSpinner());
+        this._selectionList.appendChild(this._buildLoadingSpinner());
+        if (this._categoryList && this._categoryList.querySelectorAll('.machineselection-category').length === 0) {
+          this._categoryList.replaceChildren();
+          this._categoryList.appendChild(this._buildLoadingSpinner());
         }
         this._renderPreviewLoader();
         return;
       }
-      // Data is here: make sure any leftover loader in the categorylist is cleared
       if (this._categoryList) {
-        this._categoryList.find('.machineselection-loading-svg').remove();
+        let loaders = this._categoryList.querySelectorAll('.machineselection-loading-svg');
+        loaders.forEach(loader => loader.remove());
       }
 
       let arrayToDisplay;
@@ -855,9 +921,10 @@ require('x-freetext/x-freetext');
         arrayToDisplay = this._machineSelectionArray;
 
       if (arrayToDisplay.length == 0) {
-        let noSel = $('<span></span>').addClass('no-selection')
-          .html(this.getTranslation('noSelection', 'No selection'));
-        this._selectionList.append(noSel);
+        let noSel = document.createElement('span');
+        noSel.classList.add('no-selection');
+        noSel.textContent = this.getTranslation('noSelection', 'No selection');
+        this._selectionList.appendChild(noSel);
         this._fillMachinePreview();
         return;
       }
@@ -865,88 +932,106 @@ require('x-freetext/x-freetext');
       for (let iGroup = 0; iGroup < arrayToDisplay.length; iGroup++) {
         let groupId = arrayToDisplay[iGroup].toString();
 
-        let selection = $('<div></div>').addClass('machineselection-selection')
-          .attr('groupId', groupId);
+        let selection = document.createElement('div');
+        selection.classList.add('machineselection-selection');
+        selection.setAttribute('groupId', groupId);
 
         if (!this._groupDisplays.has(groupId))
           continue;
         let displayClass = this._groupDisplays.get(groupId);
 
-        let highlight = $('<div></div>').addClass('reorderHighlight');
-        let upButton = $('<div></div>').addClass('reorderUpButton');
-        let downButton = $('<div></div>').addClass('reorderDownButton');
-        let reorderButton = $('<div></div>').addClass('reorderButton');
+        let highlight = document.createElement('div');
+        highlight.classList.add('reorderHighlight');
+        let upButton = document.createElement('div');
+        upButton.classList.add('reorderUpButton');
+        let downButton = document.createElement('div');
+        downButton.classList.add('reorderDownButton');
+        let reorderButton = document.createElement('div');
+        reorderButton.classList.add('reorderButton');
 
-        let row = $('<div></div>').addClass('selection-position');
-        row.append(highlight).append(upButton).append(downButton);
+        let row = document.createElement('div');
+        row.classList.add('selection-position');
+        row.appendChild(highlight);
+        row.appendChild(upButton);
+        row.appendChild(downButton);
 
-        let leftSide = $('<div></div>').addClass('selection-left-side');
-        leftSide.append(reorderButton);
-        let spanDisplay = $('<span></span>').addClass('selection-display')
-          .html(displayClass.display);
-        leftSide.append(spanDisplay);
+        let leftSide = document.createElement('div');
+        leftSide.classList.add('selection-left-side');
+        leftSide.appendChild(reorderButton);
+        let spanDisplay = document.createElement('span');
+        spanDisplay.classList.add('selection-display');
+        spanDisplay.textContent = displayClass.display;
+        leftSide.appendChild(spanDisplay);
         if (displayClass.singlemachine) {
-          let spanMachine = $('<span></span>').addClass('machineselection-machine-label')
-            .html(this.getTranslation('machineKey', 'M'));
-          leftSide.append(spanMachine);
+          let spanMachine = document.createElement('span');
+          spanMachine.classList.add('machineselection-machine-label');
+          spanMachine.textContent = this.getTranslation('machineKey', 'M');
+          leftSide.appendChild(spanMachine);
         }
         else {
-          let spanGroup = $('<span></span>').addClass('machineselection-group-label')
-            .html(this.getTranslation('groupKey', 'G'));
-          leftSide.append(spanGroup);
+          let spanGroup = document.createElement('span');
+          spanGroup.classList.add('machineselection-group-label');
+          spanGroup.textContent = this.getTranslation('groupKey', 'G');
+          leftSide.appendChild(spanGroup);
         }
-        row.append(leftSide);
+        row.appendChild(leftSide);
 
-        let rightSide = $('<div></div>').addClass('selection-right-side');
+        let rightSide = document.createElement('div');
+        rightSide.classList.add('selection-right-side');
         if (displayClass.dynamic) {
-          let spanDynamic = $('<span></span>').addClass('machineselection-dynamic-label')
-            .html(this.getTranslation('dynamicKey', 'DYNAMIC'));
-          rightSide.append(spanDynamic);
+          let spanDynamic = document.createElement('span');
+          spanDynamic.classList.add('machineselection-dynamic-label');
+          spanDynamic.textContent = this.getTranslation('dynamicKey', 'DYNAMIC');
+          rightSide.appendChild(spanDynamic);
         }
-        let removeButton = $('<div></div>').addClass('remove-button')
-          .attr('groupId', groupId);
-        rightSide.append(removeButton);
-        row.append(rightSide);
+        let removeButton = document.createElement('div');
+        removeButton.classList.add('remove-button');
+        removeButton.setAttribute('groupId', groupId);
+        rightSide.appendChild(removeButton);
+        row.appendChild(rightSide);
 
-        selection.append(row);
+        selection.appendChild(row);
 
-        $(selection).css('order', iGroup);
-        this._selectionList.append(selection);
+        selection.style.order = iGroup;
+        this._selectionList.appendChild(selection);
 
         pulseSvg.inlineBackgroundSvg(upButton);
         pulseSvg.inlineBackgroundSvg(downButton);
         pulseSvg.inlineBackgroundSvg(removeButton);
 
-        removeButton.click(function (machineselection) {
-          return function () {
-            let group = $(this).attr('groupid');
+        removeButton.addEventListener('click', () => {
+          let group = removeButton.getAttribute('groupid');
 
-            if (false == machineselection._useMachineSelection) {
-              machineselection._groupSelectionArray =
-                machineselection._groupSelectionArray.filter(
-                  function (value, index, arr) {
-                    return value != group;
-                  }
-                );
-              machineselection._changeSelectionInCategoryList();
-              let selectedCategory = $(machineselection._dialogPage1).find('input[groupid=' + group + ']');
-              let parentsCategories = $(selectedCategory).parents('.machineselection-category');
-              for (let iCat = 0; iCat < parentsCategories.length; iCat++)
-                machineselection._updateNumberOfSelections(parentsCategories[iCat]);
+          if (false == this._useMachineSelection) {
+            this._groupSelectionArray =
+              this._groupSelectionArray.filter(
+                function (value, index, arr) {
+                  return value != group;
+                }
+              );
+            this._changeSelectionInCategoryList();
+            let selectedCategory = this._dialogPage1.querySelector('input[groupid="' + group + '"]');
+            let parentsCategories = selectedCategory ? selectedCategory.closest('.machineselection-category') : null;
+            if (parentsCategories) {
+              let currentCat = parentsCategories;
+              while (currentCat && currentCat.classList.contains('machineselection-category')) {
+                this._updateNumberOfSelections(currentCat);
+                currentCat = currentCat.parentElement.closest('.machineselection-category');
+              }
             }
-            else {
-              machineselection._machineSelectionArray =
-                machineselection._machineSelectionArray.filter(
-                  function (value, index, arr) {
-                    return value != group;
-                  }
-                );
-
-              machineselection._changeSelectionInMachineList();
-            }
-            machineselection._fillSelection();
           }
-        }(this));
+          else {
+            this._machineSelectionArray =
+              this._machineSelectionArray.filter(
+                function (value, index, arr) {
+                  return value != group;
+                }
+              );
+
+            this._changeSelectionInMachineList();
+          }
+          this._fillSelection();
+        });
 
       }
       this._addDragAndDropEvents();
@@ -962,8 +1047,8 @@ require('x-freetext/x-freetext');
      */
     _fillMachinePreview() {
       if (!this._previewList) return;
-      this._previewList.empty();
-      this._freeTextLastUpdate?.[0]?.cleanDisplay?.();
+      this._previewList.replaceChildren();
+      this._freeTextLastUpdate?.cleanDisplay?.();
 
       if (this._useMachineSelection || this._groupSelectionArray.length === 0) {
         this._previewResolvedMachineIds = [];
@@ -1079,48 +1164,61 @@ require('x-freetext/x-freetext');
 
     _renderPreviewMachines() {
       if (!this._previewList) return;
-      this._previewList.empty().removeClass('pulse-component-loading');
+      this._previewList.replaceChildren();
+      this._previewList.classList.remove('pulse-component-loading');
       if (this._previewResolvedMachineIds.length === 0) {
-        let noMachine = $('<div></div>').addClass('no-machines')
-          .html(this.getTranslation('groupArray.noMachine', 'No machine in selection'));
-        this._previewList.append(noMachine);
+        let noMachine = document.createElement('div');
+        noMachine.classList.add('no-machines');
+        noMachine.textContent = this.getTranslation('groupArray.noMachine', 'No machine in selection');
+        this._previewList.appendChild(noMachine);
         return;
       }
       for (let i = 0; i < this._previewResolvedMachineIds.length; i++) {
         let machId = this._previewResolvedMachineIds[i];
-        let xdisp = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
+        let xdisp = pulseUtility.createElementWithAttribute('x-machinedisplay', {
           'machine-id': machId
         });
-        let row = $('<div></div>').addClass('preview-machine-position').append(xdisp);
-        this._previewList.append(row);
+        let row = document.createElement('div');
+        row.classList.add('preview-machine-position');
+        row.appendChild(xdisp);
+        this._previewList.appendChild(row);
       }
     }
 
     _renderPreviewLoader() {
       if (!this._previewList) return;
-      this._previewList.empty().addClass('pulse-component-loading');
-      let loader = $('<div></div>').addClass('pulse-loader')
-        .html(this.getTranslation('loadingDots', 'Loading...'));
-      this._previewList.append($('<div></div>').addClass('pulse-loader-div').append(loader));
+      this._previewList.replaceChildren();
+      this._previewList.classList.add('pulse-component-loading');
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.textContent = this.getTranslation('loadingDots', 'Loading...');
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      this._previewList.appendChild(loaderDiv);
     }
 
     _renderPreviewError() {
       if (!this._previewList) return;
-      this._previewList.empty().removeClass('pulse-component-loading');
-      let err = $('<div></div>').addClass('preview-error')
-        .html(this.getTranslation('serverUnreachable', 'Server unreachable'));
-      this._previewList.append(err);
+      this._previewList.replaceChildren();
+      this._previewList.classList.remove('pulse-component-loading');
+      let err = document.createElement('div');
+      err.classList.add('preview-error');
+      err.textContent = this.getTranslation('serverUnreachable', 'Server unreachable');
+      this._previewList.appendChild(err);
     }
 
     /** Disables the dialog OK button while the preview is resolving asynchronously. */
     _updateOkButtonState() {
       if (!this._dialogId) return;
-      let okBtn = $('#' + this._dialogId + ' .customDialogOk');
-      if (okBtn.length === 0) return;
+      let okBtn = document.querySelector('#' + this._dialogId + ' .customDialogOk');
+      if (!okBtn) return;
       if (this._previewLoading) {
-        okBtn.prop('disabled', true).addClass('disabled');
+        okBtn.disabled = true;
+        okBtn.classList.add('disabled');
       } else {
-        okBtn.prop('disabled', false).removeClass('disabled');
+        okBtn.disabled = false;
+        okBtn.classList.remove('disabled');
       }
     }
 
@@ -1191,7 +1289,10 @@ require('x-freetext/x-freetext');
           url += separator + 'machine=' + joinedMachines;
         }
 
-        $('.legend-content').resize();
+        let legendContent = document.querySelector('.legend-content');
+        if (legendContent) {
+          legendContent.dispatchEvent(new Event('resize'));
+        }
         window.location.href = url;
         return;
       }
@@ -1268,7 +1369,8 @@ require('x-freetext/x-freetext');
 
     /** Unchecks all checkboxes in the dialog and clears both selection arrays. */
     _clearSelection() {
-      $(this._dialogPage1).find('input:checkbox').prop('checked', false);
+      let checkboxes = this._dialogPage1.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(cb => cb.checked = false);
       this._groupSelectionArray = [];
       this._machineSelectionArray = [];
       this._changeSelectionInCategoryList();
@@ -1282,18 +1384,17 @@ require('x-freetext/x-freetext');
      * @param {HTMLElement} mainCategory - `.machineselection-category` DOM element.
      */
     _updateNumberOfSelections(mainCategory) {
-      let selections = $(mainCategory).find('input:checkbox');
+      let selections = mainCategory.querySelectorAll('input[type="checkbox"]');
       let nbSel = 0;
       for (let iSel = 0; iSel < selections.length; iSel++) {
         if (selections[iSel].checked) {
           nbSel++;
         }
       }
-      if (nbSel == 0) {
-        $(mainCategory).children('.machineselection-category-row').find('.number-of-selections').html('');
-      }
-      else {
-        $(mainCategory).children('.machineselection-category-row').find('.number-of-selections').html('(' + nbSel + ')');
+      let categoryRow = mainCategory.querySelector(':scope > .machineselection-category-row');
+      let numSpan = categoryRow ? categoryRow.querySelector('.number-of-selections') : null;
+      if (numSpan) {
+        numSpan.textContent = (nbSel == 0) ? '' : ('(' + nbSel + ')');
       }
     }
 
@@ -1355,99 +1456,125 @@ require('x-freetext/x-freetext');
         let nbSubGroups = 0;
         for (let i = 0; i < groups.length; i++) {
           if (groups[i].Display != '') {
-            let svgShow = $('<div></div>').addClass('show-sub');
-            let svgHide = $('<div></div>').addClass('hide-sub');
-            let showHide = $('<div></div>').addClass('machineselection-subcategory-visibility')
-              .append(svgShow).append(svgHide);
+            let svgShow = document.createElement('div');
+            svgShow.classList.add('show-sub');
+            let svgHide = document.createElement('div');
+            svgHide.classList.add('hide-sub');
+            let showHide = document.createElement('div');
+            showHide.classList.add('machineselection-subcategory-visibility');
+            showHide.appendChild(svgShow);
+            showHide.appendChild(svgHide);
             pulseSvg.inlineBackgroundSvg(svgShow);
             pulseSvg.inlineBackgroundSvg(svgHide);
 
-            let divDisplayGroup = $('<label for="checkbox-' + groups[i].Id + '"></label>').addClass('machineselection-category-display-group');
-            let spanDisplay = $('<span></span>').addClass('category-display')
-              .html(groups[i].TreeName);
-            let nbSel = $('<span></span>').addClass('number-of-selections').html('');
-            let checkbox = $('<input id="checkbox-' + groups[i].Id + '" type="checkbox" groupid="' + groups[i].Id + '" dynamic="' + groups[i].Dynamic + '">');
-            let divRow = $('<div></div>').addClass('machineselection-category-row');
-            divDisplayGroup.append(checkbox).append(spanDisplay).append(nbSel);
-            divRow.append(showHide).append(divDisplayGroup);
+            let divDisplayGroup = document.createElement('label');
+            divDisplayGroup.htmlFor = 'checkbox-' + groups[i].Id;
+            divDisplayGroup.classList.add('machineselection-category-display-group');
+            let spanDisplay = document.createElement('span');
+            spanDisplay.classList.add('category-display');
+            spanDisplay.textContent = groups[i].TreeName;
+            let nbSel = document.createElement('span');
+            nbSel.classList.add('number-of-selections');
+            nbSel.textContent = '';
+            let checkbox = document.createElement('input');
+            checkbox.id = 'checkbox-' + groups[i].Id;
+            checkbox.type = 'checkbox';
+            checkbox.setAttribute('groupid', groups[i].Id);
+            checkbox.setAttribute('dynamic', groups[i].Dynamic);
+            let divRow = document.createElement('div');
+            divRow.classList.add('machineselection-category-row');
+            divDisplayGroup.appendChild(checkbox);
+            divDisplayGroup.appendChild(spanDisplay);
+            divDisplayGroup.appendChild(nbSel);
+            divRow.appendChild(showHide);
+            divRow.appendChild(divDisplayGroup);
             if (isMain)
-              divRow.addClass('is-main');
+              divRow.classList.add('is-main');
             if (groups[i].Dynamic) {
-              let spanDynamic = $('<span></span>').addClass('machineselection-dynamic-label')
-                .html(machineselection.getTranslation('dynamicKey', 'DYNAMIC'));
-              divRow.append(spanDynamic);
+              let spanDynamic = document.createElement('span');
+              spanDynamic.classList.add('machineselection-dynamic-label');
+              spanDynamic.textContent = machineselection.getTranslation('dynamicKey', 'DYNAMIC');
+              divRow.appendChild(spanDynamic);
             }
-            let category = $('<div></div>').addClass('machineselection-category').append(divRow);
+            let category = document.createElement('div');
+            category.classList.add('machineselection-category');
+            category.appendChild(divRow);
 
-            showHide.click(function () {
-              if ($(this).hasClass('closed')) {
-                $(this).removeClass('closed');
-                $(this).addClass('opened');
-                $(this).closest('.machineselection-category')
-                  .children('.machineselection-category-content').toggle();
+            showHide.addEventListener('click', function () {
+              if (this.classList.contains('closed')) {
+                this.classList.remove('closed');
+                this.classList.add('opened');
+                let content = this.closest('.machineselection-category')
+                  .querySelector('.machineselection-category-content');
+                if (content) content.style.display = '';
               }
-              else if ($(this).hasClass('opened')) {
-                $(this).removeClass('opened');
-                $(this).addClass('closed');
-                $(this).closest('.machineselection-category')
-                  .children('.machineselection-category-content').toggle();
+              else if (this.classList.contains('opened')) {
+                this.classList.remove('opened');
+                this.classList.add('closed');
+                let content = this.closest('.machineselection-category')
+                  .querySelector('.machineselection-category-content');
+                if (content) content.style.display = 'none';
               }
             });
 
-            checkbox.change(function (machineselection) {
-              return function () {
-                machineselection._switchToGroupSelection();
+            checkbox.addEventListener('change', function () {
+              machineselection._switchToGroupSelection();
 
-                let group = $(this).attr('groupid');
-                let isChecked = $(this).is(':checked');
-                if (isChecked) {
-                  if (!machineselection._groupSelectionArray.includes(group))
-                    machineselection._groupSelectionArray.push(group);
-                }
-                else {
-                  machineselection._groupSelectionArray =
-                    machineselection._groupSelectionArray.filter(
-                      function (value, index, arr) {
-                        return value != group;
-                      }
-                    );
-                }
-                let changedCategory = $(machineselection._dialogPage1).find('input[groupid=' + group + ']');
-                changedCategory.prop('checked', isChecked);
-
-                for (let iChanged = 0; iChanged < changedCategory.length; iChanged++) {
-                  let parentsCat = $(changedCategory[iChanged]).parents('.machineselection-category');
-                  for (let iParent = 0; iParent < parentsCat.length; iParent++)
-                    machineselection._updateNumberOfSelections(parentsCat[iParent]);
-                }
-                machineselection._fillSelection();
+              let group = checkbox.getAttribute('groupid');
+              let isChecked = checkbox.checked;
+              if (isChecked) {
+                if (!machineselection._groupSelectionArray.includes(group))
+                  machineselection._groupSelectionArray.push(group);
               }
-            }(machineselection));
+              else {
+                machineselection._groupSelectionArray =
+                  machineselection._groupSelectionArray.filter(
+                    function (value, index, arr) {
+                      return value != group;
+                    }
+                  );
+              }
+              let changedCategory = machineselection._dialogPage1.querySelectorAll('input[groupid="' + group + '"]');
+              changedCategory.forEach(cb => cb.checked = isChecked);
+
+              let categoriesToUpdate = new Set();
+              changedCategory.forEach(cb => {
+                let parent = cb.closest('.machineselection-category');
+                while (parent && parent.classList.contains('machineselection-category')) {
+                  categoriesToUpdate.add(parent);
+                  parent = parent.parentElement.closest('.machineselection-category');
+                }
+              });
+              categoriesToUpdate.forEach(cat => machineselection._updateNumberOfSelections(cat));
+              machineselection._fillSelection();
+            });
 
             if (!pulseUtility.isNotDefined(groups[i].Zoom)) {
-              let hiddenSubGroup = $('<div></div>').addClass('machineselection-category-content');
+              let hiddenSubGroup = document.createElement('div');
+              hiddenSubGroup.classList.add('machineselection-category-content');
               let nbSubSubGroups = getSubGroups(machineselection, hiddenSubGroup, groups[i].Zoom);
               if (nbSubSubGroups > 0) {
-                category.append(hiddenSubGroup);
-                category.addClass('expandable');
-                hiddenSubGroup.css('display', 'none');
-                showHide.addClass('closed');
+                category.appendChild(hiddenSubGroup);
+                category.classList.add('expandable');
+                hiddenSubGroup.style.display = 'none';
+                showHide.classList.add('closed');
               }
             }
             else {
-              showHide.empty();
-              showHide.addClass('noChild');
+              showHide.replaceChildren();
+              showHide.classList.add('noChild');
             }
 
-            container.append(category);
+            container.appendChild(category);
             nbSubGroups++;
           }
         }
         return nbSubGroups;
       }
 
-      this._categoryList.empty();
-      let fullListToScroll = $('<div></div>').addClass('machineselection-categorylist-full');
+      this._categoryList.replaceChildren();
+      let fullListToScroll = document.createElement('div');
+      fullListToScroll.classList.add('machineselection-categorylist-full');
       let list = '';
       for (let catIndex = 0; catIndex < this._groups.length; catIndex++) {
         let groups = this._groups[catIndex].Groups;
@@ -1455,59 +1582,71 @@ require('x-freetext/x-freetext');
         if (groups != null && groups.length > 0) {
           if (!pulseUtility.isNotDefined(omitCat) && omitCat == true
             && groups.length == 1 && groups[0].Display != '') {
-            let category = $('<div></div>').addClass('machineselection-category')
-              .addClass('main-category');
+            let category = document.createElement('div');
+            category.classList.add('machineselection-category', 'main-category');
             let nbSubGroups = getSubGroups(this, category, groups, true);
             if (nbSubGroups == 1)
-              fullListToScroll.append(category);
+              fullListToScroll.appendChild(category);
 
           }
           else {
-            let svgShow = $('<div></div>').addClass('show-sub');
-            let svgHide = $('<div></div>').addClass('hide-sub');
-            let showHide = $('<div></div>').addClass('machineselection-subcategory-visibility')
-              .append(svgShow).append(svgHide);
+            let svgShow = document.createElement('div');
+            svgShow.classList.add('show-sub');
+            let svgHide = document.createElement('div');
+            svgHide.classList.add('hide-sub');
+            let showHide = document.createElement('div');
+            showHide.classList.add('machineselection-subcategory-visibility');
+            showHide.appendChild(svgShow);
+            showHide.appendChild(svgHide);
             pulseSvg.inlineBackgroundSvg(svgShow);
             pulseSvg.inlineBackgroundSvg(svgHide);
 
-            let span = $('<span></span>').addClass('category-display')
-              .html(this._groups[catIndex].Display);
-            let nbSel = $('<span></span>').addClass('number-of-selections').html('');
-            let divHeader = $('<div></div>')
-              .addClass('machineselection-category-row').addClass('is-main')
-              .append(showHide).append(span).append(nbSel);
-            let category = $('<div></div>').addClass('machineselection-category')
-              .addClass('main-category')
-              .append(divHeader);
+            let span = document.createElement('span');
+            span.classList.add('category-display');
+            span.textContent = this._groups[catIndex].Display;
+            let nbSel = document.createElement('span');
+            nbSel.classList.add('number-of-selections');
+            nbSel.textContent = '';
+            let divHeader = document.createElement('div');
+            divHeader.classList.add('machineselection-category-row', 'is-main');
+            divHeader.appendChild(showHide);
+            divHeader.appendChild(span);
+            divHeader.appendChild(nbSel);
+            let category = document.createElement('div');
+            category.classList.add('machineselection-category', 'main-category');
+            category.appendChild(divHeader);
 
-            showHide.click(function () {
-              if ($(this).hasClass('closed')) {
-                $(this).removeClass('closed');
-                $(this).addClass('opened');
-                $(this).closest('.machineselection-category')
-                  .children('.machineselection-category-content').toggle();
+            showHide.addEventListener('click', function () {
+              if (this.classList.contains('closed')) {
+                this.classList.remove('closed');
+                this.classList.add('opened');
+                let content = this.closest('.machineselection-category')
+                  .querySelector('.machineselection-category-content');
+                if (content) content.style.display = '';
               }
-              else if ($(this).hasClass('opened')) {
-                $(this).removeClass('opened');
-                $(this).addClass('closed');
-                $(this).closest('.machineselection-category')
-                  .children('.machineselection-category-content').toggle();
+              else if (this.classList.contains('opened')) {
+                this.classList.remove('opened');
+                this.classList.add('closed');
+                let content = this.closest('.machineselection-category')
+                  .querySelector('.machineselection-category-content');
+                if (content) content.style.display = 'none';
               }
             });
 
-            let hiddenSubGroup = $('<div style="display:none;"></div>').addClass('machineselection-category-content');
+            let hiddenSubGroup = document.createElement('div');
+            hiddenSubGroup.classList.add('machineselection-category-content');
+            hiddenSubGroup.style.display = 'none';
             let nbSubGroups = getSubGroups(this, hiddenSubGroup, groups);
             if (nbSubGroups > 0) {
-              category.append(hiddenSubGroup);
-              category.addClass('expandable');
-              showHide.addClass('closed');
+              category.appendChild(hiddenSubGroup);
+              category.classList.add('expandable');
+              showHide.classList.add('closed');
             }
-            fullListToScroll.append(category);
+            fullListToScroll.appendChild(category);
           }
         }
       }
-      fullListToScroll.append(list);
-      this._categoryList.append(fullListToScroll);
+      this._categoryList.appendChild(fullListToScroll);
     }
 
     /**
@@ -1521,33 +1660,40 @@ require('x-freetext/x-freetext');
       if (this._dialogPage1 == undefined)
         return;
 
-      $(this._dialogPage1).find('input:checkbox').prop('checked', false);
+      let allCheckboxes = this._dialogPage1.querySelectorAll('input[type="checkbox"]');
+      allCheckboxes.forEach(cb => cb.checked = false);
 
       for (let i = 0; i < this._groupSelectionArray.length; i++) {
         let group = this._groupSelectionArray[i];
-        let selectedCategory = $(this._dialogPage1).find('input[groupid=' + group + ']');
-        if (selectedCategory.length == 0) {
+        let selectedCategories = this._dialogPage1.querySelectorAll('input[groupid="' + group + '"]');
+        if (selectedCategories.length == 0) {
           console.warn('Check group configuration for ' + group);
           this._groupSelectionArray.splice(i, 1);
           this._changeSelectionInCategoryList(andOpen);
           return;
         }
         else {
-          selectedCategory.prop('checked', true);
+          selectedCategories.forEach(cb => cb.checked = true);
 
-          for (let iCat = 0; iCat < selectedCategory.length; iCat++) {
-            if (andOpen == true) {
-              $(selectedCategory[iCat]).parents('.machineselection-category')
-                .find('.machineselection-category-content').show();
-              $(selectedCategory[iCat]).parents('.closed')
-                .addClass('opened').removeClass('closed');
-            }
+          if (andOpen == true) {
+            selectedCategories.forEach(cb => {
+              let parent = cb.closest('.machineselection-category');
+              while (parent && parent.classList.contains('machineselection-category')) {
+                let content = parent.querySelector('.machineselection-category-content');
+                if (content) content.style.display = '';
+                let visibility = parent.querySelector('.machineselection-subcategory-visibility');
+                if (visibility && visibility.classList.contains('closed')) {
+                  visibility.classList.remove('closed');
+                  visibility.classList.add('opened');
+                }
+                parent = parent.parentElement.closest('.machineselection-category');
+              }
+            });
           }
         }
       }
-      let parentsCat = $(this._dialogPage1).find('.machineselection-category');
-      for (let iParent = 0; iParent < parentsCat.length; iParent++)
-        this._updateNumberOfSelections(parentsCat[iParent]);
+      let parentsCat = this._dialogPage1.querySelectorAll('.machineselection-category');
+      parentsCat.forEach(cat => this._updateNumberOfSelections(cat));
 
       this._fillSelection();
     }
@@ -1559,9 +1705,9 @@ require('x-freetext/x-freetext');
     _fillSummaryDisplay() {
       if (this._summary == undefined)
         return;
-      $(this._summary).empty();
+      this._summary.replaceChildren();
 
-      let ul = $('<div></div>');
+      let ul = document.createElement('div');
 
       let arrayToDisplay;
       if (false == this._useMachineSelection)
@@ -1577,24 +1723,27 @@ require('x-freetext/x-freetext');
           let displayClass = this._groupDisplays.get(groupId);
           display = displayClass.display;
         }
-        let li = $('<div></div>');
-        let span = $('<span></span>').html(display);
-        li.append(span);
-        ul.append(li);
+        let li = document.createElement('div');
+        let span = document.createElement('span');
+        span.textContent = display;
+        li.appendChild(span);
+        ul.appendChild(li);
         oneGroupIsAdded = true;
       }
 
       if (!oneGroupIsAdded) {
-        this._summary.html(this.getTranslation('noSelectedMachine', 'No selected machine'));
-        this._summary.addClass('missing-config');
-        $(this.element).parent().addClass('missing-config');
-        $(this.element).parent().parent().addClass('missing-config');
+        this._summary.textContent = this.getTranslation('noSelectedMachine', 'No selected machine');
+        this._summary.classList.add('missing-config');
+        if (this.element.parentElement) this.element.parentElement.classList.add('missing-config');
+        if (this.element.parentElement && this.element.parentElement.parentElement)
+          this.element.parentElement.parentElement.classList.add('missing-config');
       }
       else {
-        this._summary.append(ul);
-        this._summary.removeClass('missing-config');
-        $(this.element).parent().removeClass('missing-config');
-        $(this.element).parent().parent().removeClass('missing-config');
+        this._summary.appendChild(ul);
+        this._summary.classList.remove('missing-config');
+        if (this.element.parentElement) this.element.parentElement.classList.remove('missing-config');
+        if (this.element.parentElement && this.element.parentElement.parentElement)
+          this.element.parentElement.parentElement.classList.remove('missing-config');
       }
     }
 
@@ -1606,9 +1755,13 @@ require('x-freetext/x-freetext');
     fillExternalSummaryDisplay(summary) {
       if (summary == undefined)
         return;
-      $(summary).empty();
+      if (summary instanceof Element) {
+        summary.replaceChildren();
+      } else {
+        return;
+      }
 
-      let ul = $('<div></div>');
+      let ul = document.createElement('div');
 
       let arrayToDisplay;
       if (false == this._useMachineSelection)
@@ -1624,20 +1777,21 @@ require('x-freetext/x-freetext');
           let displayClass = this._groupDisplays.get(groupId);
           display = displayClass.display;
         }
-        let li = $('<div></div>');
-        let span = $('<span></span>').html(display);
-        li.append(span);
-        ul.append(li);
+        let li = document.createElement('div');
+        let span = document.createElement('span');
+        span.textContent = display;
+        li.appendChild(span);
+        ul.appendChild(li);
         oneGroupIsAdded = true;
       }
 
       if (!oneGroupIsAdded) {
-        summary.html(this.getTranslation('noSelectedMachine', 'No selected machine'));
-        summary.addClass('missing-config');
+        summary.textContent = this.getTranslation('noSelectedMachine', 'No selected machine');
+        summary.classList.add('missing-config');
       }
       else {
-        summary.append(ul);
-        summary.removeClass('missing-config');
+        summary.appendChild(ul);
+        summary.classList.remove('missing-config');
       }
     }
 

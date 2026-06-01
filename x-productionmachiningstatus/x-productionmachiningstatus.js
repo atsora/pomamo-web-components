@@ -58,8 +58,10 @@ var eventBus = require('eventBus');
     // reordered by perf.
     _orderUsingShiftEfficiency () {
       if (this.element.getAttribute('order-by-efficiency') !== 'true') return;
-      let parentsToOrder = $(this.element).parents('.group-single');
-      $(parentsToOrder).css('order', Math.round(100.0 * this._shiftEfficiency));
+      let parentToOrder = this.element.closest('.group-single');
+      if (parentToOrder) {
+        parentToOrder.style.order = Math.round(100.0 * this._shiftEfficiency);
+      }
     }
 
     /**
@@ -88,17 +90,17 @@ var eventBus = require('eventBus');
 
       if (needToRefresh) {
         // empty
-        $(this._content).find('.pulse-cellbar-first').remove();
+        let cells = this._content.querySelectorAll('.pulse-cellbar-first');
+        cells.forEach(cell => cell.remove());
 
         for (const workInformation of workInformations) {
           // workinformation value is defined
           if (workInformation.Value) {
-            let div = $('<div></div>');
-            div.addClass('pulse-cellbar-first')
-              .addClass('pulse-cellbar-current-data')
-              .attr('kind', workInformation.Kind);
-            div.html(workInformation.Value);
-            div.insertBefore(this._between);
+            let div = document.createElement('div');
+            div.classList.add('pulse-cellbar-first', 'pulse-cellbar-current-data');
+            div.setAttribute('kind', workInformation.Kind);
+            div.innerHTML = workInformation.Value;
+            this._between.parentNode.insertBefore(div, this._between);
           }
         } // end for
         this._displayedWorkInformations = workInformations;
@@ -110,17 +112,18 @@ var eventBus = require('eventBus');
       switch (attr) {
         case 'bar-style':
           if (newVal == 'true') {
-            $(this.element).addClass('pulse-lastbar');
-            $(this.element).removeClass('pulse-text');
+            this.element.classList.add('pulse-lastbar');
+            this.element.classList.remove('pulse-text');
           }
           else {
-            $(this.element).addClass('pulse-text');
-            $(this.element).removeClass('pulse-lastbar');
+            this.element.classList.add('pulse-text');
+            this.element.classList.remove('pulse-lastbar');
           }
           break;
         case 'machine-id':
           // Empty excepted message and loaded
-          $(this._content).find('.pulse-cellbar-first, .pulse-cellbar-last').remove();
+          let cells = this._content.querySelectorAll('.pulse-cellbar-first, .pulse-cellbar-last');
+          cells.forEach(cell => cell.remove());
           this._displayedWorkInformations = null;
 
           this.start();
@@ -139,37 +142,45 @@ var eventBus = require('eventBus');
       // Update here some internal parameters
 
       if (this.element.getAttribute('bar-style') == 'true') {
-        $(this.element).addClass('pulse-lastbar');
+        this.element.classList.add('pulse-lastbar');
       }
       else {
-        $(this.element).addClass('pulse-text');
+        this.element.classList.add('pulse-text');
       }
 
       // listeners/dispatchers
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._displayedWorkInformations = null;
 
       // Create DOM
-      this._between = $('<div></div>').addClass('pulse-cellbar-between');
+      this._between = document.createElement('div');
+      this._between.classList.add('pulse-cellbar-between');
       // Main
-      this._content = $('<div></div>')
-        .addClass('pulse-cellbar-main').append(this._between);
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.classList.add('pulse-cellbar-main');
+      this._content.appendChild(this._between);
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.classList.add('pulse-message');
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.classList.add('pulse-message-div');
+      messageDiv.appendChild(this._messageSpan);
+      this.element.appendChild(messageDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -179,7 +190,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._displayedWorkInformations = null;
 
       this._between = undefined;
@@ -210,11 +221,12 @@ var eventBus = require('eventBus');
 
     displayError (message) {
       // Empty excepted message and loaded
-      //$(this._content).find('.pulse-cellbar-first, .pulse-cellbar-last').remove();
+      //let cells = this._content.querySelectorAll('.pulse-cellbar-first, .pulse-cellbar-last');
+      //cells.forEach(cell => cell.remove());
       //this._displayedWorkInformations = workInformations;
 
 
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
 
       if (this.element.hasAttribute('display-context')) {
         eventBus.EventBus.dispatchToContext('displayChangeEvent',
@@ -231,7 +243,7 @@ var eventBus = require('eventBus');
     }
 
     removeError () {
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
     }
 
     get refreshRate () {
@@ -320,35 +332,38 @@ var eventBus = require('eventBus');
       }
       else {
         // clean
-        $(this._content).find('.pulse-cellbar-last').remove();
+        let lastCell = this._content.querySelector('.pulse-cellbar-last');
+        if (lastCell) lastCell.remove();
 
-        let shiftDiv = $('<div></div>')
-          .addClass('pulse-cellbar-last')
-          //.addClass('pulse-cellbar-past-data') // No, because not clickable
-          .addClass('pulse-cellbar-left-border')
-          .addClass('productionmachiningstatus-shift');
+        let shiftDiv = document.createElement('div');
+        shiftDiv.classList.add('pulse-cellbar-last', 'pulse-cellbar-left-border', 'productionmachiningstatus-shift');
+        // .classList.add('pulse-cellbar-past-data') // No, because not clickable
 
         if (data.NbPiecesDoneDuringShift != undefined) {
           // Shift display
-          let shiftSpan = $('<span></span>')
-            .addClass('productionmachiningstatus-shiftspan');
-          $(shiftSpan).html(doneGoal);
-          let linkReport = $('<a></a>').addClass('productionmachiningstatus-linkreport'); // Keep <a> it to quickly restore any link here
-          linkReport.attr('target', '_blank'); // To open in a new tab
-          linkReport.append($('<span>Shift</span>')
-            .addClass('productionmachiningstatus-shiftlabel'));
+          let shiftSpan = document.createElement('span');
+          shiftSpan.classList.add('productionmachiningstatus-shiftspan');
+          shiftSpan.innerHTML = doneGoal;
+          let linkReport = document.createElement('a');
+          linkReport.classList.add('productionmachiningstatus-linkreport'); // Keep <a> it to quickly restore any link here
+          linkReport.setAttribute('target', '_blank'); // To open in a new tab
+          let shiftLabel = document.createElement('span');
+          shiftLabel.classList.add('productionmachiningstatus-shiftlabel');
+          shiftLabel.textContent = 'Shift';
+          linkReport.appendChild(shiftLabel);
           if (data.Shift && data.Shift.Display) {
-            $(linkReport).html(data.Shift.Display);
+            linkReport.innerHTML = data.Shift.Display;
           }
           else {
-            $(linkReport).html('Out of shift');
+            linkReport.innerHTML = 'Out of shift';
           }
 
-          shiftDiv.append(linkReport).append(shiftSpan);
+          shiftDiv.appendChild(linkReport);
+          shiftDiv.appendChild(shiftSpan);
         }
         if ('' != classToAdd)
-          $(shiftDiv).addClass(classToAdd); //bad-efficiency...
-        shiftDiv.insertAfter(this._between);
+          shiftDiv.classList.add(classToAdd); //bad-efficiency...
+        this._between.parentNode.insertBefore(shiftDiv, this._between.nextSibling);
       }
 
       this._orderUsingShiftEfficiency();

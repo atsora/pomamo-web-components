@@ -85,15 +85,15 @@ var eventBus = require('eventBus');
     _buildItems() {
       let boxtocloneid = this.element.getAttribute('templateid') || 'boxtoclone';
 
-      // Remove machines no longer in list
-      let self = this;
-      $(this.element).find('.group-single').each(function () {
-        let machineId = String($(this).attr('machine-id')).trim();
-        let found = self._machineIdsArray.some(id => String(id).trim() === machineId);
+      let singles = this.element.querySelectorAll('.group-single');
+      singles.forEach(el => {
+        let machineId = String(el.getAttribute('machine-id')).trim();
+        let found = this._machineIdsArray.some(id => String(id).trim() === machineId);
         if (!found) {
-          $(this).remove();
+          el.remove();
         } else {
-          $(this).find('*').addClass('disableDeleteWhenDisconnect');
+          let allDescendants = el.querySelectorAll('*');
+          allDescendants.forEach(desc => desc.classList.add('disableDeleteWhenDisconnect'));
         }
       });
 
@@ -103,38 +103,29 @@ var eventBus = require('eventBus');
       }
       this.removeError();
 
-      // Add new / reuse existing items, preserving order. Only re-append
-      // an existing item if it's not already at the right position —
-      // append() detaches and re-attaches the element, triggering
-      // disconnect/reconnect on every cloned per-machine component.
-      let contentEl = this._content[0];
-      let existingChildren = contentEl.children;
       for (let i = 0; i < this._machineIdsArray.length; i++) {
         let singleid = String(this._machineIdsArray[i]).trim();
-        let machineRow = $(this._content).find(".group-single[machine-id='" + singleid + "']");
-        if (machineRow.length != 0) {
-          let existing = machineRow[0];
-          // Find the expected position among `.group-single` siblings (ignore
-          // loader/message divs which precede them).
-          let groupSingles = $(this._content).find('.group-single');
-          if (groupSingles[i] !== existing) {
-            $(this._content).append(existing);
+        let machineRow = this._content.querySelector(".group-single[machine-id='" + singleid + "']");
+        if (machineRow) {
+          let groupSingles = this._content.querySelectorAll('.group-single');
+          if (groupSingles[i] !== machineRow) {
+            this._content.appendChild(machineRow);
           }
         } else {
           let copy = pulseUtility.cloneWithNewMachineId(boxtocloneid, singleid);
-          let li = $('<div></div>').addClass('group-single');
-          li.attr('machine-id', singleid);
-          li.append(copy);
-          $(this._content).append(li);
+          let li = document.createElement('div');
+          li.classList.add('group-single');
+          li.setAttribute('machine-id', singleid);
+          li.appendChild(copy);
+          this._content.appendChild(li);
         }
       }
 
-      // Activate first machinetab if none active
-      let $tabs = $(this._content).find('x-machinetab');
-      if ($tabs && $tabs.length > 0) {
-        let $activeTab = $tabs.filter('[active="true"]');
-        if ($activeTab.length === 0) {
-          $tabs[0].setAttribute('active', 'true');
+      let tabs = this._content.querySelectorAll('x-machinetab');
+      if (tabs && tabs.length > 0) {
+        let activeTab = this._content.querySelector('x-machinetab[active="true"]');
+        if (!activeTab) {
+          tabs[0].setAttribute('active', 'true');
         }
       }
 
@@ -142,8 +133,8 @@ var eventBus = require('eventBus');
     }
 
     _removeDisable() {
-      $(this.element).find('.disableDeleteWhenDisconnect')
-        .removeClass('disableDeleteWhenDisconnect');
+      let elements = this.element.querySelectorAll('.disableDeleteWhenDisconnect');
+      elements.forEach(el => el.classList.remove('disableDeleteWhenDisconnect'));
     }
 
     /**
@@ -160,13 +151,13 @@ var eventBus = require('eventBus');
 
       this.element.style.setProperty('--visible-count', visibleStrIds.length);
 
-      $(this._content).find('.group-single').each(function () {
-        let el = $(this);
-        let id = String(el.attr('machine-id')).trim();
+      let singles = this._content.querySelectorAll('.group-single');
+      singles.forEach(el => {
+        let id = String(el.getAttribute('machine-id')).trim();
         if (visibleStrIds.includes(id)) {
-          el.show();
+          el.style.display = '';
         } else {
-          el.hide();
+          el.style.display = 'none';
         }
       });
     }
@@ -205,29 +196,39 @@ var eventBus = require('eventBus');
 
     initialize() {
       this.addClass('pulse-bigdisplay');
-      $(this.element).empty();
+      this.element.replaceChildren();
 
-      this._content = $('<div></div>').addClass('group-main');
-      $(this.element).addClass('group').append(this._content);
+      this._content = document.createElement('div');
+      this._content.classList.add('group-main');
+      this.element.classList.add('group');
+      this.element.appendChild(this._content);
 
-      // Loader DOM kept (hidden) — surfaced by CSS via `.pulse-component-loading`.
-      let loader = $('<div></div>').addClass('pulse-loader')
-        .html(this.getTranslation('loadingDots', 'Loading...')).hide();
-      $(this._content).append($('<div></div>').addClass('pulse-loader-div').append(loader));
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.textContent = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
 
-      this._messageSpan = $('<span></span>').addClass('pulse-message').html('');
-      this._messageDiv = $('<div></div>').addClass('pulse-message-div').append(this._messageSpan);
-      $(this._content).append(this._messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.classList.add('pulse-message');
+      this._messageSpan.textContent = '';
+      this._messageDiv = document.createElement('div');
+      this._messageDiv.classList.add('pulse-message-div');
+      this._messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(this._messageDiv);
 
       if (!this._isStandalone() && eventBus.EventBus.addEventListener) {
-        eventBus.EventBus.addEventListener(this, 'updateVisibleMachines', 'PAGE', this.onUpdateVisibility);
+        eventBus.EventBus.addEventListener(this, 'updateVisibleMachines', 'PAGE', this.onUpdateVisibility.bind(this));
       }
 
       this.switchToNextContext();
     }
 
     clearInitialization() {
-      $(this.element).empty();
+      this.element.replaceChildren();
       this.removeError();
       this._messageSpan = undefined;
       this._messageDiv = undefined;
@@ -257,13 +258,13 @@ var eventBus = require('eventBus');
     }
 
     displayError(message) {
-      $(this._messageSpan).html(message);
-      if (this._messageDiv) this._messageDiv.addClass('force-visibility');
+      this._messageSpan.textContent = message;
+      if (this._messageDiv) this._messageDiv.classList.add('force-visibility');
     }
 
     removeError() {
-      $(this._messageSpan).html('');
-      if (this._messageDiv) this._messageDiv.removeClass('force-visibility');
+      this._messageSpan.textContent = '';
+      if (this._messageDiv) this._messageDiv.classList.remove('force-visibility');
     }
 
     /**

@@ -32,30 +32,33 @@ var eventBus = require('eventBus');
 
     initialize() {
       this.addClass('pulse-rotationprogress');
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Read display mode (default 'bar' if not specified)
       this._mode = this.element.getAttribute('display-mode') || 'bar';
 
       // --- BAR MODE ---
       if (this._mode === 'bar') {
-        this._barContainer = $('<div></div>').addClass('rotation-progress-track');
-        this._bar = $('<div></div>').addClass('rotation-progress-bar');
-        this._barContainer.append(this._bar);
-        $(this.element).append(this._barContainer);
+        this._barContainer = document.createElement('div');
+        this._barContainer.className = 'rotation-progress-track';
+        this._bar = document.createElement('div');
+        this._bar.className = 'rotation-progress-bar';
+        this._barContainer.appendChild(this._bar);
+        this.element.appendChild(this._barContainer);
       }
 
       // --- TEXT MODE ---
       if (this._mode === 'text') {
-        this._text = $('<div></div>').addClass('rotation-progress-text');
-        $(this.element).append(this._text);
+        this._text = document.createElement('div');
+        this._text.className = 'rotation-progress-text';
+        this.element.appendChild(this._text);
       }
 
       if (eventBus.EventBus.addGlobalEventListener) {
         eventBus.EventBus.addGlobalEventListener(this, 'rotationPageUpdate', this.onRotationUpdate);
       }
 
-      $(this.element).hide();
+      this.element.style.display = 'none';
       this.switchToNextContext();
     }
 
@@ -72,25 +75,24 @@ var eventBus = require('eventBus');
       let delay = data.delay;
 
       if (!total || total <= 1 || !delay) {
-        $(this.element).hide();
+        this.element.style.display = 'none';
         return;
       }
 
-      $(this.element).show();
+      this.element.style.display = '';
 
       // Update TEXT
       if (this._mode === 'text' && this._text) {
-        this._text.html(this.getTranslation('page', 'Page') + ' ' + page + ' / ' + total);
+        this._text.innerHTML = this.getTranslation('page', 'Page') + ' ' + page + ' / ' + total;
       }
 
       // Update BAR
       if (this._mode === 'bar' && this._bar) {
-        this._bar.stop(true, true).css({ 'width': '0%', 'transition': 'none' });
-        this._bar[0].offsetHeight; // Force reflow
-        this._bar.css({
-          'transition': 'width ' + delay + 'ms linear',
-          'width': '100%'
-        });
+        this._bar.style.width = '0%';
+        this._bar.style.transition = 'none';
+        this._bar.offsetHeight; // Force reflow
+        this._bar.style.transition = 'width ' + delay + 'ms linear';
+        this._bar.style.width = '100%';
       }
     }
   }

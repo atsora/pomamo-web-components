@@ -11,36 +11,45 @@ var pulseConfig = require('pulseConfig');
 // LEFT PANEL = NAVIGATION  //
 //////////////////////////////
 var openNavigationPanel = function (fast) {
-  $('.menuicon').addClass('tooltip_disabled');
-  if ($('#navigationpanelbtn').hasClass('disabled'))
+  let menuicons = document.querySelectorAll('.menuicon');
+  menuicons.forEach(icon => icon.classList.add('tooltip_disabled'));
+  let navBtn = document.getElementById('navigationpanelbtn');
+  if (navBtn.classList.contains('disabled'))
     return;
+  let navPanel = document.getElementById('pulse-panel-navigation');
+  let pulseInner = document.getElementById('pulse-inner');
   if (fast)
-    $('#pulse-panel-navigation').addClass('notransition');
+    navPanel.classList.add('notransition');
   else
-    $('#pulse-panel-navigation').removeClass('notransition');
-  $('#pulse-inner').removeClass('pulse-panel-navigation-collapsed');
-  $('#navigationpanelbtn').addClass('activated');
+    navPanel.classList.remove('notransition');
+  pulseInner.classList.remove('pulse-panel-navigation-collapsed');
+  navBtn.classList.add('activated');
 };
 
 var closeNavigationPanel = function (fast) {
-  $('.menuicon').removeClass('tooltip_disabled');
+  let menuicons = document.querySelectorAll('.menuicon');
+  menuicons.forEach(icon => icon.classList.remove('tooltip_disabled'));
+  let navPanel = document.getElementById('pulse-panel-navigation');
+  let pulseInner = document.getElementById('pulse-inner');
   if (fast)
-    $('#pulse-panel-navigation').addClass('notransition');
+    navPanel.classList.add('notransition');
   else
-    $('#pulse-panel-navigation').removeClass('notransition');
-  $('#pulse-inner').addClass('pulse-panel-navigation-collapsed');
-  $('#navigationpanelbtn').removeClass('activated');
+    navPanel.classList.remove('notransition');
+  pulseInner.classList.add('pulse-panel-navigation-collapsed');
+  document.getElementById('navigationpanelbtn').classList.remove('activated');
 };
 
 var populateNavigationPanel = function () {
 
   // First init open/close panel
   // Click to show / hide the navigation panel
-  $('#navigationpanelbtn').click(function (e) {
-    if ($('#pulse-inner').hasClass('pulse-panel-navigation-collapsed')) {
+  let navBtn = document.getElementById('navigationpanelbtn');
+  navBtn.addEventListener('click', function (e) {
+    let pulseInner = document.getElementById('pulse-inner');
+    if (pulseInner.classList.contains('pulse-panel-navigation-collapsed')) {
       // is closed -> open
       openNavigationPanel();
-      if ($(window).width() <= 685)
+      if (window.innerWidth <= 685)
         closeParameterPanel(false);
     }
     else { // is opened -> close
@@ -54,25 +63,26 @@ var populateNavigationPanel = function () {
   let displayedPages = tagConfig.displayedPages;
 
   if (displayedPages == null || displayedPages.length == 0) {
-    $('#pulse-panel-navigation').hide();
-    $('#navigationpanelbtn').addClass('disabled');
+    let navPanel = document.getElementById('pulse-panel-navigation');
+    navPanel.style.display = 'none';
+    navBtn.classList.add('disabled');
     if (currentPage != 'index')
       window.location = 'index.html';
     return; // Nothing to display
   }
   let allDisplayedPages = displayedPages;
 
-  $('#navigationpanelbtn').removeClass('disabled');
+  navBtn.classList.remove('disabled');
 
   // Menu type
   let textOrNothing = true;
   if (!textOrNothing) {
-    $('#pulse-inner').addClass('navigation-always-visible');
+    document.getElementById('pulse-inner').classList.add('navigation-always-visible');
   }
 
   let mapTextMenu = {};
   //allDisplayedPages.unshift('home');
-  let ul = $('#navbar > ul');
+  let ul = document.querySelector('#navbar > ul');
   for (let i = 0; i < allDisplayedPages.length; i++) {
     let pageName = allDisplayedPages[i].pageName;
 
@@ -90,17 +100,34 @@ var populateNavigationPanel = function () {
     let selection = (pageName == currentPage);
     if (textOrNothing) {
       if (subtitle == '') {
-        li = $('<li data="' + pageName + '"><span class="menutext">' + title + '</span></li>');
+        li = document.createElement('li');
+        li.setAttribute('data', pageName);
+        li.innerHTML = '<span class="menutext">' + title + '</span>';
       }
       else {
         if (title in mapTextMenu) {
           li = mapTextMenu[title];
-          li.find('ul').append(
-            $('<li ' + (selection ? ' class="selected" ' : '') + 'data="' + pageName + '">' + subtitle + '</li>')
-          );
+          let ulChild = li.querySelector('ul');
+          let newLi = document.createElement('li');
+          if (selection) newLi.className = 'selected';
+          newLi.setAttribute('data', pageName);
+          newLi.textContent = subtitle;
+          ulChild.appendChild(newLi);
         }
         else {
-          li = $('<li class="expandable"><span class="menutext">' + title + '</span><ul><li ' + (selection ? ' class="selected" ' : '') + 'data="' + pageName + '">' + subtitle + '</li></ul></li>');
+          li = document.createElement('li');
+          li.className = 'expandable';
+          let span = document.createElement('span');
+          span.className = 'menutext';
+          span.textContent = title;
+          let ulChild = document.createElement('ul');
+          let newLi = document.createElement('li');
+          if (selection) newLi.className = 'selected';
+          newLi.setAttribute('data', pageName);
+          newLi.textContent = subtitle;
+          ulChild.appendChild(newLi);
+          li.appendChild(span);
+          li.appendChild(ulChild);
           mapTextMenu[title] = li;
         }
       }
@@ -108,45 +135,62 @@ var populateNavigationPanel = function () {
     else {
       if (subtitle != '')
         title += ' (' + subtitle + ')';
-      li = $('<li data="' + pageName + '"><div class="menuicon"></div><span class="menutext">' + title + '</span></li>');
-      li.find('.menuicon').css('background-image', 'url(images/' + pageName + '-icon.svg)');
+      li = document.createElement('li');
+      li.setAttribute('data', pageName);
+      let icon = document.createElement('div');
+      icon.className = 'menuicon';
+      icon.style.backgroundImage = 'url(images/' + pageName + '-icon.svg)';
+      let span = document.createElement('span');
+      span.className = 'menutext';
+      span.textContent = title;
+      li.appendChild(icon);
+      li.appendChild(span);
     }
 
     // Current selection
     if (selection) {
-      li.addClass('selected');
+      li.classList.add('selected');
     }
-    ul.append(li);
+    ul.appendChild(li);
 
   }
 };
 
 var setNavigationLinks = function () {
   // Open or hide sub menu
-  $('#navbar > ul > li.expandable > span').click(function () {
-    let previousState = $(this).parent().find('ul').is(':visible');
-    $('#navbar > ul > li > ul').hide();
-    if (!previousState)
-      $(this).parent().find('ul').show();
+  let expandables = document.querySelectorAll('#navbar > ul > li.expandable > span');
+  expandables.forEach(span => {
+    span.addEventListener('click', function () {
+      let parentLi = this.parentElement;
+      let subUl = parentLi.querySelector('ul');
+      let previousState = subUl.style.display === 'block';
+      let allSubUls = document.querySelectorAll('#navbar > ul > li > ul');
+      allSubUls.forEach(ul => ul.style.display = 'none');
+      if (!previousState)
+        subUl.style.display = 'block';
+    });
   });
 
   let fullURL = window.location.pathname;
-  $('#navbar li').each(function () {
+  let navbarLis = document.querySelectorAll('#navbar li');
+  navbarLis.forEach(li => {
     // Highlight the right navigation link, depending on the url
-    if (fullURL.indexOf('/' + $(this).attr('data') + '.html') !== -1) {
-      $(this).addClass('selected');
+    let dataAttr = li.getAttribute('data');
+    if (fullURL.indexOf('/' + dataAttr + '.html') !== -1) {
+      li.classList.add('selected');
 
       // Open and select the parent li if possible
-      let grandParent = $(this).parent().parent();
-      if (grandParent.hasClass('expandable')) {
-        grandParent.addClass('selected');
-        grandParent.find('ul').css('display', 'block');
+      let grandParent = li.parentElement.parentElement;
+      if (grandParent && grandParent.classList.contains('expandable')) {
+        grandParent.classList.add('selected');
+        let subUl = grandParent.querySelector('ul');
+        if (subUl) subUl.style.display = 'block';
       }
     }
 
     // Function called on click on left menu
-    $(this).click(function () {
-      let attribute = $(this).attr('data');
+    li.addEventListener('click', function () {
+      let attribute = this.getAttribute('data');
       if (attribute != null && attribute != '' && fullURL.indexOf('/' + attribute + '.html') == -1) {
         // Build the url with the role and the machines kept in memory
         let newfullURL = fullURL.substring(0, fullURL.lastIndexOf('/') + 1) + attribute + '.html';
@@ -164,31 +208,38 @@ var setNavigationLinks = function () {
 /////////////////////////
 
 var openParameterPanel = function (fast) {
-  if ($('#configpanelbtn').hasClass('disabled'))
+  let configBtn = document.getElementById('configpanelbtn');
+  if (configBtn.classList.contains('disabled'))
     return;
+  let paramPanel = document.getElementById('pulse-panel-parameter');
+  let pulseInner = document.getElementById('pulse-inner');
   if (fast)
-    $('#pulse-panel-parameter').addClass('notransition');
+    paramPanel.classList.add('notransition');
   else
-    $('#pulse-panel-parameter').removeClass('notransition');
-  $('#pulse-inner').removeClass('pulse-panel-parameter-collapsed');
-  $('#configpanelbtn').addClass('activated');
+    paramPanel.classList.remove('notransition');
+  pulseInner.classList.remove('pulse-panel-parameter-collapsed');
+  configBtn.classList.add('activated');
 };
 
 var closeParameterPanel = function (fast) {
+  let paramPanel = document.getElementById('pulse-panel-parameter');
+  let pulseInner = document.getElementById('pulse-inner');
   if (fast)
-    $('#pulse-panel-parameter').addClass('notransition');
+    paramPanel.classList.add('notransition');
   else
-    $('#pulse-panel-parameter').removeClass('notransition');
-  $('#pulse-inner').addClass('pulse-panel-parameter-collapsed');
-  $('#configpanelbtn').removeClass('activated');
+    paramPanel.classList.remove('notransition');
+  pulseInner.classList.add('pulse-panel-parameter-collapsed');
+  document.getElementById('configpanelbtn').classList.remove('activated');
 };
 
 var populateConfigPanel = function () {
   // Click to show / hide the parameter panel
-  $('#configpanelbtn').click(function (e) {
-    if ($('#pulse-inner').hasClass('pulse-panel-parameter-collapsed')) {
+  let configBtn = document.getElementById('configpanelbtn');
+  configBtn.addEventListener('click', function (e) {
+    let pulseInner = document.getElementById('pulse-inner');
+    if (pulseInner.classList.contains('pulse-panel-parameter-collapsed')) {
       openParameterPanel();
-      if ($(window).width() <= 685)
+      if (window.innerWidth <= 685)
         closeNavigationPanel(false);
     }
     else {
@@ -217,11 +268,16 @@ var themeManager = {
     // version -> Not here !
 
     // Load the new theme
-    $('head').append('<link rel="stylesheet" type="text/css" href="./styles/style_' + name + '/' + pageName + '.css">');
+    let newLink = document.createElement('link');
+    newLink.rel = 'stylesheet';
+    newLink.type = 'text/css';
+    newLink.href = './styles/style_' + name + '/' + pageName + '.css';
+    document.head.appendChild(newLink);
 
     // Unload the previous theme
     if (oldTheme != name) {
-      $('link[rel=stylesheet][href*="./styles/style_' + oldTheme + '/' + pageName + '.css"]').remove();
+      let oldLinks = document.querySelectorAll('link[rel=stylesheet][href*="./styles/style_' + oldTheme + '/' + pageName + '.css"]');
+      oldLinks.forEach(link => link.remove());
     }
   },
   current: function () {
@@ -230,9 +286,10 @@ var themeManager = {
 };
 
 var initTheme = function () {
-  $('#darkthemebtn').prop('checked', (themeManager.current() == 'dark'));
-  $('#darkthemebtn').click(function () {
-    themeManager.load(themeManager.current() == 'light' ? 'dark' : 'light'); // Idea: create a toggle function?
+  let darkThemeBtn = document.getElementById('darkthemebtn');
+  darkThemeBtn.checked = (themeManager.current() == 'dark');
+  darkThemeBtn.addEventListener('click', function () {
+    themeManager.load(themeManager.current() == 'light' ? 'dark' : 'light');
   });
 }
 
@@ -240,18 +297,20 @@ var initTheme = function () {
 // MAIN function //
 ///////////////////
 
-$(document).ready(function () {
-  // Populate panels
+if (document.readyState !== 'loading') {
   populateConfigPanel();
-  // Prepare the navigation menu
   populateNavigationPanel();
   setNavigationLinks();
-
-  // Theme
   initTheme();
-
-  // Close panels AT start (excepted index ?)
   closeParameterPanel(true);
   closeNavigationPanel(true);
-
-});
+} else {
+  document.addEventListener('DOMContentLoaded', function () {
+    populateConfigPanel();
+    populateNavigationPanel();
+    setNavigationLinks();
+    initTheme();
+    closeParameterPanel(true);
+    closeNavigationPanel(true);
+  });
+}

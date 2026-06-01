@@ -72,49 +72,48 @@ var pulseCustomDialog = require('pulseCustomDialog');
       let login = this._getLogin();
       if ('' == login) {
         // Probably never excepted for tests
-        this._loginEdit[0].disabled = false;
+        this._loginEdit.disabled = false;
       }
       else { // login is defined
-        this._loginEdit.val(login);
-        this._loginEdit[0].disabled = true; // or .readOnly = true;
+        this._loginEdit.value = login;
+        this._loginEdit.disabled = true; // or .readOnly = true;
         //let display = pulseLogin.getLoginDisplay();
         //('Hello ! ' + ('' == display) ? login : display);
       }
     }
 
     _defineClickButtons () {
-      this._changeButton.click(
-        function () {
-          this._tryToChangePassword();
-        }.bind(this));
+      this._changeButton.addEventListener('click', () => {
+        this._tryToChangePassword();
+      });
 
       // Changing password hides error message
-      this._newPassEdit1.change(function () {
+      this._newPassEdit1.addEventListener('change', () => {
         this.removeError();
-      }.bind(this));
-      this._newPassEdit2.change(function () {
+      });
+      this._newPassEdit2.addEventListener('change', () => {
         this.removeError();
-      }.bind(this));
+      });
 
       // Press 'enter' after passwords == press button
-      $(this._newPassEdit2).keyup(function (event) {
+      this._newPassEdit2.addEventListener('keyup', (event) => {
         if (event.keyCode == 13) {
-          $(this._changeButton).click();
+          this._changeButton.click();
         }
-      }.bind(this));
+      });
     }
 
     _tryToChangePassword () {
 
-      let login = this._loginEdit.val();
+      let login = this._loginEdit.value;
       if ('dev' == login || 'Support' == login
         || 'Dev' == login || 'support' == login) {
         // Should never happen. NEVER !!!!
         return;
       }
 
-      let newPass1 = this._newPassEdit1.val();
-      if (this._newPassEdit2.val() != newPass1) {
+      let newPass1 = this._newPassEdit1.value;
+      if (this._newPassEdit2.value != newPass1) {
         this.displayError('The new passwords should be the same !');
         return;
       }
@@ -122,7 +121,7 @@ var pulseCustomDialog = require('pulseCustomDialog');
       let url = this.getConfigOrAttribute('path', '')
         + 'ChangePassword'; // ?Login=' + login;
 
-      let oldPass = this._oldPassEdit.val();
+      let oldPass = this._oldPassEdit.value;
       let timeout = this.timeout;
       pulseService.postAjax(0, url,
         {
@@ -169,56 +168,69 @@ var pulseCustomDialog = require('pulseCustomDialog');
       // Attributes
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Loader -> Not needed here
 
       // Create DOM - LOGIN Content
-      this._loginEdit = $('<input></input>').addClass('loginchangepassword-login-input')
-        .attr('type', 'text');
-      let loginLabel = $('<label></label>').addClass('loginchangepassword-login-label')
-        .html(this.getTranslation('user', 'User:'))
-        .append(this._loginEdit);
+      this._loginEdit = document.createElement('input');
+      this._loginEdit.className = 'loginchangepassword-login-input';
+      this._loginEdit.type = 'text';
+      let loginLabel = document.createElement('label');
+      loginLabel.className = 'loginchangepassword-login-label';
+      loginLabel.innerHTML = this.getTranslation('user', 'User:');
+      loginLabel.appendChild(this._loginEdit);
 
-      this._oldPassEdit = $('<input></input>').addClass('loginchangepassword-password-input')
-        .attr('type', 'password');
-      let oldPassLabel = $('<label></label>').addClass('loginchangepassword-password-label')
-        .html(this.getTranslation('oldPassword', 'Old password:'))
-        .append(this._oldPassEdit);
+      this._oldPassEdit = document.createElement('input');
+      this._oldPassEdit.className = 'loginchangepassword-password-input';
+      this._oldPassEdit.type = 'password';
+      let oldPassLabel = document.createElement('label');
+      oldPassLabel.className = 'loginchangepassword-password-label';
+      oldPassLabel.innerHTML = this.getTranslation('oldPassword', 'Old password:');
+      oldPassLabel.appendChild(this._oldPassEdit);
 
-      this._newPassEdit1 = $('<input></input>').addClass('loginchangepassword-password-input')
-        .attr('type', 'password');
-      let newPassLabel1 = $('<label></label>').addClass('loginchangepassword-password-label')
-        .html(this.getTranslation('newPassword', 'New password:'))
-        .append(this._newPassEdit1);
+      this._newPassEdit1 = document.createElement('input');
+      this._newPassEdit1.className = 'loginchangepassword-password-input';
+      this._newPassEdit1.type = 'password';
+      let newPassLabel1 = document.createElement('label');
+      newPassLabel1.className = 'loginchangepassword-password-label';
+      newPassLabel1.innerHTML = this.getTranslation('newPassword', 'New password:');
+      newPassLabel1.appendChild(this._newPassEdit1);
 
-      this._newPassEdit2 = $('<input></input>').addClass('loginchangepassword-password-input')
-        .attr('type', 'password');
-      let newPassLabel2 = $('<label></label>').addClass('loginchangepassword-password-label')
-        .html(this.getTranslation('newPassword', 'New password:'))
-        .append(this._newPassEdit2);
+      this._newPassEdit2 = document.createElement('input');
+      this._newPassEdit2.className = 'loginchangepassword-password-input';
+      this._newPassEdit2.type = 'password';
+      let newPassLabel2 = document.createElement('label');
+      newPassLabel2.className = 'loginchangepassword-password-label';
+      newPassLabel2.innerHTML = this.getTranslation('newPassword', 'New password:');
+      newPassLabel2.appendChild(this._newPassEdit2);
 
-      this._changeContent = $('<div></div>').addClass('loginchangepassword-content')
-        .append(loginLabel).append(oldPassLabel)
-        .append(newPassLabel1).append(newPassLabel2);
+      this._changeContent = document.createElement('div');
+      this._changeContent.className = 'loginchangepassword-content';
+      this._changeContent.appendChild(loginLabel);
+      this._changeContent.appendChild(oldPassLabel);
+      this._changeContent.appendChild(newPassLabel1);
+      this._changeContent.appendChild(newPassLabel2);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      this._messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._changeContent).append(this._messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      this._messageDiv = document.createElement('div');
+      this._messageDiv.className = 'pulse-message-div';
+      this._messageDiv.appendChild(this._messageSpan);
+      this._changeContent.appendChild(this._messageDiv);
 
       // Add button AFTER message
-      this._changeButton = $('<button></button>').addClass('loginchangepassword-button')
-        .html('Change');
-      let divBtn = $('<div></div>').addClass('loginchangepassword-button-div')
-        .append(this._changeButton);
-      this._changeContent.append(divBtn);
+      this._changeButton = document.createElement('button');
+      this._changeButton.className = 'loginchangepassword-button';
+      this._changeButton.innerHTML = 'Change';
+      let divBtn = document.createElement('div');
+      divBtn.className = 'loginchangepassword-button-div';
+      divBtn.appendChild(this._changeButton);
+      this._changeContent.appendChild(divBtn);
 
-      $(this.element)
-        .append(this._changeContent);
+      this.element.appendChild(this._changeContent);
 
       // Display login if exist
       this._displayLogin();
@@ -232,13 +244,13 @@ var pulseCustomDialog = require('pulseCustomDialog');
     }
 
     displayError (message) {
-      $(this._messageDiv).show();
-      $(this._messageSpan).html(message);
+      this._messageDiv.style.display = '';
+      this._messageSpan.innerHTML = message;
     }
 
     removeError () {
-      $(this._messageDiv).hide();
-      $(this._messageSpan).html('');
+      this._messageDiv.style.display = 'none';
+      this._messageSpan.innerHTML = '';
     }
 
     /**

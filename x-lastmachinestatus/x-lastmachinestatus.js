@@ -91,9 +91,9 @@ require('x-stopclassification/x-stopclassification');
         case 'machine-id':
           if (this.isInitialized()) {
             // For progress : update _mapOfModifications
-            let modifMgr = $('body').find('x-modificationmanager');
-            if (modifMgr.length == 1) {
-              this._mapOfModifications = modifMgr[0].getModifications('reason',
+            let modifMgr = document.body.querySelector('x-modificationmanager');
+            if (modifMgr) {
+              this._mapOfModifications = modifMgr.getModifications('reason',
                 this.element.getAttribute('machine-id'));
 
               // + REMOVE others with old machineid ? + create progress ? -> TODO later !
@@ -131,7 +131,7 @@ require('x-stopclassification/x-stopclassification');
       // Update here some internal parameters
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // listeners
       if (this.element.hasAttribute('period-context')) {
@@ -159,9 +159,9 @@ require('x-stopclassification/x-stopclassification');
       }
 
       // Get modifications and create listener
-      let modifMgr = $('body').find('x-modificationmanager');
-      if (modifMgr.length == 1) {
-        this._mapOfModifications = modifMgr[0].getModifications('reason',
+      let modifMgr = document.body.querySelector('x-modificationmanager');
+      if (modifMgr) {
+        this._mapOfModifications = modifMgr.getModifications('reason',
           this.element.getAttribute('machine-id'));
       }
       // Create modifications listener
@@ -175,32 +175,34 @@ require('x-stopclassification/x-stopclassification');
       interrogationCurrentMark.setAttribute('class', 'fa-solid fa-circle-question');
       interrogationCurrentMark.setAttribute('id', 'questionmarkcurrentcell');
 
-      let reasonlabel = $('<span></span>').addClass('lastmachinestatus-reason-label');
-      reasonlabel.html(this.getTranslation('currentReasonColon', 'Current reason:'));
+      let reasonlabel = document.createElement('span');
+      reasonlabel.className = 'lastmachinestatus-reason-label';
+      reasonlabel.innerHTML = this.getTranslation('currentReasonColon', 'Current reason:');
       // display reason OR error message :
-      let spanreasondata = $('<span></span>').addClass('lastmachinestatus-reason-data');
-      this._currentCell = $('<div></div>').addClass('pulse-cellbar-first')
-        .addClass('pulse-cellbar-current-data')
-        .addClass('clickable') // To change display when hover
-        // + class error if needed
-        .append(interrogationCurrentMark)
-        .append(reasonlabel).append(spanreasondata);
+      let spanreasondata = document.createElement('span');
+      spanreasondata.className = 'lastmachinestatus-reason-data';
+
+      this._currentCell = document.createElement('div');
+      this._currentCell.className = 'pulse-cellbar-first pulse-cellbar-current-data clickable';
+      this._currentCell.appendChild(interrogationCurrentMark);
+      this._currentCell.appendChild(reasonlabel);
+      this._currentCell.appendChild(spanreasondata);
 
       // Red dot = missing data
       pulseSvg.createMissingdata(this._currentCell);
 
       // Past reason
-      let pastreasonlabel = $('<span></span>');
-      pastreasonlabel.append(this.getTranslation('pastReasonData', 'Past motion status details'));
-
+      let pastreasonlabel = document.createElement('span');
+      pastreasonlabel.innerHTML = this.getTranslation('pastReasonData', 'Past motion status details');
 
       let interrogationPastMark = document.createElement('i');
       interrogationPastMark.setAttribute('class', 'fa-solid fa-circle-question');
       interrogationPastMark.setAttribute('id', 'questionmarkpastcell');
-      let divpastreason = $('<div></div>').addClass('pulse-cellbar-last')
-        .addClass('pulse-cellbar-past-data')
-        .append(interrogationPastMark)
-        .append(pastreasonlabel);
+
+      let divpastreason = document.createElement('div');
+      divpastreason.className = 'pulse-cellbar-last pulse-cellbar-past-data';
+      divpastreason.appendChild(interrogationPastMark);
+      divpastreason.appendChild(pastreasonlabel);
 
       pulseUtility.addToolTip(divpastreason,
         this.getTranslation('pastTooltip', 'Look or change past reason details'));
@@ -209,37 +211,43 @@ require('x-stopclassification/x-stopclassification');
       pulseSvg.createMissingdata(divpastreason);
 
       // Main
-      this._content = $('<div></div>')
-        .addClass('pulse-cellbar-main')
-        .append(this._currentCell)
-        .append(divpastreason);
+      this._content = document.createElement('div');
+      this._content.className = 'pulse-cellbar-main';
+      this._content.appendChild(this._currentCell);
+      this._content.appendChild(divpastreason);
 
-      $(this.element).append(this._content);
+      this.element.appendChild(this._content);
 
       // Clicks
-      this._currentCell.click(
+      this._currentCell.addEventListener('click',
         function (e) {
           this.clickOnCurrent(e);
         }.bind(this)
       );
-      divpastreason.click(
+      divpastreason.addEventListener('click',
         function (e) {
           this.clickOnPast(e);
         }.bind(this)
       );
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this.element.appendChild(messageDiv);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -249,7 +257,7 @@ require('x-stopclassification/x-stopclassification');
     clearInitialization() {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._messageSpan = undefined;
       this._content = undefined;
@@ -260,9 +268,14 @@ require('x-stopclassification/x-stopclassification');
     reset() { // Code here to clean the component, for example after a parameter change
       this.removeError();
       // Clean content
-      $(this.element).find('.pulse-cellbar-past-data')
-        .removeClass('pulse-cellbar-cell-missing');
-      $(this.element).find('.lastmachinestatus-reason-data').html('');
+      let pastDataEl = this.element.querySelector('.pulse-cellbar-past-data');
+      if (pastDataEl) {
+        pastDataEl.classList.remove('pulse-cellbar-cell-missing');
+      }
+      let reasonDataEl = this.element.querySelector('.lastmachinestatus-reason-data');
+      if (reasonDataEl) {
+        reasonDataEl.innerHTML = '';
+      }
 
       this.switchToNextContext();
     }
@@ -286,7 +299,9 @@ require('x-stopclassification/x-stopclassification');
     }
 
     displayError(message) {
-      $(this._messageSpan).html(message);
+      if (this._messageSpan) {
+        this._messageSpan.innerHTML = message;
+      }
 
       this._requiredReason = null;
       this._reasonText = null;
@@ -299,7 +314,7 @@ require('x-stopclassification/x-stopclassification');
     }
 
     removeError() {
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
     }
 
     /**
@@ -342,42 +357,68 @@ require('x-stopclassification/x-stopclassification');
       this._reasonOverwriteRequired = data.MachineStatus.ReasonSlot.OverwriteRequired;
       this._reasonTooOld = data.ReasonTooOld;
       let status = false;
-      $(this.element).find('.pulse-cellbar-current-data')
-        .removeClass('pulse-cellbar-cell-missing')
-      $(this.element).find('#questionmarkcurrentcell').hide();
+      let currentCell = this.element.querySelector('.pulse-cellbar-current-data');
+      if (currentCell) {
+        currentCell.classList.remove('pulse-cellbar-cell-missing');
+      }
+      let questionCurrent = this.element.querySelector('#questionmarkcurrentcell');
+      if (questionCurrent) {
+        questionCurrent.style.display = 'none';
+      }
 
-      $(this.element).find('.lastmachinestatus-reason-data')
-        .removeClass('lastmachinestatus-reasontooold');
+      let reasonData = this.element.querySelector('.lastmachinestatus-reason-data');
+      if (reasonData) {
+        reasonData.classList.remove('lastmachinestatus-reasontooold');
+      }
 
       if (data.ReasonTooOld == true) {
-        $(this.element).find('.lastmachinestatus-reason-data').addClass('lastmachinestatus-reasontooold');
-        $(this.element).find('.lastmachinestatus-reason-data').html(this.getTranslation('tooOld', 'Reason is too old'));
+        if (reasonData) {
+          reasonData.classList.add('lastmachinestatus-reasontooold');
+          reasonData.innerHTML = this.getTranslation('tooOld', 'Reason is too old');
+        }
       }
       else {
         if (data.MachineStatus.ReasonSlot.OverwriteRequired == true) {
-          $(this.element).find('.pulse-cellbar-current-data').addClass('pulse-cellbar-cell-missing');
-          $(this.element).find('#questionmarkcurrentcell').show();
+          if (currentCell) {
+            currentCell.classList.add('pulse-cellbar-cell-missing');
+          }
+          if (questionCurrent) {
+            questionCurrent.style.display = '';
+          }
           status = true;
           eventBus.EventBus.dispatchToContext('reasonStatusCurrentChange',
             this.element.getAttribute('status-context'),
             { status: status });
         }
-        $(this.element).find('.lastmachinestatus-reason-data').html(this._reasonText);
+        if (reasonData) {
+          reasonData.innerHTML = this._reasonText;
+        }
       }
 
       //Set state of "past data" part in widget
       this._requiredReason = data.RequiredReason;
+      let pastCell = this.element.querySelector('.pulse-cellbar-past-data');
+      let questionPast = this.element.querySelector('#questionmarkpastcell');
       if (data.RequiredReason == true) {
-        $(this.element).find('.pulse-cellbar-past-data')
-          .addClass('pulse-cellbar-cell-missing')
-        $(this.element).find('#questionmarkpastcell').show();
+        if (pastCell) {
+          pastCell.classList.add('pulse-cellbar-cell-missing');
+        }
+        if (questionPast) {
+          questionPast.style.display = '';
+        }
         status = true;
       }
       else {
-        $(this.element).find('.pulse-cellbar-past-data')
-          .removeClass('pulse-cellbar-cell-missing')
-        $(this.element).find('#questionmarkpastcell').hide();
-        this.element.querySelector('.pulse-cellbar-past-data span').textContent = this.getTranslation('pastReasonData', 'Past motion status details');
+        if (pastCell) {
+          pastCell.classList.remove('pulse-cellbar-cell-missing');
+        }
+        if (questionPast) {
+          questionPast.style.display = 'none';
+        }
+        let pastSpan = this.element.querySelector('.pulse-cellbar-past-data span');
+        if (pastSpan) {
+          pastSpan.textContent = this.getTranslation('pastReasonData', 'Past motion status details');
+        }
       }
       eventBus.EventBus.dispatchToContext('reasonStatusChange',
         this.element.getAttribute('status-context'),
@@ -417,7 +458,7 @@ require('x-stopclassification/x-stopclassification');
             && (modif.ranges[i].upper == null || modif.ranges[i].upper > now)) { // == is Current
 
             let newRevisionProgress =
-              pulseUtility.createjQueryElementWithAttribute('x-revisionprogress', {
+              pulseUtility.createElementWithAttribute('x-revisionprogress', {
                 'revision-id': modif.revisionid,
                 'machine-id': event.target.machineid,
                 'kind': modif.kind,
@@ -435,8 +476,14 @@ require('x-stopclassification/x-stopclassification');
           if ((modif.ranges[i].lower < now)
             && (modif.ranges[i].upper == null || modif.ranges[i].upper > now)) {
             this._forceReload = true;
-            $(this.element).find('.lastmachinestatus-reason-data').html('');
-            $(this.element).find('#questionmarkcurrentcell').hide();
+            let reasonData = this.element.querySelector('.lastmachinestatus-reason-data');
+            if (reasonData) {
+              reasonData.innerHTML = '';
+            }
+            let questionCurrent = this.element.querySelector('#questionmarkcurrentcell');
+            if (questionCurrent) {
+              questionCurrent.style.display = 'none';
+            }
             this.switchToContext('Reload');
             return;
           }

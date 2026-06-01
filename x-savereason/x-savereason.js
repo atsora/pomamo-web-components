@@ -96,73 +96,98 @@ require('x-datetimerange/x-datetimerange');
 
     initialize() {
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // HEADER 1 == machine
       // machine -> to hide for "big" screen ( = save page as reasonslotlist
-      let machineDisplay = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
+      let machineDisplay = pulseUtility.createElementWithAttribute('x-machinedisplay', {
         'machine-id': this.element.getAttribute('machine-id')
       });
-      let divMachine = $('<div></div>').addClass('savereason-machine').append(machineDisplay);
-      $(this.element).append(divMachine);
+      let divMachine = document.createElement('div');
+      divMachine.classList.add('savereason-machine');
+      divMachine.appendChild(machineDisplay);
+      this.element.appendChild(divMachine);
 
       // HEADER 2 - Information about the selected periods (if any)
-      let periodInfo = $('<div></div>').addClass('savereason-infoperiod');
+      let periodInfo = document.createElement('div');
+      periodInfo.classList.add('savereason-infoperiod');
 
       // Button "split"
-      let splitButton = $('<div></div>').addClass('savereason-splitbutton').addClass('pushButton').html(this.getTranslation('split', 'Split'));
-      $(splitButton).click(function () {
-        this._tagdatetimerange[0].openChangeRange(true);
+      let splitButton = document.createElement('div');
+      splitButton.classList.add('savereason-splitbutton');
+      splitButton.classList.add('pushButton');
+      splitButton.textContent = this.getTranslation('split', 'Split');
+      splitButton.addEventListener('click', function () {
+        this._tagdatetimerange.openChangeRange(true);
       }.bind(this));
-      periodInfo.append(splitButton);
+      periodInfo.appendChild(splitButton);
 
       // Label
-      let periodLabel = $(`<div>${this.getTranslation('selectedPeriodsColon', 'Selected period(s): ')}</div>`).addClass('savereason-periodlabel');
-      periodInfo.append(periodLabel);
+      let periodLabel = document.createElement('div');
+      periodLabel.classList.add('savereason-periodlabel');
+      periodLabel.textContent = this.getTranslation('selectedPeriodsColon', 'Selected period(s): ');
+      periodInfo.appendChild(periodLabel);
 
       // x-datetimerange
-      this._tagdatetimerange = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', {
+      this._tagdatetimerange = pulseUtility.createElementWithAttribute('x-datetimerange', {
         'hide-buttons': 'true',
         'period-context': 'savereason' + this.element.getAttribute('machine-id'),
         // Must be editable otherwise the button 'split' doesn't work
       });
-      periodInfo.append(this._tagdatetimerange);
+      periodInfo.appendChild(this._tagdatetimerange);
 
-      $(this.element).append(periodInfo);
+      this.element.appendChild(periodInfo);
 
       // Informations
-      let divInfos = $('<div></div>').addClass('savereason-infos');
-      divInfos.append($('<div></div>').addClass('savereason-info-reason'));
-      divInfos.append($('<div></div>').addClass('savereason-info-modes'));
-      $(this.element).append(divInfos);
+      let divInfos = document.createElement('div');
+      divInfos.classList.add('savereason-infos');
+      let divReasonInfo = document.createElement('div');
+      divReasonInfo.classList.add('savereason-info-reason');
+      divInfos.appendChild(divReasonInfo);
+      let divModesInfo = document.createElement('div');
+      divModesInfo.classList.add('savereason-info-modes');
+      divInfos.appendChild(divModesInfo);
+      this.element.appendChild(divInfos);
 
       // "Applicable reasons" label and default button
-      let headerReasons = $('<div></div>').addClass('savereason-reasonsheader')
-        .append(`<div class="savereason-reasonslabel">${this.getTranslation('applicableReasons', 'Applicable reasons')}</div>`);
-      let defaultButton = $(`<div class="savereason-defaultbutton pushButton">${this.getTranslation('resetReasonButton', 'Back to default')}</div>`);
-      defaultButton.click(function () {
+      let headerReasons = document.createElement('div');
+      headerReasons.classList.add('savereason-reasonsheader');
+      let reasonsLabel = document.createElement('div');
+      reasonsLabel.classList.add('savereason-reasonslabel');
+      reasonsLabel.textContent = this.getTranslation('applicableReasons', 'Applicable reasons');
+      headerReasons.appendChild(reasonsLabel);
+      let defaultButton = document.createElement('div');
+      defaultButton.classList.add('savereason-defaultbutton');
+      defaultButton.classList.add('pushButton');
+      defaultButton.textContent = this.getTranslation('resetReasonButton', 'Back to default');
+      defaultButton.addEventListener('click', function () {
         this._saveReason(null); //save -> restore default
       }.bind(this));
-      headerReasons.append(defaultButton);
-      $(this.element).append(headerReasons);
+      headerReasons.appendChild(defaultButton);
+      this.element.appendChild(headerReasons);
 
       // scrollable "BODY"
-      this._table = $('<ul></ul>')
-        .addClass('savereason-table');
-      let divtable = $('<div></div>')
-        .addClass('savereason-data')
-        .addClass('pulse-selection-table-container')
-        .append(this._table);
-      let list = $('<div></div>')
-        .addClass('savereason-scrollable')
-        .append(divtable);
+      this._table = document.createElement('ul');
+      this._table.classList.add('savereason-table');
+      let divtable = document.createElement('div');
+      divtable.classList.add('savereason-data');
+      divtable.classList.add('pulse-selection-table-container');
+      divtable.appendChild(this._table);
+      let list = document.createElement('div');
+      list.classList.add('savereason-scrollable');
+      list.appendChild(divtable);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(list).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.textContent = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      list.appendChild(loaderDiv);
 
-      $(this.element).append(list);
+      this.element.appendChild(list);
 
       // Seed `_reasonsSelected` from the `ranges` attribute if present.
       // We push directly rather than calling `this.addReason()` because
@@ -191,7 +216,7 @@ require('x-datetimerange/x-datetimerange');
       this._reasonsSelected = [];
 
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._tagdatetimerange = undefined;
       this._table = undefined;
@@ -225,24 +250,48 @@ require('x-datetimerange/x-datetimerange');
 
     displayNoPeriod() {
       // Hide the period
-      $('.savereason-infoperiod .savereason-periodlabel').html(this.getTranslation('noSelectedPeriod', 'No period is selected'));
-      this._tagdatetimerange.hide();
-      $('.savereason-infoperiod .savereason-splitbutton').hide();
+      let periodLabel = this.element.querySelector('.savereason-infoperiod .savereason-periodlabel');
+      if (periodLabel) {
+        periodLabel.textContent = this.getTranslation('noSelectedPeriod', 'No period is selected');
+      }
+      this._tagdatetimerange.style.display = 'none';
+      let splitBtn = this.element.querySelector('.savereason-infoperiod .savereason-splitbutton');
+      if (splitBtn) {
+        splitBtn.style.display = 'none';
+      }
 
       // Infos
-      $(this.element).find('.savereason-info-reason').html(`${this.getTranslation('currentReasonColon', 'Current reason: ')}-`);
-      $(this.element).find('.savereason-info-modes').html(`${this.getTranslation('modesColon', 'Modes: ')}-`);
+      let infoReason = this.element.querySelector('.savereason-info-reason');
+      if (infoReason) {
+        infoReason.textContent = `${this.getTranslation('currentReasonColon', 'Current reason: ')}-`;
+      }
+      let infoModes = this.element.querySelector('.savereason-info-modes');
+      if (infoModes) {
+        infoModes.textContent = `${this.getTranslation('modesColon', 'Modes: ')}-`;
+      }
 
       // Reasons
-      $('.savereason-defaultbutton').hide();
+      let defaultBtn = this.element.querySelector('.savereason-defaultbutton');
+      if (defaultBtn) {
+        defaultBtn.style.display = 'none';
+      }
       this._emptyTable();
     }
 
     hideNoPeriod() {
       // Prepare infos (will be updated later)
-      $(this.element).find('.savereason-info-reason').html(`${this.getTranslation('currentReasonColon', 'Current reason')}`);
-      $(this.element).find('.savereason-info-modes').html(`${this.getTranslation('modesColon', 'Modes: ')}`);
-      $('.savereason-defaultbutton').hide();
+      let infoReason = this.element.querySelector('.savereason-info-reason');
+      if (infoReason) {
+        infoReason.textContent = `${this.getTranslation('currentReasonColon', 'Current reason')}`;
+      }
+      let infoModes = this.element.querySelector('.savereason-info-modes');
+      if (infoModes) {
+        infoModes.textContent = `${this.getTranslation('modesColon', 'Modes: ')}`;
+      }
+      let defaultBtn = this.element.querySelector('.savereason-defaultbutton');
+      if (defaultBtn) {
+        defaultBtn.style.display = 'none';
+      }
 
       // Period(s) and associated
       if (this._reasonsSelected.length == 1) {
@@ -253,34 +302,46 @@ require('x-datetimerange/x-datetimerange');
         let begin = strRange.lower;
         let end = strRange.upper;
         let now = pulseUtility.convertDateForWebService(new Date());
-        this._tagdatetimerange.attr('min-begin', begin);
-        this._tagdatetimerange.attr('range', this._reasonsSelected[0].range);
+        this._tagdatetimerange.setAttribute('min-begin', begin);
+        this._tagdatetimerange.setAttribute('range', this._reasonsSelected[0].range);
         if (pulseUtility.isNotDefined(end)) {
-          //this._tagdatetimerange.removeAttr('max-end');
-          this._tagdatetimerange.attr('max-end', now);
-          this._tagdatetimerange.attr('novaluetext', 'Now');
-          this._tagdatetimerange.attr('possible-no-end', true);
+          //this._tagdatetimerange.removeAttribute('max-end');
+          this._tagdatetimerange.setAttribute('max-end', now);
+          this._tagdatetimerange.setAttribute('novaluetext', 'Now');
+          this._tagdatetimerange.setAttribute('possible-no-end', true);
         }
         else {
-          this._tagdatetimerange.attr('max-end', end);
-          this._tagdatetimerange.removeAttr('novaluetext');
-          this._tagdatetimerange.attr('possible-no-end', false);
+          this._tagdatetimerange.setAttribute('max-end', end);
+          this._tagdatetimerange.removeAttribute('novaluetext');
+          this._tagdatetimerange.setAttribute('possible-no-end', false);
         }
-        $('.savereason-infoperiod .savereason-periodlabel').html(this.getTranslation('periodColon', 'Period: '));
-        this._tagdatetimerange.show();
+        let periodLabel = this.element.querySelector('.savereason-infoperiod .savereason-periodlabel');
+        if (periodLabel) {
+          periodLabel.textContent = this.getTranslation('periodColon', 'Period: ');
+        }
+        this._tagdatetimerange.style.display = '';
 
         // Show the split button
-        $('.savereason-infoperiod .savereason-splitbutton').show();
+        let splitBtn = this.element.querySelector('.savereason-infoperiod .savereason-splitbutton');
+        if (splitBtn) {
+          splitBtn.style.display = '';
+        }
       }
       else {
         // SEVERAL PERIODS SELECTED
 
         // Hide the datetime picker and show the number of selected periods
-        $('.savereason-infoperiod .savereason-periodlabel').html(this._reasonsSelected.length + ' ' + this.getTranslation('nSelectedPeriods', 'selected periods'));
-        this._tagdatetimerange.hide();
+        let periodLabel = this.element.querySelector('.savereason-infoperiod .savereason-periodlabel');
+        if (periodLabel) {
+          periodLabel.textContent = this._reasonsSelected.length + ' ' + this.getTranslation('nSelectedPeriods', 'selected periods');
+        }
+        this._tagdatetimerange.style.display = 'none';
 
         // Hide the split button
-        $('.savereason-infoperiod .savereason-splitbutton').hide();
+        let splitBtn = this.element.querySelector('.savereason-infoperiod .savereason-splitbutton');
+        if (splitBtn) {
+          splitBtn.style.display = 'none';
+        }
       }
     }
 
@@ -323,21 +384,29 @@ require('x-datetimerange/x-datetimerange');
 
 
     _getInfosData() {
-      let divReason = $(this.element).find('.savereason-info-reason');
-      let divModes = $(this.element).find('.savereason-info-modes');
+      let divReason = this.element.querySelector('.savereason-info-reason');
+      let divModes = this.element.querySelector('.savereason-info-modes');
       if (this._reasonsSelected.length == 1) {
         // Current reason
-        divReason.html(`${this.getTranslation('currentReasonColon', 'Current reason: ')}` + this._reasonsSelected[0].reason);
+        if (divReason) {
+          divReason.textContent = `${this.getTranslation('currentReasonColon', 'Current reason: ')}` + this._reasonsSelected[0].reason;
 
-        if ((typeof (this._reasonsSelected[0].details) != 'undefined') && (this._reasonsSelected[0].details != '')) {
-          let spanDetailsReason = $('<span></span>').addClass('savereason-info-reason-details')
-            .html(' (' + this._reasonsSelected[0].details + ')');
-          divReason.append(spanDetailsReason);
+          if ((typeof (this._reasonsSelected[0].details) != 'undefined') && (this._reasonsSelected[0].details != '')) {
+            let spanDetailsReason = document.createElement('span');
+            spanDetailsReason.classList.add('savereason-info-reason-details');
+            spanDetailsReason.textContent = ' (' + this._reasonsSelected[0].details + ')';
+            divReason.appendChild(spanDetailsReason);
+          }
         }
 
-        divModes.html(`${this.getTranslation('modesColon', 'Modes: ')}` + this._reasonsSelected[0].mode);
+        if (divModes) {
+          divModes.textContent = `${this.getTranslation('modesColon', 'Modes: ')}` + this._reasonsSelected[0].mode;
+        }
 
-        $('.savereason-defaultbutton').show();
+        let defaultBtn = this.element.querySelector('.savereason-defaultbutton');
+        if (defaultBtn) {
+          defaultBtn.style.display = '';
+        }
       }
       else if (this._reasonsSelected.length > 1) {
         let index = 1;
@@ -355,22 +424,37 @@ require('x-datetimerange/x-datetimerange');
         }
 
         if (!reasonDifferent) {
-          divReason.html(`${this.getTranslation('currentReasonColon', 'Current reason: ')}` + this._reasonsSelected[0].reason);
+          if (divReason) {
+            divReason.textContent = `${this.getTranslation('currentReasonColon', 'Current reason: ')}` + this._reasonsSelected[0].reason;
+          }
         }
         else {
-          divReason.html(`${this.getTranslation('currentReasonColon')}${this.getTranslation('multiple', 'multiple')}`);
+          if (divReason) {
+            divReason.textContent = `${this.getTranslation('currentReasonColon')}${this.getTranslation('multiple', 'multiple')}`;
+          }
         }
         if (!modeDifferent) {
-          divModes.html(`${this.getTranslation('modesColon', 'Modes: ')}` + this._reasonsSelected[0].mode);
+          if (divModes) {
+            divModes.textContent = `${this.getTranslation('modesColon', 'Modes: ')}` + this._reasonsSelected[0].mode;
+          }
         }
         else {
-          divModes.html(`${this.getTranslation('modesColon')}${this.getTranslation('multiple', 'multiple')}`);
+          if (divModes) {
+            divModes.textContent = `${this.getTranslation('modesColon')}${this.getTranslation('multiple', 'multiple')}`;
+          }
         }
-        $('.savereason-defaultbutton').show();
+        let defaultBtn = this.element.querySelector('.savereason-defaultbutton');
+        if (defaultBtn) {
+          defaultBtn.style.display = '';
+        }
       }
       else {
-        divReason.html(`${this.getTranslation('currentReasonColon', 'Current reason: ')}-`);
-        divModes.html(`${this.getTranslation('modesColon', 'Modes: ')}-`);
+        if (divReason) {
+          divReason.textContent = `${this.getTranslation('currentReasonColon', 'Current reason: ')}-`;
+        }
+        if (divModes) {
+          divModes.textContent = `${this.getTranslation('modesColon', 'Modes: ')}-`;
+        }
       }
     }
 
@@ -388,7 +472,7 @@ require('x-datetimerange/x-datetimerange');
 
     getShortUrl() {
       let url = 'ReasonSelection/Post'
-        + '?MachineId=' + Number($(this.element).attr('machine-id'));
+        + '?MachineId=' + Number(this.element.getAttribute('machine-id'));
 
       let role = pulseLogin.getRole();
 
@@ -444,7 +528,7 @@ require('x-datetimerange/x-datetimerange');
 
       if (!shouldGroupAll && nonAlwaysReasons.length > 0) {
         let flatGroup = this._getReasonGroup('');
-        flatGroup.attr('data-flat', 'true');
+        flatGroup.setAttribute('data-flat', 'true');
         nonAlwaysReasons.sort(function (x, y) { return x.Display > y.Display; });
         for (let j = 0; j < nonAlwaysReasons.length; j++) {
           this._addReasonInGroup(flatGroup, nonAlwaysReasons[j]);
@@ -462,20 +546,29 @@ require('x-datetimerange/x-datetimerange');
       }
 
       // Collapse / Expand reason groups — scope the selectors to THIS
-      // component's own `_table`. Using a global `$('.savereason-table …')`
-      // would bind the click handler once per x-savereason on the page,
-      // toggling N times per click (= net zero when N is even).
-      this._table.find('> li > span').off('click.savereason').on('click.savereason', function () {
-        $(this).parent().find('ul').toggle();
+      // component's own `_table`. Using a global selector would bind the
+      // click handler once per x-savereason on the page, toggling N times
+      // per click (= net zero when N is even).
+      // `:scope > li > span` is the vanilla equivalent of jQuery `> li > span`;
+      // a bare `> li ...` is invalid CSS and throws on querySelectorAll.
+      let tableSpans = this._table.querySelectorAll(':scope > li > span');
+      tableSpans.forEach(span => {
+        span.addEventListener('click', this._onReasonGroupClick);
       });
       let groupCount = groupNames.length + (!shouldGroupAll && nonAlwaysReasons.length > 0 ? 1 : 0);
 
       // Always hide the flat group header
-      this._table.find('> li[data-flat="true"] > span').hide();
+      let flatSpans = this._table.querySelectorAll(':scope > li[data-flat="true"] > span');
+      flatSpans.forEach(span => {
+        span.style.display = 'none';
+      });
 
       if (groupCount > 1 && (groupCount > 2 || nonAlwaysCount > nonAlwaysThreshold)) {
         // Collapse groups only when multiple groups exist (otherwise header is hidden and can't be clicked)
-        this._table.find('> li:not([data-flat="true"]) > ul').hide();
+        let uls = this._table.querySelectorAll(':scope > li:not([data-flat="true"]) > ul');
+        uls.forEach(ul => {
+          ul.style.display = 'none';
+        });
       }
     }
 
@@ -490,16 +583,30 @@ require('x-datetimerange/x-datetimerange');
       return nested === true || nested === 'true' || nested === 1 || nested === '1';
     }
 
+    _onReasonGroupClick(e) {
+      let ul = e.target.parentElement.querySelector('ul');
+      if (ul) {
+        if (ul.style.display === 'none') {
+          ul.style.display = '';
+        } else {
+          ul.style.display = 'none';
+        }
+      }
+    }
+
     // Empty table with reasons OR reasongroups
     _emptyTable() {
-      this._table.empty();
+      this._table.replaceChildren();
     }
 
     _getReasonGroup(groupName) {
-      let group = $('<li></li>')
-        .append($('<span></span>').html(groupName))
-        .append('<ul></ul>');
-      this._table.append(group);
+      let group = document.createElement('li');
+      let span = document.createElement('span');
+      span.textContent = groupName;
+      group.appendChild(span);
+      let ul = document.createElement('ul');
+      group.appendChild(ul);
+      this._table.appendChild(group);
       return group;
     }
 
@@ -512,85 +619,93 @@ require('x-datetimerange/x-datetimerange');
 
       if (reason.NoDetails) reasonNoDetails = reason.NoDetails;
 
-      let elt = $('<li></li>')
-        .attr('reason-id', classificationId)
-        .attr('reason-text', reason.Display)
-        .attr('details-required', reason.DetailsRequired);
-      elt[0].reasondata = reason.Data;
+      let elt = document.createElement('li');
+      elt.setAttribute('reason-id', classificationId);
+      elt.setAttribute('reason-text', reason.Display);
+      elt.setAttribute('details-required', reason.DetailsRequired);
+      elt.reasondata = reason.Data;
 
       // Add border-left color if color is provided by API
       if (reason.Color) {
-        elt.css('border-left', '2px solid ' + reason.Color);
+        elt.style.borderLeft = '2px solid ' + reason.Color;
       }
 
-      let spanReason = $('<span></span>').html(reason.Display);
+      let spanReason = document.createElement('span');
+      spanReason.textContent = reason.Display;
       if (reason.Description != undefined) {
-        $(spanReason).attr('title', reason.Description);
+        spanReason.setAttribute('title', reason.Description);
       }
-      elt.append(spanReason);
+      elt.appendChild(spanReason);
       if (reason.DetailsRequired) {
-        let applyWithComment = $('<div></div>')
-          .addClass('applyreasonwithcomment').addClass('pushButton')
-          .html(this.getTranslation('applyWithComment', 'Apply with comment'));
-        elt.append(applyWithComment);
+        let applyWithComment = document.createElement('div');
+        applyWithComment.classList.add('applyreasonwithcomment');
+        applyWithComment.classList.add('pushButton');
+        applyWithComment.textContent = this.getTranslation('applyWithComment', 'Apply with comment');
+        elt.appendChild(applyWithComment);
 
-        applyWithComment.click(
+        applyWithComment.addEventListener('click',
           function (e) {
             this.clickOnComment(e);
           }.bind(this)
         );
       }
       else if (!reasonNoDetails) {
-        let buttonsDiv = $('<div></div>').addClass('savereason-buttons');
+        let buttonsDiv = document.createElement('div');
+        buttonsDiv.classList.add('savereason-buttons');
 
-        let apply = $('<div></div>')
-          .addClass('applyreason')
-          .addClass('pushButton')
-          .html(this.getTranslation('apply', 'Apply'));
+        let apply = document.createElement('div');
+        apply.classList.add('applyreason');
+        apply.classList.add('pushButton');
+        apply.textContent = this.getTranslation('apply', 'Apply');
 
-        let applyWithComment = $('<div></div>')
-          .addClass('applyreasonwithcomment')
-          .addClass('pushButton')
-          .html(this.getTranslation('withComment', 'with comment'));
+        let applyWithComment = document.createElement('div');
+        applyWithComment.classList.add('applyreasonwithcomment');
+        applyWithComment.classList.add('pushButton');
+        applyWithComment.textContent = this.getTranslation('withComment', 'with comment');
 
-        buttonsDiv.append(applyWithComment, apply);
-        elt.append(buttonsDiv);
+        buttonsDiv.appendChild(applyWithComment);
+        buttonsDiv.appendChild(apply);
+        elt.appendChild(buttonsDiv);
 
-        applyWithComment.click(
+        applyWithComment.addEventListener('click',
           function (e) {
             this.clickOnComment(e);
           }.bind(this)
         );
-        apply.click(
+        apply.addEventListener('click',
           function (e) {
             this.clickOnReason(e);
           }.bind(this)
         );
       }
       else {
-        let apply = $('<div></div>')
-          .addClass('applyreason').addClass('pushButton')
-          .html(this.getTranslation('apply', 'Apply'));
-        elt.append(apply);
+        let apply = document.createElement('div');
+        apply.classList.add('applyreason');
+        apply.classList.add('pushButton');
+        apply.textContent = this.getTranslation('apply', 'Apply');
+        elt.appendChild(apply);
 
-        apply.click(
+        apply.addEventListener('click',
           function (e) {
             this.clickOnReason(e);
           }.bind(this)
         );
       }
-      group.find('ul').append(elt);
+      let ul = group.querySelector('ul');
+      if (ul) {
+        ul.appendChild(elt);
+      }
     }
 
     /* CLICK - Save reason */
     _saveReason(classificationId, details, reasonData) {
-      let machineId = Number($(this.element).attr('machine-id'));
+      let machineId = Number(this.element.getAttribute('machine-id'));
       let rangesList = [];
       for (let i = 0; i < this._reasonsSelected.length; i++) {
         let range = this._reasonsSelected[i].range;
         if (this._reasonsSelected.length == 1) {
           // Check if range have been changed
-          range = this._tagdatetimerange[0].getRangeString();
+          range = this._tagdatetimerange.getRangeString();
         }
         rangesList[i] = range;
       }
@@ -622,7 +737,11 @@ require('x-datetimerange/x-datetimerange');
 
       this._savedRangesList = this._reasonsSelected; // To avoid clean when removeAllSelections
       // Remove selection in RSL
-      let rsl = $('.dialog-savereason').find('x-reasonslotlist, x-unansweredreasonslotlist')[0];
+      let dialogEl = document.querySelector('.dialog-savereason');
+      let rsl = null;
+      if (dialogEl) {
+        rsl = dialogEl.querySelector('x-reasonslotlist, x-unansweredreasonslotlist');
+      }
       if (rsl) {
         rsl.removeAllSelections();
       }
@@ -694,7 +813,7 @@ require('x-datetimerange/x-datetimerange');
 
     /* CLICK - Get details */
     _getDetailsAndSave(classificationId, reasonName, detailsRequired, reasonData) {
-      let rangeStr = this._tagdatetimerange[0].getRangeString();
+      let rangeStr = this._tagdatetimerange.getRangeString();
       pulseDetailsPopup.openReasonCommentDialog(this, classificationId, reasonName, rangeStr, detailsRequired, reasonData,
         (classifId, details, reasData) => this._saveReason(classifId, details, reasData)
       );
@@ -709,11 +828,11 @@ require('x-datetimerange/x-datetimerange');
      */
     clickOnReason(e) {
       let td = e.target;
-      let row = $(td).closest('li');
-      let reasonId = row[0].getAttribute('reason-id');
-      let reasonName = row[0].getAttribute('reason-text');
-      let detailsRequired = ('true' == row[0].getAttribute('details-required'));
-      let reasonData = row[0].reasondata;
+      let row = td.closest('li');
+      let reasonId = row.getAttribute('reason-id');
+      let reasonName = row.getAttribute('reason-text');
+      let detailsRequired = ('true' == row.getAttribute('details-required'));
+      let reasonData = row.reasondata;
       if (detailsRequired)
         this._getDetailsAndSave(reasonId, reasonName, detailsRequired, reasonData);
       else
@@ -727,12 +846,12 @@ require('x-datetimerange/x-datetimerange');
      */
     clickOnComment(e) {
       let td = e.target;
-      let row = $(td).closest('li');
+      let row = td.closest('li');
 
-      let reasonId = row[0].getAttribute('reason-id');
-      let reasonName = row[0].getAttribute('reason-text');
-      let detailsRequired = ('true' == row[0].getAttribute('details-required'));
-      let reasonData = row[0].reasondata;
+      let reasonId = row.getAttribute('reason-id');
+      let reasonName = row.getAttribute('reason-text');
+      let detailsRequired = ('true' == row.getAttribute('details-required'));
+      let reasonData = row.reasondata;
       this._getDetailsAndSave(reasonId, reasonName, detailsRequired, reasonData);
     }
 

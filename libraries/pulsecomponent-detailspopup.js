@@ -1,4 +1,4 @@
-// Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2009-2025 Atsora Solutions
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -80,20 +80,17 @@ require('x-reasoncommentdialog/x-reasoncommentdialog');
 require('x-detailsatdialog/x-detailsatdialog');
 require('x-runningdialog/x-runningdialog');
 
+function _fadeOutPopupBlocks () {
+  let blocks = document.querySelectorAll('.popup-block');
+  for (let i = 0; i < blocks.length; i++) pulseUtility.fadeOut(blocks[i]);
+}
+
 /**
  * @module PulseComponentFunctions -> detailspopup AND change
  */
 
 /**
  * Open a dialog with Details for a machine at a specific time
- *
- * @memberof module:PulseComponentFunctions
- * @function openDetails
- *
- * @param {Object} component - component calling openDetails -> must define following attributes : machine-id (showcoloredbar.showdetails must be filled in config)
- * @param {Range} fullRange - full date range of the component
- * @param {Range} cellRange - date range of the clicked cell
- * @param {Object} evt - evt to get click position
  */
 var openDetails = exports.openDetails = function (component, fullRange, cellRange, evt) {
   // Get datetime at clicked position
@@ -111,12 +108,12 @@ var openDetails = exports.openDetails = function (component, fullRange, cellRang
     return; //  Do not display future data
   }
 
-  let machineid = $(component.element).attr('machine-id');
+  let machineid = component.element.getAttribute('machine-id');
 
-  let dialog = pulseUtility.createjQueryElementWithAttribute('x-detailsatdialog', {
+  let dialog = pulseUtility.createElementWithAttribute('x-detailsatdialog', {
     'machine-id': machineid,
     'when': d_clickTime.toISOString(),
-    'range': fullRange.lower.toISOString() + ';' + fullRange.upper.toISOString()
+    'range': fullRange.toString(d => d.toISOString())
   });
 
   pulseCustomDialog.openDialog(dialog, {
@@ -125,7 +122,7 @@ var openDetails = exports.openDetails = function (component, fullRange, cellRang
     onOk: function () { },
     onClose: function () {
       // Special for popup on a dialog (Reason '+2' display) :
-      $('.popup-block').fadeOut();
+      _fadeOutPopupBlocks();
     }.bind(component),
     autoClose: true,
     autoDelete: true,
@@ -136,42 +133,41 @@ var openDetails = exports.openDetails = function (component, fullRange, cellRang
 
 /**
  * Open a popup with fillMethod
- *
- * @memberof module:PulseComponentFunctions
- * @function openGenericPopup
- *
- * @param {Function} fillMethod - method to fill the popup
- * @param {Object} evt - evt to get click position
  */
 var openGenericPopup = exports.openGenericPopup = function (fillMethod, evt) {
-  // Find the popup block first
-  let popups = document.getElementsByClassName('popup-block');
-  let popup;
-  if (popups.length == 0) { // Create it if it does not exist !
-    popup = $('<div></div>').addClass('popup-block');
-    $('body').append(popup);
-    $('body').on('click', '#pulse-inner', () => $('.popup-block').fadeOut());
-  }
-  else {
-    popup = $(popups[0]);
+  // Find or create the popup block
+  let popup = document.querySelector('.popup-block');
+  if (popup == null) {
+    popup = document.createElement('div');
+    popup.className = 'popup-block';
+    document.body.appendChild(popup);
+    // Delegated click on #pulse-inner -> fade out the popup
+    document.body.addEventListener('click', function (e) {
+      if (e.target && e.target.closest && e.target.closest('#pulse-inner')) {
+        _fadeOutPopupBlocks();
+      }
+    });
   }
   // Special for popup on a dialog (Reason '+2' display) - always, even for 2nd open
-  $('.customDialogContent').click(
-    () => $('.popup-block').fadeOut());
+  let contents = document.querySelectorAll('.customDialogContent');
+  for (let i = 0; i < contents.length; i++) {
+    contents[i].addEventListener('click', _fadeOutPopupBlocks);
+  }
 
   // Clear popup
-  $(popup).empty();
+  popup.replaceChildren();
 
   // Fill popup
   fillMethod(popup);
 
   // Manage position
-  let w = $(window).width();
-  let h = $(window).height();
-  let borderPadding = parseInt($(popup).css('border-right-width')) +
-    parseInt($(popup).css('padding-right')) +
-    parseInt($(popup).css('border-left-width')) +
-    parseInt($(popup).css('padding-left'));
+  let w = window.innerWidth;
+  let h = window.innerHeight;
+  let cs = window.getComputedStyle(popup);
+  let borderPadding = parseInt(cs.borderRightWidth || 0) +
+    parseInt(cs.paddingRight || 0) +
+    parseInt(cs.borderLeftWidth || 0) +
+    parseInt(cs.paddingLeft || 0);
   // Init popup width
   let popupWidth = w / 3.5 - borderPadding;
   let maxPositionBeforeLeftDisplay = w -
@@ -179,24 +175,18 @@ var openGenericPopup = exports.openGenericPopup = function (fillMethod, evt) {
   let leftPosition = (evt.clientX < maxPositionBeforeLeftDisplay) ?
     evt.clientX :
     (evt.clientX - popupWidth - borderPadding);
-  if (evt.clientY < h / 2) { // } - (popupWidth + borderPadding)) {
-    $(popup).fadeIn()
-      .css({
-        'width': popupWidth + 'px', //Number(300),
-        'top': evt.clientY + 'px',
-        'bottom': 'auto', // To remove previous definition
-        'left': leftPosition
-      });
+
+  pulseUtility.fadeIn(popup);
+  popup.style.width = popupWidth + 'px';
+  popup.style.left = leftPosition + 'px';
+  if (evt.clientY < h / 2) {
+    popup.style.top = evt.clientY + 'px';
+    popup.style.bottom = 'auto';
   }
   else {
     let bottomPosition = h - evt.clientY;
-    $(popup).fadeIn()
-      .css({
-        'width': popupWidth + 'px', //Number(300),
-        'top': 'auto', // To remove previous definition
-        'bottom': bottomPosition + 'px',
-        'left': leftPosition
-      });
+    popup.style.top = 'auto';
+    popup.style.bottom = bottomPosition + 'px';
   }
 
   if (typeof evt.stopPropagation === 'function')
@@ -205,20 +195,12 @@ var openGenericPopup = exports.openGenericPopup = function (fillMethod, evt) {
 
 /**
  * Open a popup with Details for a machine at a specific time
- *
- * @memberof module:PulseComponentFunctions
- * @function openPopup
- *
- * @param {Object} component - component calling openDetails -> must define following attributes : machine-id (showpopup must be filled in config)
- * @param {Range} fullRange - full date range of the component
- * @param {Range} cellRange - date range of the clicked cell
- * @param {Object} evt - evt to get click position
  */
 var openPopup = exports.openPopup = function (component, fullRange, cellRange, evt) {
   // Get datetime at clicked position
   let e = evt.target;
   let dim = e.getBoundingClientRect();
-  let x = evt.clientX - dim.left; // position = (click position) - (left of svg)
+  let x = evt.clientX - dim.left;
 
   let d_clickTime = new Date(cellRange.lower.getTime());
   if (dim.width > 0) {
@@ -227,7 +209,7 @@ var openPopup = exports.openPopup = function (component, fullRange, cellRange, e
   }
 
   if ((new Date()).getTime() < d_clickTime.getTime()) {
-    $('.popup-block').fadeOut();
+    _fadeOutPopupBlocks();
     return; //  Do not display future data
   }
 
@@ -238,16 +220,14 @@ var openPopup = exports.openPopup = function (component, fullRange, cellRange, e
       console.warn('No popup content defined');
     }
     else {
-      //let configArray = $(component.element).attr('click-popup').split(',');
       for (let iConfig = 0; iConfig < configArray.length; iConfig++) {
-        $(popup).append(
-          pulseUtility.createjQueryElementWithAttribute(
+        popup.appendChild(
+          pulseUtility.createElementWithAttribute(
             configArray[iConfig],
             {
-              'machine-id': $(component.element).attr('machine-id'),
+              'machine-id': component.element.getAttribute('machine-id'),
               'when': d_clickTime.toISOString(),
-              //'datetime-context': 'details', //un-used in popup, no bar displayed
-              'range': '[' + fullRange.lower.toISOString() + ';' + fullRange.upper.toISOString() + ')', // for x_detailedreasonat and x-detailedpartat
+              'range': '[' + fullRange.lower.toISOString() + ';' + fullRange.upper.toISOString() + ')',
               'period-context': 'details'
             }));
       }
@@ -259,39 +239,28 @@ var openPopup = exports.openPopup = function (component, fullRange, cellRange, e
 
 /**
  * Open a change work info (job, component...) dialog for a machine and a specific range
- *
- * @memberof module:PulseComponentFunctions
- * @function openChangeWorkInfoDialog
- *
- * @param {Object} component - component calling openChangeWorkInfoDialog -> must define following attributes : machine-id
- * @param {Range} range - date range
- *
  */
 exports.openChangeWorkInfoDialog = function (component, dtRange) {
-  if ($('.dialog-saveworkinfo').length > 0) {
+  if (document.querySelector('.dialog-saveworkinfo') != null) {
     return;
   }
 
   // PAGE 1
-  let dialog = $('<div></div>').addClass('dialog-saveworkinfo');
+  let dialog = document.createElement('div');
+  dialog.className = 'dialog-saveworkinfo';
 
-  let machid = $(component.element).attr('machine-id');
+  let machid = component.element.getAttribute('machine-id');
   let rangeString = dtRange.toString(d => d.toISOString());
-  let xworkinfoslotlist = pulseUtility.createjQueryElementWithAttribute('x-workinfoslotlist', {
+  let xworkinfoslotlist = pulseUtility.createElementWithAttribute('x-workinfoslotlist', {
     'machine-id': machid,
-    //'only-overwrite-required': true, //component.requiredReason,
     'range': rangeString
-    //'skip1periodlist': skip1periodlist
   });
-  dialog.append(xworkinfoslotlist);
+  dialog.appendChild(xworkinfoslotlist);
 
   let saveDialogId = pulseCustomDialog.openDialog(dialog, {
     title: component.getTranslation('saveworkinfo.WorkInfoTitle', 'Work information'),
-    /*onCancel: function () { == default behavior
-      pulseCustomDialog.close('.dialog-saveworkinfo');
-    }.bind(component),*/
     onClose: function () {
-      $('.popup-block').fadeOut();
+      _fadeOutPopupBlocks();
     }.bind(component),
     autoClose: false,
     autoDelete: true,
@@ -302,34 +271,26 @@ exports.openChangeWorkInfoDialog = function (component, dtRange) {
   });
 
   // PAGE 2 -> in WISL ? - Not ended yet 2019-05 Maybe later when needed
-  let xMachine = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
+  let xMachine = pulseUtility.createElementWithAttribute('x-machinedisplay', {
     'machine-id': machid
   });
-  $('#' + saveDialogId + ' .customDialogTitle').append(xMachine);
+  let titleEl = document.querySelector('#' + saveDialogId + ' .customDialogTitle');
+  if (titleEl != null) titleEl.appendChild(xMachine);
 }
 
 /**
  * Open a change reason dialog for a machine and a specific range
- *
- * @memberof module:PulseComponentFunctions
- * @function openChangeReasonDialog
- *
- * @param {Object} component - component calling openChangeReasonDialog -> must define following attributes : machine-id
- * @param {Range} dtRange - date range
- * @param {Bool} skip1periodlist - true if 1 item list should display 2nd page
- * @param {Bool} forceDetails - true to force x-reasonslotlist even for operator
- * @param {String} displayMode - display mode for x-reasonslotlist: "only-overwrite-required" (show only non-classified), "force-all" (show all), or undefined (default user control)
- *
  */
 var openChangeReasonDialog = exports.openChangeReasonDialog = function (component, dtRange, skip1periodlist, forceDetails, displayMode) {
-  if ($('.dialog-savereason').length > 0) {
+  if (document.querySelector('.dialog-savereason') != null) {
     return;
   }
 
   // PAGE 1
-  let dialog = $('<div></div>').addClass('dialog-savereason');
+  let dialog = document.createElement('div');
+  dialog.className = 'dialog-savereason';
 
-  let machid = $(component.element).attr('machine-id');
+  let machid = component.element.getAttribute('machine-id');
   let rangeString = dtRange.toString(d => d.toISOString());
   let useUnanswered = pulseConfig.getBool('detailspopup.useUnansweredReasonSlotList', false);
   let reasonslotlistTag = (useUnanswered && !forceDetails) ? 'x-unansweredreasonslotlist' : 'x-reasonslotlist';
@@ -340,24 +301,20 @@ var openChangeReasonDialog = exports.openChangeReasonDialog = function (componen
     effectiveDisplayMode = 'only-overwrite-required';
   }
 
-  let xreasonslotlist = pulseUtility.createjQueryElementWithAttribute(reasonslotlistTag, {
+  let xreasonslotlist = pulseUtility.createElementWithAttribute(reasonslotlistTag, {
     'machine-id': machid,
     'range': rangeString,
     'skip1periodlist': skip1periodlist
   });
   if (effectiveDisplayMode) {
-    xreasonslotlist.attr('display-mode', effectiveDisplayMode);
+    xreasonslotlist.setAttribute('display-mode', effectiveDisplayMode);
   }
-  dialog.append(xreasonslotlist);
+  dialog.appendChild(xreasonslotlist);
 
   let saveDialogId = pulseCustomDialog.openDialog(dialog, {
     title: component.getTranslation('savereason.saveReasonTitle', 'Set reason'),
-    /*onCancel: function () { == default
-      pulseCustomDialog.close('.dialog-savereason');
-    }.bind(component),*/
     onClose: function () {
-      // Special for popup on a dialog (Reason '+2' display) :
-      $('.popup-block').fadeOut();
+      _fadeOutPopupBlocks();
     }.bind(component),
     autoClose: false,
     autoDelete: true,
@@ -369,41 +326,35 @@ var openChangeReasonDialog = exports.openChangeReasonDialog = function (componen
   });
 
   // PAGE 2 -> in RSL ?
-  let xMachine = pulseUtility.createjQueryElementWithAttribute('x-machinedisplay', {
+  let xMachine = pulseUtility.createElementWithAttribute('x-machinedisplay', {
     'machine-id': machid
   });
-  $('#' + saveDialogId + ' .customDialogTitle').append(xMachine);
+  let titleEl = document.querySelector('#' + saveDialogId + ' .customDialogTitle');
+  if (titleEl != null) titleEl.appendChild(xMachine);
 }
 
 /**
  * Open a change scrap classification dialog for a machine
- *
- * @memberof module:PulseComponentFunctions
- * @function openChangeScrapClassificationDialog
- *
- * @param {Object} component - component calling openChangeScrapClassificationDialog -> must define following attributes : machine-id
- * @param {Range} dtRange - date range
- *
  */
 var openChangeScrapClassificationDialog = exports.openChangeScrapClassificationDialog = function (component) {
-  if ($('.dialog-scrapclassification').length > 0) {
+  if (document.querySelector('.dialog-scrapclassification') != null) {
     return;
   }
 
   // PAGE 1
-  let dialog = $('<div></div>').addClass('dialog-scrapclassification');
+  let dialog = document.createElement('div');
+  dialog.className = 'dialog-scrapclassification';
 
-  let machid = $(component.element).attr('machine-id');
-  // Use a provider that fetches ReasonOnlySlots and builds the classifier
-  let xscrapclassification = pulseUtility.createjQueryElementWithAttribute('x-scrapclassification', {
+  let machid = component.element.getAttribute('machine-id');
+  let xscrapclassification = pulseUtility.createElementWithAttribute('x-scrapclassification', {
     'machine-id': machid,
   });
-  dialog.append(xscrapclassification);
+  dialog.appendChild(xscrapclassification);
 
   pulseCustomDialog.openDialog(dialog, {
     title: component.getTranslation('scrapclassification.title', 'Declare scrap'),
     onClose: function () {
-      $('.popup-block').fadeOut();
+      _fadeOutPopupBlocks();
     }.bind(component),
     autoClose: false,
     autoDelete: true,
@@ -418,31 +369,19 @@ var openChangeScrapClassificationDialog = exports.openChangeScrapClassificationD
 
 /**
  * Open a change reason dialog for a machine and a specific range
- *
- * @memberof module:PulseComponentFunctions
- * @function openChangeStopClassificationDialog
- *
- * @param {Object} component - component calling openChangeStopClassificationDialog -> must define following attributes : machine-id
- * @param {Range} dtRange - date range
- * @param {Object} [options]
- * @param {boolean} [options.useClickedRange] - if true, build x-stopclassification directly from dtRange; else go through x-stopperiods
- * @param {Range} [options.fullRange] - parent range (defaults to dtRange)
- * @param {Array<Range>} [options.ranges] - multi-range selection forwarded as the `ranges` attribute (joined by &)
- * @param {boolean} [options.noadvanced] - hide the advanced options tile in x-stopclassification
- * @param {boolean} [options.closeAfterSave] - auto-close the dialog after a successful save
- * @param {Function} [options.onCloseExtra] - called after the default onClose, with `component` as `this`
  */
 var openChangeStopClassificationDialog = exports.openChangeStopClassificationDialog = function (component, dtRange, options) {
-  if ($('.dialog-stopclassification').length > 0) {
+  if (document.querySelector('.dialog-stopclassification') != null) {
     return;
   }
 
   const useClickedRange = options && options.useClickedRange === true;
 
   // PAGE 1
-  let dialog = $('<div></div>').addClass('dialog-stopclassification');
+  let dialog = document.createElement('div');
+  dialog.className = 'dialog-stopclassification';
 
-  let machid = $(component.element).attr('machine-id');
+  let machid = component.element.getAttribute('machine-id');
   let rangeString = dtRange.toString(d => d.toISOString());
   if (useClickedRange) {
     let fullRangeString = rangeString;
@@ -460,27 +399,26 @@ var openChangeStopClassificationDialog = exports.openChangeStopClassificationDia
     if (options && options.noadvanced) {
       attrs.noadvanced = true;
     }
-    let xstopclassification = pulseUtility.createjQueryElementWithAttribute('x-stopclassification', attrs);
-    dialog.append(xstopclassification);
+    let xstopclassification = pulseUtility.createElementWithAttribute('x-stopclassification', attrs);
+    dialog.appendChild(xstopclassification);
 
-    if (options && options.closeAfterSave && xstopclassification[0] && xstopclassification[0].closeAfterSave) {
-      xstopclassification[0].closeAfterSave(true);
+    if (options && options.closeAfterSave && xstopclassification.closeAfterSave) {
+      xstopclassification.closeAfterSave(true);
     }
   }
   else {
-    // Use a provider that fetches ReasonOnlySlots and builds the classifier
-    let xstopperiods = pulseUtility.createjQueryElementWithAttribute('x-stopperiods', {
+    let xstopperiods = pulseUtility.createElementWithAttribute('x-stopperiods', {
       'machine-id': machid,
       'range': rangeString,
       'autocreate-stopclassification': true
     });
-    dialog.append(xstopperiods);
+    dialog.appendChild(xstopperiods);
   }
 
   pulseCustomDialog.openDialog(dialog, {
     title: component.getTranslation('stopclassification.title', 'Stops'),
     onClose: function () {
-      $('.popup-block').fadeOut();
+      _fadeOutPopupBlocks();
       if (options && typeof options.onCloseExtra === 'function') {
         options.onCloseExtra.call(component);
       }
@@ -497,24 +435,11 @@ var openChangeStopClassificationDialog = exports.openChangeStopClassificationDia
 
 /**
  * Shared dialog for entering a reason comment (optional or required).
- * Used by x-savereason, x-stopclassification, and any component needing
- * a machine + period + reason + textarea dialog before saving.
- *
- * @memberof module:PulseComponentFunctions
- * @function openReasonCommentDialog
- *
- * @param {Object} component       - calling component (provides machine-id + getTranslation)
- * @param {number} classificationId
- * @param {string} reasonName
- * @param {string} rangeStr        - ISO range string
- * @param {boolean} detailsRequired - if true, OK is disabled until textarea has content
- * @param {Object} [reasonData]
- * @param {Function} onSave        - callback(classificationId, comment, reasonData)
  */
 var openReasonCommentDialog = exports.openReasonCommentDialog = function (component, classificationId, reasonName, rangeStr, detailsRequired, reasonData, onSave) {
   let machid = component.element.getAttribute('machine-id');
 
-  let rcdlg = pulseUtility.createjQueryElementWithAttribute('x-reasoncommentdialog', {
+  let rcdlg = pulseUtility.createElementWithAttribute('x-reasoncommentdialog', {
     'machine-id': machid,
     'range': rangeStr,
     'reason-name': reasonName,
@@ -524,7 +449,7 @@ var openReasonCommentDialog = exports.openReasonCommentDialog = function (compon
   let dialogId = pulseCustomDialog.openDialog(rcdlg, {
     title: component.getTranslation('reasonDetailsTitle', 'Reason details'),
     onOk: function () {
-      let details = rcdlg[0].getDetails ? rcdlg[0].getDetails() : '';
+      let details = rcdlg.getDetails ? rcdlg.getDetails() : '';
       if (details === '' && detailsRequired) {
         pulseCustomDialog.openDialog(component.getTranslation('errorNoDetails', 'Please add a comment'), { type: 'Error' });
       } else {
@@ -540,19 +465,10 @@ var openReasonCommentDialog = exports.openReasonCommentDialog = function (compon
 
 /**
  * Click on a bar (Open popup / details / change...)
- *
- * @memberof module:PulseComponentFunctions
- * @function clickOnBar
- *
- * @param {Object} component - component calling openDetails -> must define following attributes : machine-id (showpopup must be filled in config)
- * @param {Range} fullRange - full date range of the component
- * @param {Range} cellRange - date range of the clicked cell
- * @param {Object} event - evt to get click position
- * @param {String} callerName - 'reason' for example
  */
 exports.clickOnBar = function (component, fullRange, cellRange, event, callerName) {
   let barClick = pulseConfig.getString('showcoloredbar.click.' + callerName); // individual for THIS bar
-  if ( pulseUtility.isNotDefined(barClick) || barClick == '') {
+  if (pulseUtility.isNotDefined(barClick) || barClick == '') {
     barClick = pulseConfig.getString('showcoloredbar.click.allbars'); // For ALL bars
   }
   switch (barClick) {
@@ -579,23 +495,17 @@ exports.clickOnBar = function (component, fullRange, cellRange, event, callerNam
 }
 
 /**
- * Click on a bar (Open popup / details / change...)
- *
- * @memberof module:PulseComponentFunctions
- * @function openRunningDialog
- *
- * @param {Integer} groupId - group id
+ * Open the running dialog for a group
  */
 exports.openRunningDialog = function (groupId) {
-  let dialog = pulseUtility.createjQueryElementWithAttribute('x-runningdialog', {
+  let dialog = pulseUtility.createElementWithAttribute('x-runningdialog', {
     'group': groupId
   });
 
   pulseCustomDialog.openDialog(dialog, {
     title: pulseConfig.pulseTranslate('pages.running.title', ''),
     onClose: function () {
-      // Special for popup on a dialog (Reason '+2' display) :
-      $('.popup-block').fadeOut();
+      _fadeOutPopupBlocks();
     },
     autoClose: true,
     autoDelete: true,

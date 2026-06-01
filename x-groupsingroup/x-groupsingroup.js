@@ -101,22 +101,23 @@ var eventBus = require('eventBus');
 
       // REMOVE group not in list anymore
       let self = this;
-      $(this.element).find('.groupsingroup-subgroup').each(function () {
-        let groupId = $(this).attr('group'); // this = group-single
-        if (false == groupIdIsInList(groupId, self._groupIdsArray)) { // self = x-groupsingroup
-          $(this).remove(); // this = groupsingroup-subgroup
+      let subgroups = this.element.querySelectorAll('.groupsingroup-subgroup');
+      [...subgroups].forEach(function (el) {
+        let groupId = el.getAttribute('group');
+        if (false == groupIdIsInList(groupId, self._groupIdsArray)) {
+          el.remove();
         }
         else {
-          $(this).find('*').addClass('disableDeleteWhenDisconnect');
-          /* DO NOT used this.element : not defined here ! this == '.groupsingroup-subgroup' */
+          let children = el.querySelectorAll('*');
+          [...children].forEach(child => child.classList.add('disableDeleteWhenDisconnect'));
         }
       });
 
       //$(this.element).find('*').addClass('disableDeleteWhenDisconnect');
 
       if (0 == this._groupIdsArray.length) {
-        //$(this._messageSpan).html('No machines or group to display');
-        $(this._content).attr('data-count', 0);
+        //this._messageSpan.innerHTML = 'No machines or group to display';
+        this._content.setAttribute('data-count', 0);
 
         console.warn('No machines or group to display in x-groupsingroup');
         // Delayed display :
@@ -125,7 +126,7 @@ var eventBus = require('eventBus');
         this.switchToKey('Error', () => this.displayError(this.getTranslation('error.noMachineOrGroupToDisplay', 'No machine or group to display')), () => this.removeError());
       }
       else {
-        $(this._messageSpan).html('');
+        this._messageSpan.innerHTML = '';
 
         // Update list of groups - Add ROWS
         for (let i = 0; i < this._groupIdsArray.length; i++) {
@@ -140,11 +141,11 @@ var eventBus = require('eventBus');
           let li;
 
           // Find if already exists
-          let machineRow = $(this._content).find(".groupsingroup-subgroup[group='" + singleid + "']");
+          let machineRow = this._content.querySelector(".groupsingroup-subgroup[group='" + singleid + "']");
           // NO remove ELSE display can become not smooth enough
-          if (machineRow.length != 0) { // if exists
+          if (machineRow) { // if exists
             // Move at end of the list to order all
-            li = machineRow[0];
+            li = machineRow;
           }
           else {
             // Else Create NEW = copy the element and its child nodes
@@ -152,22 +153,23 @@ var eventBus = require('eventBus');
               singleid, isMachine);
 
             // Append the cloned element to the list
-            li = $('<li></li>').addClass('groupsingroup-subgroup');
-            li.attr('group', singleid);
+            li = document.createElement('li');
+            li.className = 'groupsingroup-subgroup';
+            li.setAttribute('group', singleid);
             if (isMachine == true) {
-              li.addClass('subgroup-single-machine');
+              li.classList.add('subgroup-single-machine');
             }
             else {
               // Allow click and different display
-              li.addClass('subgroup-group-not-machine');
+              li.classList.add('subgroup-group-not-machine');
             }
-            li.append(copy);
+            li.appendChild(copy);
           }
 
-          $(this._content).append(li);
+          this._content.appendChild(li);
         }
 
-        $(this._content).attr('data-count', this._groupIdsArray.length);
+        this._content.setAttribute('data-count', this._groupIdsArray.length);
       }
       //$(this.element).find('.disableDeleteWhenDisconnect').removeClass('disableDeleteWhenDisconnect'); // too early
 
@@ -187,8 +189,8 @@ var eventBus = require('eventBus');
 
     /** Removes the `disableDeleteWhenDisconnect` guard class from all descendant elements. */
     _removeDisable () {
-      $(this.element).find('.disableDeleteWhenDisconnect')
-        .removeClass('disableDeleteWhenDisconnect');
+      let els = this.element.querySelectorAll('.disableDeleteWhenDisconnect');
+      [...els].forEach(el => el.classList.remove('disableDeleteWhenDisconnect'));
     }
 
     /**
@@ -242,25 +244,31 @@ var eventBus = require('eventBus');
       // listeners
 
       // Create DOM - Content
-      this._content = $('<ol></ol>').addClass('groupsingroup-main');
+      this._content = document.createElement('ol');
+      this._content.className = 'groupsingroup-main';
       if (this.element.hasAttribute('fixed-size')
         && this.element.getAttribute('fixed-size') == true) {
-        this._content.addClass('fixed-size');
+        this._content.classList.add('fixed-size');
       }
-      $(this.element)
-        .addClass('group')
-        .append(this._content);
+      this.element.classList.add('group');
+      this.element.appendChild(this._content);
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this._content).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this._content.appendChild(loaderDiv);
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this._content).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this._content.appendChild(messageDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -270,7 +278,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._messageSpan = undefined;
       this._content = undefined;
@@ -318,11 +326,11 @@ var eventBus = require('eventBus');
     }
 
     displayError (message) {
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
     }
 
     removeError () {
-      $(this._messageSpan).html('');
+      this._messageSpan.innerHTML = '';
     }
 
     /**

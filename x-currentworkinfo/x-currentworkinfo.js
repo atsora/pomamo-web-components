@@ -62,12 +62,13 @@ var pulseComponent = require('pulsecomponent');
       // Update here some internal parameters
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._displayedWorkInformations = null;
 
       // Create DOM - Content
-      this._content = $('<div></div>').addClass('workinfo-content');
-      $(this.element).append(this._content);
+      this._content = document.createElement('div');
+      this._content.className = 'workinfo-content';
+      this.element.appendChild(this._content);
 
       // Create DOM - message for error
       /*this._messageSpan = $('<span></span>')
@@ -91,7 +92,7 @@ var pulseComponent = require('pulsecomponent');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._displayedWorkInformations = null;
 
       this._content = undefined;
@@ -113,7 +114,7 @@ var pulseComponent = require('pulsecomponent');
     }
 
     displayError (message) {
-      $(this._content).empty();
+      this._content.replaceChildren();
       this._displayedWorkInformations = null;
     }
 
@@ -154,7 +155,7 @@ var pulseComponent = require('pulsecomponent');
      */
     refresh (data) {
       if (data.SlotMissing) {
-        $(this._content).empty();
+        this._content.replaceChildren();
         this._displayedWorkInformations = null;
         return;
       }
@@ -175,7 +176,7 @@ var pulseComponent = require('pulsecomponent');
       }
 
       if (needToRefresh) {
-        $(this._content).empty();
+        this._content.replaceChildren();
         let operationDisplay = ''; // Will be changed with operationslot.display ASAP
         for (const workInformation of data.WorkInformations) {
           if (workInformation.Value) {
@@ -183,9 +184,10 @@ var pulseComponent = require('pulsecomponent');
           }
         } // end for
         // SINGLE display for all kind
-        let div = $('<div></div>').addClass('workinfo-singledata')
-          .html(operationDisplay);
-        $(this._content).append(div);
+        let div = document.createElement('div');
+        div.className = 'workinfo-singledata';
+        div.innerHTML = operationDisplay;
+        this._content.appendChild(div);
         this._displayedWorkInformations = data.WorkInformations;
       }
     }
@@ -203,14 +205,14 @@ var pulseComponent = require('pulsecomponent');
       if (data.MonitoredMachineOperationBar == 'None') {
         console.info('No operation for this machine : '
           + this.element.getAttribute('machine-id'));
-        $(this.element).hide();
+        this.element.style.display = 'none';
 
         this.switchToContext('NotApplicable');
         return;
       }
 
       // seems wrong but does not impact at the time : potential risk
-      $(this.element).show();
+      this.element.style.display = '';
 
       super.manageSuccess(data);
     }

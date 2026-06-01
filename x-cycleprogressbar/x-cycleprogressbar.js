@@ -78,30 +78,31 @@ var eventBus = require('eventBus');
         }
       }
       if (this._progressbar != undefined) {
-        $(this._progressbar).height(this._height);
+        this._progressbar.style.height = this._height + 'px';
       }
     }
 
     _drawEmpty () {
-      $(this._content).find('.cycleprogressbar-svg').remove(); // Remove Old SVG
-      $(this._spanNextstopMessage).html('');
-      $(this._spanNextstopDuration).html('');
+      let svg = this._content.querySelector('.cycleprogressbar-svg');
+      if (svg) svg.remove(); // Remove Old SVG
+      this._spanNextstopMessage.textContent = '';
+      this._spanNextstopDuration.textContent = '';
 
-      $(this.element).find('.threshold1').removeClass('threshold1');
-      $(this.element).find('.threshold2').removeClass('threshold2');
-      $(this.element).find('.activeevent').removeClass('activeevent');
-      $(this.element).find('.comingevent').removeClass('comingevent');
+      [...this.element.querySelectorAll('.threshold1')].forEach(el => el.classList.remove('threshold1'));
+      [...this.element.querySelectorAll('.threshold2')].forEach(el => el.classList.remove('threshold2'));
+      [...this.element.querySelectorAll('.activeevent')].forEach(el => el.classList.remove('activeevent'));
+      [...this.element.querySelectorAll('.comingevent')].forEach(el => el.classList.remove('comingevent'));
     }
 
     _draw () {
 
       if ((this._content == undefined) || (this._content == null)) {
-        //$(content).height(this._height);
+        //this._content.style.height = this._height + 'px';
         return;
       }
       this._drawEmpty();
 
-      let width = $(this._content).width();
+      let width = this._content.offsetWidth;
       if (width) {
         this._barwidth = width;
       }
@@ -132,17 +133,17 @@ var eventBus = require('eventBus');
           eventKind = 'activeevent';
           let classesToAdd = eventKind + ' ' + this._severity;
           this._statusClass += ' ' + classesToAdd;
-          $(this._content).find('.cycleprogressbar-nextstop').addClass(classesToAdd);
+          this._content.querySelector('.cycleprogressbar-nextstop').classList.add(...classesToAdd.split(' '));
 
           this._untilNextMSec = this._refDateTime.getTime() - this._serverNow.getTime();
 
           // TEXTS
-          $(this._spanNextstopMessage).html(event.Message);
+          this._spanNextstopMessage.textContent = event.Message;
           let textDuration = 'NOW';
           if (this._untilNextMSec != 0) {
             textDuration = pulseUtility.getTextDuration(-this._untilNextMSec / 1000);
           }
-          $(this._spanNextstopDuration).html(textDuration);
+          this._spanNextstopDuration.textContent = textDuration;
         }
         else if (this._data.ComingEvents && this._data.ComingEvents.length > 0) {
           // Manage coming events (Stop in / End in...)
@@ -153,7 +154,7 @@ var eventBus = require('eventBus');
           eventKind = 'comingevent';
           let classesToAdd = eventKind + ' ' + this._severity;
           this._statusClass += ' ' + classesToAdd;
-          $(this._content).find('.cycleprogressbar-nextstop').addClass(classesToAdd);
+          this._content.querySelector('.cycleprogressbar-nextstop').classList.add(...classesToAdd.split(' '));
 
           this._untilNextMSec = this._refDateTime.getTime() - this._serverNow.getTime();
 
@@ -162,16 +163,16 @@ var eventBus = require('eventBus');
           }
 
           // TEXTS
-          $(this._spanNextstopMessage).html(event.Message);
+          this._spanNextstopMessage.textContent = event.Message;
           let textDuration = 'NOW';
           if (this._untilNextMSec != 0) {
             textDuration = pulseUtility.getTextDuration(this._untilNextMSec / 1000);
           }
-          $(this._spanNextstopDuration).html(textDuration);
+          this._spanNextstopDuration.textContent = textDuration;
         }
         else { // NO INFO
-          $(this._spanNextstopMessage).html('-');
-          $(this._spanNextstopDuration).html('');
+          this._spanNextstopMessage.textContent = '-';
+          this._spanNextstopDuration.textContent = '';
         }
 
         let thresholdClass = '';
@@ -183,21 +184,21 @@ var eventBus = require('eventBus');
           if (this._untilNextMSec / 1000 < this._threshold2) {
             thresholdClass = 'threshold2';
             // Change text color
-            //$(this._content).find('.cycleprogressbar-nextstop').removeClass('threshold1');
-            $(this._content).find('.cycleprogressbar-nextstop').addClass('class', thresholdClass);
+            //this._content.querySelector('.cycleprogressbar-nextstop').classList.remove('threshold1');
+            this._content.querySelector('.cycleprogressbar-nextstop').classList.add(thresholdClass);
             this._statusClass += ' ' + thresholdClass;
           }
           else if (this._untilNextMSec / 1000 < this._threshold1) {
             thresholdClass = 'threshold1';
             // Change text color
-            //$(this._content).find('.cycleprogressbar-nextstop').removeClass('threshold2');
-            $(this._content).find('.cycleprogressbar-nextstop').addClass('class', thresholdClass);
+            //this._content.querySelector('.cycleprogressbar-nextstop').classList.remove('threshold2');
+            this._content.querySelector('.cycleprogressbar-nextstop').classList.add(thresholdClass);
             this._statusClass += ' ' + thresholdClass;
           }
           else {
             // Change text color
-            //$(this._content).find('.cycleprogressbar-nextstop').removeClass('threshold1');
-            //$(this._content).find('.cycleprogressbar-nextstop').removeClass('threshold2');
+            //this._content.querySelector('.cycleprogressbar-nextstop').classList.remove('threshold1');
+            //this._content.querySelector('.cycleprogressbar-nextstop').classList.remove('threshold2');
           }
         }
 
@@ -224,7 +225,7 @@ var eventBus = require('eventBus');
           svg.setAttribute('class', 'cycleprogressbar-svg');
 
           if (this._progressbar != undefined) {
-            $(this._progressbar).append(svg);
+            this._progressbar.appendChild(svg);
           }
 
           //(MAIN colored rect)
@@ -341,36 +342,51 @@ var eventBus = require('eventBus');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._progressbar = $('<div></div>').addClass('cycleprogressbar-progressbar');
-      this._progressbar.height(this._height);
-      this._spanNextstopMessage = $('<span></span>').addClass('cycleprogressbar-nextstop-message');
-      this._spanNextstopDuration = $('<span></span>').addClass('cycleprogressbar-nextstop-duration');
-      let divNextstop = $('<div></div>').addClass('cycleprogressbar-nextstop').append(this._spanNextstopMessage).append(this._spanNextstopDuration);
+      this._progressbar = document.createElement('div');
+      this._progressbar.classList.add('cycleprogressbar-progressbar');
+      this._progressbar.style.height = this._height + 'px';
 
-      this._content = $('<div></div>').addClass('cycleprogressbar-content')
-        .addClass('pulse-cellbar-main') // To be opacified in case of error
-        .append(this._progressbar)
-        .append(divNextstop);
+      this._spanNextstopMessage = document.createElement('span');
+      this._spanNextstopMessage.classList.add('cycleprogressbar-nextstop-message');
 
-      $(this.element)
-        .addClass('cycleprogressbar')
-        .append(this._content);
+      this._spanNextstopDuration = document.createElement('span');
+      this._spanNextstopDuration.classList.add('cycleprogressbar-nextstop-duration');
+
+      let divNextstop = document.createElement('div');
+      divNextstop.classList.add('cycleprogressbar-nextstop');
+      divNextstop.appendChild(this._spanNextstopMessage);
+      divNextstop.appendChild(this._spanNextstopDuration);
+
+      this._content = document.createElement('div');
+      this._content.classList.add('cycleprogressbar-content');
+      this._content.classList.add('pulse-cellbar-main'); // To be opacified in case of error
+      this._content.appendChild(this._progressbar);
+      this._content.appendChild(divNextstop);
+
+      this.element.classList.add('cycleprogressbar');
+      this.element.appendChild(this._content);
 
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.classList.add('pulse-message');
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.classList.add('pulse-message-div');
+      messageDiv.appendChild(this._messageSpan);
+      this.element.appendChild(messageDiv);
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -380,7 +396,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
       this._progressbar = undefined;
       this._spanNextstopMessage = undefined;
       this._spanNextstopDuration = undefined;
@@ -413,9 +429,9 @@ var eventBus = require('eventBus');
       /*if ('NO_DATA' == statusString) {
       errorMessage = 'No available next stop information';
     } => ?? */
-      $(this._messageSpan).html(message);
+      this._messageSpan.innerHTML = message;
 
-      //$(this._progressbar).hide();
+      //this._progressbar.style.display = 'none';
     }
 
     removeError () {
@@ -441,20 +457,26 @@ var eventBus = require('eventBus');
         this._drawEmpty();
       }
       else {
-        $(this._progressbar).show();
+        this._progressbar.style.display = '';
         this._draw();
       }
     }
 
     manageSuccess (data) {
-      $(this.element).parent('.pulse-bar-div').show(); // To cancel NotApplicable
-      $(this._content).show();
+      let barDiv = this.element.parentElement;
+      if (barDiv && barDiv.classList.contains('pulse-bar-div')) {
+        barDiv.style.display = '';
+      }
+      this._content.style.display = '';
 
       super.manageSuccess(data); // or this.switchToNextContext(() => this.refresh(data));
     }
 
     manageNotApplicable () {
-      $(this.element).parent('.pulse-bar-div').hide();
+      let barDiv = this.element.parentElement;
+      if (barDiv && barDiv.classList.contains('pulse-bar-div')) {
+        barDiv.style.display = 'none';
+      }
 
       eventBus.EventBus.dispatchToContext('nextStopStatusChange',
         this.element.getAttribute('status-context'), {});

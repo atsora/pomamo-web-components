@@ -70,23 +70,30 @@ var eventBus = require('eventBus');
       this.addClass('pulse-text');
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Content
-      this._dataElement = $('<span></span>').addClass('machinedisplay-data');
-      $(this.element).append(this._dataElement);
+      this._dataElement = document.createElement('span');
+      this._dataElement.className = 'machinedisplay-data';
+      this.element.appendChild(this._dataElement);
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html('Loading...').css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      $(this.element).append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.className = 'pulse-loader';
+      loader.innerHTML = 'Loading...';
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.className = 'pulse-loader-div';
+      loaderDiv.appendChild(loader);
+      this.element.appendChild(loaderDiv);
 
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      $(this.element).append(messageDiv);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.className = 'pulse-message';
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.className = 'pulse-message-div';
+      messageDiv.appendChild(this._messageSpan);
+      this.element.appendChild(messageDiv);
 
       // Listener and dispatchers
       if (this.element.hasAttribute('machine-context')) {
@@ -104,7 +111,7 @@ var eventBus = require('eventBus');
     clearInitialization () {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       this._messageSpan = undefined;
       this._dataElement = undefined;
@@ -114,7 +121,7 @@ var eventBus = require('eventBus');
 
     reset () {
       this.removeError();
-      $(this._dataElement).html('');
+      this._dataElement.innerHTML = '';
 
       this.switchToNextContext();
     }
@@ -163,9 +170,9 @@ var eventBus = require('eventBus');
      */
     refresh (data) {
       if (!pulseUtility.isNotDefined(data.Display))
-        $(this._dataElement).html(data.Display);
+        this._dataElement.innerHTML = data.Display;
       else
-        $(this._dataElement).html(data.Name);
+        this._dataElement.innerHTML = data.Name;
 
       // string Id
       // string TreeName
@@ -173,8 +180,8 @@ var eventBus = require('eventBus');
     }
 
     displayError (message) {
-      $(this._dataElement).html('');
-      $(this._messageSpan).html(message);
+      this._dataElement.innerHTML = '';
+      this._messageSpan.innerHTML = message;
     }
 
     removeError () {

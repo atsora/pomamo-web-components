@@ -1,4 +1,4 @@
-// Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2009-2025 Atsora Solutions
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -18,81 +18,93 @@ var pulseCustomDialog = function () {
   // Convenient object to store and get data attached to a dialog
   var _dataManager = pulseUtility.createDataManager('customDialogId');
 
-  // List of open dialogs
+  // List of open dialog ids (used to manage blur stacking)
   var _openIds = [];
+
+  // Resolve a string selector or Element to a single Element (used for polymorphic public APIs)
+  function _toElement (target) {
+    if (target == null) return null;
+    if (typeof target === 'string') return document.querySelector(target);
+    if (target.nodeType) return target;
+    return null;
+  }
 
   var _displayNavigation = function (selector) {
     var id = _dataManager.getId(selector);
-    var dialogId = 'customDialog' + id;
+    var dialog = document.getElementById('customDialog' + id);
+    if (dialog == null) return;
     var data = _dataManager.get(id);
 
-    // Extract parameters defining the element visibility
     var currentPage = data['currentPage'];
     var pageCount = data['pageCount'];
-    var cancelButton = data['attributes']['cancelButton']; // can be null, "hidden"
-    var previousButton = data['attributes']['previousButton']; // can be null, "hidden"
-    var nextButton = data['attributes']['nextButton']; // can be null, "hidden"
-    var okButton = data['attributes']['okButton']; // can be null, "hidden"
+    var cancelButton = data['attributes']['cancelButton'];
+    var previousButton = data['attributes']['previousButton'];
+    var nextButton = data['attributes']['nextButton'];
+    var okButton = data['attributes']['okButton'];
 
-    // First and/or last page?
-    $('#' + dialogId).toggleClass('customDialogFirstPage', currentPage == 0);
-    $('#' + dialogId).toggleClass('customDialogLastPage', currentPage == pageCount - 1);
+    dialog.classList.toggle('customDialogFirstPage', currentPage == 0);
+    dialog.classList.toggle('customDialogLastPage', currentPage == pageCount - 1);
 
-    // Hidden buttons?
-    $('#' + dialogId).toggleClass('customDialogNoCancel', cancelButton == 'hidden');
-    $('#' + dialogId).toggleClass('customDialogNoPrevious', previousButton == 'hidden');
-    $('#' + dialogId).toggleClass('customDialogNoNext', nextButton == 'hidden');
-    $('#' + dialogId).toggleClass('customDialogNoOk', okButton == 'hidden');
+    dialog.classList.toggle('customDialogNoCancel', cancelButton == 'hidden');
+    dialog.classList.toggle('customDialogNoPrevious', previousButton == 'hidden');
+    dialog.classList.toggle('customDialogNoNext', nextButton == 'hidden');
+    dialog.classList.toggle('customDialogNoOk', okButton == 'hidden');
 
     // Collapse button bar when all buttons are hidden (avoids 10px margin gap).
     // Previous/Next are navigation-only — treat undefined as "not needed" (only null = explicitly visible).
-    let anyButtonVisible = (cancelButton !== 'hidden') || (okButton !== 'hidden') ||
+    var anyButtonVisible = (cancelButton !== 'hidden') || (okButton !== 'hidden') ||
       (previousButton != null && previousButton !== 'hidden') ||
       (nextButton != null && nextButton !== 'hidden');
-    $('#' + dialogId + ' .customDialogButtons').css({
-      display: anyButtonVisible ? '' : 'none',
-      margin: anyButtonVisible ? '' : '0'
-    });
+    var buttons = dialog.querySelector('.customDialogButtons');
+    if (buttons != null) {
+      buttons.style.display = anyButtonVisible ? '' : 'none';
+      buttons.style.margin = anyButtonVisible ? '' : '0';
+    }
 
     // Set current page
-    for (var i = 0; i < pageCount; i++)
-      $('#' + dialogId + ' .customDialogPage' + i).toggleClass('customDialogCurrentPage', i == currentPage);
+    for (var i = 0; i < pageCount; i++) {
+      var page = dialog.querySelector('.customDialogPage' + i);
+      if (page != null) page.classList.toggle('customDialogCurrentPage', i == currentPage);
+    }
   };
 
   /*
   * Close a prepared dialog
-  * selector: the div containing the dialog
+  * selector: the dialog or a child of it
   */
   var close = function (selector) {
     var id = _dataManager.getId(selector);
     var attributes = _dataManager.get(id)['attributes'];
-
-    var dialogId = 'customDialog' + id;
+    var dialog = document.getElementById('customDialog' + id);
 
     // onClose?
-    if (attributes['onClose'] != null)
-      attributes['onClose']();
+    if (attributes['onClose'] != null) attributes['onClose']();
 
-    $('#' + dialogId).removeClass('customDialogEnabled');
+    if (dialog != null && dialog.open) {
+      dialog.close();
+    }
 
     // autoDelete?
-    if (attributes['autoDelete'] != null && attributes['autoDelete'] == true) {
-      $('#' + dialogId).remove();
+    if (attributes['autoDelete'] === true) {
+      if (dialog != null) dialog.remove();
       _dataManager.reset(id);
     }
 
     var index = _openIds.indexOf(id);
     if (index > -1) {
-      _openIds.splice(index, 1)
+      _openIds.splice(index, 1);
 
       if (_openIds.length > 0) {
         // Unblur the previous dialog
-        $('#customDialog' + _openIds[_openIds.length - 1]).css('filter', 'blur(0)');
+        var prev = document.getElementById('customDialog' + _openIds[_openIds.length - 1]);
+        if (prev != null) prev.style.filter = 'blur(0)';
       }
       else {
         // Unblur behind the first dialog
-        $('.pulse-header').css('filter', 'blur(0)');
-        $('#pulse-inner').css('filter', 'blur(0)');
+        var header = document.querySelector('.pulse-header');
+        if (header != null) header.style.filter = 'blur(0)';
+        var inner = document.getElementById('pulse-inner');
+        if (inner != null) inner.style.filter = 'blur(0)';
       }
     }
   };
@@ -105,12 +117,12 @@ var pulseCustomDialog = function () {
     var attributes = _dataManager.get(id)['attributes'];
 
     // onCancel?
-    if (attributes['onCancel'] != null)
-      attributes['onCancel']();
+    if (attributes['onCancel'] != null) attributes['onCancel']();
 
-    // autoClose?
-    if ((attributes['autoClose'] != null && attributes['autoClose'] == true) || (attributes['onCancel'] == null)) // If no autoClose AND no method Cancel : X should close dialog
+    // autoClose? (or no onCancel: X should still close)
+    if ((attributes['autoClose'] === true) || (attributes['onCancel'] == null)) {
       close(selector);
+    }
   };
 
   /*
@@ -121,12 +133,10 @@ var pulseCustomDialog = function () {
     var attributes = _dataManager.get(id)['attributes'];
 
     // onOk?
-    if (attributes['onOk'] != null)
-      attributes['onOk']();
+    if (attributes['onOk'] != null) attributes['onOk']();
 
     // autoClose?
-    if (attributes['autoClose'] != null && attributes['autoClose'] == true)
-      close(selector);
+    if (attributes['autoClose'] === true) close(selector);
   };
 
   /*
@@ -135,8 +145,7 @@ var pulseCustomDialog = function () {
   var previous = function (selector) {
     var id = _dataManager.getId(selector);
     var currentPage = _dataManager.get(id)['currentPage'];
-    if (currentPage > 0)
-      _dataManager.set(id, 'currentPage', currentPage - 1);
+    if (currentPage > 0) _dataManager.set(id, 'currentPage', currentPage - 1);
     _displayNavigation(selector);
   };
 
@@ -147,8 +156,7 @@ var pulseCustomDialog = function () {
     var id = _dataManager.getId(selector);
     var pageCount = _dataManager.get(id)['pageCount'];
     var currentPage = _dataManager.get(id)['currentPage'];
-    if (currentPage < pageCount - 1)
-      _dataManager.set(id, 'currentPage', currentPage + 1);
+    if (currentPage < pageCount - 1) _dataManager.set(id, 'currentPage', currentPage + 1);
     _displayNavigation(selector);
   };
 
@@ -158,8 +166,7 @@ var pulseCustomDialog = function () {
   var goToPage = function (selector, nb) {
     var id = _dataManager.getId(selector);
     var pageCount = _dataManager.get(id)['pageCount'];
-    if (nb < pageCount && nb >= 0)
-      _dataManager.set(id, 'currentPage', nb);
+    if (nb < pageCount && nb >= 0) _dataManager.set(id, 'currentPage', nb);
     _displayNavigation(selector);
   };
 
@@ -175,19 +182,15 @@ var pulseCustomDialog = function () {
     var fullSize = (attributes['fullSize'] == true);
     var smallSize = (attributes['smallSize'] == true);
     var helpName = attributes['helpName'];
-    if (attributes['className']) {
-      var className = 'customeDialog-' + attributes['className'];
-    }
-    else {
-      var className = '';
-    }
+    var className = attributes['className'] ? ('customeDialog-' + attributes['className']) : '';
 
-    // Create a dialog
-    $('body').append(
-      "<div id='" + dialogId + "' class='customDialog " + className + "'>" +
-      "<div class='customDialogShadow'></div>" +
-      "<div class='customDialogWindow" + (fullScreenOnSmartphone ? ' customDialogWindowFullScreenOnSmartphone' : '') +
-      (fullSize ? ' fullSize' : (bigSize ? ' bigSize' : (smallSize ? ' smallSize' : ''))) + "'>" +
+    var sizeClass = fullSize ? ' fullSize' : (bigSize ? ' bigSize' : (smallSize ? ' smallSize' : ''));
+    var phoneClass = fullScreenOnSmartphone ? ' customDialogWindowFullScreenOnSmartphone' : '';
+
+    // Create a native <dialog> (top-layer modal). Escape key handling is wired below.
+    var html =
+      "<dialog id='" + dialogId + "' class='customDialog " + className + "'>" +
+      "<div class='customDialogWindow" + phoneClass + sizeClass + "'>" +
       "<div class='customDialogHeader'>" +
       "<div class='customDialogTitle'>" + attributes['title'] + '</div>' +
       (helpName ? "<div class='customDialogHelpBox' title='Help file' helpname='" + helpName + "'></div>" : '') +
@@ -201,8 +204,11 @@ var pulseCustomDialog = function () {
       "<button class='customDialogOk buttonDialog' title='Ok' role='button'></button>" +
       '</div>' +
       '</div>' +
-      '</div>');
-    _dataManager.initializeIdAttribute('#' + dialogId, id);
+      '</dialog>';
+
+    document.body.insertAdjacentHTML('beforeend', html);
+    var dialog = document.getElementById(dialogId);
+    _dataManager.initializeIdAttribute(dialog, id);
 
     pulseSvg.inlineBackgroundSvg('#' + dialogId + ' .customDialogCancel');
     pulseSvg.inlineBackgroundSvg('#' + dialogId + ' .customDialogPrevious');
@@ -217,36 +223,40 @@ var pulseCustomDialog = function () {
     _dataManager.set(id, 'pageCount', 0);
 
     // Add callbacks
-    $('#' + dialogId + ' .customDialogCloseBox').click(function () { cancel('#' + dialogId); });
-    $('#' + dialogId + ' .customDialogCancel').click(function () { cancel('#' + dialogId); });
-    $('#' + dialogId + ' .customDialogPrevious').click(function () { previous('#' + dialogId); });
-    $('#' + dialogId + ' .customDialogNext').click(function () { next('#' + dialogId); });
-    $('#' + dialogId + ' .customDialogOk').click(function () { ok('#' + dialogId); });
+    var closeBox = dialog.querySelector('.customDialogCloseBox');
+    if (closeBox != null) closeBox.addEventListener('click', function () { cancel('#' + dialogId); });
+    dialog.querySelector('.customDialogCancel').addEventListener('click', function () { cancel('#' + dialogId); });
+    dialog.querySelector('.customDialogPrevious').addEventListener('click', function () { previous('#' + dialogId); });
+    dialog.querySelector('.customDialogNext').addEventListener('click', function () { next('#' + dialogId); });
+    dialog.querySelector('.customDialogOk').addEventListener('click', function () { ok('#' + dialogId); });
 
-    $('.customDialogHelpBox').click(function () {
-      //let helpName = this.getAttribute('helpname');
-      let pathname = window.location.pathname;
-      let pdfPath = pathname.substring(0, pathname.lastIndexOf('/') + 1) + 'help/' + helpName + '.pdf';
-      // Open help file (if exists)
-      function _fileExists(url) {
-        if (url) {
+    // Native <dialog> fires 'cancel' on Escape; route through our cancel() so onCancel callbacks fire.
+    // preventDefault stops the native auto-close — our cancel() handles closing itself based on attrs.
+    dialog.addEventListener('cancel', function (event) {
+      event.preventDefault();
+      cancel('#' + dialogId);
+    });
+
+    var helpBox = dialog.querySelector('.customDialogHelpBox');
+    if (helpBox != null) {
+      helpBox.addEventListener('click', function () {
+        var pathname = window.location.pathname;
+        var pdfPath = pathname.substring(0, pathname.lastIndexOf('/') + 1) + 'help/' + helpName + '.pdf';
+        function _fileExists (url) {
+          if (!url) return false;
           var req = new XMLHttpRequest();
           req.open('HEAD', url, false); // head is faster than GET
           req.send();
           return req.status == 200;
-        } else {
-          return false;
         }
-      }
-      if (_fileExists(pdfPath)) {
-        window.open(pdfPath, 'resizable,scrollbars');
-      }
-      else {
-        //pulseCustomDialog.openInfo('File not found !'); // impossible in dialog :(
-        window.alert('File not found !');
-      }
-    });
-
+        if (_fileExists(pdfPath)) {
+          window.open(pdfPath, 'resizable,scrollbars');
+        }
+        else {
+          window.alert('File not found !');
+        }
+      });
+    }
 
     return id;
   };
@@ -254,22 +264,30 @@ var pulseCustomDialog = function () {
   /*
    * Add a page to a prepared dialog
    * selector: the div containing the dialog
-   * pageSelector: the div that will be the new page
+   * pageSelector: string selector OR Element that will be the new page
    */
   var addPage = function (selector, pageSelector) {
     // Id of the dialog
     var id = _dataManager.getId(selector);
 
+    var pageEl = _toElement(pageSelector);
+    if (pageEl == null) {
+      throw "addPage: pageSelector '" + pageSelector + "' not found";
+    }
+
     // Number of pages
     var pageCount = _dataManager.get(id)['pageCount'];
-    var blockToInsert = $(pageSelector).detach().addClass('customDialogPage' + pageCount);
-    blockToInsert.appendTo('#customDialog' + id + ' .customDialogContent');
-    _dataManager.initializeIdAttribute(pageSelector, id);
+    if (pageEl.parentNode != null) pageEl.parentNode.removeChild(pageEl);
+    pageEl.classList.add('customDialogPage' + pageCount);
+
+    var contentSlot = document.querySelector('#customDialog' + id + ' .customDialogContent');
+    contentSlot.appendChild(pageEl);
+    _dataManager.initializeIdAttribute(pageEl, id);
 
     // Update data
     _dataManager.set(id, 'pageCount', pageCount + 1);
 
-    // Adapte the navigation buttons
+    // Adapt the navigation buttons
     _displayNavigation(selector);
   };
 
@@ -288,8 +306,7 @@ var pulseCustomDialog = function () {
    * Return the div name of the dialog
    */
   var initialize = function (selector, attributes) {
-    if (attributes == null)
-      attributes = {};
+    if (attributes == null) attributes = {};
 
     // Create a new dialog
     var id = _createDialog(attributes);
@@ -311,7 +328,8 @@ var pulseCustomDialog = function () {
 
     // Possibly update the title
     if (key == 'title') {
-      $('#customDialog' + id + ' .customDialogTitle').html(value);
+      var titleEl = document.querySelector('#customDialog' + id + ' .customDialogTitle');
+      if (titleEl != null) titleEl.innerHTML = value;
     }
   };
 
@@ -324,22 +342,25 @@ var pulseCustomDialog = function () {
 
   /*
   * Open a dialog.
-  * - content is a DOM/jQuery element: standard dialog, reopened if already initialized
-  * - content is a string: alert shortcut, attrs.type sets the icon
+  * - content is a DOM Element: standard dialog, reopened if already initialized
+  * - content is a string selector: same, resolved to Element
+  * - content is a string with no leading '#'/'.' / etc.: alert shortcut, attrs.type sets the icon
   *   ('Information' | 'Warning' | 'Error' | 'Question'), attrs.onClose / onOk / onCancel for callbacks
   * attrs: dialog attributes (title, cancelButton, autoClose, autoDelete, onClose, onOk, onCancel, ...)
   */
   var openDialog = function (content, attrs) {
-    let dialogContent = content;
+    var dialogContent = content;
     if (attrs == null) attrs = {};
 
     if (typeof content === 'string') {
-      let type = attrs.type || 'Information';
-      let isConfirm = (type === 'Question');
-      let elt = document.createElement('x-alertdialog');
+      // Heuristic: a CSS selector starts with '#', '.', or matches an existing element.
+      // We treat a plain string as an alert message (legacy behavior).
+      var type = attrs.type || 'Information';
+      var isConfirm = (type === 'Question');
+      var elt = document.createElement('x-alertdialog');
       elt.setAttribute('type', type);
       elt.setAttribute('message', content);
-      dialogContent = $(elt);
+      dialogContent = elt;
       attrs = Object.assign({
         title: _defaultAlertTitles[type] ? _defaultAlertTitles[type]() : type,
         cancelButton: isConfirm ? undefined : 'hidden',
@@ -349,10 +370,10 @@ var pulseCustomDialog = function () {
       }, attrs);
     }
 
-    let dialogId;
-    let isReuse = false;
+    var dialogId;
+    var isReuse = false;
     try {
-      let id = _dataManager.getId(dialogContent);
+      var id = _dataManager.getId(dialogContent);
       dialogId = 'customDialog' + id;
       isReuse = true;
     }
@@ -365,7 +386,7 @@ var pulseCustomDialog = function () {
 
   // Backward-compatible aliases
   var openAlert = function (message, type, title, onClose, onOk, onCancel) {
-    let isConfirm = (type === 'Question');
+    var isConfirm = (type === 'Question');
     return openDialog(message, {
       type: type,
       title: title,
@@ -377,7 +398,7 @@ var pulseCustomDialog = function () {
 
   /*
   * Open a prepared dialog
-  * selector: the div containing the dialog
+  * selector: the dialog (or a child of it)
   * knownDialogId : dialog id if known - else bug: open machine selection page twice => blur
   */
   var open = function (selector, knownDialogId) {
@@ -386,25 +407,30 @@ var pulseCustomDialog = function () {
     var attributes = _dataManager.get(id)['attributes'];
 
     // Back to first page
-    if (_dataManager.get(id)['currentPage'] > 0)
-      _dataManager.set(id, 'currentPage', 0);
+    if (_dataManager.get(id)['currentPage'] > 0) _dataManager.set(id, 'currentPage', 0);
     _displayNavigation(selector);
 
-    if (attributes['onOpen'] != null)
-      attributes['onOpen']();
-    $('#customDialog' + id).addClass('customDialogEnabled');
+    if (attributes['onOpen'] != null) attributes['onOpen']();
+
+    var dialog = document.getElementById('customDialog' + id);
+    if (dialog != null && !dialog.open) {
+      dialog.showModal();
+    }
 
     // Blur the previous dialog if not already done
     if ('customDialog' + id != knownDialogId) {
       if (_openIds.length > 0) {
-        $('#customDialog' + _openIds[_openIds.length - 1]).css('filter', 'blur(3px)');
+        var prev = document.getElementById('customDialog' + _openIds[_openIds.length - 1]);
+        if (prev != null) prev.style.filter = 'blur(3px)';
       }
       else {
         // Blur behind the first dialog
-        $('.pulse-header').css('filter', 'blur(2px)');
-        $('#pulse-inner').css('filter', 'blur(2px)');
+        var header = document.querySelector('.pulse-header');
+        if (header != null) header.style.filter = 'blur(2px)';
+        var inner = document.getElementById('pulse-inner');
+        if (inner != null) inner.style.filter = 'blur(2px)';
       }
-      _openIds[_openIds.length] = id;
+      _openIds.push(id);
     }
   };
 
@@ -420,7 +446,7 @@ var pulseCustomDialog = function () {
   */
   var openLoader = function (abortFunction) {
     // Loader already open?
-    var id; // To define id only once
+    var id;
     try {
       id = _dataManager.getId('#customDialogLoader');
       var dialogId = 'customDialog' + id;
@@ -434,7 +460,7 @@ var pulseCustomDialog = function () {
       return;
     }
     catch (e) {
-      //
+      // not yet created
     }
 
     // Create a new dialog with possibly a cancel button
@@ -459,11 +485,10 @@ var pulseCustomDialog = function () {
         autoDelete: true
       });
 
-    // Add a special class to this dialog
-    $('#customDialog' + id).addClass('customDialogButtonRight');
+    var dialog = document.getElementById('customDialog' + id);
+    if (dialog != null) dialog.classList.add('customDialogButtonRight');
 
-    // Add content
-    $('body').append(
+    document.body.insertAdjacentHTML('beforeend',
       "<div id='customDialogLoader'>" +
       "<div class='customProgress' style='margin: 20px 10px'>" +
       "<div data-effect='slide-left' class='customProgressBar' role='progressbar' aria-valuenow='100' aria-valuemin='0' aria-valuemax='100' style='width: 100%; transition: all 0.7s ease-in-out 0s;'></div>" +
@@ -479,30 +504,25 @@ var pulseCustomDialog = function () {
   * Close the loader
   */
   var closeLoader = function () {
-    if ($('#customDialogLoader').length)
-      close('#customDialogLoader');
+    if (document.getElementById('customDialogLoader') != null) close('#customDialogLoader');
   };
 
   /*
   * Close all dialogs
   */
   var closeAll = function () {
-    $('.customDialog').each(function () { close('#' + this.id); });
+    var dialogs = document.querySelectorAll('.customDialog');
+    for (var i = 0; i < dialogs.length; i++) close('#' + dialogs[i].id);
   };
 
   /*
   * Close the last dialog
   */
   var closeLast = function () {
-    if (_openIds.length > 0)
-      cancel('#customDialog' + _openIds[_openIds.length - 1]);
+    if (_openIds.length > 0) cancel('#customDialog' + _openIds[_openIds.length - 1]);
   };
 
-  // Connect the key "escape"
-  $(document).keyup(function (e) {
-    if (e.keyCode == 27)
-      closeLast();
-  });
+  // Escape key is handled per-dialog via the native 'cancel' event wired in _createDialog.
 
   // List of exported functions
   return {

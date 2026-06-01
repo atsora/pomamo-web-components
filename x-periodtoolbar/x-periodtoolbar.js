@@ -72,21 +72,25 @@ require('x-datetimerange/x-datetimerange');
 
     _appendButtons(toolbar) {
       let _addButtonToToolbar = function (toolbar, btnClass, btnId, isSelectable) {
-        let svg = $('<div></div>').addClass('periodtoolbar-btn').addClass(btnClass).attr('id', btnId);
+        let svg = document.createElement('div');
+        svg.classList.add('periodtoolbar-btn', btnClass);
         if (btnId != null) {
-          svg.attr('id', btnId);
+          svg.setAttribute('id', btnId);
         }
         if ((isSelectable != null) && (true == isSelectable)) {
-          svg.addClass('selectablebutton')
+          svg.classList.add('selectablebutton')
         }
-        let btn = $('<div></div>').addClass('periodtoolbar-li-btn').append(svg);
-        toolbar.append(btn);
+        let btn = document.createElement('div');
+        btn.classList.add('periodtoolbar-li-btn');
+        btn.appendChild(svg);
+        toolbar.appendChild(btn);
         pulseSvg.inlineBackgroundSvg(svg);
         return btn;
       }
 
-      let periodButtonsDiv = $('<div class="content-period-buttons"></div>');
-      toolbar.append(periodButtonsDiv);
+      let periodButtonsDiv = document.createElement('div');
+      periodButtonsDiv.className = 'content-period-buttons';
+      toolbar.appendChild(periodButtonsDiv);
 
 
 
@@ -97,69 +101,69 @@ require('x-datetimerange/x-datetimerange');
 
       let homeBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-home');
       pulseUtility.addToolTip(homeBtn, this.getTranslation('homeBtn', 'home'));
-      if (hidePeriodButton) homeBtn.hide();
-      homeBtn.click(function () {
+      if (hidePeriodButton) homeBtn.style.display = 'none';
+      homeBtn.addEventListener('click', function () {
         self._clickOnButton('home')
       });
 
       let dayBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-day', 'day', true);
       pulseUtility.addToolTip(dayBtn, this.getTranslation('dayBtn', 'day'));
-      if (hidePeriodButton) dayBtn.hide();
-      dayBtn.click(function () {
+      if (hidePeriodButton) dayBtn.style.display = 'none';
+      dayBtn.addEventListener('click', function () {
         self._clickOnButton('day')
       });
 
       let shiftBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-shift', 'shift', true);
       pulseUtility.addToolTip(shiftBtn, this.getTranslation('shiftBtn', 'shift'));
-      if (hidePeriodButton) shiftBtn.hide();
-      shiftBtn.click(function () {
+      if (hidePeriodButton) shiftBtn.style.display = 'none';
+      shiftBtn.addEventListener('click', function () {
         self._clickOnButton('shift')
       });
 
       let weekBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-week', 'week', true);
       pulseUtility.addToolTip(weekBtn, this.getTranslation('weekBtn', 'week'));
-      if (hidePeriodButton) weekBtn.hide();
-      weekBtn.click(function () {
+      if (hidePeriodButton) weekBtn.style.display = 'none';
+      weekBtn.addEventListener('click', function () {
         self._clickOnButton('week')
       });
 
       let monthBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-month', 'month', true);
       pulseUtility.addToolTip(monthBtn, this.getTranslation('monthBtn', 'month'));
-      if (hidePeriodButton) monthBtn.hide();
-      monthBtn.click(function () {
+      if (hidePeriodButton) monthBtn.style.display = 'none';
+      monthBtn.addEventListener('click', function () {
         self._clickOnButton('month')
       });
 
       let quarterBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-quarter', 'quarter', true);
       pulseUtility.addToolTip(quarterBtn, this.getTranslation('quarterBtn', 'quarter'));
-      if (hidePeriodButton) quarterBtn.hide();
-      quarterBtn.click(function () {
+      if (hidePeriodButton) quarterBtn.style.display = 'none';
+      quarterBtn.addEventListener('click', function () {
         self._clickOnButton('quarter')
       });
 
       let semesterBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-semester', 'semester', true);
       pulseUtility.addToolTip(semesterBtn, this.getTranslation('semesterBtn', 'semester'));
-      if (hidePeriodButton) semesterBtn.hide();
-      semesterBtn.click(function () {
+      if (hidePeriodButton) semesterBtn.style.display = 'none';
+      semesterBtn.addEventListener('click', function () {
         self._clickOnButton('semester')
       });
 
       let yearBtn = _addButtonToToolbar(periodButtonsDiv, 'periodtoolbar-year', 'year', true);
       pulseUtility.addToolTip(yearBtn, this.getTranslation('yearBtn', 'year'));
-      if (hidePeriodButton) yearBtn.hide();
-      yearBtn.click(function () {
+      if (hidePeriodButton) yearBtn.style.display = 'none';
+      yearBtn.addEventListener('click', function () {
         self._clickOnButton('year')
       });
 
       let prevBtn = _addButtonToToolbar(toolbar, 'periodtoolbar-prev');
-      prevBtn.click(function () {
+      prevBtn.addEventListener('click', function () {
         self._goToPreviousPeriod()
       });
 
       /* KEEP NEXT comment - can be used to restore button for range selection*/
       /*let periodSelectionBtn = _addButtonToToolbar(toolbar, 'periodtoolbar-periodselection');
       periodSelectionBtn.click(function(){
-                           let xdatetimerange = pulseUtility.createjQueryElementWithAttribute("x-datetimerange", {
+                           let xdatetimerange = pulseUtility.createElementWithAttribute("x-datetimerange", {
                              range: this._dateRange.lower+";"+this._dateRange.upper
                            });
                            let datetimerange_div = $("<div></div>").addClass("dialog-datetimerange").append(xdatetimerange);
@@ -169,10 +173,10 @@ require('x-datetimerange/x-datetimerange');
                              dialog,
                              function () {
                                this._shiftIsDisplayed = false;
-                               let range = $(xdatetimerange[0]).attr('range');
+                               let range = xdatetimerange[0].getAttribute('range');
                                let pos = range.indexOf(";");
-                               this._dateRange.lower = range.substr(0, pos);//$(xdatetimerange[0]).attr('begin');
-                               this._dateRange.upper = range.substr(pos+1, range.length - (pos+1) ); // $(xdatetimerange[0]).attr('end');
+                               this._dateRange.lower = range.substr(0, pos);//xdatetimerange[0].getAttribute('begin');
+                               this._dateRange.upper = range.substr(pos+1, range.length - (pos+1) ); // xdatetimerange[0].getAttribute('end');
                                this._rangeHaveChanged();
                              });
                          });*/
@@ -193,40 +197,48 @@ require('x-datetimerange/x-datetimerange');
           dtrAttrs[a] = this.element.getAttribute(a);
         }
       });
-      this._embeddedDtr = pulseUtility.createjQueryElementWithAttribute('x-datetimerange', dtrAttrs);
+      this._embeddedDtr = pulseUtility.createElementWithAttribute('x-datetimerange', dtrAttrs);
 
-      let periodselection_btn = $('<div></div>').addClass('periodtoolbar-li-text')
-        .append(this._embeddedDtr);
+      let periodselection_btn = document.createElement('div');
+      periodselection_btn.classList.add('periodtoolbar-li-text');
+      periodselection_btn.appendChild(this._embeddedDtr);
       // Create DOM - Loader
-      let loader = $('<div></div>').addClass('pulse-loader').html(this.getTranslation('loadingDots', 'Loading...')).css('display', 'none');
-      let loaderDiv = $('<div></div>').addClass('pulse-loader-div').append(loader);
-      periodselection_btn.append(loaderDiv);
+      let loader = document.createElement('div');
+      loader.classList.add('pulse-loader');
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
+      loader.style.display = 'none';
+      let loaderDiv = document.createElement('div');
+      loaderDiv.classList.add('pulse-loader-div');
+      loaderDiv.appendChild(loader);
+      periodselection_btn.appendChild(loaderDiv);
       // Create DOM - message for error
-      this._messageSpan = $('<span></span>')
-        .addClass('pulse-message').html('');
-      let messageDiv = $('<div></div>')
-        .addClass('pulse-message-div')
-        .append(this._messageSpan);
-      periodselection_btn.append(messageDiv);
-      toolbar.append(periodselection_btn);
+      this._messageSpan = document.createElement('span');
+      this._messageSpan.classList.add('pulse-message');
+      this._messageSpan.innerHTML = '';
+      let messageDiv = document.createElement('div');
+      messageDiv.classList.add('pulse-message-div');
+      messageDiv.appendChild(this._messageSpan);
+      periodselection_btn.appendChild(messageDiv);
+      toolbar.appendChild(periodselection_btn);
 
       let nextBtn = _addButtonToToolbar(toolbar, 'periodtoolbar-next');
-      nextBtn.click(function () {
+      nextBtn.addEventListener('click', function () {
         self._goToNextPeriod()
       });
 
-      let zoomButtonsDiv = $('<div class="content-zoom-buttons"></div>');
-      toolbar.append(zoomButtonsDiv);
+      let zoomButtonsDiv = document.createElement('div');
+      zoomButtonsDiv.className = 'content-zoom-buttons';
+      toolbar.appendChild(zoomButtonsDiv);
 
       let zoomInBtn = _addButtonToToolbar(zoomButtonsDiv, 'periodtoolbar-zoomin');
-      if (hideZooms) zoomInBtn.hide();
-      zoomInBtn.click(function () {
+      if (hideZooms) zoomInBtn.style.display = 'none';
+      zoomInBtn.addEventListener('click', function () {
         self._zoomin()
       });
 
       let zoomOutBtn = _addButtonToToolbar(zoomButtonsDiv, 'periodtoolbar-zoomout');
-      if (hideZooms) zoomOutBtn.hide();
-      zoomOutBtn.click(function () {
+      if (hideZooms) zoomOutBtn.style.display = 'none';
+      zoomOutBtn.addEventListener('click', function () {
         self._zoomout()
       });
     }
@@ -238,11 +250,11 @@ require('x-datetimerange/x-datetimerange');
     // Only the latest pending action is kept — fast successive clicks all
     // collapse to the last user intent.
     _deferIfLoading(action) {
-      if (!$(this.element).hasClass('pulse-component-loading')) return false;
+      if (!this.element.classList.contains('pulse-component-loading')) return false;
       this._pendingAction = action;
       if (this._loadingObserver) return true;
       this._loadingObserver = new MutationObserver(() => {
-        if ($(this.element).hasClass('pulse-component-loading')) return;
+        if (this.element.classList.contains('pulse-component-loading')) return;
         const pending = this._pendingAction;
         this._pendingAction = null;
         this._loadingObserver.disconnect();
@@ -570,29 +582,38 @@ require('x-datetimerange/x-datetimerange');
         if (this._embeddedDtr && this._dateRange) {
           // Sync the range attribute (string in the [lower,upper) form expected by x-datetimerange)
           let stringrange = pulseUtility.convertDateRangeForWebService(this._dateRange);
-          this._embeddedDtr[0].setAttribute('range', stringrange);
+          this._embeddedDtr.setAttribute('range', stringrange);
 
           // Sync shift label: when on shift mode and we have a label, show it; otherwise show the range
           if (this._rangeType == 'shift' && this._displayLabel) {
-            this._embeddedDtr[0].setAttribute('shift-label', this._displayLabel);
+            this._embeddedDtr.setAttribute('shift-label', this._displayLabel);
           }
           else {
-            this._embeddedDtr[0].removeAttribute('shift-label');
+            this._embeddedDtr.removeAttribute('shift-label');
           }
         }
 
         // Legacy fallback: if a forcedDisplay is provided, override the displayed text.
         // Only used by callers that pass a non-empty string (rare).
         if (forcedDisplay != '') {
-          $(this.element).find('.datetimerange-display').html(forcedDisplay);
+          let displayEl = this.element.querySelector('.datetimerange-display');
+          if (displayEl) {
+            displayEl.innerHTML = forcedDisplay;
+          }
         }
       }
     }
 
     _updateButtonsSelection() {
-      $(this.element).find('.selected').removeClass('selected');
+      let selected = this.element.querySelector('.selected');
+      if (selected) {
+        selected.classList.remove('selected');
+      }
       if (this._rangeType != '') {
-        $(this.element).find('#' + this._rangeType).addClass('selected');
+        let btn = this.element.querySelector('#' + this._rangeType);
+        if (btn) {
+          btn.classList.add('selected');
+        }
       }
     }
 
@@ -682,13 +703,14 @@ require('x-datetimerange/x-datetimerange');
       }
 
       // In case of clone, need to be empty :
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       // Create DOM - Loader + Message -> Included in button
       // Create DOM - Content
-      let toolbar = $('<div></div>').addClass('periodtoolbar');
+      let toolbar = document.createElement('div');
+      toolbar.classList.add('periodtoolbar');
       this._appendButtons(toolbar);
-      $(this.element).append(toolbar);
+      this.element.appendChild(toolbar);
 
       if (this.element.hasAttribute('range')) { // FOR DEMO / TESTS / DOCS
         let newValue = this.element.getAttribute('range');
@@ -728,7 +750,7 @@ require('x-datetimerange/x-datetimerange');
     clearInitialization() {
       // Parameters
       // DOM
-      $(this.element).empty();
+      this.element.replaceChildren();
 
       //this._messageSpan = undefined;
       //this._content = undefined;
@@ -763,8 +785,11 @@ require('x-datetimerange/x-datetimerange');
     displayError(message) {
       // Forward to x-message ?
       // Clear the display zone of the embedded x-datetimerange (next setAttribute('range') refills it)
-      $(this.element).find('.datetimerange-display').html('');
-      $(this._messageSpan).html(message);
+      let displayEl = this.element.querySelector('.datetimerange-display');
+      if (displayEl) {
+        displayEl.innerHTML = '';
+      }
+      this._messageSpan.innerHTML = message;
     }
 
     removeError() {
@@ -808,7 +833,8 @@ require('x-datetimerange/x-datetimerange');
       // on equality and never re-renders, leaving the cleared display empty
       // for good (visible when toggling between day/shift while already on
       // today's range).
-      $(this.element).find('.periodtoolbar-btn').addClass('disabled');
+      let btns = this.element.querySelectorAll('.periodtoolbar-btn');
+      btns.forEach(btn => btn.classList.add('disabled'));
 
       let url = 'RangeAround?RangeType=' + this._rangeType + '&RangeSize=' + this._rangeSize;
       if (this._around != undefined) {
@@ -834,7 +860,8 @@ require('x-datetimerange/x-datetimerange');
 
     manageSuccess(data) {
       // Enable again buttons
-      $(this.element).find('.periodtoolbar-btn').removeClass('disabled');
+      let btns = this.element.querySelectorAll('.periodtoolbar-btn');
+      btns.forEach(btn => btn.classList.remove('disabled'));
 
       // Store range (to ISO string)
       this._dateRange = pulseRange.createStringRangeFromString(data.DateTimeRange);
