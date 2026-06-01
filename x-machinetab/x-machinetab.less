@@ -13,69 +13,69 @@
 @import "x-currenticoncncalarm/x-currenticoncncalarm.less";
 
 // === CONTENT ===
+// Each tab fills the available width. The reason color is rendered as an angled
+// left border on the machine cell (border-left + clip-path), applied on
+// border-left-color by refresh() in x-machinetab.js — same look as the former
+// modecolor wedge, but as a border (no fixed 194x72 box, so no overflow).
 x-machinetab {
-  display: inline-block;
-  // Cursor is set on `.machinetab-machine-cell` itself, not on the host:
-  // pointer-events:none on the active cell makes mouse events fall back to
-  // the host's cursor — so keep the host neutral.
-  cursor: default;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
   margin: 8px 0;
-  width: 194px;
-  height: 72px;
 
+  // Framework content holder only — the mode color lives on the cell border now.
   .machinetab-modecolor {
-    width: 0px;
-    margin: 0;
-    float: left;
-    height: 58%;
-    border-left: 22px solid transparent;
-    border-left-width: 0px;
-    border-top: 22px solid transparent;
-    border-bottom: 22px solid transparent;
-    border-right-width: 22px;
-    border-right-style: solid;
+    display: none;
   }
 
   .machinetab-machine-cell {
-    display: block;
-    float: right;
-    width: 170px;
-    height: 90%;
-    padding-top: 5%;
-    padding-bottom: 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 0.5em;
+    padding: 0.4em 0.5em;
+    height: 5.5em;
+    box-sizing: border-box;
+    border-left: 1.4em solid transparent;
+    clip-path: polygon(0 1em, 1.4em 0%, 100% 0%, 100% 100%, 1.4em 100%, 0 4.5em);
     cursor: pointer;
 
-    // The active machine is, by definition, the currently-selected one — no
-    // sense triggering changeSelectedMachine/scroll-to-top on a click that
-    // would re-confirm the same selection. Disable pointer events so the
-    // cell falls back to the host x-machinetab `cursor: default`.
+    // Unknown reason: neutral (transparent) border.
+    &.machinetab-modecolor-undefined {
+      border-left-color: transparent;
+    }
+
+    // Already-selected machine: click is a no-op, fall back to host cursor.
     &.active {
       pointer-events: none;
     }
-  }
 
-  .machinetab-machine {
-    text-align: center;
-    margin: 0 4px;
-  }
+    .machinetab-icons {
+      order: 2;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      flex-shrink: 0;
 
-  .machinetab-icons {
-    height: 40px;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
+      .pulse-icon {
+        width: 32px;
+        height: 32px;
+        margin: 4px;
+      }
+    }
 
-    .pulse-icon {
-      height: 32px;
-      width: 32px;
-      margin: 4px;
+    .machinetab-machine {
+      order: 1;
+      text-align: center;
+      margin: 0;
     }
   }
 }
 
-// Phone display: simplified card — machine name only, no colored bar, no icons,
-// fits between the x-machinetabnav chevrons. Clicking is a no-op (the chevrons
-// drive the selection on mobile).
+// Phone display: simplified card — machine name only, no colored border, no icons,
+// no clip-path (the wrapper x-machinetabnav provides the box on mobile).
 @media @all-phones-media {
   x-machinetab {
     display: block;
@@ -84,21 +84,20 @@ x-machinetab {
     margin: 0;
     cursor: default;
 
-    .machinetab-modecolor {
-      display: none;
-    }
-
     .machinetab-machine-cell {
-      float: none;
-      width: 100%;
+      clip-path: none;
+      border-left-width: 0;
       height: auto;
-      padding: 0.3em 0.5em;
-      display: flex;
+      min-height: 2.2em;
+      padding: 0.2em 0.6em;
+      flex-direction: row;
       align-items: center;
       justify-content: center;
+      cursor: default;
     }
 
     .machinetab-machine {
+      order: 1;
       margin: 0;
       flex: 1 1 auto;
       min-width: 0;

@@ -153,10 +153,10 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
       // In case of clone, need to be empty :
       this.element.replaceChildren();
 
-      // Create DOM - Content
+      // Create DOM - Content (framework content holder; the mode color is now
+      // rendered as the left border of the machine cell, see refresh()).
       this._content = document.createElement('div');
       this._content.classList.add('machinetab-modecolor');
-      this._content.classList.add('machinetab-modecolor-undefined'); // default
 
       // DOM - machine display
       this._machineDisplayDiv = document.createElement('div');
@@ -193,6 +193,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
 
       this._machineContent = document.createElement('div');
       this._machineContent.classList.add('machinetab-machine-cell');
+      this._machineContent.classList.add('machinetab-modecolor-undefined'); // default left-border color
       this._machineContent.appendChild(this._machineDisplayDiv);
       this._machineContent.appendChild(this._iconsDiv);
       this._machineContent.addEventListener('click',
@@ -301,7 +302,7 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
     }
 
     displayError(message) {
-      this._content.classList.add('machinetab-modecolor-undefined');
+      if (this._machineContent) this._machineContent.classList.add('machinetab-modecolor-undefined');
     }
 
     removeError() {
@@ -327,13 +328,14 @@ require('x-currenticoncncalarm/x-currenticoncncalarm');
     }
 
     /**
-     * Applies the current reason color as `border-right-color` on the mode bar div.
+     * Applies the current reason color as `border-left-color` on the machine cell
+     * (the angled left border that replaces the old modecolor triangle).
      *
      * @param {{ Reason: { Color: string } }} data
      */
     refresh(data) {
-      this._content.classList.remove('machinetab-modecolor-undefined');
-      this._content.style.borderRightColor = data.Reason.Color;
+      this._machineContent.classList.remove('machinetab-modecolor-undefined');
+      this._machineContent.style.borderLeftColor = data.Reason.Color;
     }
 
     // Callback events
