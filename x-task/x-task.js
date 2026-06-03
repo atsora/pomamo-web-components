@@ -12,6 +12,8 @@
 
 var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
+var eventBus = require('eventBus');
+var pulseConfig = require('pulseConfig');
 
 (function () {
 
@@ -533,9 +535,28 @@ var pulseUtility = require('pulseUtility');
         case 'machine-id':
           this.start();
           break;
+        case 'machine-context':
+          if (this.isInitialized()) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
+            eventBus.EventBus.addEventListener(this,
+              'machineIdChangeSignal',
+              newVal,
+              this.onMachineIdChange.bind(this));
+          }
+          break;
         default:
           break;
       }
+    }
+
+    /**
+     * Apply the machine id published on `machine-context` to the `machine-id`
+     * attribute (triggers re-validation + refresh via attributeChanged).
+     *
+     * @param {{ target: { newMachineId: number } }} event
+     */
+    onMachineIdChange (event) {
+      this.element.setAttribute('machine-id', event.target.newMachineId);
     }
 
     initialize() {
@@ -551,6 +572,13 @@ var pulseUtility = require('pulseUtility');
       let mainTask = document.createElement('div');
       mainTask.classList.add('task-main-task');
       this._mainTaskDiv = mainTask;
+      // Click the main task panel → execute it in the Vue task execution dialog.
+      // The Pulse integration (common_page.js) handles the actual navigation.
+      mainTask.style.cursor = 'pointer';
+      mainTask.addEventListener('click', () => {
+        const id = this._mainTaskInstance && this._mainTaskInstance.id;
+        if (id != null) eventBus.EventBus.dispatchToAll('openTaskInstance', { id: id, mode: 'exec' });
+      });
 
       let mainTaskTopSide = document.createElement('div');
       mainTaskTopSide.classList.add('task-main-task-top-side');
@@ -648,6 +676,15 @@ var pulseUtility = require('pulseUtility');
         this._updateTaskTabsWidth();
       });
 
+      // Follow the current machine published on `machine-context` (the machine
+      // tab selected on the machines page).
+      if (this.element.hasAttribute('machine-context')) {
+        eventBus.EventBus.addEventListener(this,
+          'machineIdChangeSignal',
+          this.element.getAttribute('machine-context'),
+          this.onMachineIdChange.bind(this));
+      }
+
       this.switchToNextContext();
 
       // Observe any resize of the main task container
@@ -703,12 +740,24 @@ var pulseUtility = require('pulseUtility');
       return url;
     }
 
+    /**
+     * PROVISIONAL: the task GraphQL service is not wired into the Pulse backend
+     * yet, so the data is sourced from the local Vue mock (atsora-mocks) instead
+     * of `<path>/graphql`. Override via the `mockGraphqlUrl` config/attribute.
+     * Remove this getter once the real service answers at `<path>/graphql`.
+     */
+    get url() {
+      return this.getConfigOrAttribute('mockGraphqlUrl', 'http://localhost:4000/');
+    }
+
     postData() {
-      let request = `query ($machineId: ID!) { allTaskInstances(machineId: $machineId) { id start end result { __typename } taskTemplate { name role __typename } } }`;
+      // Single machine (machines page), scoped to the current role.
+      let request = `query ($machineId: ID!, $role: String) { allTaskInstances(machineId: $machineId, role: $role) { id start end result { __typename } taskTemplate { name role __typename } } }`;
       return {
         query: request,
         variables: {
-          machineId: this.element.getAttribute('machine-id')
+          machineId: this.element.getAttribute('machine-id'),
+          role: pulseConfig.getAppContextOrRole()
         }
       };
     }
@@ -789,5 +838,5 @@ var pulseUtility = require('pulseUtility');
     }
   }
 
-  pulseComponent.registerElement('x-task', TaskComponent, ['machine-id']);
+  pulseComponent.registerElement('x-task', TaskComponent, ['machine-id', 'machine-context']);
 })();

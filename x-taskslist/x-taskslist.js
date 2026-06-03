@@ -12,6 +12,8 @@
 
 var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
+var eventBus = require('eventBus');
+var pulseConfig = require('pulseConfig');
 
 (function () {
 
@@ -52,6 +54,15 @@ var pulseUtility = require('pulseUtility');
       switch (attr) {
         case 'machine-id':
           this.start();
+          break;
+        case 'machine-context':
+          if (this.isInitialized()) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
+            eventBus.EventBus.addEventListener(this,
+              'machineIdChangeSignal',
+              newVal,
+              this.onMachineIdChange.bind(this));
+          }
           break;
         default:
           break;
@@ -97,6 +108,16 @@ var pulseUtility = require('pulseUtility');
 
       this.element.appendChild(messageDiv);
 
+      // Follow the current machine published on `machine-context` (e.g. the
+      // machine tab selected on machinedashboard/machines). In `all-machines`
+      // mode (operationstatus) no single machine is tracked.
+      if (this.element.hasAttribute('machine-context')) {
+        eventBus.EventBus.addEventListener(this,
+          'machineIdChangeSignal',
+          this.element.getAttribute('machine-context'),
+          this.onMachineIdChange.bind(this));
+      }
+
       this.switchToNextContext();
       return;
     }
@@ -115,10 +136,22 @@ var pulseUtility = require('pulseUtility');
     }
 
     /**
+     * Apply the machine id published on `machine-context` to the `machine-id`
+     * attribute (triggers re-validation + refresh via attributeChanged).
+     *
+     * @param {{ target: { newMachineId: number } }} event
+     */
+    onMachineIdChange (event) {
+      this.element.setAttribute('machine-id', event.target.newMachineId);
+    }
+
+    /**
      * Validate required parameters and the internal range format
      */
     validateParameters() {
-      if (!this.element.hasAttribute('machine-id')) {
+      // `all-machines` (operationstatus): tasks across all machines, no single
+      // machine required. Otherwise a machine-id must be resolved first.
+      if (!this.element.hasAttribute('all-machines') && !this.element.hasAttribute('machine-id')) {
         this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
         return;
       }
@@ -135,10 +168,39 @@ var pulseUtility = require('pulseUtility');
       return url;
     }
 
+    /**
+     * PROVISIONAL: the task GraphQL service is not wired into the Pulse backend
+     * yet, so the data is sourced from the local Vue mock (atsora-mocks) instead
+     * of `<path>/graphql`. Override via the `mockGraphqlUrl` config/attribute.
+     * Remove this getter once the real service answers at `<path>/graphql`.
+     */
+    get url() {
+      return this.getConfigOrAttribute('mockGraphqlUrl', 'http://localhost:4000/');
+    }
+
+    /**
+     * Poll interval (ms). Without this getter the base class leaves `refreshRate`
+     * undefined, which makes the refresh state schedule the next fetch with
+     * `setTimeout(..., undefined)` (≈ 0) — i.e. a tight, ultra-aggressive loop.
+     * Mirror x-task: default 10 s, overridable via `refreshingRate.currentRefreshSeconds`.
+     */
+    get refreshRate() {
+      return 1000 * Number(this.getConfigOrAttribute('refreshingRate.currentRefreshSeconds', 10));
+    }
+
     postData() {
-      let request = `{ allTaskInstances }`;
+      // Per-page scope:
+      //  - single machine (machinedashboard/machines): filter by the resolved machine-id
+      //  - all-machines (operationstatus): no machine filter
+      // Both are scoped to the current role (manager/operator/…).
+      let allMachines = this.element.hasAttribute('all-machines');
+      let request = `query ($machineId: ID, $role: String) { allTaskInstances(machineId: $machineId, role: $role) { id start end result { __typename } taskTemplate { name role machineGroup __typename } } }`;
       return {
-        query: request
+        query: request,
+        variables: {
+          machineId: allMachines ? null : this.element.getAttribute('machine-id'),
+          role: pulseConfig.getAppContextOrRole()
+        }
       };
     }
 
@@ -231,6 +293,15 @@ var pulseUtility = require('pulseUtility');
     _createTaskDisplay(taskInstance, timeCategory, now) {
       const li = document.createElement('li');
       li.classList.add('taskslist-task-instance');
+      // Click → open this task instance in the Vue app (detail view). The Pulse
+      // integration (common_page.js) handles the actual navigation.
+      const taskId = taskInstance && taskInstance.id;
+      if (taskId != null) {
+        li.style.cursor = 'pointer';
+        li.addEventListener('click', function () {
+          eventBus.EventBus.dispatchToAll('openTaskInstance', { id: taskId, mode: 'view' });
+        });
+      }
       this._updateTaskDisplay(li, taskInstance, timeCategory, now);
       return li;
     }
@@ -315,5 +386,5 @@ var pulseUtility = require('pulseUtility');
     }
   }
 
-  pulseComponent.registerElement('x-taskslist', TasksListComponent, ['machine-id']);
+  pulseComponent.registerElement('x-taskslist', TasksListComponent, ['machine-id', 'machine-context']);
 })();

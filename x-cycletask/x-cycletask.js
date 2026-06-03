@@ -12,6 +12,7 @@ var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
 var pulseSvg = require('pulseSvg');
 var pulseConfig = require('pulseConfig');
+var eventBus = require('eventBus');
 
 (function () {
   /**
@@ -62,6 +63,7 @@ var pulseConfig = require('pulseConfig');
       self._taskStartDateTime = null;
       self._taskEndDateTime = null;
       self._hasTaskInstance = false;
+      self._taskInstanceId = null;
 
       // Donuts (SVG rings)
       // - _taskStateRing: always full ring, only color changes (grey/white/red)
@@ -585,6 +587,14 @@ var pulseConfig = require('pulseConfig');
 
       this.element.appendChild(this._content);
 
+      // Click the donut → execute the current task in the Vue execution dialog.
+      // The Pulse integration (common_page.js) handles the actual navigation.
+      this._content.style.cursor = 'pointer';
+      this._content.addEventListener('click', () => {
+        if (this._taskInstanceId != null) {
+          eventBus.EventBus.dispatchToAll('openTaskInstance', { id: this._taskInstanceId, mode: 'exec' });
+        }
+      });
 
       this.switchToNextContext();
       return;
@@ -667,7 +677,7 @@ var pulseConfig = require('pulseConfig');
      * @returns {{ query: string, variables: { machineId: string } }}
      */
     postData() {
-      let request = `query ($machineId: ID!) { taskInstanceByMachineId(machineId: $machineId) { start end taskTemplate { name } } }`;
+      let request = `query ($machineId: ID!) { taskInstanceByMachineId(machineId: $machineId) { id start end taskTemplate { name } } }`;
       return {
         query: request,
         variables: {
@@ -699,10 +709,13 @@ var pulseConfig = require('pulseConfig');
         this._restoreDefaultValues();
         // No task: no timer countdown; show Loading in the center
         this._hasTaskInstance = false;
+        this._taskInstanceId = null;
         this._showElement('.cycletask-progresspie');
         this._draw();
         return;
       }
+
+      this._taskInstanceId = taskInstance.id;
 
       let nextName = (taskInstance.taskTemplate && taskInstance.taskTemplate.name)
         ? taskInstance.taskTemplate.name

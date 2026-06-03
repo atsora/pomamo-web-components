@@ -11,10 +11,11 @@
 .taskslist-content {
     ol {
         list-style-type: none;
-        padding: 0;
+        // Horizontal inset lives here (instead of a margin on each li); no top/bottom margin.
+        margin: 0;
+        padding: 0 16px;
         display: grid;
         grid-template-columns: repeat(1, minmax(0, 1fr));
-        max-height: 500px;
         overflow-y: auto;
         gap: 1rem;
 
@@ -22,7 +23,6 @@
             display: flex;
             background-color: @current_background_color;
             border-radius: 12px;
-            margin: 0 16px 0 16px;
             padding: 17.5px;
             justify-content: space-between;
 
