@@ -79,8 +79,9 @@ x-machinetab {
   }
 }
 
-// Phone display: simplified card — machine name only, no colored border, no icons,
-// no clip-path (the wrapper x-machinetabnav provides the box on mobile).
+// Phone display: simplified card — machine name centered alone, icons aligned to
+// the right, no colored border, no clip-path (the wrapper x-machinetabnav provides
+// the box on mobile).
 @media @all-phones-media {
   x-machinetab {
     display: block;
@@ -97,20 +98,30 @@ x-machinetab {
       padding: 0.2em 0.6em;
       flex-direction: row;
       align-items: center;
-      justify-content: center;
+      // Icons sit at the right edge; the machine name is centered out of flow.
+      justify-content: flex-end;
+      // Containing block for the absolutely-centered machine name below.
+      position: relative;
       cursor: default;
     }
 
+    // Centered across the full cell width regardless of the icons, so the name
+    // stays optically centered while the icons float to the right.
     .machinetab-machine {
+      position: absolute;
+      left: 0;
+      right: 0;
       order: 1;
       margin: 0;
-      flex: 1 1 auto;
-      min-width: 0;
       text-align: center;
     }
 
-    .machinetab-icons {
-      display: none;
+    // Desktop sets `width: 100%` via `.machinetab-machine-cell .machinetab-icons`
+    // (specificity 0,2,1). In the mobile row layout that stole the whole width and
+    // collapsed the machine name to 0. Override at the same specificity here so the
+    // icons size to their content and the machine name keeps its space.
+    .machinetab-machine-cell .machinetab-icons {
+      width: auto;
     }
   }
 }
