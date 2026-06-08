@@ -120,7 +120,9 @@ require('x-datetimerange/x-datetimerange');
             self._textarea.addEventListener('input', updateButtonState);
           }
           function updateButtonState() {
-            if (self._textarea.value.length === 0) {
+            // Trim so whitespace-only input (spaces, tabs, newlines) is rejected
+            // like an empty comment instead of enabling the OK button.
+            if (self._textarea.value.trim().length === 0) {
               okBtn.setAttribute('disabled', 'disabled');
             } else {
               okBtn.removeAttribute('disabled');

@@ -449,7 +449,9 @@ var openReasonCommentDialog = exports.openReasonCommentDialog = function (compon
   let dialogId = pulseCustomDialog.openDialog(rcdlg, {
     title: component.getTranslation('reasonDetailsTitle', 'Reason details'),
     onOk: function () {
-      let details = rcdlg.getDetails ? rcdlg.getDetails() : '';
+      // Trim so a whitespace-only comment counts as empty for both the
+      // required-details check and the value handed to onSave.
+      let details = (rcdlg.getDetails ? rcdlg.getDetails() : '').trim();
       if (details === '' && detailsRequired) {
         pulseCustomDialog.openDialog(component.getTranslation('errorNoDetails', 'Please add a comment'), { type: 'Error' });
       } else {
