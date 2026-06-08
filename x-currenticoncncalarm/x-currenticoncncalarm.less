@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2009-2023 Lemoine Automation Technologies
+ * Copyright (C) 2023-2026 Atsora Solutions
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -24,6 +25,8 @@ x-currenticoncncalarm {
       height: 100%;
 
       svg {
+        // Default tint; overridden inline (fill/stroke) by the alarm color
+        // injected in JS once the SVG is inlined, when the web service gives one.
         stroke: @color_missing_value_highlight;
         fill: @color_missing_value_highlight;
         height: 100%;

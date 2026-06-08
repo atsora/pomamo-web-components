@@ -1,4 +1,5 @@
 // Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2023-2026 Atsora Solutions
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -23,8 +24,9 @@ var eventBus = require('eventBus');
    * `showIgnoredAlarm` config is `'true'`, or with `&KeepFocusOnly=true` when
    * `showUnknownAlarm` is `'false'`. Renders a `.pulse-icon-cncalarm` div with a
    * `-focused` / `-ignored` / `-unknown` variant depending on the alarm's
-   * `Focus`, plus an optional text label below the icon when `showAlarmBelowIcon`
-   * is `'true'`. Listens to `onCncAlarmStatusChange` on `status-context`.
+   * `Focus`, tinted with the alarm's `Color` (injected onto the inlined SVG)
+   * when provided, plus an optional text label below the icon when
+   * `showAlarmBelowIcon` is `'true'`. Listens to `onCncAlarmStatusChange` on `status-context`.
    *
    * @element x-currenticoncncalarm
    * @attr {number}  machine-id      machine id (required unless `machine-context` is set)
@@ -47,6 +49,7 @@ var eventBus = require('eventBus');
       self._content = undefined;
       self._isAlarm = false;
       self._focus = '';
+      self._color = '';
       self._mainDisplay = '';
       self._alarmsForTooltipDisplay = [];
       self._configChanged = true;
@@ -240,11 +243,13 @@ var eventBus = require('eventBus');
       let newDisplay = '';
       let newTooltipDisplay = [];
       let newFocus = '';
+      let newColor = '';
       if (data.ByMachineModule.length > 0) {
         if (data.ByMachineModule[0].CncAlarms.length > 0) {
           newIsAlarm = true;
           newDisplay = data.ByMachineModule[0].CncAlarms[0].Display;
           newFocus = data.ByMachineModule[0].CncAlarms[0].Focus;
+          newColor = data.ByMachineModule[0].CncAlarms[0].Color;
 
           newTooltipDisplay.push(data.ByMachineModule[0].CncAlarms[0].Display);
         }
@@ -253,11 +258,13 @@ var eventBus = require('eventBus');
 
       if ((this._configChanged == true)
         || (this._mainDisplay != newDisplay) // changement de texte possible
-        || (this._focus != newFocus)) { // = changement d'image possible
+        || (this._focus != newFocus) // = changement d'image possible
+        || (this._color != newColor)) { // = changement de couleur possible
         this._configChanged = false;
 
         this._isAlarm = newIsAlarm;
         this._focus = newFocus;
+        this._color = newColor;
         this._mainDisplay = newDisplay;
         this._alarmsForTooltipDisplay = newTooltipDisplay;
 
@@ -301,7 +308,21 @@ var eventBus = require('eventBus');
           this._image.className = 'pulse-icon-cncalarm pulse-icon-cncalarm-unknown';
         }
         this._content.appendChild(this._image);
-        pulseSvg.inlineBackgroundSvg(this._image);
+        // Inject the alarm color (from the web service) straight onto the SVG
+        // once it is inlined; when no color is provided the LESS default stands.
+        // Capture locals: the callback is async and `this._image`/`this._color`
+        // may have been replaced by a later refresh by the time it fires.
+        let image = this._image;
+        let color = this._color;
+        pulseSvg.inlineBackgroundSvg(this._image, function () {
+          if (color) {
+            let svg = image.querySelector('svg');
+            if (svg) {
+              svg.style.fill = color;
+              svg.style.stroke = color;
+            }
+          }
+        });
 
 
         let showAlarmBelowIcon = this.getConfigOrAttribute('showAlarmBelowIcon', false);

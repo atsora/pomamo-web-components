@@ -1,5 +1,5 @@
 // Copyright (C) 2009-2023 Lemoine Automation Technologies
-// Copyright (C) 2025 Atsora Solutions
+// Copyright (C) 2023-2026 Atsora Solutions
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -91,6 +91,10 @@ var eventBus = require('eventBus');
      * @returns {void}
      */
     initialize() {
+      // pulse-text gives the proper loader overlay (centered animated dots)
+      // and stale-data masking, like x-production.
+      this.addClass('pulse-text');
+
       // In case of clone, need to be empty :
       this.element.innerHTML = '';
 
@@ -126,7 +130,7 @@ var eventBus = require('eventBus');
       // create DOM - loader
       let loader = document.createElement('div');
       loader.classList.add('pulse-loader');
-      loader.innerHTML = 'Loading...';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
       loader.style.display = 'none';
 
       let loaderDiv = document.createElement('div');
@@ -206,6 +210,25 @@ var eventBus = require('eventBus');
       this._content = undefined;
 
       super.clearInitialization();
+    }
+
+    /**
+     * Clears the displayed goal before a reload (e.g. machine or period change)
+     * so the stale value is not shown behind the loader. Mirrors x-production.
+     *
+     * @returns {void}
+     */
+    reset() {
+      this.removeError();
+
+      let valueSpan = this._content
+        ? this._content.querySelector('.productionshiftgoal-data')
+        : null;
+      if (valueSpan) {
+        valueSpan.innerHTML = '';
+      }
+
+      this.switchToNextContext();
     }
 
     /**

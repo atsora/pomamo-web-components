@@ -1,4 +1,6 @@
-// Copyright (C) 2025 Atsora Solutions
+// Copyright (C) 2023-2026 Atsora Solutions
+//
+// SPDX-License-Identifier: Apache-2.0
 
 /**
  * @module x-productiontrackergraph
