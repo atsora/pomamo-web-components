@@ -7,6 +7,7 @@ about/**/*
 
 /bower_components
 /about
+/dist-vite
 /node_modules
 *.~*
 **/*~
