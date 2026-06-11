@@ -14,7 +14,10 @@ var pulseComponent = require('pulsecomponent');
 var pulseUtility = require('pulseUtility');
 var pulseSvg = require('pulseSvg');
 var eventBus = require('eventBus');
-const { inlineBackgroundSvg } = require('../libraries/pulse.svg');
+// Reuse the pulseSvg alias above (was require('../libraries/pulse.svg')): the
+// relative path resolved to a different module id than the alias, leaving a
+// duplicate, untransformed copy of pulse.svg.js in the Vite bundle.
+const { inlineBackgroundSvg } = pulseSvg;
 
 (function () {
 
