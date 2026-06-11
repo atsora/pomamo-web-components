@@ -137,8 +137,8 @@ x-reasonslotlist {
       }
 
       &:hover {
-        border-color: lighten(@color_highlight, 15%);
-        background-color: lighten(@color_highlight, 15%);
+        border-color: @color_highlight_lighten15;
+        background-color: @color_highlight_lighten15;
       }
     }
 
@@ -192,7 +192,7 @@ x-reasonslotlist {
     position: relative;
     padding: 5px;
     text-align: center;
-    background-color: fade(@color_red, 70%);
+    background-color: @color_red_fade70;
   }
 
   .reasonslotlist-header-label {

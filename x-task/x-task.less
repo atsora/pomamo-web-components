@@ -101,11 +101,11 @@ x-task {
         cursor: pointer;
 
         &:hover {
-          background-color: lighten(@color_background, 10%);
+          background-color: @color_background_lighten10;
         }
 
         &.task-tab-selected {
-          background-color: darken(@color_background, 10%);
+          background-color: @color_background_darken10;
         }
 
         .task-tab-header {
