@@ -10,7 +10,7 @@
  * @requires module:pulseUtility
  * @requires module:detailspopup
  */
-var pulseComponent = require('pulsecomponent');
+import * as pulseComponent from 'pulsecomponent';
 
 (function () {
 

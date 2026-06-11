@@ -8,9 +8,9 @@
  * @requires module:pulseComponent
  */
 
-var pulseSvg = require('pulseSvg');
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
+import * as pulseSvg from 'pulseSvg';
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
 
 (function () {
 

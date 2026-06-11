@@ -9,11 +9,11 @@
 * @requires pulseSvg
 */
 
-var pulseUtility = require('pulseUtility');
-var pulseSvg = require('pulseSvg');
-var pulseConfig = require('pulseConfig');
+import * as pulseUtility from 'pulseUtility';
+import * as pulseSvg from 'pulseSvg';
+import * as pulseConfig from 'pulseConfig';
 
-require('x-alertdialog/x-alertdialog');
+import 'x-alertdialog/x-alertdialog';
 
 var pulseCustomDialog = function () {
   // Convenient object to store and get data attached to a dialog
@@ -550,6 +550,6 @@ var pulseCustomDialog = function () {
   }
 };
 
-// Singleton: define global.singletonPulseCustomDialog if not set and return it in the exports
-global.singletonPulseCustomDialog = global.singletonPulseCustomDialog || pulseCustomDialog();
-module.exports = global.singletonPulseCustomDialog;
+// Singleton: define globalThis.singletonPulseCustomDialog if not set and return it in the exports
+globalThis.singletonPulseCustomDialog = globalThis.singletonPulseCustomDialog || pulseCustomDialog();
+export default globalThis.singletonPulseCustomDialog;

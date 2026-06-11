@@ -9,13 +9,13 @@
  * @requires module:pulseUtility
  */
 
-var pulseUtility = require('pulseUtility');
+import * as pulseUtility from 'pulseUtility';
 //var pulseSvg = require('pulseSvg');
-var pulseComponent = require('pulsecomponent');
+import * as pulseComponent from 'pulsecomponent';
 //var pulseCustomDialog = require('pulseCustomDialog');
-var pulseConfig = require('pulseConfig');
-var pulseLogin = require('pulseLogin');
-var eventBus = require('eventBus');
+import * as pulseConfig from 'pulseConfig';
+import * as pulseLogin from 'pulseLogin';
+import * as eventBus from 'eventBus';
 
 (function () {
   /**

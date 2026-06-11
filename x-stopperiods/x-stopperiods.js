@@ -10,11 +10,11 @@
  * @requires module:pulseUtility
  */
 
-var pulseComponent = require('pulsecomponent');
-var pulseService = require('pulseService');
-var pulseRange = require('pulseRange');
-var pulseUtility = require('pulseUtility');
-require('x-stopclassification/x-stopclassification');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseService from 'pulseService';
+import * as pulseRange from 'pulseRange';
+import * as pulseUtility from 'pulseUtility';
+import 'x-stopclassification/x-stopclassification';
 
 (function () {
     /**

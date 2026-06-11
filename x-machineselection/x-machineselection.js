@@ -9,17 +9,17 @@
  * @requires module:pulseUtility
  * @requires module:pulsecustomdialog
  */
-var pulseUtility = require('pulseUtility');
-var pulseSvg = require('pulseSvg');
-var pulseComponent = require('pulsecomponent');
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseLogin = require('pulseLogin');
-var pulseConfig = require('pulseConfig');
-var pulseService = require('pulseService');
-var eventBus = require('eventBus');
+import * as pulseUtility from 'pulseUtility';
+import * as pulseSvg from 'pulseSvg';
+import * as pulseComponent from 'pulsecomponent';
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseLogin from 'pulseLogin';
+import * as pulseConfig from 'pulseConfig';
+import * as pulseService from 'pulseService';
+import * as eventBus from 'eventBus';
 
-require('x-machinedisplay/x-machinedisplay');
-require('x-freetext/x-freetext');
+import 'x-machinedisplay/x-machinedisplay';
+import 'x-freetext/x-freetext';
 
 (function () {
   /**

@@ -10,18 +10,18 @@
  * @requires pulseRange
  * @requires x-datetimerange
  */
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var pulseService = require('pulseService');
-var pulseRange = require('pulseRange');
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseConfig = require('pulseConfig');
-var pulseSvg = require('pulseSvg');
-var pulseLogin = require('pulseLogin');
-var eventBus = require('eventBus');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseService from 'pulseService';
+import * as pulseRange from 'pulseRange';
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseConfig from 'pulseConfig';
+import * as pulseSvg from 'pulseSvg';
+import * as pulseLogin from 'pulseLogin';
+import * as eventBus from 'eventBus';
 
-require('x-datetimerange/x-datetimerange');
-require('x-modificationmanager/x-modificationmanager');
+import 'x-datetimerange/x-datetimerange';
+import 'x-modificationmanager/x-modificationmanager';
 
 (function () {
 

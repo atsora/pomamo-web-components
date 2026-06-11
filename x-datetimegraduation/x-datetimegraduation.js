@@ -10,14 +10,19 @@
  * @requires module:pulseUtility
  */
 
-var pulseComponent = require('pulsecomponent');
-var pulseRange = require('pulseRange');
-var eventBus = require('eventBus');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseRange from 'pulseRange';
+import * as eventBus from 'eventBus';
+import * as d3TimeFormat from 'd3-time-format';
+import localeFr from 'd3-time-format/locale/fr-FR.json';
+import localeEn from 'd3-time-format/locale/en-US.json';
+import localeDe from 'd3-time-format/locale/de-DE.json';
+import localeEs from 'd3-time-format/locale/es-ES.json';
 const locales = {
-  'fr': require('d3-time-format/locale/fr-FR.json'),
-  'en': require('d3-time-format/locale/en-US.json'),
-  'de': require('d3-time-format/locale/de-DE.json'),
-  'es': require('d3-time-format/locale/es-ES.json'),
+  'fr': localeFr,
+  'en': localeEn,
+  'de': localeDe,
+  'es': localeEs,
 };
 
 (function () {
@@ -116,7 +121,7 @@ const locales = {
       const language = moment.locale();
       let localeData = locales[language];
 
-      const d3TimeFormat = require('d3-time-format');
+      // d3TimeFormat is imported at module level (was a lazy require here)
       const locale = d3TimeFormat.timeFormatLocale(localeData);
 
       const formatDay = locale.format('%a %d');

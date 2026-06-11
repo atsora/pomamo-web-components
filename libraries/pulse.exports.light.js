@@ -10,28 +10,28 @@
 //require('translation_component_default.js'); - not possible HERE !
 
 // For fast tests
-require('x-clock/x-clock');
+import 'x-clock/x-clock';
 
 // check and login
-require('x-checkcurrenttime/x-checkcurrenttime');
-require('x-checkpath/x-checkpath');
-require('x-checkversion/x-checkversion');
-require('x-checkconfigupdate/x-checkconfigupdate');
-require('x-checklogin/x-checklogin');
-require('x-logindisplay/x-logindisplay');
-require('x-checkserveraccess/x-checkserveraccess');
+import 'x-checkcurrenttime/x-checkcurrenttime';
+import 'x-checkpath/x-checkpath';
+import 'x-checkversion/x-checkversion';
+import 'x-checkconfigupdate/x-checkconfigupdate';
+import 'x-checklogin/x-checklogin';
+import 'x-logindisplay/x-logindisplay';
+import 'x-checkserveraccess/x-checkserveraccess';
 
-require('x-markdowntext/x-markdowntext');
-require('x-message/x-message');
-require('x-modificationmanager/x-modificationmanager'); // Is it useful ? -- RR 2023
+import 'x-markdowntext/x-markdowntext';
+import 'x-message/x-message';
+import 'x-modificationmanager/x-modificationmanager'; // Is it useful ? -- RR 2023
 
-require('x-machineselection/x-machineselection');
+import 'x-machineselection/x-machineselection';
 /* machineselection already includes :
-require('x-machinedisplay/x-machinedisplay');
-require('x-freetext/x-freetext');
+import 'x-machinedisplay/x-machinedisplay';
+import 'x-freetext/x-freetext';
 */
 
 // Displays
-require('x-reportdatetime/x-reportdatetime');
-require('x-datetimepicker/x-datetimepicker');
-require('x-datepicker/x-datepicker');
+import 'x-reportdatetime/x-reportdatetime';
+import 'x-datetimepicker/x-datetimepicker';
+import 'x-datepicker/x-datepicker';

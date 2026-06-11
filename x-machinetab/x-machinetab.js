@@ -8,16 +8,16 @@
  * @requires module:pulseComponent
  * @requires module:pulseUtility
  */
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var pulseConfig = require('pulseConfig');
-var eventBus = require('eventBus');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseConfig from 'pulseConfig';
+import * as eventBus from 'eventBus';
 
-require('x-machinedisplay/x-machinedisplay');
-require('x-currenticonunansweredreason/x-currenticonunansweredreason');
-require('x-currenticonnextstop/x-currenticonnextstop');
-require('x-currenticonworkinformation/x-currenticonworkinformation');
-require('x-currenticoncncalarm/x-currenticoncncalarm');
+import 'x-machinedisplay/x-machinedisplay';
+import 'x-currenticonunansweredreason/x-currenticonunansweredreason';
+import 'x-currenticonnextstop/x-currenticonnextstop';
+import 'x-currenticonworkinformation/x-currenticonworkinformation';
+import 'x-currenticoncncalarm/x-currenticoncncalarm';
 
 (function () {
 

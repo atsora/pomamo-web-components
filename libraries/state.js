@@ -7,10 +7,10 @@
  * @module state
  * @requires module:pulseService
  */
-var pulseService = require('pulseService'); // for runAjax only -> to remove ?
-var pulseConfig = require('pulseConfig'); // Verify useLogin
-var eventBus = require('eventBus'); // to create path listener
-var pulseLogin = require('pulseLogin');
+import * as pulseService from 'pulseService'; // for runAjax only -> to remove ?
+import * as pulseConfig from 'pulseConfig'; // Verify useLogin
+import * as eventBus from 'eventBus'; // to create path listener
+import * as pulseLogin from 'pulseLogin';
 
 /**
  * Base class for the states that are used by a PulseStateComponent to implement the state machine pattern
@@ -986,25 +986,25 @@ class StopState extends State {
 }
 
 
-exports.State = State;
-exports.BeforeDestructionState = BeforeDestructionState;
-exports.InitialState = InitialState;
-exports.AutoPathInitialState = AutoPathInitialState;
-exports.ParamAndPathValidationTimeoutState = ParamAndPathValidationTimeoutState;
-exports.ResetState = ResetState;
-exports.StaticState = StaticState;
-exports.NoActionState = NoActionState;
-exports.WaitState = WaitState;
-exports.ParamValidationTimeoutState = ParamValidationTimeoutState;
-exports.ReadState = ReadState;
-exports.RequestState = RequestState;
-exports.LoadState = LoadState;
-exports.NormalRequestState = NormalRequestState;
-exports.ReloadState = ReloadState;
-exports.NotAvailableState = NotAvailableState;
-exports.TemporaryState = TemporaryState;
-exports.DelayState = DelayState;
-exports.TransientErrorState = TransientErrorState;
-exports.ErrorState = ErrorState;
-exports.NotApplicableState = NotApplicableState;
-exports.StopState = StopState;
+export { State };
+export { BeforeDestructionState };
+export { InitialState };
+export { AutoPathInitialState };
+export { ParamAndPathValidationTimeoutState };
+export { ResetState };
+export { StaticState };
+export { NoActionState };
+export { WaitState };
+export { ParamValidationTimeoutState };
+export { ReadState };
+export { RequestState };
+export { LoadState };
+export { NormalRequestState };
+export { ReloadState };
+export { NotAvailableState };
+export { TemporaryState };
+export { DelayState };
+export { TransientErrorState };
+export { ErrorState };
+export { NotApplicableState };
+export { StopState };

@@ -7,8 +7,8 @@
  * @module x-XXX
  * @requires module:pulseComponent
  */
-var pulseComponent = require('pulsecomponent');
-var eventBus = require('eventBus');
+import * as pulseComponent from 'pulsecomponent';
+import * as eventBus from 'eventBus';
 
 (function () {
 

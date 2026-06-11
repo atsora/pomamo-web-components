@@ -7,11 +7,11 @@
  * @module x-reasonsubdetails
  * @requires module:pulseComponent
  */
-var pulseComponent = require('pulsecomponent');
-var pulseConfig = require('pulseConfig');
-var pulseUtility = require('pulseUtility');
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseDetailsPopup = require('pulsecomponent-detailspopup');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseConfig from 'pulseConfig';
+import * as pulseUtility from 'pulseUtility';
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseDetailsPopup from 'pulsecomponent-detailspopup';
 
 (function () {
 

@@ -7,11 +7,11 @@
  * @module x-currenticoncncalarm
  * @requires module:pulseComponent
  */
-var pulseUtility = require('pulseUtility');
+import * as pulseUtility from 'pulseUtility';
 //var pulseRange = require('pulseRange');
-var pulseSvg = require('pulseSvg');
-var pulseComponent = require('pulsecomponent');
-var eventBus = require('eventBus');
+import * as pulseSvg from 'pulseSvg';
+import * as pulseComponent from 'pulsecomponent';
+import * as eventBus from 'eventBus';
 
 (function () {
 

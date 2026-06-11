@@ -7,17 +7,17 @@
  * @module x-savereason
  * @requires module:pulseComponent
  */
-var pulseUtility = require('pulseUtility');
-var pulseService = require('pulseService');
-var pulseRange = require('pulseRange');
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseDetailsPopup = require('pulsecomponent-detailspopup');
-var pulseComponent = require('pulsecomponent');
-var pulseLogin = require('pulseLogin');
-var state = require('state');
+import * as pulseUtility from 'pulseUtility';
+import * as pulseService from 'pulseService';
+import * as pulseRange from 'pulseRange';
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseDetailsPopup from 'pulsecomponent-detailspopup';
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseLogin from 'pulseLogin';
+import * as state from 'state';
 
-require('x-machinedisplay/x-machinedisplay');
-require('x-datetimerange/x-datetimerange');
+import 'x-machinedisplay/x-machinedisplay';
+import 'x-datetimerange/x-datetimerange';
 
 (function () {
 

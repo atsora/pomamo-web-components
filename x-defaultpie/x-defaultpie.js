@@ -8,15 +8,15 @@
  * @requires module:pulseComponent
  * @requires module:pulseRange
  */
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var eventBus = require('eventBus');
-var state = require('state');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as eventBus from 'eventBus';
+import * as state from 'state';
 
-require('x-cycleprogresspie/x-cycleprogresspie');
-require('x-operationprogresspie/x-operationprogresspie');
-require('x-partproductionstatuspie/x-partproductionstatuspie');
-require('x-reasonslotpie/x-reasonslotpie');
+import 'x-cycleprogresspie/x-cycleprogresspie';
+import 'x-operationprogresspie/x-operationprogresspie';
+import 'x-partproductionstatuspie/x-partproductionstatuspie';
+import 'x-reasonslotpie/x-reasonslotpie';
 
 (function () {
 

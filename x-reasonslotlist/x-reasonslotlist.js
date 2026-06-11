@@ -15,18 +15,18 @@
  * @requires module:x-highlightperiodsbar
  */
 
-var pulseUtility = require('pulseUtility');
-var pulseRange = require('pulseRange');
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseComponent = require('pulsecomponent');
-var pulseSvg = require('pulseSvg');
-var eventBus = require('eventBus');
+import * as pulseUtility from 'pulseUtility';
+import * as pulseRange from 'pulseRange';
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseSvg from 'pulseSvg';
+import * as eventBus from 'eventBus';
 
-require('x-barstack/x-barstack');
+import 'x-barstack/x-barstack';
 
-require('x-savereason/x-savereason');
-require('x-datetimerange/x-datetimerange');
-require('x-revisionprogress/x-revisionprogress');
+import 'x-savereason/x-savereason';
+import 'x-datetimerange/x-datetimerange';
+import 'x-revisionprogress/x-revisionprogress';
 
 
 (function () {

@@ -7,12 +7,12 @@
  * @module x-checklogin
  * @requires module:pulseComponent
  */
-var pulseComponent = require('pulsecomponent');
-var pulseConfig = require('pulseConfig');
-var pulseLogin = require('pulseLogin');
-var pulseService = require('pulseService');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseConfig from 'pulseConfig';
+import * as pulseLogin from 'pulseLogin';
+import * as pulseService from 'pulseService';
 //var pulseUtility = require('pulseUtility');
-var eventBus = require('eventBus');
+import * as eventBus from 'eventBus';
 
 (function () {
 

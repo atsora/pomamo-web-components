@@ -35,22 +35,22 @@
  * @extends HTMLElement
  */
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 
-require('x-shiftslotbar/x-shiftslotbar');
-require('x-machinestatebar/x-machinestatebar');
-require('x-observationstatebar/x-observationstatebar');
-require('x-operationcyclebar/x-operationcyclebar');
-require('x-operationslotbar/x-operationslotbar');
-require('x-isofileslotbar/x-isofileslotbar');
-require('x-productionstatebar/x-productionstatebar');
-require('x-reasonslotbar/x-reasonslotbar');
-require('x-cncalarmbar/x-cncalarmbar');
-require('x-redstacklightbar/x-redstacklightbar');
-require('x-bartimeselection/x-bartimeselection');
-require('x-runningslotbar/x-runningslotbar');
-require('x-cncvaluebar/x-cncvaluebar');
-require('x-highlightperiodsbar/x-highlightperiodsbar');
+import 'x-shiftslotbar/x-shiftslotbar';
+import 'x-machinestatebar/x-machinestatebar';
+import 'x-observationstatebar/x-observationstatebar';
+import 'x-operationcyclebar/x-operationcyclebar';
+import 'x-operationslotbar/x-operationslotbar';
+import 'x-isofileslotbar/x-isofileslotbar';
+import 'x-productionstatebar/x-productionstatebar';
+import 'x-reasonslotbar/x-reasonslotbar';
+import 'x-cncalarmbar/x-cncalarmbar';
+import 'x-redstacklightbar/x-redstacklightbar';
+import 'x-bartimeselection/x-bartimeselection';
+import 'x-runningslotbar/x-runningslotbar';
+import 'x-cncvaluebar/x-cncvaluebar';
+import 'x-highlightperiodsbar/x-highlightperiodsbar';
 
 (function () {
   'use strict';

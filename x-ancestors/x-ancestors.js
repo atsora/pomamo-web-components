@@ -3,12 +3,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var pulseSvg = require('pulseSvg');
-var pulseConfig = require('pulseConfig');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseSvg from 'pulseSvg';
+import * as pulseConfig from 'pulseConfig';
 
-require('x-machinedisplay/x-machinedisplay');
+import 'x-machinedisplay/x-machinedisplay';
 
 (function () {
 

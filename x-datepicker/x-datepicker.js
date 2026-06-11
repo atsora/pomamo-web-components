@@ -8,8 +8,8 @@
  * @requires module:pulseComponent
  */
 
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
 
 (function () {
 

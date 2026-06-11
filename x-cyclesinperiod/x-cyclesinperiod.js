@@ -10,13 +10,13 @@
  * @requires module:x-saveserialnumber
  */
 
-var pulseUtility = require('pulseUtility');
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseComponent = require('pulsecomponent');
-var pulseRange = require('pulseRange');
-var eventBus = require('eventBus');
+import * as pulseUtility from 'pulseUtility';
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseRange from 'pulseRange';
+import * as eventBus from 'eventBus';
 
-require('x-saveserialnumber/x-saveserialnumber');
+import 'x-saveserialnumber/x-saveserialnumber';
 
 (function () {
 

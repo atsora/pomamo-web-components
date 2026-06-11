@@ -10,14 +10,14 @@
  * @requires module:pulseCustomDialog
  */
 
-var pulseUtility = require('pulseUtility');
-var pulseService = require('pulseService');
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseComponent = require('pulsecomponent');
-var pulseRange = require('pulseRange');
+import * as pulseUtility from 'pulseUtility';
+import * as pulseService from 'pulseService';
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseRange from 'pulseRange';
 //var eventBus = require('eventBus');
 
-require('x-datetimerange/x-datetimerange');
+import 'x-datetimerange/x-datetimerange';
 
 (function () {
 

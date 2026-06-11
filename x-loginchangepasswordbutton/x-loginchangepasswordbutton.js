@@ -8,14 +8,14 @@
  * @requires module:pulseComponent
  */
 
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var pulseLogin = require('pulseLogin');
-var pulseConfig = require('pulseConfig');
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseSvg = require('pulseSvg');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseLogin from 'pulseLogin';
+import * as pulseConfig from 'pulseConfig';
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseSvg from 'pulseSvg';
 
-require('x-loginchangepassword/x-loginchangepassword');
+import 'x-loginchangepassword/x-loginchangepassword';
 
 (function () {
 

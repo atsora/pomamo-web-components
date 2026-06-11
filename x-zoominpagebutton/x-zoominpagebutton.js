@@ -7,10 +7,10 @@
  * @module x-zoominpagebutton
  * @requires module:pulseComponent
  */
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var pulseConfig = require('pulseConfig');
-var pulseSvg = require('pulseSvg');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseConfig from 'pulseConfig';
+import * as pulseSvg from 'pulseSvg';
 
 (function () {
 

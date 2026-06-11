@@ -8,13 +8,13 @@
  * @requires module:pulseComponent
  * @requires module:pulseRange
  */
-var pulseComponent = require('pulsecomponent');
+import * as pulseComponent from 'pulsecomponent';
 //var pulseRange = require('pulseRange');
-var pulseUtility = require('pulseUtility');
-var pulseConfig = require('pulseConfig');
-var eventBus = require('eventBus');
+import * as pulseUtility from 'pulseUtility';
+import * as pulseConfig from 'pulseConfig';
+import * as eventBus from 'eventBus';
 
-require('x-clock/x-clock');
+import 'x-clock/x-clock';
 
 (function () {
 

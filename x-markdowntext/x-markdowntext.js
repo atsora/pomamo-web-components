@@ -8,8 +8,8 @@
  * @requires module:pulseComponent
  */
 
-var pulseComponent = require('pulsecomponent');
-//var pulseUtility = require('pulseUtility');
+import * as pulseComponent from 'pulsecomponent';
+import MarkdownIt from 'markdown-it';
 
 (function () {
 
@@ -58,7 +58,6 @@ var pulseComponent = require('pulsecomponent');
       }
       else {
         // See use here : https://www.npmjs.com/package/markdown-it
-        var MarkdownIt = require('markdown-it');
         let md = new MarkdownIt();
         let result = md.render(textToDisplay);
 

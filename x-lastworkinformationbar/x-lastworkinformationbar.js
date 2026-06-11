@@ -10,13 +10,13 @@
  * @requires module:pulseUtility
  * @requires module:detailspopup
  */
-var pulseComponent = require('pulsecomponent');
-var pulseRange = require('pulseRange');
-var pulseUtility = require('pulseUtility');
-var pulseDetailsPopup = require('pulsecomponent-detailspopup');
-var pulseSvg = require('pulseSvg');
-var eventBus = require('eventBus');
-var state = require('state');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseRange from 'pulseRange';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseDetailsPopup from 'pulsecomponent-detailspopup';
+import * as pulseSvg from 'pulseSvg';
+import * as eventBus from 'eventBus';
+import * as state from 'state';
 
 // Visibility contract:
 // This component NEVER sets inline `display` on `this.element` or any ancestor.

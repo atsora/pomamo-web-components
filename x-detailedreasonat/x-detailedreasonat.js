@@ -10,14 +10,14 @@
  * @requires module:pulseDetailsPopup
  */
 
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var pulseDetailsPopup = require('pulsecomponent-detailspopup');
-var pulseConfig = require('pulseConfig');
-var pulseRange = require('pulseRange');
-var eventBus = require('eventBus');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseDetailsPopup from 'pulsecomponent-detailspopup';
+import * as pulseConfig from 'pulseConfig';
+import * as pulseRange from 'pulseRange';
+import * as eventBus from 'eventBus';
 
-require('x-reasonsubdetails/x-reasonsubdetails');
+import 'x-reasonsubdetails/x-reasonsubdetails';
 
 (function () {
 

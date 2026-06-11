@@ -3,13 +3,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-var pulseUtility = require('pulseUtility');
+import * as pulseUtility from 'pulseUtility';
 var _svgNS = 'http://www.w3.org/2000/svg';
 
 /**
  * Return _svgNS for unique global definition
  */
-exports.get_svgNS = function () {
+export function get_svgNS () {
   return _svgNS;
 }
 
@@ -22,7 +22,7 @@ exports.get_svgNS = function () {
  *
  * @return pattern def
  */
-exports.createRadialGradientDef = function (color, newId) {
+export function createRadialGradientDef (color, newId) {
   let def = document.createElementNS(_svgNS, 'defs');
 
   let stop0 = document.createElementNS(_svgNS, 'stop');
@@ -55,7 +55,7 @@ exports.createRadialGradientDef = function (color, newId) {
  *
  * @return pattern def
  */
-exports.createPatternDef = function (patternName, color, newName) {
+export function createPatternDef (patternName, color, newName) {
   let def = document.createElementNS(_svgNS, 'defs');
   let pattern = document.createElementNS(_svgNS, 'pattern');
   pattern.setAttribute('id', newName);
@@ -145,7 +145,7 @@ exports.createPatternDef = function (patternName, color, newName) {
  *
  * @return SVG rect
  */
-var createRect = exports.createRect = function (x, y, width, height, color, mainClass) {
+export var createRect = function (x, y, width, height, color, mainClass) {
   let svg = document.createElementNS(_svgNS, 'svg');
   svg.setAttribute('width', width);
   svg.setAttribute('height', height);
@@ -183,7 +183,7 @@ var createRect = exports.createRect = function (x, y, width, height, color, main
  * @param {Integer} viewBoxHeight  optional
  * @return {Object} SVG
  */
-var createBase = exports.createBase = function (width, height, mainClass, viewBoxWidth, viewBoxHeight) {
+export var createBase = function (width, height, mainClass, viewBoxWidth, viewBoxHeight) {
   let svg = document.createElementNS(_svgNS, 'svg');
   svg.setAttribute('width', width);
   svg.setAttribute('height', height);
@@ -213,7 +213,7 @@ var createBase = exports.createBase = function (width, height, mainClass, viewBo
 
  * @returns {Object} SVG
  */
-exports.createEllipse = function (xMiddle, yMiddle, xRadius, yRadius, mainClass) {
+export function createEllipse (xMiddle, yMiddle, xRadius, yRadius, mainClass) {
   let ellipse = document.createElementNS(_svgNS, 'ellipse');
   ellipse.setAttribute('cx', xMiddle);
   ellipse.setAttribute('cy', yMiddle);
@@ -240,7 +240,7 @@ exports.createEllipse = function (xMiddle, yMiddle, xRadius, yRadius, mainClass)
 
  * @return {Object} SVG
  */
-exports.createCircle = function (xMiddle, yMiddle, radius, fillColor, mainClass, strokeColor, strokeWidth) {
+export function createCircle (xMiddle, yMiddle, radius, fillColor, mainClass, strokeColor, strokeWidth) {
   let circle = document.createElementNS(_svgNS, 'circle');
   circle.setAttribute('cx', xMiddle);
   circle.setAttribute('cy', yMiddle);
@@ -272,8 +272,7 @@ exports.createCircle = function (xMiddle, yMiddle, radius, fillColor, mainClass,
 
  * @return {Object} SVG
  */
-exports.
-  changeSegmentOnDonutEnd = function (circleProgress, radius, widthPercent, mainClass) {
+export function changeSegmentOnDonutEnd (circleProgress, radius, widthPercent, mainClass) {
     let circumference = 2.0 * Math.PI * radius;
     if (widthPercent >= 0.0) { // Keep '<=' and not '<' only to allow progress
       circleProgress.setAttribute('stroke-dasharray',
@@ -306,7 +305,7 @@ exports.
 
  * @return {Object} SVG
  */
-exports.createSegmentOnDonut = function (xMiddle, yMiddle, radius, fillColor, mainClass,
+export function createSegmentOnDonut (xMiddle, yMiddle, radius, fillColor, mainClass,
   strokeColor, strokeWidth, beginPercent, widthPercent) {
   if (widthPercent < 0) {
     return null;
@@ -357,7 +356,7 @@ exports.createSegmentOnDonut = function (xMiddle, yMiddle, radius, fillColor, ma
 
  * @return {Object} SVG
  */
-exports.createLineOnDonut = function (xMiddle, yMiddle, middleRadius, externRadius,
+export function createLineOnDonut (xMiddle, yMiddle, middleRadius, externRadius,
   percentPosition, color, width, dasharray) {
   let angle = (percentPosition - 0.25) * 2 * Math.PI;
   let aLine = document.createElementNS(_svgNS, 'line');
@@ -387,8 +386,7 @@ exports.createLineOnDonut = function (xMiddle, yMiddle, middleRadius, externRadi
  * @param {Number} circleRadius radius
  * @param {Number} beginSeconds between 0 and 60
  */
-exports.initFixedDashCircleDasharray =
-  function (caller, circleRadius, beginSeconds) {
+export function initFixedDashCircleDasharray (caller, circleRadius, beginSeconds) {
     let fullPathLength = 2 * Math.PI * circleRadius; // circumference
     caller.setAttribute('stroke-dasharray',
       (fullPathLength * beginSeconds / 60).toFixed(0) + ' '
@@ -409,8 +407,7 @@ exports.initFixedDashCircleDasharray =
  * @param {Boolean} increase rotation direction
  * @param {Number} beginSeconds between 0 and 60
  */
-exports.createStyleDashCircleRotation =
-  function (caller, keyFrameName, beginSeconds, circleRadius, increase) {
+export function createStyleDashCircleRotation (caller, keyFrameName, beginSeconds, circleRadius, increase) {
     let fullPathLength = 2 * Math.PI * circleRadius; // circumference
     let style = document.createElement('style');
     style.type = 'text/css';
@@ -472,8 +469,7 @@ exports.createStyleDashCircleRotation =
  *
  * @return {Object} SVG style
  */
-exports.createStyleForSegmentOnDonut =
-  function (caller, keyFrameName, circleRadius, fromWidth, toWidth) {
+export function createStyleForSegmentOnDonut (caller, keyFrameName, circleRadius, fromWidth, toWidth) {
     let circumference = 2 * Math.PI * circleRadius; // = full path length
     let style = document.createElement('style');
     style.type = 'text/css';
@@ -544,8 +540,7 @@ function (caller, keyFrameName, circleRadius, toWidth) {
  * @param {Number} fromWidth segment width
  * @param {Number} toWidth segment width after animation
  */
-exports.createStyleForSegmentOnDonutMovingBegin =
-  function (caller, keyFrameName, circleRadius, fromBegin, toBegin, fromWidth, toWidth) {
+export function createStyleForSegmentOnDonutMovingBegin (caller, keyFrameName, circleRadius, fromBegin, toBegin, fromWidth, toWidth) {
     let circumference = 2 * Math.PI * circleRadius; // = full path length
     let style = document.createElement('style');
     style.type = 'text/css';
@@ -586,7 +581,7 @@ exports.createStyleForSegmentOnDonutMovingBegin =
 
  * @return {Object} SVG
  */
-exports.createSegmentOnGauge = function (xMiddle, yMiddle, radius, fillColor, mainClass,
+export function createSegmentOnGauge (xMiddle, yMiddle, radius, fillColor, mainClass,
   strokeColor, strokeWidth, beginPercent, widthPercent) {
   //let magicCircleRadius = 15.91549430918954;
   let circumference = 2 * Math.PI * radius; // == 100 if magicCircleRadius is used
@@ -629,7 +624,7 @@ exports.createSegmentOnGauge = function (xMiddle, yMiddle, radius, fillColor, ma
 
  * @return {Object} SVG
  */
-exports.createLineOnGauge = function (xMiddle, yMiddle, middleRadius, externRadius,
+export function createLineOnGauge (xMiddle, yMiddle, middleRadius, externRadius,
   percentPosition, strokeColor, width, dasharray) {
   let angle = (percentPosition / 2 + 0.5) * 2 * Math.PI;
   let aLine = document.createElementNS(_svgNS, 'line');
@@ -654,7 +649,7 @@ exports.createLineOnGauge = function (xMiddle, yMiddle, middleRadius, externRadi
  * @param {function} callbackAfterInline (can be undefined)
  */
 // target: string selector OR Element OR NodeList/Array of Elements
-var inlineBackgroundSvg = exports.inlineBackgroundSvg = function (target, callbackAfterInline) {
+export var inlineBackgroundSvg = function (target, callbackAfterInline) {
   if (typeof SVGRect == 'undefined' || target == null) return;
 
   function resolveElements (t) {
@@ -702,7 +697,7 @@ var inlineBackgroundSvg = exports.inlineBackgroundSvg = function (target, callba
 
 /* Get a class to know the icon FOR machine modes
 */
-exports.getMachineModeClass = function (machineModeCategory) {
+export function getMachineModeClass (machineModeCategory) {
   let classBegin = 'pulse-mode-category-';
   switch (machineModeCategory) {
     case 1:
@@ -727,7 +722,7 @@ exports.getMachineModeClass = function (machineModeCategory) {
 /* Create an icon for colored legend.
  * The color can be defined by a color OR class.
 */
-exports.createColoredLegend = function (color, mainClass) {
+export function createColoredLegend (color, mainClass) {
   return createRect(0, 0, 100, 100, color, mainClass);
 }
 
@@ -739,7 +734,7 @@ exports.createColoredLegend = function (color, mainClass) {
  * @function showPulseMaintenance
  *
  */
-exports.showPulseMaintenance = function () {
+export function showPulseMaintenance () {
   // if already exists, just show it
   let existing = document.body.querySelector('.pulse-maintenance');
   if (existing != null) {
@@ -786,7 +781,7 @@ exports.showPulseMaintenance = function () {
  * @function hidePulseMaintenance
  *
  */
-exports.hidePulseMaintenance = function () {
+export function hidePulseMaintenance () {
   let nodes = document.body.querySelectorAll('.pulse-maintenance');
   for (let i = 0; i < nodes.length; i++) nodes[i].style.display = 'none';
 }
@@ -801,7 +796,7 @@ exports.hidePulseMaintenance = function () {
  * @param {DOM} parent
  * @param {string} svgClass
  */
-var removeBarChart = exports.removeBarChart = function (parent, svgClass) {
+export var removeBarChart = function (parent, svgClass) {
   if (parent == undefined) {
     return;
   }
@@ -844,7 +839,7 @@ var removeBarChart = exports.removeBarChart = function (parent, svgClass) {
  *    drawVerticalGrid : bool, default false
  *  }
  */
-exports.createBarChart = function (parent, svgClass, chartData, options) {
+export function createBarChart (parent, svgClass, chartData, options) {
   if (parent == undefined) {
     return;
   }
@@ -1057,7 +1052,7 @@ d3.mouse -> to get coordinate, show tooltip ...
  * @function createMissingdata
  * @param {DOM} parent
  */
-exports.createMissingdata = function (parent) {
+export function createMissingdata (parent) {
   // To add in version 12
   let radius = 4;
 

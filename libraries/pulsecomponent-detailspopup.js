@@ -14,72 +14,72 @@ devrait pas avoir à etre initialisé ici : il devrait seulement etre appelé
  * @file Various functions.
  */
 
-var pulseUtility = require('pulseUtility');
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseRange = require('pulseRange');
-var pulseConfig = require('pulseConfig');
+import * as pulseUtility from 'pulseUtility';
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseRange from 'pulseRange';
+import * as pulseConfig from 'pulseConfig';
 
-require('x-machinedisplay/x-machinedisplay');
+import 'x-machinedisplay/x-machinedisplay';
 
 // Note: insert here all the possible blocks of data you want to be able to insert in the popup or the details page
-require('x-detailedreasonat/x-detailedreasonat');
-require('x-detailedmachinestateat/x-detailedmachinestateat');
-require('x-detailedobservationstateat/x-detailedobservationstateat');
-require('x-detailedproductionstateat/x-detailedproductionstateat');
-require('x-detailedshiftat/x-detailedshiftat');
-require('x-detailedalarmsat/x-detailedalarmsat');
-require('x-detailedcncvaluesat/x-detailedcncvaluesat');
-require('x-detailedworkinfoat/x-detailedworkinfoat');
-require('x-detailedsequenceat/x-detailedsequenceat');
-require('x-detailedisofileat/x-detailedisofileat');
-require('x-detailedpartsat/x-detailedpartsat');
-require('x-detailedoperationcycleat/x-detailedoperationcycleat');
+import 'x-detailedreasonat/x-detailedreasonat';
+import 'x-detailedmachinestateat/x-detailedmachinestateat';
+import 'x-detailedobservationstateat/x-detailedobservationstateat';
+import 'x-detailedproductionstateat/x-detailedproductionstateat';
+import 'x-detailedshiftat/x-detailedshiftat';
+import 'x-detailedalarmsat/x-detailedalarmsat';
+import 'x-detailedcncvaluesat/x-detailedcncvaluesat';
+import 'x-detailedworkinfoat/x-detailedworkinfoat';
+import 'x-detailedsequenceat/x-detailedsequenceat';
+import 'x-detailedisofileat/x-detailedisofileat';
+import 'x-detailedpartsat/x-detailedpartsat';
+import 'x-detailedoperationcycleat/x-detailedoperationcycleat';
 
 // period + bar (reason + workinfo)
-require('x-datetimerange/x-datetimerange');
-require('x-datetimegraduation/x-datetimegraduation');
-require('x-bartimeselection/x-bartimeselection');
+import 'x-datetimerange/x-datetimerange';
+import 'x-datetimegraduation/x-datetimegraduation';
+import 'x-bartimeselection/x-bartimeselection';
 // reason change
-require('x-reasonslotbar/x-reasonslotbar');
-require('x-unansweredreasonslotlist/x-unansweredreasonslotlist');
+import 'x-reasonslotbar/x-reasonslotbar';
+import 'x-unansweredreasonslotlist/x-unansweredreasonslotlist';
 // workinfo display
-require('x-operationcyclebar/x-operationcyclebar');
-require('x-operationslotbar/x-operationslotbar');
-require('x-workinfoslotlist/x-workinfoslotlist');
+import 'x-operationcyclebar/x-operationcyclebar';
+import 'x-operationslotbar/x-operationslotbar';
+import 'x-workinfoslotlist/x-workinfoslotlist';
 
 
 //openRunningDialog = SAME AS running view
-require('x-machinedisplay/x-machinedisplay');
-require('x-productionmachiningstatus/x-productionmachiningstatus');
-require('x-lastworkinformation/x-lastworkinformation');
-require('x-currentcncvalue/x-currentcncvalue');
-require('x-lastshift/x-lastshift');
+import 'x-machinedisplay/x-machinedisplay';
+import 'x-productionmachiningstatus/x-productionmachiningstatus';
+import 'x-lastworkinformation/x-lastworkinformation';
+import 'x-currentcncvalue/x-currentcncvalue';
+import 'x-lastshift/x-lastshift';
 /* Replace x-RCB */
-require('x-datetimegraduation/x-datetimegraduation');
-require('x-shiftslotbar/x-shiftslotbar');
-require('x-machinestatebar/x-machinestatebar');
-require('x-observationstatebar/x-observationstatebar');
-require('x-operationcyclebar/x-operationcyclebar');
-require('x-operationslotbar/x-operationslotbar');
-require('x-productionstatebar/x-productionstatebar');
-require('x-reasonslotbar/x-reasonslotbar');
-require('x-cncalarmbar/x-cncalarmbar');
-require('x-redstacklightbar/x-redstacklightbar');
-require('x-cncvaluebar/x-cncvaluebar');
-require('x-isofileslotbar/x-isofileslotbar');
+import 'x-datetimegraduation/x-datetimegraduation';
+import 'x-shiftslotbar/x-shiftslotbar';
+import 'x-machinestatebar/x-machinestatebar';
+import 'x-observationstatebar/x-observationstatebar';
+import 'x-operationcyclebar/x-operationcyclebar';
+import 'x-operationslotbar/x-operationslotbar';
+import 'x-productionstatebar/x-productionstatebar';
+import 'x-reasonslotbar/x-reasonslotbar';
+import 'x-cncalarmbar/x-cncalarmbar';
+import 'x-redstacklightbar/x-redstacklightbar';
+import 'x-cncvaluebar/x-cncvaluebar';
+import 'x-isofileslotbar/x-isofileslotbar';
 /* end replace RCB */
-require('x-motionpercentage/x-motionpercentage');
-require('x-motiontime/x-motiontime');
-require('x-periodtoolbar/x-periodtoolbar');
-require('x-reasonbutton/x-reasonbutton');
-require('x-clock/x-clock');
-require('x-reasongroups/x-reasongroups');
-require('x-fieldlegends/x-fieldlegends');
-require('x-machinemodelegends/x-machinemodelegends');
-require('x-stopperiods/x-stopperiods');
-require('x-reasoncommentdialog/x-reasoncommentdialog');
-require('x-detailsatdialog/x-detailsatdialog');
-require('x-runningdialog/x-runningdialog');
+import 'x-motionpercentage/x-motionpercentage';
+import 'x-motiontime/x-motiontime';
+import 'x-periodtoolbar/x-periodtoolbar';
+import 'x-reasonbutton/x-reasonbutton';
+import 'x-clock/x-clock';
+import 'x-reasongroups/x-reasongroups';
+import 'x-fieldlegends/x-fieldlegends';
+import 'x-machinemodelegends/x-machinemodelegends';
+import 'x-stopperiods/x-stopperiods';
+import 'x-reasoncommentdialog/x-reasoncommentdialog';
+import 'x-detailsatdialog/x-detailsatdialog';
+import 'x-runningdialog/x-runningdialog';
 
 function _fadeOutPopupBlocks () {
   let blocks = document.querySelectorAll('.popup-block');
@@ -93,7 +93,7 @@ function _fadeOutPopupBlocks () {
 /**
  * Open a dialog with Details for a machine at a specific time
  */
-var openDetails = exports.openDetails = function (component, fullRange, cellRange, evt) {
+export var openDetails = function (component, fullRange, cellRange, evt) {
   // Get datetime at clicked position
   let e = evt.target;
   let dim = e.getBoundingClientRect();
@@ -135,7 +135,7 @@ var openDetails = exports.openDetails = function (component, fullRange, cellRang
 /**
  * Open a popup with fillMethod
  */
-var openGenericPopup = exports.openGenericPopup = function (fillMethod, evt) {
+export var openGenericPopup = function (fillMethod, evt) {
   // Find or create the popup block
   let popup = document.querySelector('.popup-block');
   if (popup == null) {
@@ -197,7 +197,7 @@ var openGenericPopup = exports.openGenericPopup = function (fillMethod, evt) {
 /**
  * Open a popup with Details for a machine at a specific time
  */
-var openPopup = exports.openPopup = function (component, fullRange, cellRange, evt) {
+export var openPopup = function (component, fullRange, cellRange, evt) {
   // Get datetime at clicked position
   let e = evt.target;
   let dim = e.getBoundingClientRect();
@@ -241,7 +241,7 @@ var openPopup = exports.openPopup = function (component, fullRange, cellRange, e
 /**
  * Open a change work info (job, component...) dialog for a machine and a specific range
  */
-exports.openChangeWorkInfoDialog = function (component, dtRange) {
+export function openChangeWorkInfoDialog (component, dtRange) {
   if (document.querySelector('.dialog-saveworkinfo') != null) {
     return;
   }
@@ -282,7 +282,7 @@ exports.openChangeWorkInfoDialog = function (component, dtRange) {
 /**
  * Open a change reason dialog for a machine and a specific range
  */
-var openChangeReasonDialog = exports.openChangeReasonDialog = function (component, dtRange, skip1periodlist, forceDetails, displayMode) {
+export var openChangeReasonDialog = function (component, dtRange, skip1periodlist, forceDetails, displayMode) {
   if (document.querySelector('.dialog-savereason') != null) {
     return;
   }
@@ -337,7 +337,7 @@ var openChangeReasonDialog = exports.openChangeReasonDialog = function (componen
 /**
  * Open a change scrap classification dialog for a machine
  */
-var openChangeScrapClassificationDialog = exports.openChangeScrapClassificationDialog = function (component) {
+export var openChangeScrapClassificationDialog = function (component) {
   if (document.querySelector('.dialog-scrapclassification') != null) {
     return;
   }
@@ -371,7 +371,7 @@ var openChangeScrapClassificationDialog = exports.openChangeScrapClassificationD
 /**
  * Open a change reason dialog for a machine and a specific range
  */
-var openChangeStopClassificationDialog = exports.openChangeStopClassificationDialog = function (component, dtRange, options) {
+export var openChangeStopClassificationDialog = function (component, dtRange, options) {
   if (document.querySelector('.dialog-stopclassification') != null) {
     return;
   }
@@ -437,7 +437,7 @@ var openChangeStopClassificationDialog = exports.openChangeStopClassificationDia
 /**
  * Shared dialog for entering a reason comment (optional or required).
  */
-var openReasonCommentDialog = exports.openReasonCommentDialog = function (component, classificationId, reasonName, rangeStr, detailsRequired, reasonData, onSave) {
+export var openReasonCommentDialog = function (component, classificationId, reasonName, rangeStr, detailsRequired, reasonData, onSave) {
   let machid = component.element.getAttribute('machine-id');
 
   let rcdlg = pulseUtility.createElementWithAttribute('x-reasoncommentdialog', {
@@ -469,7 +469,7 @@ var openReasonCommentDialog = exports.openReasonCommentDialog = function (compon
 /**
  * Click on a bar (Open popup / details / change...)
  */
-exports.clickOnBar = function (component, fullRange, cellRange, event, callerName) {
+export function clickOnBar (component, fullRange, cellRange, event, callerName) {
   let barClick = pulseConfig.getString('showcoloredbar.click.' + callerName); // individual for THIS bar
   if (pulseUtility.isNotDefined(barClick) || barClick == '') {
     barClick = pulseConfig.getString('showcoloredbar.click.allbars'); // For ALL bars
@@ -500,7 +500,7 @@ exports.clickOnBar = function (component, fullRange, cellRange, event, callerNam
 /**
  * Open the running dialog for a group
  */
-exports.openRunningDialog = function (groupId) {
+export function openRunningDialog (groupId) {
   let dialog = pulseUtility.createElementWithAttribute('x-runningdialog', {
     'group': groupId
   });

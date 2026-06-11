@@ -8,11 +8,11 @@
  * @requires module:pulseComponent
  * @requires module:pulseUtility
  */
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var pulseConfig = require('pulseConfig');
-var pulseSvg = require('pulseSvg');
-var eventBus = require('eventBus');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseConfig from 'pulseConfig';
+import * as pulseSvg from 'pulseSvg';
+import * as eventBus from 'eventBus';
 
 (function () {
 

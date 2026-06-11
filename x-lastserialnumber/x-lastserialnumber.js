@@ -12,16 +12,16 @@
  * @requires module:x-saveserialnumber
  * @requires module:x-cyclesinperiod
  */
-var pulseComponent = require('pulsecomponent');
-var pulseRange = require('pulseRange');
-var pulseUtility = require('pulseUtility');
-var pulseSvg = require('pulseSvg');
-var pulseCustomDialog = require('pulseCustomDialog');
-var eventBus = require('eventBus');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseRange from 'pulseRange';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseSvg from 'pulseSvg';
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as eventBus from 'eventBus';
 
-require('x-saveserialnumber/x-saveserialnumber');
-require('x-cyclesinperiod/x-cyclesinperiod');
-require('x-revisionprogress/x-revisionprogress');
+import 'x-saveserialnumber/x-saveserialnumber';
+import 'x-cyclesinperiod/x-cyclesinperiod';
+import 'x-revisionprogress/x-revisionprogress';
 
 (function () {
 

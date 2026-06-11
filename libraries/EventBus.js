@@ -29,7 +29,7 @@ EventBusClass.prototype = {
       this.listeners[signal][context] = [];
     }
     this.listeners[signal][context].push({ scope: scope, callback: callback });
-    console.log(`${scope.getInfo ? scope.getInfo() : ''}: add listener event=${signal}_${context}`);
+    console.log(`${scope && scope.getInfo ? scope.getInfo() : ''}: add listener event=${signal}_${context}`);
   },
   /**
     * Add a signal listener for all contexts on event bus for 1 component=scope
@@ -45,7 +45,7 @@ EventBusClass.prototype = {
       this.globalListeners[signal] = [];
     }
     this.globalListeners[signal].push({ scope: scope, callback: callback });
-    console.log(`${scope.getInfo ? scope.getInfo() : ''}: add global listener signal=${signal} DONE`);
+    console.log(`${scope && scope.getInfo ? scope.getInfo() : ''}: add global listener signal=${signal} DONE`);
   },
   /**
     * Remove all signal listeners for all contexts on event bus for 1 component=scope
@@ -66,7 +66,7 @@ EventBusClass.prototype = {
               newArray.push(listener);
             }
             else {
-              console.log(`${scope.getInfo ? scope.getInfo() : ''}: remove listener signal=${signal} context=${context}`);
+              console.log(`${scope && scope.getInfo ? scope.getInfo() : ''}: remove listener signal=${signal} context=${context}`);
             }
           }
           this.listeners[signal][context] = newArray;
@@ -82,12 +82,12 @@ EventBusClass.prototype = {
           newArray.push(listener);
         }
         else {
-          console.log(`${scope.getInfo ? scope.getInfo() : ''}: remove global listener signal=${signal}`);
+          console.log(`${scope && scope.getInfo ? scope.getInfo() : ''}: remove global listener signal=${signal}`);
         }
       }
       this.globalListeners[signal] = newArray;
     }
-    //console.log(`${scope.getInfo ? scope.getInfo() : ''}: remove listeners by signal=${signal} DONE`);
+    //console.log(`${scope && scope.getInfo ? scope.getInfo() : ''}: remove listeners by signal=${signal} DONE`);
   },
 
   /**
@@ -108,7 +108,7 @@ EventBusClass.prototype = {
               newArray.push(listener);
             }
             else {
-              console.log(`${scope.getInfo ? scope.getInfo() : ''}: remove listener signal=${signal} context=${context}`);
+              console.log(`${scope && scope.getInfo ? scope.getInfo() : ''}: remove listener signal=${signal} context=${context}`);
             }
           }
           this.listeners[signal][context] = newArray;
@@ -124,12 +124,12 @@ EventBusClass.prototype = {
           newArray.push(listener);
         }
         else {
-          console.log(`${scope.getInfo ? scope.getInfo() : ''}: remove global listener signal=${signal}`);
+          console.log(`${scope && scope.getInfo ? scope.getInfo() : ''}: remove global listener signal=${signal}`);
         }
       }
       this.globalListeners[signal] = newArray;
     }
-    //console.log(`${scope.getInfo ? scope.getInfo() : ''}: remove (all) listeners DONE`);
+    //console.log(`${scope && scope.getInfo ? scope.getInfo() : ''}: remove (all) listeners DONE`);
   },
   /**
     * Dispatch a signal for a given context on event bus
@@ -249,4 +249,4 @@ EventBusClass.prototype = {
   },
 };
 
-exports.EventBus = new EventBusClass();
+export const EventBus = new EventBusClass();

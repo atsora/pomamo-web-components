@@ -7,23 +7,23 @@
  * @requires module:pulseComponent
  */
 
-var pulseComponent = require('pulsecomponent');
-var pulseConfig = require('pulseConfig');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseConfig from 'pulseConfig';
 
-require('x-grouplist/x-grouplist');
-require('x-machinedisplay/x-machinedisplay');
-require('x-productionmachiningstatus/x-productionmachiningstatus');
-require('x-lastworkinformation/x-lastworkinformation');
-require('x-currentcncvalue/x-currentcncvalue');
-require('x-lastshift/x-lastshift');
-require('x-datetimegraduation/x-datetimegraduation');
-require('x-barstack/x-barstack');
-require('x-motionpercentage/x-motionpercentage');
-require('x-motiontime/x-motiontime');
-require('x-periodtoolbar/x-periodtoolbar');
-require('x-reasonbutton/x-reasonbutton');
-require('x-clock/x-clock');
-require('x-tr/x-tr');
+import 'x-grouplist/x-grouplist';
+import 'x-machinedisplay/x-machinedisplay';
+import 'x-productionmachiningstatus/x-productionmachiningstatus';
+import 'x-lastworkinformation/x-lastworkinformation';
+import 'x-currentcncvalue/x-currentcncvalue';
+import 'x-lastshift/x-lastshift';
+import 'x-datetimegraduation/x-datetimegraduation';
+import 'x-barstack/x-barstack';
+import 'x-motionpercentage/x-motionpercentage';
+import 'x-motiontime/x-motiontime';
+import 'x-periodtoolbar/x-periodtoolbar';
+import 'x-reasonbutton/x-reasonbutton';
+import 'x-clock/x-clock';
+import 'x-tr/x-tr';
 
 (function () {
 

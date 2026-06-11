@@ -8,13 +8,13 @@
  * @requires module:pulseComponent
  * @requires module:pulseUtility
  */
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var eventBus = require('eventBus');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as eventBus from 'eventBus';
 
-require('x-savemachinestatetemplate/x-savemachinestatetemplate');
-require('x-setupmachine/x-setupmachine');
-require('x-revisionprogress/x-revisionprogress');
+import 'x-savemachinestatetemplate/x-savemachinestatetemplate';
+import 'x-setupmachine/x-setupmachine';
+import 'x-revisionprogress/x-revisionprogress';
 
 
 (function () {

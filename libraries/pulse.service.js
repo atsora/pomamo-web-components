@@ -12,7 +12,7 @@
 * @requires pulseLogin
 */
 
-var pulseLogin = require('pulseLogin');
+import * as pulseLogin from 'pulseLogin';
 
 var DEFAULT_TIMEOUT = 4 * 60 * 1000; // 4 minutes
 
@@ -120,7 +120,7 @@ function _buildPostInit (jsonData, withToken) {
 /**
  * Method to call an Ajax request (without token)
  */
-exports.runAjaxSimple = function (url, success, error, fail, timeout) {
+export function runAjaxSimple (url, success, error, fail, timeout) {
   if (typeof url === 'undefined') {
     console.error('runAjaxSimple: no valid url');
     if (fail) fail(url, false, null);
@@ -155,7 +155,7 @@ exports.runAjaxSimple = function (url, success, error, fail, timeout) {
 /**
  * Utility method to call an Ajax request (with token)
  */
-exports.runAjax = function (token, url, timeout, success, error, fail) {
+export function runAjax (token, url, timeout, success, error, fail) {
   if (typeof url === 'undefined') {
     console.warn(`runAjax(${token}): no valid url`);
     if (fail) fail(token, url, false, null);
@@ -188,7 +188,7 @@ exports.runAjax = function (token, url, timeout, success, error, fail) {
 /**
  * Utility method to get Ajax message for user display
  */
-exports.getAjaxErrorMessage = function (xhrStatus) {
+export function getAjaxErrorMessage (xhrStatus) {
   if (typeof xhrStatus === 'undefined') {
     return 'Empty XHR status';
   }
@@ -215,7 +215,7 @@ exports.getAjaxErrorMessage = function (xhrStatus) {
 /**
  * Utility method to call a POST Ajax request
  */
-exports.postAjax = function (token, url, jsonData, timeout, success, error, fail) {
+export function postAjax (token, url, jsonData, timeout, success, error, fail) {
   if (typeof url === 'undefined') {
     console.error(`postAjax(${token}): no valid url`);
     if (fail) fail(token, url, false, null);

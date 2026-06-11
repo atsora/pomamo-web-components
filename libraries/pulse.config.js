@@ -12,8 +12,8 @@
 * @requires pulseUtility
 * @requires pulseLogin
 */
-var pulseUtility = require('pulseUtility');
-var pulseLogin = require('pulseLogin');
+import * as pulseUtility from 'pulseUtility';
+import * as pulseLogin from 'pulseLogin';
 
 
 ////////// ////////// //////////
@@ -26,7 +26,7 @@ var pulseLogin = require('pulseLogin');
  * @param {String} defaultTranslation Translation returned if the key is not found
  * @return {String} string to display
  */
-exports.pulseTranslate = function (key, defaultTranslation) {
+export function pulseTranslate (key, defaultTranslation) {
   let result = defaultTranslation;
 
   // Translations accessible?
@@ -56,7 +56,7 @@ var getAppName = function () {
   return LEM_CONFIG_DEFAULT.appName;
 }
 
-var getPageName = exports.getPageName = function () {
+export var getPageName = function () {
   let href = window.location.href; // ".../pagename.html"
   var posReq = href.lastIndexOf('?');
   if (posReq != -1) {
@@ -74,7 +74,7 @@ var getPageName = exports.getPageName = function () {
 
 
 //var isCurrentApp =
-exports.isCurrentApp = function (appName) {
+export function isCurrentApp (appName) {
   // Find app name
   let app = getAppName();
   if (app == appName) {
@@ -83,7 +83,7 @@ exports.isCurrentApp = function (appName) {
   return false;
 };
 
-var getAppContextOnly = exports.getAppContextOnly = function () {
+export var getAppContextOnly = function () {
   // get AppContext in URL
   let appCtxConfig = getURLConfig('AppContext');
   if (appCtxConfig.found) {
@@ -93,7 +93,7 @@ var getAppContextOnly = exports.getAppContextOnly = function () {
   return '';
 }
 
-var getAppContextOrRole = exports.getAppContextOrRole = function () {
+export var getAppContextOrRole = function () {
   // get AppContext in URL
   let appCtxConfig = getURLConfig('AppContext');
   if (appCtxConfig.found) {
@@ -104,7 +104,7 @@ var getAppContextOrRole = exports.getAppContextOrRole = function () {
   return pulseLogin.getRole();
 }
 
-var getLoginAppContextOrRole = exports.getLoginAppContextOrRole = function () {
+export var getLoginAppContextOrRole = function () {
   let login = pulseLogin.getLogin();
   if (login != '') {
     return login;
@@ -516,7 +516,7 @@ var getFullConfig = function (key, defaultValue, onlyDefault, pageName, role) {
  * @param {String} defaultValue - default Value
  * @param {String} page - specific page, if needed
  */
-var get = exports.get = function (key, defaultValue, page) {
+export var get = function (key, defaultValue, page) {
   // Get config
   let listOfKeys = key.split('.'); // Ex: 'ANY_tagName.realKey'
   if (listOfKeys.length > 1) { // Find overload first
@@ -542,7 +542,7 @@ var get = exports.get = function (key, defaultValue, page) {
  * @param {String} defaultValue - default Value
  * @param {String} page - specific page, if needed
  */
-exports.getBool = function (key, defaultValue, page) {
+export function getBool (key, defaultValue, page) {
   let tmp = get(key, defaultValue, page);
   return (tmp == true || tmp == 'true' || tmp == '1' || tmp == 1);
 };
@@ -555,7 +555,7 @@ exports.getBool = function (key, defaultValue, page) {
  * @param {String} defaultValue - default Value
  * @param {String} page - specific page, if needed
  */
-exports.getInt = function (key, defaultValue, page) {
+export function getInt (key, defaultValue, page) {
   let tmp = get(key, defaultValue, page);
   return parseInt(tmp, 10);
 }
@@ -568,7 +568,7 @@ exports.getInt = function (key, defaultValue, page) {
  * @param {String} defaultValue - default Value
  * @param {String} page - specific page, if needed
  */
-exports.getFloat = function (key, defaultValue, page) {
+export function getFloat (key, defaultValue, page) {
   let tmp = get(key, defaultValue, page);
   return parseFloat(tmp);
 }
@@ -581,7 +581,7 @@ exports.getFloat = function (key, defaultValue, page) {
  * @param {String} defaultValue - default Value
  * @param {String} page - specific page, if needed
  */
-var getString = exports.getString = function (key, defaultValue, page) {
+export var getString = function (key, defaultValue, page) {
   let tmp = get(key, defaultValue, page);
   if (tmp == undefined || tmp == null)
     tmp = '';
@@ -596,8 +596,7 @@ var getString = exports.getString = function (key, defaultValue, page) {
  * @param {String} defaultValue - default Value
  * @param {String} page - specific page, if needed
  */
-var getArray =
-  exports.getArray = function (key, defaultValue, page) {
+export var getArray = function (key, defaultValue, page) {
     let tmp = get(key, defaultValue, page);
     if (tmp == null)
       return [];
@@ -628,7 +627,7 @@ var getArray =
  */
 var missingDefaultKeys = {};
 
-var getDefault = exports.getDefault = function (key, defaultValue) {
+export var getDefault = function (key, defaultValue) {
   // Get config
   let listOfKeys = key.split('.'); // Ex: 'ANY_tagName.realKey'
   if (listOfKeys.length > 1) { // Find overload first
@@ -657,7 +656,7 @@ var getDefault = exports.getDefault = function (key, defaultValue) {
  * @param {!String} key - key to check
  * @param {String} defaultValue - default Value
  */
-exports.getDefaultBool = function (key, defaultValue) {
+export function getDefaultBool (key, defaultValue) {
   let tmp = getDefault(key, defaultValue);
   return (tmp == true || tmp == 'true' || tmp == '1' || tmp == 1);
 };
@@ -669,7 +668,7 @@ exports.getDefaultBool = function (key, defaultValue) {
  * @param {!String} key - key to check
  * @param {String} defaultValue - default Value
  */
-exports.getDefaultInt = function (key, defaultValue) {
+export function getDefaultInt (key, defaultValue) {
   let tmp = getDefault(key, defaultValue);
   return parseInt(tmp, 10);
 }
@@ -681,7 +680,7 @@ exports.getDefaultInt = function (key, defaultValue) {
  * @param {!String} key - key to check
  * @param {String} defaultValue - default Value
  */
-exports.getDefaultFloat = function getDefaultFloat (key, defaultValue) {
+export function getDefaultFloat (key, defaultValue) {
   let tmp = getDefault(key, defaultValue);
   return parseFloat(tmp);
 }
@@ -693,7 +692,7 @@ exports.getDefaultFloat = function getDefaultFloat (key, defaultValue) {
  * @param {!String} key - key to check
  * @param {String} defaultValue - default Value
  */
-exports.getDefaultString = function (key, defaultValue) {
+export function getDefaultString (key, defaultValue) {
   let tmp = getDefault(key, defaultValue);
   if (tmp == undefined || tmp == null)
     tmp = '';
@@ -707,7 +706,7 @@ exports.getDefaultString = function (key, defaultValue) {
  * @param {!String} key - key to check
  * @param {String} defaultValue - default Value
  */
-exports.getDefaultArray = function (key, defaultValue) {
+export function getDefaultArray (key, defaultValue) {
   let tmp = getDefault(key, defaultValue);
   if (tmp == null)
     return [];
@@ -726,7 +725,7 @@ exports.getDefaultArray = function (key, defaultValue) {
  * @param key - key to fill
  * @param value - value associated to the key
  */
-var setGlobal = exports.setGlobal = function (key, value) {
+export var setGlobal = function (key, value) {
   // Find app name
   let app = getAppName();
 
@@ -773,7 +772,7 @@ var setGlobal = exports.setGlobal = function (key, value) {
  * @param ignorePageName - if true, we should store by role only (default false)
  * @param global - if true, the configuration will be global for all pages
  */
-var set = exports.set = function (key, value, ignorePageName) {
+export var set = function (key, value, ignorePageName) {
   /* TODO : probably add an error for role, theme, path */
   if (key == 'role' || key == 'theme' || key == 'path') {
     console.error(`Config.set should not be call with key = ${key}`);
@@ -823,7 +822,7 @@ var set = exports.set = function (key, value, ignorePageName) {
  * @function reset
  * @param key - key to clear
  */
-exports.reset = function (key) {
+export function reset (key) {
   // Local
   set(key, '');
   // by role
@@ -836,7 +835,7 @@ exports.reset = function (key) {
 // is login page              //
 ////////// ////////// //////////
 
-exports.isLoginPage = function () {
+export function isLoginPage () {
   if ('login' == getPageName()) {
     return true;
   }
@@ -851,7 +850,7 @@ exports.isLoginPage = function () {
  * @memberof module:pulseConfig
  * @function goToPageLogin
  */
-exports.goToPageLogin = function () {
+export function goToPageLogin () {
   let pwa_path = getString('pulsewebapppath', '');
   let newfullURL = window.location.href;
   if ('' == pwa_path) {
@@ -884,7 +883,7 @@ exports.goToPageLogin = function () {
  * @memberof module:pulseConfig
  * @function goToPageLogin
  */
-exports.goToFirstPage = function (role) {
+export function goToFirstPage (role) {
   let firstPageConfig = getRoleConfig('firstPage', role);
   let targetPage = firstPageConfig.found ? firstPageConfig.value : 'home';
 
@@ -909,7 +908,7 @@ exports.goToFirstPage = function (role) {
 ////////// ////////// //////////
 
 //var currentRoleOrAppContextIsDefined =
-exports.currentRoleOrAppContextIsDefined = function () {
+export function currentRoleOrAppContextIsDefined () {
   let roles = getArray('roles');
   let currentRole = getAppContextOrRole(); // WAS getRole();
   for (let i = 0; i < roles.length; i++) {
@@ -922,7 +921,7 @@ exports.currentRoleOrAppContextIsDefined = function () {
 
 // get login / role or appContext display according to what is available
 //var getCurrentUserDisplay =
-exports.getCurrentUserDisplay = function () {
+export function getCurrentUserDisplay () {
   // Helper: resolve role label via translation catalog (ATSORA_CATALOG.general.roles[role])
   let getRoleLabel = function (role) {
     if (typeof ATSORA_CATALOG !== 'undefined'

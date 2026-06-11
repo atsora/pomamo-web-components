@@ -6,12 +6,12 @@
  * @module x-openstopclassificationlistener
  */
 
-var pulseComponent = require('pulsecomponent');
-var pulseService = require('pulseService');
-var pulseRange = require('pulseRange');
-var pulseDetailsPopup = require('pulsecomponent-detailspopup');
-var pulseConfig = require('pulseConfig');
-var eventBus = require('eventBus');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseService from 'pulseService';
+import * as pulseRange from 'pulseRange';
+import * as pulseDetailsPopup from 'pulsecomponent-detailspopup';
+import * as pulseConfig from 'pulseConfig';
+import * as eventBus from 'eventBus';
 
 (function () {
 

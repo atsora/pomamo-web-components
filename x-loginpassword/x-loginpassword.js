@@ -8,12 +8,12 @@
  * @requires module:pulseComponent
  */
 
-var pulseComponent = require('pulsecomponent');
-var pulseConfig = require('pulseConfig');
-var pulseService = require('pulseService');
-var pulseLogin = require('pulseLogin');
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseUtility = require('pulseUtility');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseConfig from 'pulseConfig';
+import * as pulseService from 'pulseService';
+import * as pulseLogin from 'pulseLogin';
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseUtility from 'pulseUtility';
 
 (function () {
 

@@ -3,22 +3,22 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-var pulseUtility = require('pulseUtility');
-var pulseRange = require('pulseRange');
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseComponent = require('pulsecomponent');
-var pulseSvg = require('pulseSvg');
-var eventBus = require('eventBus');
-var pulseDetailsPopup = require('pulsecomponent-detailspopup');
+import * as pulseUtility from 'pulseUtility';
+import * as pulseRange from 'pulseRange';
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseSvg from 'pulseSvg';
+import * as eventBus from 'eventBus';
+import * as pulseDetailsPopup from 'pulsecomponent-detailspopup';
 
-require('x-barstack/x-barstack');
-require('x-savereason/x-savereason');
-require('x-reasonslotlist/x-reasonslotlist');
-require('x-revisionprogress/x-revisionprogress');
-require('x-stopclassification/x-stopclassification');
-require('x-classifiedreasonslotlist/x-classifiedreasonslotlist');
-require('x-tr/x-tr');
-require('x-machinedisplay/x-machinedisplay');
+import 'x-barstack/x-barstack';
+import 'x-savereason/x-savereason';
+import 'x-reasonslotlist/x-reasonslotlist';
+import 'x-revisionprogress/x-revisionprogress';
+import 'x-stopclassification/x-stopclassification';
+import 'x-classifiedreasonslotlist/x-classifiedreasonslotlist';
+import 'x-tr/x-tr';
+import 'x-machinedisplay/x-machinedisplay';
 
 
 (function () {

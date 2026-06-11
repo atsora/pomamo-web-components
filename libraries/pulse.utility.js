@@ -11,15 +11,15 @@
 * @module pulseUtility
 * @requires pulseRange
 */
-var pulseRange = require('pulseRange');
-var pulseConfig = require('pulseConfig');
+import * as pulseRange from 'pulseRange';
+import * as pulseConfig from 'pulseConfig';
 
 /** Get integer from string
  *
  * @memberof module:pulseUtility
  * @function string2int
  */
-exports.string2int = function string2int (str) {
+export function string2int (str) {
   return (str == 'null' || str == null || str == '') ? -1 : parseInt(str);
 };
 
@@ -28,7 +28,7 @@ exports.string2int = function string2int (str) {
  * @memberof module:pulseUtility
  * @function getContrastColor
  */
-exports.getContrastColor = function getContrastColor (hexcolor) {
+export function getContrastColor (hexcolor) {
   if (hexcolor.indexOf('rgb') >= 0) { // rgb format
     let nums = /(.*?)rgb\((\d+),\s*(\d+),\s*(\d+)\)/i.exec(hexcolor);
     let r = parseInt(nums[2], 10).toString(16);
@@ -60,7 +60,7 @@ exports.getContrastColor = function getContrastColor (hexcolor) {
  * @param {Object} value  object to check
  * @return {Boolean}
  */
-exports.isNumeric = function (value) {
+export function isNumeric (value) {
   if ((parseFloat(value) == parseInt(value)) && !isNaN(value)) {
     return true;
   }
@@ -77,7 +77,7 @@ exports.isNumeric = function (value) {
  * @param {Object} value  object to check
  * @return {Boolean}
  */
-exports.isFloat = function (value) {
+export function isFloat (value) {
   return Number(value) === value && value % 1 !== 0;
 }
 
@@ -89,7 +89,7 @@ exports.isFloat = function (value) {
  * @param {Object} value  object to check
  * @return {Boolean}
  */
-var isInteger = exports.isInteger = function (value) {
+export var isInteger = function (value) {
   if ((parseFloat(value) == parseInt(value)) && !isNaN(value)) {
     return true;
   }
@@ -106,7 +106,7 @@ var isInteger = exports.isInteger = function (value) {
  * @param {Object} value an object
  * @return {Boolean}
  */
-exports.isBoolean = function (value) {
+export function isBoolean (value) {
   if (((typeof value) === 'boolean') || ((value instanceof Boolean) == true) || (value === 'true') || (value === 'false')) {
     return true;
   }
@@ -124,14 +124,14 @@ exports.isBoolean = function (value) {
  * @param {Object} value an object
  * @return {Boolean}
  */
-exports.isFunction = function (value) {
+export function isFunction (value) {
   return (value !== undefined) && (value !== null) && (Object.prototype.toString.call(value) == '[object Function]');
 }
 
 /**
  * return a string with leading 0 - for date FORMAT on 2 digits
  **/
-exports.leadingZero = function (value) {
+export function leadingZero (value) {
   if (value < 10) {
     return '0' + value.toString();
   }
@@ -149,7 +149,7 @@ exports.leadingZero = function (value) {
  * @param {string} format time format used to format label to display
  * @return {Array}
  */
-exports.getTimeMarkers = function (datetime, format) {
+export function getTimeMarkers (datetime, format) {
   let utc = moment.utc(datetime);
   let m0 = utc.local();
   let m1 = m0.clone().add(6, 'h');
@@ -175,7 +175,7 @@ exports.getTimeMarkers = function (datetime, format) {
  * @param {Number} datetime Integer that represents date in utc
  * @return {Moment}
  */
-exports.getMomentLocalFromUtcDate = function (datetime) {
+export function getMomentLocalFromUtcDate (datetime) {
   let moment_utc = moment(datetime).utc();
   let m = moment_utc.clone();
   return m.local();
@@ -195,7 +195,7 @@ exports.getMomentLocalFromUtcDate = function (datetime) {
  * @return {string} Date string for any REPORT
  */
 //var convertDateForReport =
-exports.convertDateForReport = function (date) {
+export function convertDateForReport (date) {
   if (isNotDefined(date)) {
     return '';
   }
@@ -231,7 +231,7 @@ exports.convertDateForReport = function (date) {
  * @param {string|Date} date - date to send to the web service
  * @return {string} Date string for the web service
  */
-var convertDateForWebService = exports.convertDateForWebService = function (date) {
+export var convertDateForWebService = function (date) {
   if (isNotDefined(date)) {
     return '';
   }
@@ -262,7 +262,7 @@ var convertDateForWebService = exports.convertDateForWebService = function (date
  * @return {string} Day string for the web service = YYYY-MM-DD
  */
 //var convertDayForWebService =
-exports.convertDayForWebService = function (day) {
+export function convertDayForWebService (day) {
   if (isNotDefined(day)) {
     return '';
   }
@@ -310,7 +310,7 @@ var _convertRangeForWebService //= exports.convertRangeForWebService
  * @param {StringRange} stringrange - Range of strings to convert
  * @return {string} string for the web service
  */
-exports.convertStringRangeForWebService = function (stringrange) {
+export function convertStringRangeForWebService (stringrange) {
   return _convertRangeForWebService(stringrange, a => a);
 }
 
@@ -322,7 +322,7 @@ exports.convertStringRangeForWebService = function (stringrange) {
  * @param {DateRange} daterange - Date range to convert
  * @return {string} string for the web service
  */
-var convertDateRangeForWebService = exports.convertDateRangeForWebService = function (daterange) {
+export var convertDateRangeForWebService = function (daterange) {
   return _convertRangeForWebService(daterange, a => convertDateForWebService(a));
 }
 
@@ -335,7 +335,7 @@ var convertDateRangeForWebService = exports.convertDateRangeForWebService = func
  * @param {string|Date} datetime String that represents the datetime in ISO 8601 format or Date
  * @return {string} range String that represents the range in ISO 8601 format: [2016-05-01T00:03:00,2016-05-01T00:03:00]
  */
-exports.createSingleRangeForWebService = function (datetime) {
+export function createSingleRangeForWebService (datetime) {
   let r = pulseRange.createDateRange(datetime, datetime, '[]');
   return convertDateRangeForWebService(r);
 }
@@ -355,7 +355,7 @@ exports.createSingleRangeForWebService = function (datetime) {
  * @param {string|Date} end - Date or string that represents the range in ISO 8601 format.
  * @return {string} range String that represents the range in ISO 8601 format: [2016-05-01T00:03:00,)
  */
-exports.createDateRangeForWebService = function (begin, end) {
+export function createDateRangeForWebService (begin, end) {
   let r = pulseRange.createDateRangeDefaultInclusivity(begin, end);
   return convertDateRangeForWebService(r);
 }
@@ -370,7 +370,7 @@ exports.createDateRangeForWebService = function (begin, end) {
  * @param {string} begin String that represents the begin day in ISO 8601 format
  * @return {string} String that represents the day
  */
-exports.getDisplayDay = function (day) {
+export function getDisplayDay (day) {
   // TODO: i18n
   if ((!day) || (day == 'null')) {
     return '';
@@ -396,7 +396,7 @@ exports.getDisplayDay = function (day) {
  * @param {boolean} seconds - true == show seconds
  * @return {string} String that represents the date
  */
-var displayDate = exports.displayDate = function (date, seconds) {
+export var displayDate = function (date, seconds) {
   // TODO: i18n
   let m = convertDateToMoment(date);
   if (seconds) {
@@ -419,7 +419,7 @@ var displayDate = exports.displayDate = function (date, seconds) {
  * @return {string} String that represents the date range
  */
 //var displayDateRange =
-exports.displayDateRange = function (range, seconds) {
+export function displayDateRange (range, seconds) {
   let r = pulseRange.convertToDateRange(range);
   if (r.isEmpty()) {
     return '';
@@ -479,7 +479,7 @@ exports.displayDateRange = function (range, seconds) {
  * @return {string} lower time of the range: HH:mm or HH:mm:ss
  */
 //var displayRangeLowerTime =
-exports.displayRangeLowerTime = function (range, seconds) {
+export function displayRangeLowerTime (range, seconds) {
   let r = pulseRange.convertToDateRange(range);
   if (r.isEmpty()) {
     return '';
@@ -509,7 +509,7 @@ exports.displayRangeLowerTime = function (range, seconds) {
  * @return {boolean} true in case of success
  */
 //var appendDateRangeDisplay =
-exports.appendDateRangeDisplay = function (parent, range, seconds) {
+export function appendDateRangeDisplay (parent, range, seconds) {
   let parentEl = (typeof parent === 'string') ? document.querySelector(parent) : parent;
   if (parentEl == null) return false;
 
@@ -586,7 +586,7 @@ exports.appendDateRangeDisplay = function (parent, range, seconds) {
  * @return string value
  */
 
-exports.secondsToHHMMSS = function (nbSeconds) {
+export function secondsToHHMMSS (nbSeconds) {
   let sec_num = parseInt(nbSeconds, 10); // don't forget the second param
   let hours = Math.floor(sec_num / 3600);
   let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
@@ -611,7 +611,7 @@ exports.secondsToHHMMSS = function (nbSeconds) {
  * @return {integer} number of seconds (duration)
  */
 
-exports.HHMMSStoSeconds = function (str) {
+export function HHMMSStoSeconds (str) {
   let retVal = 0;
   let multiplier = 1;
 
@@ -635,7 +635,7 @@ exports.HHMMSStoSeconds = function (str) {
  * @return parameter value or null if given url do not contain this parameter name
  */
 //var getURLParameter =
-exports.getURLParameter = function (pageURL, param) {
+export function getURLParameter (pageURL, param) {
   let sQuery = pageURL.split('?')[1];
   if (sQuery) {
     let sURLVariables = sQuery.split('&');
@@ -661,7 +661,7 @@ exports.getURLParameter = function (pageURL, param) {
  * @param {string} value NEW parameter value to add in url
  * @return new URL
  */
-exports.changeURLParameter = function (pageURL, param, value) {
+export function changeURLParameter (pageURL, param, value) {
   let sQuery = pageURL.split('?');
   if ((sQuery.length > 1) && (sQuery[1])) {
     let found = false;
@@ -697,7 +697,7 @@ exports.changeURLParameter = function (pageURL, param, value) {
  * @param {string} param parameter name whose name must be search in url
  * @return an array with values of given parameters. if given url do not contain this parameter name, it returns an empty array
  */
-var getURLParameterValues = exports.getURLParameterValues = function (pageURL, param) {
+export var getURLParameterValues = function (pageURL, param) {
   let urlString = pageURL;
 
   // Handle URL object - convert to string
@@ -741,7 +741,7 @@ var getURLParameterValues = exports.getURLParameterValues = function (pageURL, p
  * @return {string} an url
  */
 //var removeURLParameter =
-exports.removeURLParameter = function (pageURL, param) {
+export function removeURLParameter (pageURL, param) {
   let splittedString = pageURL.split('?');
   if (splittedString.length == 0) {
     return '';
@@ -781,7 +781,7 @@ exports.removeURLParameter = function (pageURL, param) {
  * @return {string} an url
  */
 //var removeURLParameterContaining =
-exports.removeURLParameterContaining = function (pageURL, param) {
+export function removeURLParameterContaining (pageURL, param) {
   let splittedString = pageURL.split('?');
   if (splittedString.length == 0) {
     return '';
@@ -817,7 +817,7 @@ exports.removeURLParameterContaining = function (pageURL, param) {
  * @param {string} pageURL url address
  * @return an array with values of machine id parameter values. if given url do not contain this parameter name, it returns an empty array
  */
-exports.getMachineIdParameterValue = function (pageURL) {
+export function getMachineIdParameterValue (pageURL) {
   let identifiers = ['machine', 'machine-ids'];
   let values = new Array();
   for (let id = 0; id < identifiers.length; id++) {
@@ -840,7 +840,7 @@ exports.getMachineIdParameterValue = function (pageURL) {
  * @param {string} pageURL url address
  * @return an array with values of machine id parameter values. if given url do not contain this parameter name, it returns an empty array
  */
-exports.getALLMachineIdParameterValue = function (pageURL) {
+export function getALLMachineIdParameterValue (pageURL) {
   let identifiers = ['machine', 'machine-ids', 'selected-machine-id', 'machinetop'];
   let values = new Array();
   for (let i = 0; i < identifiers.length; i++) {
@@ -861,7 +861,7 @@ exports.getALLMachineIdParameterValue = function (pageURL) {
  * @param {string} pageURL url address
  * @return an array with values of machine id parameter values. if given url do not contain this parameter name, it returns an empty array
  */
-exports.getParametersExceptingMachineId = function (pageURL) {
+export function getParametersExceptingMachineId (pageURL) {
   let retString = '';
   let splittedString = pageURL.split('?');
   if (splittedString.length == 0) {
@@ -895,7 +895,7 @@ exports.getParametersExceptingMachineId = function (pageURL) {
  * @param value value to check
  * @return {Boolean}
  */
-var isNotDefined = exports.isNotDefined = function (value) {
+export var isNotDefined = function (value) {
   if ((value === null) || (value == 'null') ||
     (value === undefined) || (typeof value == 'undefined')) {
     return true;
@@ -916,7 +916,7 @@ var isNotDefined = exports.isNotDefined = function (value) {
  * @param {Number} duration in seconds
  * @return {string}
  */
-exports.getTextDuration = function (duration) {
+export function getTextDuration (duration) {
   let seconds = parseInt(duration, 10);
 
   let days = Math.floor(seconds / (24 * 60 * 60));
@@ -957,7 +957,7 @@ exports.getTextDuration = function (duration) {
  * @param {Number} duration in seconds
  * @return {string} 0:00 formatted text
  */
-exports.getHoursMinutesDuration = function (duration) {
+export function getHoursMinutesDuration (duration) {
   let seconds = parseInt(duration, 10);
 
   let hours = Math.floor(seconds / (60 * 60));
@@ -979,7 +979,7 @@ exports.getHoursMinutesDuration = function (duration) {
  * @param {Number} duration in seconds
  * @return {Number}
  */
-exports.getRemainingSecondsDuration = function (duration) {
+export function getRemainingSecondsDuration (duration) {
   let seconds = parseInt(duration, 10);
 
   //let hours = Math.floor(seconds / (60 * 60));
@@ -1000,7 +1000,7 @@ exports.getRemainingSecondsDuration = function (duration) {
  * @param {string|Date} date Date or string that represends a date/time
  * @return {Moment} a moment object if parameter has right format otherwise null
  */
-var convertDateToMoment = exports.convertDateToMoment = function (date) {
+export var convertDateToMoment = function (date) {
   let d;
   if (typeof lower == 'string') {
     d = new Date(date);
@@ -1030,7 +1030,7 @@ var convertDateToMoment = exports.convertDateToMoment = function (date) {
  *
  * @return {string} a string object
  */
-exports.convertMomentToDateTimeString = function convertMomentToDateTimeString (m) {
+export function convertMomentToDateTimeString (m) {
   if (m.isValid()) {
     return m.toISOString();
   }
@@ -1039,11 +1039,11 @@ exports.convertMomentToDateTimeString = function convertMomentToDateTimeString (
   }
 }
 /** Default date format */
-exports.defaultDateFormat = 'L';
+export const defaultDateFormat = 'L';
 /** Default time format*/
-exports.defaultTimeFormat = 'LT';
+export const defaultTimeFormat = 'LT';
 /** Default time format with second*/
-exports.defaultTimeFormatWithSecond = 'LTS';
+export const defaultTimeFormatWithSecond = 'LTS';
 
 
 /**
@@ -1054,7 +1054,7 @@ exports.defaultTimeFormatWithSecond = 'LTS';
  *
  * @return Default locale
  */
-exports.getDefaultLocale = function () {
+export function getDefaultLocale () {
   let locale = window.navigator.languages || [window.navigator.language || window.navigator.userLanguage];
   return locale[0];
 }
@@ -1068,7 +1068,7 @@ exports.getDefaultLocale = function () {
  *
  * @return {boolean} true if in 24 hours format
  */
-exports.is24HoursFormat = function () {
+export function is24HoursFormat () {
   let longDateFormat = moment.localeData().longDateFormat('LTS').toUpperCase();
   if ((longDateFormat.indexOf('A') >= 0) || (longDateFormat.indexOf('P') >= 0)) {
     return false;
@@ -1089,7 +1089,7 @@ exports.is24HoursFormat = function () {
  *
  * @return {DOMElement} a jQuery element
  */
-var createElementWithAttribute = exports.createElementWithAttribute = function (tagName, attributes) {
+export var createElementWithAttribute = function (tagName, attributes) {
   let domElt = document.createElement(tagName);
   for (let key in attributes) {
     let value = attributes[key];
@@ -1110,7 +1110,7 @@ var createElementWithAttribute = exports.createElementWithAttribute = function (
  * @param {json} attributes (can be undefined)
  * @return {Element} the searched element
  */
-exports.getOrCreateSingleton = function (xTagName, attributes) {
+export function getOrCreateSingleton (xTagName, attributes) {
   let attr = (null == attributes) ? {} : attributes;
   let tag = document.body.querySelector(xTagName);
   if (tag == null) {
@@ -1130,7 +1130,7 @@ exports.getOrCreateSingleton = function (xTagName, attributes) {
  * @param {string} className
  * @return {Boolean} true if given element has class name, false otherwise
  */
-exports.hasClass = function (element, className) {
+export function hasClass (element, className) {
   return element.className && new RegExp('(^|\\s)' + className + '(\\s|$)').test(element.className);
 }
 
@@ -1140,7 +1140,7 @@ exports.hasClass = function (element, className) {
  * @function createCookie
  *
  */
-var createCookie = exports.createCookie = function (name, value, days) {
+export var createCookie = function (name, value, days) {
   let expires;
   if (days && days > 0) {
     let date = new Date();
@@ -1162,8 +1162,7 @@ var createCookie = exports.createCookie = function (name, value, days) {
  * @memberof module:pulseUtility
  * @function readCookie
  */
-var readCookie =
-  exports.readCookie = function (name) {
+export var readCookie = function (name) {
     let nameEQ = name + '=';
     let ca = document.cookie.split(';');
     for (let i = 0; i < ca.length; i++) {
@@ -1174,8 +1173,7 @@ var readCookie =
     return null;
   }
 
-var eraseCookie =
-  exports.eraseCookie = function (name) {
+export var eraseCookie = function (name) {
     // erase cookie is done in x-checkcurrenttime.js
     createCookie(name, '', -1);
   }
@@ -1185,7 +1183,7 @@ var eraseCookie =
  * @memberof module:pulseUtility
  * @function changePageName
  */
-exports.changePageName = function (href, newPageName) {
+export function changePageName (href, newPageName) {
   let splitUrl = href.split('?');
   if (splitUrl.length < 1) {
     return href;
@@ -1210,7 +1208,7 @@ exports.changePageName = function (href, newPageName) {
  * @memberof module:pulseUtility
  * @function getCurrentPageName
  */
-exports.getCurrentPageName = function () {
+export function getCurrentPageName () {
   let href = window.location.href; // ".../pagename.html?xxx"
   let splitUrl = href.split('?');
   if (splitUrl.length < 1) {
@@ -1228,7 +1226,7 @@ exports.getCurrentPageName = function () {
  * Create a convenient object that can store and retrieve data attached to divisions having specific ids
  * Used (at least) by customdialog and machine selection
  */
-exports.createDataManager = function (idName) {
+export function createDataManager (idName) {
   // Resolve a string selector or Element to a single Element.
   // Returns null when nothing matches.
   function resolve (target) {
@@ -1283,7 +1281,7 @@ exports.createDataManager = function (idName) {
 }
 
 // Accept an Element OR a string selector. Each matched element gets the tooltip wiring.
-exports.addToolTip = function (target, text) {
+export function addToolTip (target, text) {
   let elements;
   if (target == null) return;
   if (typeof target === 'string') {
@@ -1354,7 +1352,7 @@ exports.addToolTip = function (target, text) {
   }
 }
 
-exports.removeToolTip = function (element) {
+export function removeToolTip (element) {
   if (element != null) {
     let el = (typeof element === 'string') ? document.querySelector(element) : element;
     if (el != null && el.removeAttribute) el.removeAttribute('title');
@@ -1363,7 +1361,7 @@ exports.removeToolTip = function (element) {
   for (let i = 0; i < existing.length; i++) existing[i].remove();
 }
 
-exports.cloneWithNewMachineId = function (boxtocloneid, newMachineid) {
+export function cloneWithNewMachineId (boxtocloneid, newMachineid) {
   let source = document.getElementById(boxtocloneid);
   if (source == null) return null;
   let copy = source.cloneNode(true); // deep clone (event handlers are NOT preserved — jQuery .clone(true) did preserve, but native cloneNode does not — components re-bind in connectedCallback)
@@ -1376,7 +1374,7 @@ exports.cloneWithNewMachineId = function (boxtocloneid, newMachineid) {
   return copy;
 }
 
-exports.cloneWithNewGroupId = function (boxtocloneid, newGroupid, isMachine) {
+export function cloneWithNewGroupId (boxtocloneid, newGroupid, isMachine) {
   let source = document.getElementById(boxtocloneid);
   if (source == null) return null;
   let copy = source.cloneNode(true);
@@ -1399,7 +1397,7 @@ exports.cloneWithNewGroupId = function (boxtocloneid, newGroupid, isMachine) {
  * @param {Element} el
  * @param {number} duration in ms (default 400)
  */
-exports.fadeOut = function (el, duration) {
+export function fadeOut (el, duration) {
   if (el == null) return;
   if (duration == null) duration = 400;
   el.style.transition = 'opacity ' + duration + 'ms';
@@ -1420,7 +1418,7 @@ exports.fadeOut = function (el, duration) {
  * @param {Element} el
  * @param {number} duration in ms (default 400)
  */
-exports.fadeIn = function (el, duration) {
+export function fadeIn (el, duration) {
   if (el == null) return;
   if (duration == null) duration = 400;
   el.style.display = '';
@@ -1431,7 +1429,7 @@ exports.fadeIn = function (el, duration) {
   });
 }
 
-exports.getTextChangeContext = function (self) {
+export function getTextChangeContext (self) {
   let textchangecontext = '';
   if (self.element.hasAttribute('textchange-context')) {
     textchangecontext = self.element.getAttribute('textchange-context');

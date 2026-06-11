@@ -212,7 +212,7 @@ class Range {
  * 
  * @return {Range} empty range
  */
-var createEmpty = exports.createEmpty = function () {
+export var createEmpty = function () {
   return new Range();
 }
 
@@ -225,7 +225,7 @@ var createEmpty = exports.createEmpty = function () {
  * @param {*} upper - Upper value
  * @return {Range} Range
  */
-var createDefaultInclusivity = exports.createDefaultInclusivity = function (lower, upper) {
+export var createDefaultInclusivity = function (lower, upper) {
   let r = new Range();
   r.lower = lower;
   r.upper = upper;
@@ -244,7 +244,7 @@ var createDefaultInclusivity = exports.createDefaultInclusivity = function (lowe
  * @param {string} inclusivity - Inclusivity: () or [] or [) or (]
  * @return {Range} Range
  */
-var create = exports.create = function (lower, upper, inclusivity) {
+export var create = function (lower, upper, inclusivity) {
   let r = new Range();
   r.lower = lower;
   r.upper = upper;
@@ -391,7 +391,7 @@ class DateRange extends Range {
     }
   }
 }
-exports.DateRange = DateRange;
+export { DateRange };
 
 /** Create a native Javascript Date range from a string (calling new Date ())
  * 
@@ -401,7 +401,7 @@ exports.DateRange = DateRange;
  * @param {string} arg - String to parse
  * @return {DateRange} Range
  */
-var createDateRangeFromString = exports.createDateRangeFromString = function (arg) {
+export var createDateRangeFromString = function (arg) {
   return new DateRange(_createFromString(arg, s => new Date(s)));
 }
 
@@ -417,7 +417,7 @@ var createDateRangeFromString = exports.createDateRangeFromString = function (ar
  * @param {string|Date} upper - Upper value
  * @return {DateRange} Range
  */
-exports.createDateRangeDefaultInclusivity = function (lower, upper) {
+export function createDateRangeDefaultInclusivity (lower, upper) {
   let l;
   if ((typeof lower == 'undefined') || (lower == 'null')) {
     l = null;
@@ -470,7 +470,7 @@ exports.createDateRangeDefaultInclusivity = function (lower, upper) {
  * @param {string} inclusivity - Inclusivity: [] or () or [) or (]
  * @return {DateRange} Range
  */
-exports.createDateRange = function (lower, upper, inclusivity) {
+export function createDateRange (lower, upper, inclusivity) {
   return new DateRange(create(lower, upper, inclusivity));
 }
 
@@ -482,7 +482,7 @@ exports.createDateRange = function (lower, upper, inclusivity) {
  * @param {Range} range - string or Date range
  * @return {DateRange} Date range
  */
-exports.convertToDateRange = function (range) {
+export function convertToDateRange (range) {
   if (typeof range == 'string')
     return createDateRangeFromString(range);
   return new DateRange(range);
@@ -556,7 +556,7 @@ class StringRange extends Range {
  * @param {string} arg - String to parse
  * @return {StringRange} range
  */
-exports.createStringRangeFromString = function (arg) {
+export function createStringRangeFromString (arg) {
   return new StringRange(_createFromString(arg, s => s));
 }
 
@@ -580,7 +580,7 @@ exports.createStringRangeFromString = function (arg) {
  * @param {eqCallback} eq - Method to use to compare the bounds in case they are not null
  * @return {boolean} Equality
   */
-var boundEquals = exports.boundEquals = function (a, b, eq) {
+export var boundEquals = function (a, b, eq) {
   if (null == a) {
     return (null == b);
   }
@@ -602,7 +602,7 @@ var boundEquals = exports.boundEquals = function (a, b, eq) {
  * @param {eqCallback} eq - Method to use to compare the lower and upper values (when not null)
  * @return {boolean} Equality
  */
-var equals = exports.equals = function (a, b, eq) {
+export var equals = function (a, b, eq) {
   if (a === b) {
     return true;
   }
@@ -629,7 +629,7 @@ var equals = exports.equals = function (a, b, eq) {
  * @param {Range} b - Second range to compare
  * @return {boolean} Equality
  */
-exports.equalsDefault = function (a, b) {
+export function equalsDefault (a, b) {
   return equals(a, b, (a, b) => (a >= b) && (b <= a)); // Because for native javascript Date, a==b does not work
 }
 
@@ -644,7 +644,7 @@ exports.equalsDefault = function (a, b) {
  * @param {Range} b - second range
  * @return true if a and b overlap
  */
-var overlaps = exports.overlaps = function (a, b) {
+export var overlaps = function (a, b) {
   if (a.isEmpty() || b.isEmpty()) {
     console.warn('overlaps: empty, return false');
     return false;
@@ -707,7 +707,7 @@ var overlaps = exports.overlaps = function (a, b) {
  * @param {Range} b - second range
  * @return {Range} Intersection of the two ranges
  */
-exports.intersects = function (a, b) {
+export function intersects (a, b) {
   if (!overlaps(a, b)) {
     // toString(no param) == undefined -> ignore log
     return createEmpty();

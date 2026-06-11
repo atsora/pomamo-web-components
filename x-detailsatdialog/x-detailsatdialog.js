@@ -7,16 +7,16 @@
  * @requires module:pulseComponent
  */
 
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var pulseConfig = require('pulseConfig');
-var pulseLogin = require('pulseLogin');
-var pulseRange = require('pulseRange');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseConfig from 'pulseConfig';
+import * as pulseLogin from 'pulseLogin';
+import * as pulseRange from 'pulseRange';
 
-require('x-machinedisplay/x-machinedisplay');
-require('x-datetimerange/x-datetimerange');
-require('x-datetimegraduation/x-datetimegraduation');
-require('x-barstack/x-barstack');
+import 'x-machinedisplay/x-machinedisplay';
+import 'x-datetimerange/x-datetimerange';
+import 'x-datetimegraduation/x-datetimegraduation';
+import 'x-barstack/x-barstack';
 
 (function () {
 

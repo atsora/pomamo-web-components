@@ -12,8 +12,8 @@
 * @requires pulseUtility
 * NEVER ADD : pulseConfig here. pulseConfig can use pulseLogin.
 */
-var pulseUtility = require('pulseUtility');
-var eventBus = require('eventBus');
+import * as pulseUtility from 'pulseUtility';
+import * as eventBus from 'eventBus';
 
 ////////// ////////// ////////// //////////
 // is login page = see in pulseConfig    //
@@ -24,7 +24,7 @@ var eventBus = require('eventBus');
 ////////// ////////// //////////
 
 //var getLogin = 
-exports.getLogin = function () {
+export function getLogin () {
   let login = pulseUtility.readCookie('PulseLogin');
   // Normal
   /*let name = 'PulseLogin=';
@@ -45,7 +45,7 @@ exports.getLogin = function () {
     return login;
 }
 
-exports.getLoginDisplay = function () {
+export function getLoginDisplay () {
   let login = pulseUtility.readCookie('PulseUserDisplay');
   if (login == null)
     return '';
@@ -53,7 +53,7 @@ exports.getLoginDisplay = function () {
     return login;
 }
 
-exports.getLoginForWebService = function () {
+export function getLoginForWebService () {
   let login = pulseUtility.readCookie('PulseLogin');
   if ((login == null)
     || (login == 'dev') || (login == 'support')
@@ -64,7 +64,7 @@ exports.getLoginForWebService = function () {
 }
 
 //var getRole = 
-exports.getRole = function () {
+export function getRole () {
   // Find role in URL-> REMOVED !!!
   let role = pulseUtility.readCookie('PulseRole');
   if (role == null)
@@ -73,28 +73,28 @@ exports.getRole = function () {
     return role;
 }
 
-exports.getAccessToken = function () {
+export function getAccessToken () {
   let token = pulseUtility.readCookie('PulseAccessToken');
   if (token == null)
     return '';
   else
     return token;
 }
-exports.getAccessTokenExpiration = function () {
+export function getAccessTokenExpiration () {
   let token = pulseUtility.readCookie('PulseAccessTokenExpiredAt');
   if (token == null)
     return '';
   else
     return token;
 }
-exports.getRefreshToken = function () {
+export function getRefreshToken () {
   let token = pulseUtility.readCookie('PulseRefreshToken');
   if (token == null)
     return '';
   else
     return token;
 }
-exports.getRefreshTokenExpiration = function () {
+export function getRefreshTokenExpiration () {
   let token = pulseUtility.readCookie('PulseRefreshTokenExpiredAt');
   if (token == null)
     return '';
@@ -106,7 +106,7 @@ exports.getRefreshTokenExpiration = function () {
 // Storage                    //
 ////////// ////////// //////////
 
-var setAccessToken = exports.setAccessToken = function (access_token, expiredat) {
+export var setAccessToken = function (access_token, expiredat) {
   if (access_token != null && access_token != '') {
     pulseUtility.createCookie('PulseAccessToken', access_token, 1);
     pulseUtility.createCookie('PulseAccessTokenExpiredAt', expiredat, 1);
@@ -126,7 +126,7 @@ var setAccessToken = exports.setAccessToken = function (access_token, expiredat)
   }
 }
 
-var setRefreshToken = exports.setRefreshToken = function (refresh_token, expiredat) {
+export var setRefreshToken = function (refresh_token, expiredat) {
   if (refresh_token != null && refresh_token != '') {
     pulseUtility.createCookie('PulseRefreshToken', refresh_token, 1);
     pulseUtility.createCookie('PulseRefreshTokenExpiredAt', expiredat, 1);
@@ -146,13 +146,12 @@ var setRefreshToken = exports.setRefreshToken = function (refresh_token, expired
   }
 }
 
-exports.storeRole = function (role) {
+export function storeRole (role) {
   pulseUtility.createCookie('PulseRole', role, 90);
   //document.cookie = 'PulseRole=' + role + ';path=/';
 }
 
-var storeLoginRole =
-  exports.storeLoginRole = function (login, role, display, access_token, refresh_token,
+export var storeLoginRole = function (login, role, display, access_token, refresh_token,
     access_token_expiredat, refresh_token_expiredat, sessionOnly) {
     pulseUtility.createCookie('PulseLogin', login, sessionOnly?0:1);
     pulseUtility.createCookie('PulseRole', role, sessionOnly?0:1);
@@ -164,7 +163,7 @@ var storeLoginRole =
     setRefreshToken(refresh_token, refresh_token_expiredat);
   }
 
-exports.storeLoginRoleFromRefreshDTO = function (data, sessionOnly) {
+export function storeLoginRoleFromRefreshDTO (data, sessionOnly) {
   let login = data.Login;
   let role = data.Role;
   role = role.toLowerCase();
@@ -187,7 +186,7 @@ exports.storeLoginRoleFromRefreshDTO = function (data, sessionOnly) {
 ////////// ////////// //////////
 
 // goToPageLogin is always called just after
-exports.cleanLoginRole = function () {
+export function cleanLoginRole () {
   pulseUtility.eraseCookie('PulseLogin');
   pulseUtility.eraseCookie('PulseRole');
   //document.cookie = 'PulseLogin=' + ';path=/';
@@ -201,7 +200,7 @@ exports.cleanLoginRole = function () {
 // Expiration                 //
 ////////// ////////// //////////
 
-exports.isTokenExpired = function () {
+export function isTokenExpired () {
   let refresh_token_expiration = pulseUtility.readCookie('PulseAccessTokenExpiredAt');
   if (refresh_token_expiration == null) {
     return true;
@@ -219,7 +218,7 @@ exports.isTokenExpired = function () {
 }
 
 /* Nearly expired */
-var tokenNeedRefresh = exports.tokenNeedRefresh = function () {
+export var tokenNeedRefresh = function () {
   let refresh_token_expiration = pulseUtility.readCookie('PulseAccessTokenExpiredAt');
   if (refresh_token_expiration == null) {
     return false;
@@ -241,7 +240,7 @@ var tokenNeedRefresh = exports.tokenNeedRefresh = function () {
 // Renew token = refresh      //
 ////////// ////////// //////////
 
-var refreshToken = exports.refreshToken = function () {
+export var refreshToken = function () {
   let target = {
     //url: url,
     //source: this.element.tagName,
@@ -250,7 +249,7 @@ var refreshToken = exports.refreshToken = function () {
   eventBus.EventBus.dispatchToAll('AuthorizationErrorEvent', target);
 }
 
-exports.refreshTokenIfNeeded = function () {
+export function refreshTokenIfNeeded () {
   if (tokenNeedRefresh()) {
     refreshToken();
   }
@@ -260,14 +259,14 @@ exports.refreshTokenIfNeeded = function () {
 // Authentication / Validate  //
 ////////// ////////// //////////
 
-exports.cleanAuthentication = function () {
+export function cleanAuthentication () {
   pulseUtility.eraseCookie('AuthenticationKind');
   pulseUtility.eraseCookie('AuthenticationName');
   pulseUtility.eraseCookie('AuthenticationLogin');
   pulseUtility.eraseCookie('AuthenticationState');
 }
 
-exports.storeAuthentication = function (AuthenticationKind,
+export function storeAuthentication (AuthenticationKind,
   AuthenticationName, StateRequired, login) {
   pulseUtility.createCookie('AuthenticationKind', AuthenticationKind, 1);
   pulseUtility.createCookie('AuthenticationName', AuthenticationName, 1);
@@ -282,7 +281,7 @@ exports.storeAuthentication = function (AuthenticationKind,
   }
 }
 
-exports.getAuthenticationKind = function () {
+export function getAuthenticationKind () {
   let auth = pulseUtility.readCookie('AuthenticationKind');
   if (auth == null)
     return '';
@@ -290,7 +289,7 @@ exports.getAuthenticationKind = function () {
     return auth;
 }
 
-exports.getAuthenticationName = function () {
+export function getAuthenticationName () {
   let auth = pulseUtility.readCookie('AuthenticationName');
   if (auth == null)
     return '';
@@ -298,7 +297,7 @@ exports.getAuthenticationName = function () {
     return auth;
 }
 
-exports.getAuthenticationLogin = function () {
+export function getAuthenticationLogin () {
   let auth = pulseUtility.readCookie('AuthenticationLogin');
   if (auth == null)
     return '';
@@ -306,7 +305,7 @@ exports.getAuthenticationLogin = function () {
     return auth;
 }
 
-exports.getAuthenticationState = function () {
+export function getAuthenticationState () {
   let auth = pulseUtility.readCookie('AuthenticationState');
   if (auth == null)
     return '';

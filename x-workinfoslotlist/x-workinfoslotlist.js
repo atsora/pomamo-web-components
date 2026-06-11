@@ -12,19 +12,19 @@
  * @requires module:x-highlightperiodsbar
  */
 
-var pulseUtility = require('pulseUtility');
-var pulseRange = require('pulseRange');
+import * as pulseUtility from 'pulseUtility';
+import * as pulseRange from 'pulseRange';
 //var pulseCustomDialog = require('pulseCustomDialog');
-var pulseComponent = require('pulsecomponent');
+import * as pulseComponent from 'pulsecomponent';
 //var pulseSvg = require('pulseSvg');
-var eventBus = require('eventBus');
+import * as eventBus from 'eventBus';
 
 //require('x-reasonslotbar/x-reasonslotbar');
-require('x-operationslotbar/x-operationslotbar');
+import 'x-operationslotbar/x-operationslotbar';
 
 //require('x-savereason/x-savereason');
-require('x-datetimerange/x-datetimerange');
-require('x-highlightperiodsbar/x-highlightperiodsbar');
+import 'x-datetimerange/x-datetimerange';
+import 'x-highlightperiodsbar/x-highlightperiodsbar';
 
 
 (function () {

@@ -7,10 +7,10 @@
  * @module x-checkserveraccess
  * @requires module:pulseComponent
  */
-var pulseComponent = require('pulsecomponent');
-var eventBus = require('eventBus');
-var pulseSvg = require('pulseSvg');
-var pulseConfig = require('pulseConfig');
+import * as pulseComponent from 'pulsecomponent';
+import * as eventBus from 'eventBus';
+import * as pulseSvg from 'pulseSvg';
+import * as pulseConfig from 'pulseConfig';
 
 (function () {
 

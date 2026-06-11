@@ -8,12 +8,12 @@
  * @requires module:pulseComponent
  *
  */
-var pulseComponent = require('pulsecomponent');
-var pulseRange = require('pulseRange');
-var pulseUtility = require('pulseUtility');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseRange from 'pulseRange';
+import * as pulseUtility from 'pulseUtility';
 
-require('x-datepicker/x-datepicker');
-require('x-datetimepicker/x-datetimepicker');
+import 'x-datepicker/x-datepicker';
+import 'x-datetimepicker/x-datetimepicker';
 
 (function () {
 

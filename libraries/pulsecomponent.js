@@ -11,12 +11,12 @@
  * @requires module:pulseService
  * @requires module:eventBus
  */
-var pulseConfig = require('pulseConfig');
-var pulseLogin = require('pulseLogin');
-var pulseService = require('pulseService');
-var pulseUtility = require('pulseUtility');
-var state = require('state');
-var eventBus = require('eventBus');
+import * as pulseConfig from 'pulseConfig';
+import * as pulseLogin from 'pulseLogin';
+import * as pulseService from 'pulseService';
+import * as pulseUtility from 'pulseUtility';
+import * as state from 'state';
+import * as eventBus from 'eventBus';
 
 /**
  * Base class for any web component
@@ -2847,15 +2847,15 @@ class PulseParamAutoPathRefreshingComponent extends PulseParamRefreshingComponen
   }
 }
 
-exports.PulseComponent = PulseComponent;
-exports.PulseInitializedComponent = PulseInitializedComponent;
-exports.PulseSingleRequestComponent = PulseSingleRequestComponent;
-exports.PulseRefreshingComponent = PulseRefreshingComponent;
-exports.PulseParamInitializedComponent = PulseParamInitializedComponent;
-exports.PulseParamSingleRequestComponent = PulseParamSingleRequestComponent;
-exports.PulseParamAutoPathSingleRequestComponent = PulseParamAutoPathSingleRequestComponent;
-exports.PulseParamRefreshingComponent = PulseParamRefreshingComponent;
-exports.PulseParamAutoPathRefreshingComponent = PulseParamAutoPathRefreshingComponent;
+export { PulseComponent };
+export { PulseInitializedComponent };
+export { PulseSingleRequestComponent };
+export { PulseRefreshingComponent };
+export { PulseParamInitializedComponent };
+export { PulseParamSingleRequestComponent };
+export { PulseParamAutoPathSingleRequestComponent };
+export { PulseParamRefreshingComponent };
+export { PulseParamAutoPathRefreshingComponent };
 
 /**
  * Register a custom element
@@ -2864,7 +2864,7 @@ exports.PulseParamAutoPathRefreshingComponent = PulseParamAutoPathRefreshingComp
  * @param {class} componentClass - Sub-class of PulseComponent to use
  * @param {?string[]} attributes - [Optional] Observed attributes
  */
-exports.registerElement = function (tagName, componentClass, attributes) {
+export function registerElement (tagName, componentClass, attributes) {
   let attrs = (typeof attributes !== 'undefined') ? attributes : [];
 
   class C extends HTMLElement {

@@ -7,10 +7,10 @@
  * @module x-grouplist
  * @requires module:pulseComponent
  */
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var state = require('state');
-var eventBus = require('eventBus');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as state from 'state';
+import * as eventBus from 'eventBus';
 
 (function () {
 

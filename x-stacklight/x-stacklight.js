@@ -9,9 +9,9 @@
  * @requires module:pulseUtility
  * @requires module:pulseSvg
  */
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var pulseSvg = require('pulseSvg');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseSvg from 'pulseSvg';
 
 //var active_img = './images/mode_active.png';
 /*

@@ -7,11 +7,11 @@
  * @requires module:pulseComponent
  */
 
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
 
-require('x-machinedisplay/x-machinedisplay');
-require('x-datetimerange/x-datetimerange');
+import 'x-machinedisplay/x-machinedisplay';
+import 'x-datetimerange/x-datetimerange';
 
 (function () {
 

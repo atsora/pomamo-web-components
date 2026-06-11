@@ -7,14 +7,14 @@
  * @module x-milestonesadd
  * @requires module:pulseComponent
  */
-var pulseUtility = require('pulseUtility');
-var pulseService = require('pulseService');
+import * as pulseUtility from 'pulseUtility';
+import * as pulseService from 'pulseService';
 //var pulseRange = require('pulseRange');
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseComponent = require('pulsecomponent');
-var eventBus = require('eventBus');
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseComponent from 'pulsecomponent';
+import * as eventBus from 'eventBus';
 
-require('x-datetimepicker/x-datetimepicker');
+import 'x-datetimepicker/x-datetimepicker';
 
 (function () {
 

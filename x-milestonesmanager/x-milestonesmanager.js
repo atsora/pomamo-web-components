@@ -8,17 +8,17 @@
  * @requires module:pulseComponent
  */
 
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseRange = require('pulseRange');
-var pulseUtility = require('pulseUtility');
-var pulseService = require('pulseService');
-var eventBus = require('eventBus');
-var pulseComponent = require('pulsecomponent');
-var pulseSvg = require('pulseSvg');
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseRange from 'pulseRange';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseService from 'pulseService';
+import * as eventBus from 'eventBus';
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseSvg from 'pulseSvg';
 
-require('x-datetimepicker/x-datetimepicker');
-require('x-datetimerange/x-datetimerange');
-require('x-milestonesadd/x-milestonesadd');
+import 'x-datetimepicker/x-datetimepicker';
+import 'x-datetimerange/x-datetimerange';
+import 'x-milestonesadd/x-milestonesadd';
 //require('x-machineselector/x-machineselector');
 
 (function () {

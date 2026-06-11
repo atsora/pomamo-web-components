@@ -11,11 +11,11 @@
  * @requires module:pulsecomponent-detailspopup
  */
 
-var pulseUtility = require('pulseUtility');
-var pulseComponent = require('pulsecomponent');
-var pulseDetailsPopup = require('pulsecomponent-detailspopup');
+import * as pulseUtility from 'pulseUtility';
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseDetailsPopup from 'pulsecomponent-detailspopup';
 
-require('x-scrapclassification/x-scrapclassification');
+import 'x-scrapclassification/x-scrapclassification';
 
 (function () {
 

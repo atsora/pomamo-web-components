@@ -9,8 +9,8 @@
  * @requires module:pulseUtility
  */
 
-var pulseUtility = require('pulseUtility');
-var pulseComponent = require('pulsecomponent');
+import * as pulseUtility from 'pulseUtility';
+import * as pulseComponent from 'pulsecomponent';
 //var pulseRange = require('pulseRange');
 
 (function () {

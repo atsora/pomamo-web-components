@@ -7,11 +7,11 @@
  * @module x-currenticonworkinformation
  * @requires module:pulseComponent
  */
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var pulseSvg = require('pulseSvg');
-var pulseRange = require('pulseRange');
-var eventBus = require('eventBus');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseSvg from 'pulseSvg';
+import * as pulseRange from 'pulseRange';
+import * as eventBus from 'eventBus';
 
 (function () {
 

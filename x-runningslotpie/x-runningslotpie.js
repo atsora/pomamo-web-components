@@ -10,11 +10,11 @@
  * @requires module:pulseUtility
  * @requires module:pulseSvg
  */
-var pulseComponent = require('pulsecomponent');
-var pulseRange = require('pulseRange');
-var pulseUtility = require('pulseUtility');
-var pulseSvg = require('pulseSvg');
-var eventBus = require('eventBus');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseRange from 'pulseRange';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseSvg from 'pulseSvg';
+import * as eventBus from 'eventBus';
 
 (function () {
 
@@ -446,7 +446,7 @@ var eventBus = require('eventBus');
       if (isNaN(barbegin.getTime()) || isNaN(barend.getTime())) {
         console.warn('x-reasonslotpie:refresh - NO begin OR end');
         if (data.Range != '') {
-          this._range = pulseUtility.createDateRangeFromString(data.Range);
+          this._range = pulseRange.createDateRangeFromString(data.Range);
 
           barbegin = new Date(this._range.lower);
           barend = new Date(this._range.upper);

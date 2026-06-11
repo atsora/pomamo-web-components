@@ -7,9 +7,9 @@
  * @module x-workselection
  * @requires module:pulseComponent
  */
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var pulseSvg = require('pulseSvg');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseSvg from 'pulseSvg';
 
 (function () {
 

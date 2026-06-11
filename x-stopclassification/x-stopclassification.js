@@ -9,19 +9,19 @@
  * @requires module:pulseUtility
  */
 
-var pulseRange = require('pulseRange');
-var pulseComponent = require('pulsecomponent');
-var pulseDetailsPopup = require('pulsecomponent-detailspopup');
-var pulseService = require('pulseService');
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseUtility = require('pulseUtility');
-var pulseLogin = require('pulseLogin');
-var pulseSvg = require('pulseSvg');
+import * as pulseRange from 'pulseRange';
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseDetailsPopup from 'pulsecomponent-detailspopup';
+import * as pulseService from 'pulseService';
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseLogin from 'pulseLogin';
+import * as pulseSvg from 'pulseSvg';
 
-require('x-datetimerange/x-datetimerange');
-require('x-savereason/x-savereason');
-require('x-reasonslotlist/x-reasonslotlist');
-require('x-revisionprogress/x-revisionprogress');
+import 'x-datetimerange/x-datetimerange';
+import 'x-savereason/x-savereason';
+import 'x-reasonslotlist/x-reasonslotlist';
+import 'x-revisionprogress/x-revisionprogress';
 
 (function () {
 

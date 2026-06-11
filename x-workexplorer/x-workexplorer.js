@@ -7,10 +7,10 @@
  * @module x-workexplorer 
  * @requires module:pulseComponent
  */
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var pulseService = require('pulseService');
-var pulseCustomDialog = require('pulseCustomDialog');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseService from 'pulseService';
+import pulseCustomDialog from 'pulseCustomDialog';
 
 (function () {
 

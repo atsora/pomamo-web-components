@@ -9,11 +9,11 @@
  * @requires module:pulseUtility
  */
 
-var pulseComponent = require('pulsecomponent');
-var pulseRange = require('pulseRange');
-var pulseUtility = require('pulseUtility');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseRange from 'pulseRange';
+import * as pulseUtility from 'pulseUtility';
 //var state = require('state');
-var eventBus = require('eventBus');
+import * as eventBus from 'eventBus';
 
 (function () {
 

@@ -9,14 +9,14 @@
  * @requires module:x-periodtoolbar
  */
 
-var pulseComponent = require('pulsecomponent');
-var pulseUtility = require('pulseUtility');
-var pulseService = require('pulseService');
-var pulseCustomDialog = require('pulseCustomDialog');
-var pulseDetailsPopup = require('pulsecomponent-detailspopup');
-var eventBus = require('eventBus');
+import * as pulseComponent from 'pulsecomponent';
+import * as pulseUtility from 'pulseUtility';
+import * as pulseService from 'pulseService';
+import pulseCustomDialog from 'pulseCustomDialog';
+import * as pulseDetailsPopup from 'pulsecomponent-detailspopup';
+import * as eventBus from 'eventBus';
 
-require('x-machinedisplay/x-machinedisplay');
+import 'x-machinedisplay/x-machinedisplay';
 
 (function () {
 
