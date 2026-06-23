@@ -61,7 +61,7 @@ export function prepDemos (filter = null) {
   rmSync(publicDir, { recursive: true, force: true })
   const cp = (from, to) => { mkdirSync(resolve(publicDir, to, '..'), { recursive: true }); cpSync(resolve(PWC, from), resolve(publicDir, to)) }
   // jQuery is gone: nothing live uses $() any more (only dead commented code remains).
-  cp('node_modules/@bower_components/momentjs/min/moment-with-locales.min.js', 'lib/moment/moment.js')
+  cp('node_modules/moment/min/moment-with-locales.min.js', 'lib/moment/moment.js')
   cp('node_modules/d3/dist/d3.min.js', 'lib/d3/d3.min.js')
   // classic config / translation globals (NOT modules)
   const scriptsOut = resolve(publicDir, 'scripts')
