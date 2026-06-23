@@ -3,14 +3,14 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-reasonslotbar/x-reasonslotbar');
-require('x-periodtoolbar/x-periodtoolbar');
+import 'x-reasonslotbar/x-reasonslotbar';
+import 'x-periodtoolbar/x-periodtoolbar';
 
 //require('demo/scripts/savereason');
-require('x-reasonslotlist/demo/reasonslotlist');
+import 'x-reasonslotlist/demo/reasonslotlist';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonColorSlots');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetRangeAround');
+import '@atsora/pomamo-web-service-simulation/scripts/ReasonColorSlots';
+import '@atsora/pomamo-web-service-simulation/scripts/GetRangeAround';
 

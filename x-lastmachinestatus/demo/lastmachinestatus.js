@@ -3,10 +3,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-lastmachinestatus/x-lastmachinestatus');
+import 'x-lastmachinestatus/x-lastmachinestatus';
 //require('demo/script/savereason');
-require('x-reasonslotlist/demo/reasonslotlist');
+import 'x-reasonslotlist/demo/reasonslotlist';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetLastMachineStatusV2');
+import '@atsora/pomamo-web-service-simulation/scripts/GetLastMachineStatusV2';

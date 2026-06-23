@@ -2,13 +2,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-tr/x-tr');
+import 'x-tr/x-tr';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/Catalog');
+import '@atsora/pomamo-web-service-simulation/scripts/Catalog';
 
-//# sourceMappingURL=tr.js.map
 
 function load () {
   var demo = document.getElementById('demo-js');

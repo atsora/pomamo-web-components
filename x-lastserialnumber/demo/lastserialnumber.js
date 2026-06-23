@@ -3,11 +3,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-lastserialnumber/x-lastserialnumber');
+import 'x-lastserialnumber/x-lastserialnumber';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetLastCycleWithSerialNumberV2');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/SaveSerialNumber');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetCyclesWithWorkInformationsInPeriod');
+import '@atsora/pomamo-web-service-simulation/scripts/GetLastCycleWithSerialNumberV2';
+import '@atsora/pomamo-web-service-simulation/scripts/SaveSerialNumber';
+import '@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision';
+import '@atsora/pomamo-web-service-simulation/scripts/GetCyclesWithWorkInformationsInPeriod';

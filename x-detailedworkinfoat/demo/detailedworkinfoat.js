@@ -3,8 +3,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-detailedworkinfoat/x-detailedworkinfoat');
+import 'x-detailedworkinfoat/x-detailedworkinfoat';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/OperationSlots');
+import '@atsora/pomamo-web-service-simulation/scripts/OperationSlots';

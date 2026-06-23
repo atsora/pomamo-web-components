@@ -5,17 +5,17 @@
 // x-workinfo is a passive display — it listens to operationChangeEvent. We
 // pair it with x-production / x-partproductionstatuspie, which actually
 // fetch the data and emit the event.
-require('x-workinfo/x-workinfo');
-require('x-production/x-production');
-require('x-partproductionstatuspie/x-partproductionstatuspie');
+import 'x-workinfo/x-workinfo';
+import 'x-production/x-production';
+import 'x-partproductionstatuspie/x-partproductionstatuspie';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/OperationPartProductionRange');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/OperationProductionMachiningStatus');
+import '@atsora/pomamo-web-service-simulation/scripts/OperationPartProductionRange';
+import '@atsora/pomamo-web-service-simulation/scripts/OperationProductionMachiningStatus';
 
-var eventBus = require('eventBus');
+import * as eventBus from 'eventBus';
 
 if (document.readyState !== 'loading') {
   document.getElementById('dispatch-workinfo').addEventListener('click', function () {

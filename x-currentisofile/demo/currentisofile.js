@@ -4,11 +4,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 'use strict';
-require('x-currentisofile/x-currentisofile');
+import 'x-currentisofile/x-currentisofile';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CurrentIsofile');
+import '@atsora/pomamo-web-service-simulation/scripts/CurrentIsofile';
 
-//# sourceMappingURL=currentcncvalue.js.map
 

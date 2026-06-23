@@ -3,17 +3,17 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-reasonslotbar/x-reasonslotbar');
-require('x-periodtoolbar/x-periodtoolbar');
-require('x-revisionprogress/x-revisionprogress');
+import 'x-reasonslotbar/x-reasonslotbar';
+import 'x-periodtoolbar/x-periodtoolbar';
+import 'x-revisionprogress/x-revisionprogress';
 
-var pulseConfig = require('pulseConfig');
-var eventBus = require('eventBus');
+import * as pulseConfig from 'pulseConfig';
+import * as eventBus from 'eventBus';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 //var pulseRange = require('pulseRange');
 
-require('x-periodtoolbar/x-periodtoolbar');
-require('x-datetimegraduation/x-datetimegraduation');
+import 'x-periodtoolbar/x-periodtoolbar';
+import 'x-datetimegraduation/x-datetimegraduation';
 
 (function () {
   ////////// ////////// ////////// ////////// ////////// 

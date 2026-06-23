@@ -3,7 +3,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
+import * as pulseSvg from 'pulseSvg';
 
 //pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
@@ -257,29 +258,12 @@ var populateConfigPanel = function () {
 
 var themeManager = {
 
+  // Bridge model: colors are CSS custom properties (theme-colors.css holds the
+  // :root = light and html.dark = dark values), so switching the theme is just a
+  // `dark` class toggle on <html> — no per-theme CSS reload.
   load: function (name) {
-    let oldTheme = pulseConfig.getString('theme', 'dark'); // first of ALL
-
-    // Save the new value -- before ALL to happen even when an error occurs
     pulseConfig.setGlobal('theme', name);
-
-    // Page name, for a style specific to the page
-    let pageName = window.location.href.replace(/(.*\/)([^\\]*)(\.html.*)/, '$2');
-
-    // version -> Not here !
-
-    // Load the new theme
-    let newLink = document.createElement('link');
-    newLink.rel = 'stylesheet';
-    newLink.type = 'text/css';
-    newLink.href = './styles/style_' + name + '/' + pageName + '.css';
-    document.head.appendChild(newLink);
-
-    // Unload the previous theme
-    if (oldTheme != name) {
-      let oldLinks = document.querySelectorAll('link[rel=stylesheet][href*="./styles/style_' + oldTheme + '/' + pageName + '.css"]');
-      oldLinks.forEach(link => link.remove());
-    }
+    document.documentElement.classList.toggle('dark', name === 'dark');
   },
   current: function () {
     return pulseConfig.getString('theme', 'dark');
@@ -287,6 +271,7 @@ var themeManager = {
 };
 
 var initTheme = function () {
+  themeManager.load(themeManager.current());
   let darkThemeBtn = document.getElementById('darkthemebtn');
   darkThemeBtn.checked = (themeManager.current() == 'dark');
   darkThemeBtn.addEventListener('click', function () {
@@ -298,20 +283,22 @@ var initTheme = function () {
 // MAIN function //
 ///////////////////
 
-if (document.readyState !== 'loading') {
+var initDemoChrome = function () {
   populateConfigPanel();
   populateNavigationPanel();
   setNavigationLinks();
   initTheme();
   closeParameterPanel(true);
   closeNavigationPanel(true);
+  // The header button icons are SVGs with no fill, so a raw background-image renders
+  // black -> invisible on the dark header. Inline them (like common_page.js in the
+  // app) so the CSS `svg { fill: @color_text }` colours them, theme-adaptively.
+  pulseSvg.inlineBackgroundSvg('#navigationpanelbtn');
+  pulseSvg.inlineBackgroundSvg('#configpanelbtn');
+};
+
+if (document.readyState !== 'loading') {
+  initDemoChrome();
 } else {
-  document.addEventListener('DOMContentLoaded', function () {
-    populateConfigPanel();
-    populateNavigationPanel();
-    setNavigationLinks();
-    initTheme();
-    closeParameterPanel(true);
-    closeNavigationPanel(true);
-  });
+  document.addEventListener('DOMContentLoaded', initDemoChrome);
 }

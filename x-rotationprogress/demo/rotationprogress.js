@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-rotationprogress/x-rotationprogress');
-var eventBus = require('eventBus');
+import 'x-rotationprogress/x-rotationprogress';
+import * as eventBus from 'eventBus';
 
 var page = 0;
 if (document.readyState !== 'loading') {

@@ -3,11 +3,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-reportdatetime/x-reportdatetime');
+import 'x-reportdatetime/x-reportdatetime';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/TimeCurrentRange');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/TimePastRange');
+import '@atsora/pomamo-web-service-simulation/scripts/TimeCurrentRange';
+import '@atsora/pomamo-web-service-simulation/scripts/TimePastRange';
 
 

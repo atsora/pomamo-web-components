@@ -3,13 +3,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-message/x-message');
+import 'x-message/x-message';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
 
-var eventBus = require('eventBus');
+import * as eventBus from 'eventBus';
 
 document.addEventListener('DOMContentLoaded', function () {
   console.log('document loaded begin');

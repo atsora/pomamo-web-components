@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 
-require('x-scrapstatus/x-scrapstatus');
+import 'x-scrapstatus/x-scrapstatus';
 
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetLastMachineStatusV2');
+import '@atsora/pomamo-web-service-simulation/scripts/GetLastMachineStatusV2';

@@ -3,12 +3,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-groupsingroup/x-groupsingroup');
-require('x-machinedisplay/x-machinedisplay');
-require('x-reasonbutton/x-reasonbutton');
+import 'x-groupsingroup/x-groupsingroup';
+import 'x-machinedisplay/x-machinedisplay';
+import 'x-reasonbutton/x-reasonbutton';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GroupZoomIn');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetMachine');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CurrentReason');
+import '@atsora/pomamo-web-service-simulation/scripts/GroupZoomIn';
+import '@atsora/pomamo-web-service-simulation/scripts/GetMachine';
+import '@atsora/pomamo-web-service-simulation/scripts/CurrentReason';

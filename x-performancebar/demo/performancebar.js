@@ -3,9 +3,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-performancebar/x-performancebar');
+import 'x-performancebar/x-performancebar';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/Utilization');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/UtilizationTarget');
+import '@atsora/pomamo-web-service-simulation/scripts/Utilization';
+import '@atsora/pomamo-web-service-simulation/scripts/UtilizationTarget';

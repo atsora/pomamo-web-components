@@ -3,4 +3,4 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-bartimeselection/x-bartimeselection');
+import 'x-bartimeselection/x-bartimeselection';

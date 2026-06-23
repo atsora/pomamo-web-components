@@ -3,11 +3,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-task/x-task');
+import 'x-task/x-task';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8080/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/Tasks');
+import '@atsora/pomamo-web-service-simulation/scripts/Tasks';
 
 function load () {
 

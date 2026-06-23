@@ -5,9 +5,9 @@
 
 'use strict';
 
-require('x-signalbanner/x-signalbanner');
+import 'x-signalbanner/x-signalbanner';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
 // Local mocks for the /Signal/?GroupId=<id> endpoint.
@@ -106,4 +106,3 @@ $.mockjax({
   responseText: allGroups
 });
 
-//# sourceMappingURL=signalbanner.js.map

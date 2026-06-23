@@ -3,11 +3,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-productionshiftgoal/x-productionshiftgoal');
+import 'x-productionshiftgoal/x-productionshiftgoal';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/OperationReserveCapacityCurrentShiftChartByGroup');
+import '@atsora/pomamo-web-service-simulation/scripts/OperationReserveCapacityCurrentShiftChartByGroup';
 
 function load () {
   var demo = document.getElementById('demo-js');

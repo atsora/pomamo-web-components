@@ -4,11 +4,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 'use strict';
-require('x-currentcncvalue/x-currentcncvalue');
+import 'x-currentcncvalue/x-currentcncvalue';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CncValueCurrent');
+import '@atsora/pomamo-web-service-simulation/scripts/CncValueCurrent';
 
-//# sourceMappingURL=currentcncvalue.js.map
 

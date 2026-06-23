@@ -3,8 +3,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-cncvaluebar/x-cncvaluebar');
+import 'x-cncvaluebar/x-cncvaluebar';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CncValueColor');
+import '@atsora/pomamo-web-service-simulation/scripts/CncValueColor';

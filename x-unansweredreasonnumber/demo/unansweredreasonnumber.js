@@ -3,9 +3,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-unansweredreasonnumber/x-unansweredreasonnumber');
-require('x-reasonslotlist/demo/reasonslotlist');
+import 'x-unansweredreasonnumber/x-unansweredreasonnumber';
+import 'x-reasonslotlist/demo/reasonslotlist';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonUnanswered');
+import '@atsora/pomamo-web-service-simulation/scripts/ReasonUnanswered';

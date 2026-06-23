@@ -2,6 +2,9 @@
 	"tags": {
 		"allowUnknownTags" : true
 	},
+	"opts": {
+		"template": "node_modules/@atsora/docdash"
+	},
 	"plugins": ["plugins/markdown", "../@atsora/jsdoc-plugin-graph/plugins/graphtag", "../@atsora/jsdoc-plugin-graph/plugins/gtag"],
 	"templates": {
 		"cleverLinks": true,

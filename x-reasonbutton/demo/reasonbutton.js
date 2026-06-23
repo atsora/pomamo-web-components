@@ -3,8 +3,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-reasonbutton/x-reasonbutton');
+import 'x-reasonbutton/x-reasonbutton';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CurrentReason');
+import '@atsora/pomamo-web-service-simulation/scripts/CurrentReason';

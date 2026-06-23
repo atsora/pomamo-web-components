@@ -3,7 +3,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-clock/x-clock');
+import 'x-clock/x-clock';
 
 function load () {
   var demo = document.getElementById('js-tests');

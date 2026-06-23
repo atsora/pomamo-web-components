@@ -3,8 +3,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-sequencebar/x-sequencebar');
+import 'x-sequencebar/x-sequencebar';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CycleProgress');
+import '@atsora/pomamo-web-service-simulation/scripts/CycleProgress';

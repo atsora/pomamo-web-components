@@ -3,12 +3,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-lastmachinestatetemplate/x-lastmachinestatetemplate');
-require('x-savemachinestatetemplate/x-savemachinestatetemplate');
+import 'x-lastmachinestatetemplate/x-lastmachinestatetemplate';
+import 'x-savemachinestatetemplate/x-savemachinestatetemplate';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/MachineStateTemplateSlots');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/NextMachineStateTemplate');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/SaveMachineStateTemplate');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision');
+import '@atsora/pomamo-web-service-simulation/scripts/MachineStateTemplateSlots';
+import '@atsora/pomamo-web-service-simulation/scripts/NextMachineStateTemplate';
+import '@atsora/pomamo-web-service-simulation/scripts/SaveMachineStateTemplate';
+import '@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision';

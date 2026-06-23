@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-production/x-production');
+import 'x-production/x-production';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/OperationPartProductionRange');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/OperationProductionMachiningStatus');
+import '@atsora/pomamo-web-service-simulation/scripts/OperationPartProductionRange';
+import '@atsora/pomamo-web-service-simulation/scripts/OperationProductionMachiningStatus';

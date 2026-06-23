@@ -3,9 +3,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-markdowntext/x-markdowntext');
+import 'x-markdowntext/x-markdowntext';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
 var SAMPLE_1 = [

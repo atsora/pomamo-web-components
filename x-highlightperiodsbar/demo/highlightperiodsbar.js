@@ -3,13 +3,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-highlightperiodsbar/x-highlightperiodsbar');
-require('x-datetimegraduation/x-datetimegraduation');
+import 'x-highlightperiodsbar/x-highlightperiodsbar';
+import 'x-datetimegraduation/x-datetimegraduation';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
-var pulseRange = require('pulseRange');
+import * as pulseRange from 'pulseRange';
 
 // Anchor every highlight to TODAY so they always fall inside the bar's
 // `range=` attribute (which the template patcher also rewrites to today).

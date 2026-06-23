@@ -3,8 +3,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-machinemodelegends/x-machinemodelegends.js');
+import 'x-machinemodelegends/x-machinemodelegends.js';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/MachineModeCategory');
+import '@atsora/pomamo-web-service-simulation/scripts/MachineModeCategory';

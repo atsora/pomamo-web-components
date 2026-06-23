@@ -21,8 +21,10 @@ body {
   padding: 0;
   height: 100%;
 }
-@header_background_color_1: lighten(@color_window, 4%);
-@header_background_color_2: darken(@color_window, 4%);
+// Bridge model: @color_* are CSS custom properties at runtime, so raw lighten()/
+// darken() can't evaluate them at compile time — use the precomputed variants.
+@header_background_color_1: @color_window_lighten4;
+@header_background_color_2: @color_window_darken4;
 .pulse-header {
   position: absolute;
   top: 0;
@@ -38,8 +40,8 @@ body {
   /* For Firefox 3.6 to 15 */
   background: linear-gradient(@header_background_color_1, @header_background_color_2);
   /* Standard syntax */
-  color: fade(@color_text, 90%); // Change color when background is changed to see any text
-  z-index: 100;
+  color: @color_text_fade90; // Change color when background is changed to see any text
+  z-index: 10002; // above the customdialog overlay (10000) so the nav stays reachable on dialog demos
   border-bottom: 1px solid @color_window_border;
 }
 .pulse-header-title {
@@ -116,7 +118,7 @@ body {
   top: 0;
   left: 0;
   bottom: 0;
-  z-index: 51;
+  z-index: 10001; // above the customdialog overlay (10000)
   width: 270px;
   background-color: @color_window;
   color: @color_text;
@@ -131,7 +133,7 @@ body {
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: 50;
+  z-index: 10001; // above the customdialog overlay (10000)
   width: 270px;
   background-color: @color_window;
   color: @color_text;
@@ -517,4 +519,46 @@ input:checked+.slider::before {
   }
 
   margin-bottom: 10px; // For demo
+}
+
+// ===== Demo INDEX landing (index.html: #container > #header + #body) =====
+// These ids/classes exist only on the landing page, not on the per-component demos,
+// so they were left unstyled -> default black title / blue links, illegible on the
+// dark theme. Give them theme colours.
+#container > #header {
+  background: linear-gradient(@color_window_lighten4, @color_window_darken4);
+  color: @color_text;
+  font-weight: bold;
+  font-size: 1.2em;
+  padding: 14px 24px;
+  border-bottom: 1px solid @color_window_border;
+}
+#container > #body {
+  padding: 8px 24px 32px;
+  color: @color_text;
+
+  .title {
+    color: @color_text;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 22px 0 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid @color_window_border;
+  }
+  .list-title {
+    columns: 4 220px;
+    list-style: none;
+    margin: 0 0 6px;
+    padding: 0;
+
+    li {
+      margin: 4px 0;
+      break-inside: avoid;
+    }
+    a {
+      color: @color_highlight;
+      text-decoration: none;
+      &:hover { text-decoration: underline; }
+    }
+  }
 }

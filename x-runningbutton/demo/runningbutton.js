@@ -3,8 +3,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-runningbutton/x-runningbutton');
+import 'x-runningbutton/x-runningbutton';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CurrentMachineMode');
+import '@atsora/pomamo-web-service-simulation/scripts/CurrentMachineMode';

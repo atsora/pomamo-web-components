@@ -3,13 +3,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-machinedisplay/x-machinedisplay');
+import 'x-machinedisplay/x-machinedisplay';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetMachine');
+import '@atsora/pomamo-web-service-simulation/scripts/GetMachine';
 
-//# sourceMappingURL=machinedisplay.js.map
 
 function load () {
   var demo = document.getElementById('demo-js');

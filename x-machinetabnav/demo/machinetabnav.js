@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-machinetabnav/x-machinetabnav');
+import 'x-machinetabnav/x-machinetabnav';
 
-var eventBus = require('eventBus');
+import * as eventBus from 'eventBus';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
 function dispatchIds(ids) {

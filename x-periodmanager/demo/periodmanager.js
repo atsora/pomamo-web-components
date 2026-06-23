@@ -3,15 +3,15 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-periodmanager/x-periodmanager');
-require('x-datetimegraduation/x-datetimegraduation');
+import 'x-periodmanager/x-periodmanager';
+import 'x-datetimegraduation/x-datetimegraduation';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/RangeAround');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetRangeAround');
+import '@atsora/pomamo-web-service-simulation/scripts/RangeAround';
+import '@atsora/pomamo-web-service-simulation/scripts/GetRangeAround';
 
-var eventBus = require('eventBus');
+import * as eventBus from 'eventBus';
 
 document.addEventListener('DOMContentLoaded', function () {
   // Hour-based periodmanagers dispatch their range synchronously during init —

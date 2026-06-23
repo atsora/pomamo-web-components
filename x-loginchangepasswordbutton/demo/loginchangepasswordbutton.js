@@ -3,10 +3,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-loginchangepasswordbutton/x-loginchangepasswordbutton');
+import 'x-loginchangepasswordbutton/x-loginchangepasswordbutton';
 
-var pulseConfig = require('pulseConfig');
-var pulseUtility = require('pulseUtility');
+import * as pulseConfig from 'pulseConfig';
+import * as pulseUtility from 'pulseUtility';
 
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 // The button hides itself unless changepasswordallowed != 'false'
@@ -14,4 +14,4 @@ pulseConfig.setGlobal('path', 'http://localhost:8082/');
 pulseConfig.setGlobal('loginchangepasswordbutton.changepasswordallowed', 'true');
 pulseUtility.createCookie('PulseLogin', 'Bruce', 1);
 
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ChangePassword');
+import '@atsora/pomamo-web-service-simulation/scripts/ChangePassword';

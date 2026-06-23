@@ -2,27 +2,27 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 
-require('x-scrapclassification/x-scrapclassification');
+import 'x-scrapclassification/x-scrapclassification';
 
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetPartsInformation');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonScrapSelection');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/SaveReason');
+import '@atsora/pomamo-web-service-simulation/scripts/GetPartsInformation';
+import '@atsora/pomamo-web-service-simulation/scripts/ReasonScrapSelection';
+import '@atsora/pomamo-web-service-simulation/scripts/SaveReason';
 
 
 
 
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonSelection');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/SaveReason');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision')
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetMachine');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonOnlySlots');
+import '@atsora/pomamo-web-service-simulation/scripts/ReasonSelection';
+import '@atsora/pomamo-web-service-simulation/scripts/SaveReason';
+import '@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision';
+import '@atsora/pomamo-web-service-simulation/scripts/GetMachine';
+import '@atsora/pomamo-web-service-simulation/scripts/ReasonOnlySlots';
 
 
 // FROM Save MST
 // TO ADD - 2016 12
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/SaveMachineStateTemplate');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision');
+import '@atsora/pomamo-web-service-simulation/scripts/SaveMachineStateTemplate';
+import '@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision';

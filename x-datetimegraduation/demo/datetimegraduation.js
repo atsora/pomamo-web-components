@@ -3,9 +3,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-datetimegraduation/x-datetimegraduation');
-require('x-periodmanager/x-periodmanager');
+import 'x-datetimegraduation/x-datetimegraduation';
+import 'x-periodmanager/x-periodmanager';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/RangeAround');
+import '@atsora/pomamo-web-service-simulation/scripts/RangeAround';

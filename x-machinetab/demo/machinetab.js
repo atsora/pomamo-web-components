@@ -3,11 +3,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-machinetab/x-machinetab');
-require('x-periodmanager/x-periodmanager');
+import 'x-machinetab/x-machinetab';
+import 'x-periodmanager/x-periodmanager';
 
-var pulseConfig = require('pulseConfig');
-var eventBus = require('eventBus');
+import * as pulseConfig from 'pulseConfig';
+import * as eventBus from 'eventBus';
 
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
@@ -20,14 +20,14 @@ pulseConfig.setGlobal('componentsToDisplay', [
 ]);
 
 // Mocks
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/_helpers');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/scenario');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetMachine');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CurrentReason');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/ReasonUnanswered');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/MissingWorkInformation');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CycleProgress');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/CncAlarm');
+import '@atsora/pomamo-web-service-simulation/scripts/_helpers';
+import '@atsora/pomamo-web-service-simulation/scripts/scenario';
+import '@atsora/pomamo-web-service-simulation/scripts/GetMachine';
+import '@atsora/pomamo-web-service-simulation/scripts/CurrentReason';
+import '@atsora/pomamo-web-service-simulation/scripts/ReasonUnanswered';
+import '@atsora/pomamo-web-service-simulation/scripts/MissingWorkInformation';
+import '@atsora/pomamo-web-service-simulation/scripts/CycleProgress';
+import '@atsora/pomamo-web-service-simulation/scripts/CncAlarm';
 
 if (document.readyState !== 'loading') {
   setupDemo();

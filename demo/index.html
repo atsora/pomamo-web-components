@@ -19,48 +19,27 @@ SPDX-License-Identifier: Apache-2.0
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-  <script type="text/javascript" src="lib/jquery/jquery.js"></script>
+  <!-- Global libs (classic scripts, served verbatim from the public dir) -->
+  <script src="/lib/moment/moment.js"></script>
+  <!-- Config / translation globals (classic scripts) -->
+  <script src="/scripts/translation_component_default.js"></script>
+  <script src="/scripts/config_component_default.js"></script>
+  <script src="/scripts/config_demo.js"></script>
 
-  <script type="text/javascript" src="lib/jquery-mockjax/jquery.mockjax.js"></script>
-
-  <script type="text/javascript" src="lib/moment/moment.js"></script>
-  <!-- Add d3 for graduation and chart -->
-  <!--script type="text/javascript" src="lib/d3/d3.min.js"></script>-->
-
-  <!-- Config / translation / basics includes -->
-  <script type="text/javascript" src="scripts/translation_component_default.js"></script>
-  <script type="text/javascript" src="scripts/config_component_default.js"></script>
-  <script type="text/javascript" src="scripts/config_demo.js"></script>
-  <!-- for reporting : script type="text/javascript" src="./scripts/pulse.exports.light.js?v="></script-->
-
-  <script type="text/javascript" src="scripts/index.js"></script>
-
+  <!-- Theme bridge: one CSS of var(--color_*) + the values; .dark on <html> switches. -->
+  <link rel="stylesheet" href="/styles/theme-colors.css">
+  <link rel="stylesheet" href="/styles/index.css">
   <script>
-    // Initialize theme (before the page is loaded => cannot use PulseConfig here)
-    var currentTheme = 'dark';
-    if (typeof localStorage != 'undefined')
-      currentTheme = JSON.parse(localStorage.getItem('PULSE.PulseWebApp.theme'));
-    if (currentTheme == '' || currentTheme == null)
-      currentTheme = 'dark';
-
-    var head = document.getElementsByTagName('head')[0];
-    /*{ // For PWC exports
-      var s = document.createElement('link');
-      s.setAttribute('type', 'text/css');
-      s.setAttribute('rel', 'stylesheet');
-      s.setAttribute('href', './styles/style_' + currentTheme + '/pulse.exports.light.css?v=');
-      head.appendChild(s);
-    }*/
-    {
-      var s = document.createElement('link');
-      s.setAttribute('type', 'text/css');
-      s.setAttribute('rel', 'stylesheet');
-      s.setAttribute('href', './styles/style_' + currentTheme + '/index.css');
-      head.appendChild(s);
-    }
+    (function () {
+      var t = 'dark';
+      try { t = JSON.parse(localStorage.getItem('PULSE.PulseWebApp.theme')) || 'dark'; }
+      catch (e) { /* ignore */ }
+      if (t === 'dark') document.documentElement.classList.add('dark');
+    })();
   </script>
 
-  <script type="text/javascript" src="scripts/common_demo.js"></script>
+  <!-- Demo chrome behaviour (nav + theme): ESM module, bundled by Vite -->
+  <script type="module" src="../demo/common_demo.js"></script>
 
 </head>
 

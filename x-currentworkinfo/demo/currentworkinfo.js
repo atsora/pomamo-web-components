@@ -3,8 +3,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-require('x-currentworkinfo/x-currentworkinfo');
+import 'x-currentworkinfo/x-currentworkinfo';
 
-var pulseConfig = require('pulseConfig');
+import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
-require('node_modules/@atsora/pomamo-web-service-simulation/scripts/GetLastWorkInformationV3');
+import '@atsora/pomamo-web-service-simulation/scripts/GetLastWorkInformationV3';
