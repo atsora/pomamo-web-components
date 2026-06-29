@@ -393,7 +393,7 @@ import 'x-revisionprogress/x-revisionprogress';
         'machine-id': this.element.getAttribute('machine-id'),
         'datetime': this._datetime,
         'is-begin': this._isbegin,
-        'range': this._begin + ';' + this._end
+        'range': pulseUtility.createDateRangeForWebService(this._begin, this._end)
         //'serialnumber-context': 'CIP' -> managed by modification
       });
 

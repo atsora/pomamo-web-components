@@ -228,7 +228,7 @@ export var openPopup = function (component, fullRange, cellRange, evt) {
             {
               'machine-id': component.element.getAttribute('machine-id'),
               'when': d_clickTime.toISOString(),
-              'range': '[' + fullRange.lower.toISOString() + ';' + fullRange.upper.toISOString() + ')',
+              'range': pulseUtility.convertDateRangeForWebService(fullRange),
               'period-context': 'details'
             }));
       }

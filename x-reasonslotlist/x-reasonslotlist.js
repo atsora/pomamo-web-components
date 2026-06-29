@@ -199,7 +199,7 @@ import 'x-revisionprogress/x-revisionprogress';
 
         if (item.Current == true) {
           let tmpRange = pulseRange.createDateRangeFromString(rangeString);
-          rangeString = pulseUtility.createDateRangeForWebService(tmpRange.lower);
+          rangeString = pulseUtility.createDateRangeForWebService(tmpRange.lower, new Date());
         }
 
         let range = pulseRange.createDateRangeFromString(rangeString);

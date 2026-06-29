@@ -73,10 +73,7 @@ import 'x-saveserialnumber/x-saveserialnumber';
           } break;
         case 'range':
           {
-            let pos = newVal.indexOf(';');
-            let begin = newVal.substr(0, pos);
-            let end = newVal.substr(pos + 1, newVal.length - (pos + 1));
-            let newRange = pulseRange.createDateRangeDefaultInclusivity(begin, end);
+            let newRange = pulseRange.createDateRangeFromString(newVal);
             this._setRange(newRange);
           } break;
         default:
@@ -336,7 +333,7 @@ import 'x-saveserialnumber/x-saveserialnumber';
           'machine-id': this.element.getAttribute('machine-id'),
           'datetime': tr.getAttribute('begin'),
           'serial-number': tr.getAttribute('serial-number'),
-          'range': tr.getAttribute('begin') + ';' + tr.getAttribute('end'),
+          'range': pulseUtility.createDateRangeForWebService(tr.getAttribute('begin'), tr.getAttribute('end')),
           'is-begin': 'is-begin'
           //,'serialnumber-context': 'CIP'  -> managed by modification
         };
@@ -346,7 +343,7 @@ import 'x-saveserialnumber/x-saveserialnumber';
           'machine-id': this.element.getAttribute('machine-id'),
           'datetime': tr.getAttribute('end'),
           'serial-number': tr.getAttribute('serial-number'),
-          'range': tr.getAttribute('begin') + ';' + tr.getAttribute('end')
+          'range': pulseUtility.createDateRangeForWebService(tr.getAttribute('begin'), tr.getAttribute('end'))
           //'serialnumber-context': 'CIP' -> managed by modification
         };
       }

@@ -87,10 +87,11 @@ import 'x-datetimerange/x-datetimerange';
           this._serialNumberInput.focus();
         } break;
         case 'range': {
-          let pos = newVal.indexOf(';');
-          let begin = newVal.substr(0, pos);
-          let end = newVal.substr(pos + 1, newVal.length - (pos + 1));
-          this._setRange(begin, end);
+          let r = pulseRange.createDateRangeFromString(newVal);
+          this._setRange(
+            r.lower ? r.lower.toISOString() : '',
+            r.upper ? r.upper.toISOString() : ''
+          );
         } break;
         default:
           break;
@@ -103,9 +104,10 @@ import 'x-datetimerange/x-datetimerange';
         this._rangeBegin = isoBegin;
         this._rangeEnd = isoEnd;
 
+        let r = pulseRange.createDateRangeDefaultInclusivity(this._rangeBegin, this._rangeEnd);
         this._xdatetimerange.setAttribute(
           'range',
-          this._rangeBegin + ';' + this._rangeEnd);
+          pulseUtility.convertDateRangeForWebService(r));
       }
     }
 
@@ -183,10 +185,9 @@ import 'x-datetimerange/x-datetimerange';
 
       if (!(this._rangeBegin) || !(this._rangeEnd)) {
         if (this.element.hasAttribute('range')) {
-          let newVal = this.element.getAttribute('range');
-          let pos = newVal.indexOf(';');
-          this._rangeBegin = newVal.substr(0, pos);
-          this._rangeEnd = newVal.substr(pos + 1, newVal.length - (pos + 1));
+          let r0 = pulseRange.createDateRangeFromString(this.element.getAttribute('range'));
+          this._rangeBegin = r0.lower ? r0.lower.toISOString() : '';
+          this._rangeEnd = r0.upper ? r0.upper.toISOString() : '';
         }
       }
 
@@ -281,12 +282,11 @@ import 'x-datetimerange/x-datetimerange';
       if (!(this._rangeBegin) || !(this._rangeEnd)) {
         if (this.element.hasAttribute('range')) {
           let newVal = this.element.getAttribute('range');
-          let pos = newVal.indexOf(';');
-          this._rangeBegin = newVal.substr(0, pos);
-          this._rangeEnd = newVal.substr(pos + 1, newVal.length - (pos + 1));
-
+          let r = pulseRange.createDateRangeFromString(newVal);
+          this._rangeBegin = r.lower ? r.lower.toISOString() : '';
+          this._rangeEnd = r.upper ? r.upper.toISOString() : '';
           this._xdatetimerange.setAttribute('range',
-            this._rangeBegin + ';' + this._rangeEnd);
+            pulseUtility.convertDateRangeForWebService(r));
         }
         else {
           //this.setError('missing range'); // delayed
