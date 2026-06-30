@@ -110,7 +110,7 @@ export function prepDemos (filter = null) {
   // demo dir (-> about/images, missing -> white bands). Rewrite to ../images so it
   // resolves from styles/ everywhere (server, dev AND file://).
   writeFileSync(themeColors, readFileSync(themeColors, 'utf8').replaceAll('../../images/', '../images/'))
-  process.stdout.write(`CSS: ${cssOk} compilées, ${cssFail.length} échec(s)\n`)
+  process.stdout.write(`CSS: ${cssOk} compiled, ${cssFail.length} failure(s)\n`)
   for (const f of cssFail.slice(0, 15)) process.stdout.write(`  ✗ ${f.name}: ${f.msg}\n`)
 
   return { demos, withIndex }

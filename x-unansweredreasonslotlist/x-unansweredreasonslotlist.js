@@ -118,7 +118,7 @@ import 'x-machinedisplay/x-machinedisplay';
       if (this._table) this._table.replaceChildren();
     }
 
-    // === GESTION DES DONNÉES ReasonColorSlots ===
+    // === ReasonColorSlots DATA HANDLING ===
     fillTable(unansweredBlocks) {
       // Same race as in x-classifiedreasonslotlist: a Reload triggered by
       // `modificationEvent` can fire after the parent dialog closed and our
@@ -192,7 +192,7 @@ import 'x-machinedisplay/x-machinedisplay';
         desc.classList.add('unansweredreasonslotlist-td-desc');
         desc.appendChild(tdRange);
 
-        // --- GESTION DES ÉVÉNEMENTS (CLIC vs LONG PRESS) ---
+        // --- EVENT HANDLING (CLICK vs LONG PRESS) ---
         this._bindRowEvents(tr, rangeString);
 
         // Add columns to TR
@@ -226,15 +226,15 @@ import 'x-machinedisplay/x-machinedisplay';
       this._updateDefineReasonButtonState();
     }
 
-    // --- NOUVELLES MÉTHODES POUR GESTION CLIC / LONG PRESS ---
+    // --- NEW METHODS FOR CLICK / LONG PRESS HANDLING ---
     _bindRowEvents(tr, rangeString) {
       let pressTimer;
       let isLongPress = false;
       const LONG_PRESS_DURATION = 500; // ms
 
-      // 1. DÉMARRAGE DU TIMER
+      // 1. START THE TIMER
       const onMouseDownTouchStart = (e) => {
-        if (e.type === 'mousedown' && e.which !== 1) return; // Ignore clic droit
+        if (e.type === 'mousedown' && e.which !== 1) return; // Ignore right click
         isLongPress = false;
 
         pressTimer = setTimeout(() => {
@@ -245,7 +245,7 @@ import 'x-machinedisplay/x-machinedisplay';
       tr.addEventListener('mousedown', onMouseDownTouchStart);
       tr.addEventListener('touchstart', onMouseDownTouchStart);
 
-      // 2. ANNULATION DU TIMER
+      // 2. CANCEL THE TIMER
       const onMouseUpMouseLeave = (e) => {
         clearTimeout(pressTimer);
       };
@@ -254,7 +254,7 @@ import 'x-machinedisplay/x-machinedisplay';
       tr.addEventListener('touchend', onMouseUpMouseLeave);
       tr.addEventListener('touchcancel', onMouseUpMouseLeave);
 
-      // 3. GESTION DU CLIC
+      // 3. CLICK HANDLING
       tr.addEventListener('click', (e) => {
         if (isLongPress) return;
         if (e.target instanceof HTMLInputElement && e.target.type === 'checkbox') return; // Handled by input's own event
@@ -262,7 +262,7 @@ import 'x-machinedisplay/x-machinedisplay';
         this._handleRowSimpleClick(tr, rangeString);
       });
 
-      // 4. SUPPRESSION DU MENU CONTEXTUEL NATIF
+      // 4. SUPPRESS THE NATIVE CONTEXT MENU
       // Long-press on touch devices (and right-click on desktop) trigger the
       // browser's native context menu, which would surface alongside our own
       // long-press handler that shows the selection checkbox. Cancel it.
@@ -278,7 +278,7 @@ import 'x-machinedisplay/x-machinedisplay';
       if (!this._table) return;
       if (!this._table.classList.contains('selection-mode')) {
         this._table.classList.add('selection-mode');
-        if (navigator.vibrate) navigator.vibrate(50); // Feedback tactile
+        if (navigator.vibrate) navigator.vibrate(50); // Haptic feedback
       }
 
       let checkbox = tr.querySelector('input.table-check');

@@ -4,8 +4,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-review la construction de cette page : le dialog savereason
-devrait pas avoir à etre initialisé ici : il devrait seulement etre appelé
+Review how this page is built: the savereason dialog
+shouldn't need to be initialized here — it should only need to be called
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 */
 

@@ -59,8 +59,8 @@ for (const f of files) {
   }
   // flag any require left behind (nested / unusual)
   if (/\brequire\(/.test(out)) {
-    process.stdout.write(`  ! require restant: ${f.replace(PWC + '/', '')}\n`)
+    process.stdout.write(`  ! require remaining: ${f.replace(PWC + '/', '')}\n`)
   }
 }
 
-process.stdout.write(`${APPLY ? 'APPLIED' : 'REPORT'}: ${files.length} fichiers, ${changed} modifiés, ${imp} require->import\n`)
+process.stdout.write(`${APPLY ? 'APPLIED' : 'REPORT'}: ${files.length} files, ${changed} changed, ${imp} require->import\n`)

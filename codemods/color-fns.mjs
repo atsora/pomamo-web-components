@@ -47,4 +47,4 @@ for (const f of files) {
   const out = rewrite(src)
   if (out !== src) { writeFileSync(f, out); touched++ }
 }
-process.stdout.write(`${touched}/${files.length} fichiers .less réécrits (fonctions couleur)\n`)
+process.stdout.write(`${touched}/${files.length} .less files rewritten (color functions)\n`)
