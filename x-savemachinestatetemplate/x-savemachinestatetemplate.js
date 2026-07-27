@@ -319,7 +319,13 @@ import 'x-modificationmanager/x-modificationmanager';
 
     _save(cell) {
       this._optionSelected = cell.getAttribute('id');
-      let range = this._dtRange.getRangeString();
+      let range;
+      if (this.element.hasAttribute('auto-open')) {
+        range = pulseUtility.convertDateRangeForWebService(pulseRange.createDefaultInclusivity(new Date(), null))
+      }
+      else {
+        range = this._dtRange.getRangeString();
+      }
       let newMST = this._optionSelected;
       let machid = this.element.getAttribute('machine-id'); // Should be copied. This.element disappear before request answer
       let url = this.getConfigOrAttribute('path', '') + 'MachineStateTemplateMachineAssociation/Save?MachineId=' + machid

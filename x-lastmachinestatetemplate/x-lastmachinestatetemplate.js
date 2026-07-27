@@ -10,7 +10,10 @@
  */
 import * as pulseComponent from 'pulsecomponent';
 import * as pulseUtility from 'pulseUtility';
+import * as pulseRange from 'pulseRange';
+import * as pulseConfig from 'pulseConfig';
 import * as eventBus from 'eventBus';
+import pulseCustomDialog from 'pulseCustomDialog';
 
 import 'x-savemachinestatetemplate/x-savemachinestatetemplate';
 import 'x-setupmachine/x-setupmachine';
@@ -56,6 +59,7 @@ import 'x-revisionprogress/x-revisionprogress';
       self._since = ''; // ISO since
 
       self._forceReload = true;
+      self._lastId = undefined;
       self._currentMST_display = undefined;
       self._currentMST_id = undefined;
       self._current_MST_range = undefined;
@@ -65,10 +69,13 @@ import 'x-revisionprogress/x-revisionprogress';
       // How to use map : https://www.zendevs.xyz/les-nouveaux-objets-set-et-map-en-javascript-es6/
       self._mapOfModifications = new Map();
 
+      self.isCreatingSaveMachineStateTemplate = false;
+      self.autoOpenSaveMachineStateTemplate = pulseConfig.getBool('lastmachinestatetemplate.autoOpen', true);
+
       return self;
     }
 
-    _orderUsingSince () { // +/- same as setup
+    _orderUsingSince() { // +/- same as setup
       let numberToOrder = 999999999; // default = bottom = more than 2 years in minutes
       if (this._since != '') {
         let since = new Date(this._since);
@@ -90,9 +97,9 @@ import 'x-revisionprogress/x-revisionprogress';
       return this._since;
     }*/
 
-    get content () { return this._content; } // Optional
+    get content() { return this._content; } // Optional
 
-    attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
+    attributeChangedWhenConnectedOnce(attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id': {
@@ -126,7 +133,7 @@ import 'x-revisionprogress/x-revisionprogress';
       }
     }
 
-    initialize () {
+    initialize() {
       this.addClass('pulse-lastbar');
 
       // Update here some internal parameters
@@ -194,7 +201,7 @@ import 'x-revisionprogress/x-revisionprogress';
       return;
     }
 
-    clearInitialization () {
+    clearInitialization() {
       // Parameters
       // DOM
       this.element.replaceChildren();
@@ -209,7 +216,7 @@ import 'x-revisionprogress/x-revisionprogress';
     /**
      * Validate the (event) parameters
      */
-    validateParameters () {
+    validateParameters() {
       if (!this.element.hasAttribute('machine-id')) {
         this.setError(this.getTranslation('error.selectMachine', 'Please select a machine')); // delayed error message
         return;
@@ -224,22 +231,22 @@ import 'x-revisionprogress/x-revisionprogress';
       this.switchToNextContext();
     }
 
-    displayError (message) {
+    displayError(message) {
       this._currentMST_display = '';
       this._currentMST_id = null;
 
       this._messageSpan.innerHTML = message;
     }
 
-    removeError () {
+    removeError() {
       this.displayError('');
     }
 
-    get refreshRate () {
-      return 1000 * 60 * Number(this.getConfigOrAttribute('refreshingRate.barSlowUpdateMinutes', 10));
+    get refreshRate() {
+      return 1000 * 6 * Number(this.getConfigOrAttribute('refreshingRate.barSlowUpdateMinutes', 10));
     }
 
-    getShortUrl () {
+    getShortUrl() {
       let url = 'MachineStateTemplateSlots?MachineId='
         + this.element.getAttribute('machine-id');
       if (this._forceReload) {
@@ -253,7 +260,8 @@ import 'x-revisionprogress/x-revisionprogress';
       return url;
     }
 
-    refresh (data) {
+    refresh(data) {
+      debugger;
       // Clean
       this._messageSpan.innerHTML = '';
       let setupmachines = this.element.querySelectorAll('x-setupmachine');
@@ -270,6 +278,23 @@ import 'x-revisionprogress/x-revisionprogress';
       else {
         this._currentMST_display = '';
         this._currentMST_id = null;
+      }
+
+      if (this.autoOpenSaveMachineStateTemplate) {
+        let stoppedId = pulseConfig.getInt('lastmachinestatetemplate.stoppedId', -1);
+        if (stoppedId != -1 && this._currentMST_id == stoppedId) {
+          this.clickOnCurrent();
+        }
+
+        if (this._lastId) {
+          if (this._lastId == stoppedId && this._currentMST_id != stoppedId) {
+            if (document.querySelector('.customeDialog-machinestatetemplate') != null) {
+              pulseCustomDialog.close('.customeDialog-machinestatetemplate');
+            }
+
+          }
+        }
+        this._lastId = this._currentMST_id;
       }
 
       if (this._currentMST_category != 2) {
@@ -317,7 +342,7 @@ import 'x-revisionprogress/x-revisionprogress';
      * initModifications: undefined, // pending modifications the first time
      * pendingModifications: undefined // pending modifications 'now'
      */
-    onModificationEvent (event) {
+    onModificationEvent(event) {
       let modif = event.target;
       if (event.target.kind != 'MST') {
         return;
@@ -374,7 +399,7 @@ import 'x-revisionprogress/x-revisionprogress';
      *
      * @param {Object} event
      */
-    onReload (event) {
+    onReload(event) {
       this._forceReload = true;
       let setupmachines = this.element.querySelectorAll('x-setupmachine');
       setupmachines.forEach(el => el.remove());
@@ -387,7 +412,7 @@ import 'x-revisionprogress/x-revisionprogress';
       *
       * @param {Object} event
       */
-    onMachineIdChange (event) {
+    onMachineIdChange(event) {
       this.element.setAttribute('machine-id', event.target.newMachineId);
     }
 
@@ -396,17 +421,40 @@ import 'x-revisionprogress/x-revisionprogress';
      *
      * @param {event} e - DOM event
      */
-    clickOnCurrent (e) {
+    clickOnCurrent(e) {
+      if (this.isCreatingSaveMachineStateTemplate) return; // Avoid double call
+      this.isCreatingSaveMachineStateTemplate = true;
+
+      const doc = (typeof document !== 'undefined') ? document : null;
+      if (!doc || !doc.querySelector) {
+        this.isCreatingSaveMachineStateTemplate = false;
+        return;
+      }
+
       let savemsts = this.element.querySelectorAll('x-savemachinestatetemplate');
+      if (savemsts.length !== 0) {
+        if (doc.querySelector('.customDialog') !== null) {
+          this.isCreatingSaveMachineStateTemplate = false;
+          return;
+        }
+      }
+
       savemsts.forEach(el => el.remove());
 
-      let saveMST = pulseUtility.createElementWithAttribute('x-savemachinestatetemplate', {
+      let attributes = {
         'machine-id': this.element.getAttribute('machine-id'),
-        //'range': this._current_MST, // NO !
         'mst-id': this._currentMST_id,
         'period-context': 'savemst' + this.element.getAttribute('machine-id')
-      });
+      }
+
+      if (e == undefined) {
+        attributes['auto-open'] = true;
+      }
+
+      let saveMST = pulseUtility.createElementWithAttribute('x-savemachinestatetemplate', attributes);
       this.element.appendChild(saveMST);
+
+      this.isCreatingSaveMachineStateTemplate = false;
     }
 
   }
