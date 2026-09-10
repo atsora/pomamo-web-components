@@ -84,7 +84,12 @@
 * IMAGES *
 *********/
 
-@imagedir: "../../images";
+// One level up from the compiled stylesheet: the pages load styles/<name>.css
+// next to images/. It used to be two, back when grunt-less-themes compiled
+// each sheet twice into styles/style_dark/ and styles/style_light/; the
+// runtime html.dark switch flattened that away and the path was never
+// adjusted, so every url() pointed one directory above the app root.
+@imagedir: "../images";
 @background_image: url('@{imagedir}/background.png'); // color: @color_text_alternate
 @product_logo: url('@{imagedir}/product_logo.svg');
 @customer_logo: url('@{imagedir}/customer_logo.svg');
