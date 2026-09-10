@@ -282,6 +282,29 @@ import * as pulseUtility from 'pulseUtility';
       //this._dateInput.defaultValue = displayedDate;
     }
 
+    /**
+     * Format a Date as the value an `<input type="time">` accepts: always
+     * `HH:mm`, or `HH:mm:ss` when `showseconds` is set. Never localized.
+     *
+     * The HTML spec fixes the *value* format of the control; only its on-screen
+     * presentation follows the browser locale. So the locale must not leak in
+     * here: toLocaleTimeString() with no locale returns "2:30:00 PM" on a US
+     * browser, and the input rejects it -- which is how the min/max clamping
+     * below used to fail silently, storing "2:30:" as a bound.
+     */
+    _toInputTime (date) {
+      let time = date.toLocaleTimeString('en-GB', // 'en-GB' == 24h, and NOT [] == browser locale
+        this.element.hasAttribute('showseconds')
+          ? { hour: '2-digit', minute: '2-digit', second: '2-digit' }
+          : { hour: '2-digit', minute: '2-digit' });
+
+      // '2-digit' still yields a single-digit hour in some engines
+      if (1 == time.indexOf(':')) {
+        time = '0' + time;
+      }
+      return time;
+    }
+
     _setDefaultTime () {
       let defaultDatetime = this.element.hasAttribute('defaultdatetime')
         ? new Date(this.element.getAttribute('defaultdatetime'))
@@ -295,21 +318,7 @@ import * as pulseUtility from 'pulseUtility';
         defaultDatetime.setSeconds(0);
       }*/
 
-      let displayedTime = defaultDatetime.toLocaleTimeString('en-GB',// And NOT : [],
-        { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-      // Remove seconds if not useful -
-      if (!this.element.hasAttribute('showseconds')) {
-        displayedTime = defaultDatetime.toLocaleTimeString('en-GB',// And NOT : [],
-          { hour: '2-digit', minute: '2-digit' });
-      }
-
-      // '2-digit' displays only 1 digit for hour... sometimes
-      if (1 == displayedTime.indexOf(':')) {
-        displayedTime = '0' + displayedTime;
-      }
-
-      this._timeInput.value = displayedTime; // Works for LAT, but not Paragon Metal
+      this._timeInput.value = this._toInputTime(defaultDatetime); // Works for LAT, but not Paragon Metal
       //this._timeInput.setAttribute('value', displayedTime); //'08:00');
       //this._timeInput.defaultValue = displayedTime;
     }
@@ -348,13 +357,7 @@ import * as pulseUtility from 'pulseUtility';
           // Remove ms, not compatible
           minDatetime.setMilliseconds(0);
 
-          // Find & format min time
-          let minTime = minDatetime.toLocaleTimeString();
-          // Remove seconds if not useful
-          if (!this.element.hasAttribute('showseconds')) {
-            minTime = minTime.substring(0, 5); // Hide sec, not compatible
-          }
-          this._timeInput.setAttribute('min', minTime);
+          this._timeInput.setAttribute('min', this._toInputTime(minDatetime));
         }
       }
       if (this.element.hasAttribute('maxdatetime')) {
@@ -369,14 +372,7 @@ import * as pulseUtility from 'pulseUtility';
           // Remove ms, not compatible
           maxDatetime.setMilliseconds(0);
 
-          // Find & format max time
-          let maxTime = maxDatetime.toLocaleTimeString();
-          // Remove seconds if not useful
-          if (!this.element.hasAttribute('showseconds')) {
-            maxTime = maxTime.substring(0, 5); // Hide sec, not compatible
-          }
-
-          this._timeInput.setAttribute('max', maxTime);
+          this._timeInput.setAttribute('max', this._toInputTime(maxDatetime));
         }
       }
     }
