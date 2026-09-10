@@ -54,6 +54,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     missingParam: 'Missing param',
     missingRange: 'Missing range',
     missingWhen: 'Missing when',
+    noData: 'No data',
+    noFlowDefined: 'No flow is defined. Please contact support',
     noMachineOrGroupToDisplay: 'No machine or group to display',
     selectMachine: 'Please select a machine',
     selectMachineGroup: 'Please select a machine or a group of machines',
@@ -504,6 +506,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     missingWhen: 'Attribut when manquant',
     selectMachine: 'Prière de sélectionner une machine',
     selectMachineGroup: 'Prière de sélectionner une machine ou un groupe de machines',
+    noData: 'Pas de données',
+    noFlowDefined: "Aucun flux n'est défini. Prière de contacter le support",
     noMachineOrGroupToDisplay: 'Pas de machine ou de groupe de machines à afficher'
   },
   checkcurrenttime: {
@@ -951,6 +955,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     missingParam: 'Parameter fehlt',
     missingRange: 'Zeitraum fehlt',
     missingWhen: 'Attribut when fehlt',
+    noData: 'Keine Daten',
+    noFlowDefined: 'Es ist kein Ablauf definiert. Bitte den Support kontaktieren',
     noMachineOrGroupToDisplay: 'Keine Maschine oder Gruppe anzuzeigen',
     selectMachine: 'Bitte eine Maschine auswählen',
     selectMachineGroup: 'Bitte eine Maschine oder eine Maschinengruppe auswählen',
@@ -1172,6 +1178,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   },
   productionshiftgoal: {
     productionshiftgoal: 'Schichtziel'
+  },
+  productionstatelegend: {
+    title: 'Produktionszustand'
   },
   productionstatelegends: {
     title: 'Produktionsstatus'

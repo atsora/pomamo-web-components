@@ -290,7 +290,9 @@ import 'x-modificationmanager/x-modificationmanager';
         this._drawCell(data.MachineStateTemplates[index]);
       }
       if (0 == data.MachineStateTemplates.length) {
-        pulseCustomDialog.openDialog('No flow is defined. Please contact support', { type: 'Error', title: 'No data' });
+        pulseCustomDialog.openDialog(
+          this.getTranslation('error.noFlowDefined', 'No flow is defined. Please contact support'),
+          { type: 'Error', title: this.getTranslation('error.noData', 'No data') });
       }
     }
 
