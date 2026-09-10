@@ -261,7 +261,6 @@ import 'x-revisionprogress/x-revisionprogress';
     }
 
     refresh(data) {
-      debugger;
       // Clean
       this._messageSpan.innerHTML = '';
       let setupmachines = this.element.querySelectorAll('x-setupmachine');

@@ -456,7 +456,7 @@ import 'x-freetext/x-freetext';
 
       let previewTitle = document.createElement('span');
       previewTitle.classList.add('machineselection-preview-title');
-      previewTitle.textContent = 'preview machines';
+      previewTitle.textContent = this.getTranslation('previewMachines', 'Preview machines');
       this._freeTextLastUpdate = pulseUtility.createElementWithAttribute('x-freetext', {
         'textchange-context': 'machineselection'
       });
