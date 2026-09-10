@@ -438,7 +438,7 @@ import 'x-revisionprogress/x-revisionprogress';
       if (this.range.isEmpty()) {
         console.error('empty range');
         askForRange();
-        this.switchToKey('Error', () => this.displayError('empty range'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.emptyRange', 'Empty range')), () => this.removeError());
         return;
       }
 
@@ -614,7 +614,7 @@ import 'x-revisionprogress/x-revisionprogress';
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.switchToKey('Error', () => this.displayError('invalid range'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidRange', 'Invalid range')), () => this.removeError());
         return;
       }
       this.switchToNextContext();

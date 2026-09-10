@@ -216,7 +216,7 @@ import * as eventBus from 'eventBus';
           eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent',
             this.element.getAttribute('period-context'));
         }
-        this.setError('missing range'); // delayed error message
+        this.setError(this.getTranslation('error.missingRange', 'Missing range')); // delayed error message
         return;
       }
       if (this._range.isEmpty()) {
@@ -226,7 +226,7 @@ import * as eventBus from 'eventBus';
           eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent',
             this.element.getAttribute('period-context'));
         }
-        this.setError('empty range'); // delayed error message
+        this.setError(this.getTranslation('error.emptyRange', 'Empty range')); // delayed error message
         return;
       }*/
       if (!this.element.hasAttribute('machine-id')) {

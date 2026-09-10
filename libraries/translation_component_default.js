@@ -56,6 +56,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     missingRange: 'Missing range',
     missingWhen: 'Missing when',
     noData: 'No data',
+    noDataAvailable: 'No data available',
     noFlowDefined: 'No flow is defined. Please contact support',
     noMachineOrGroupToDisplay: 'No machine or group to display',
     selectMachine: 'Please select a machine',
@@ -523,6 +524,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     selectMachine: 'Prière de sélectionner une machine',
     selectMachineGroup: 'Prière de sélectionner une machine ou un groupe de machines',
     noData: 'Pas de données',
+    noDataAvailable: 'Aucune donnée disponible',
     noFlowDefined: "Aucun flux n'est défini. Prière de contacter le support",
     noMachineOrGroupToDisplay: 'Pas de machine ou de groupe de machines à afficher'
   },
@@ -987,6 +989,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     missingRange: 'Zeitraum fehlt',
     missingWhen: 'Attribut when fehlt',
     noData: 'Keine Daten',
+    noDataAvailable: 'Keine Daten verfügbar',
     noFlowDefined: 'Es ist kein Ablauf definiert. Bitte den Support kontaktieren',
     noMachineOrGroupToDisplay: 'Keine Maschine oder Gruppe anzuzeigen',
     selectMachine: 'Bitte eine Maschine auswählen',

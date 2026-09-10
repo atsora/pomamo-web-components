@@ -370,7 +370,7 @@ import * as eventBus from 'eventBus';
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
         // Delayed display :
-        this.setError('missing range');
+        this.setError(this.getTranslation('error.missingRange', 'Missing range'));
         // or
         // Immediat display :
         //this.switchToKey('Error', () => this.displayError('invalid param'), () => this.removeError());
@@ -386,7 +386,7 @@ import * as eventBus from 'eventBus';
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.setError('empty range');
+        this.setError(this.getTranslation('error.emptyRange', 'Empty range'));
         return;
       }
 

@@ -374,7 +374,7 @@ import 'x-highlightperiodsbar/x-highlightperiodsbar';
         eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent',
           this.element.getAttribute('period-context'));
         //}
-        this.switchToKey('Error', () => this.displayError('empty range'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.emptyRange', 'Empty range')), () => this.removeError());
         return;
       }
 
@@ -506,7 +506,7 @@ import 'x-highlightperiodsbar/x-highlightperiodsbar';
         else {
           eventBus.EventBus.dispatchToAll('askForDateTimeRangeEvent');
         }
-        this.switchToKey('Error', () => this.displayError('invalid range'), () => this.removeError());
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.invalidRange', 'Invalid range')), () => this.removeError());
         return;
       }
       this.switchToNextContext();

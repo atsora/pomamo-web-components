@@ -213,7 +213,7 @@ import * as pulseUtility from 'pulseUtility';
 
       if (pulseUtility.isNotDefined(data.ChartData)
         || data.ChartData.length == 0) {
-        this.displayError('No data available');
+        this.displayError(this.getTranslation('error.noDataAvailable', 'No data available'));
         pulseSvg.removeBarChart(this._charContent, 'chartreservecapacity-svg');
         return;
       }
