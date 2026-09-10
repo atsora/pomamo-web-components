@@ -60,6 +60,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     selectMachine: 'Please select a machine',
     selectMachineGroup: 'Please select a machine or a group of machines',
   },
+  checkconfigupdate: {
+    configChanged: 'Configuration on server has changed'
+  },
+  checkversion: {
+    versionChanged: 'Version has changed'
+  },
   checkcurrenttime: {
     syncTime: 'Please synchronize date and time'
   },
@@ -225,6 +231,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     selectedGroups: 'Selected groups',
     selectedMachines: 'Selected machines',
     switchToMachineSelection: 'Switch to machine selection'
+  },
+  message: {
+    reload: 'Reload'
   },
   machinetab: {
     previousMachine: 'Previous machine',
@@ -510,6 +519,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     noFlowDefined: "Aucun flux n'est défini. Prière de contacter le support",
     noMachineOrGroupToDisplay: 'Pas de machine ou de groupe de machines à afficher'
   },
+  checkconfigupdate: {
+    configChanged: 'La configuration du serveur a changé'
+  },
+  checkversion: {
+    versionChanged: 'La version a changé'
+  },
   checkcurrenttime: {
     syncTime: "Prière de synchroniser la date et l'heure"
   },
@@ -675,6 +690,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     selectedGroups: 'Groupes sélectionnés',
     selectedMachines: 'Machines sélectionnées',
     switchToMachineSelection: 'Passer à la sélection de machines'
+  },
+  message: {
+    reload: 'Recharger'
   },
   machinetab: {
     previousMachine: 'Machine précédente',
@@ -961,6 +979,12 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     selectMachine: 'Bitte eine Maschine auswählen',
     selectMachineGroup: 'Bitte eine Maschine oder eine Maschinengruppe auswählen',
   },
+  checkconfigupdate: {
+    configChanged: 'Die Konfiguration auf dem Server hat sich geändert'
+  },
+  checkversion: {
+    versionChanged: 'Die Version hat sich geändert'
+  },
   checkcurrenttime: {
     syncTime: 'Bitte Datum und Uhrzeit synchronisieren'
   },
@@ -1126,6 +1150,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     selectedGroups: 'Ausgewählte Gruppen',
     selectedMachines: 'Ausgewählte Maschinen',
     switchToMachineSelection: 'Zur Maschinenauswahl wechseln'
+  },
+  message: {
+    reload: 'Neu laden'
   },
   machinetab: {
     previousMachine: 'Vorherige Maschine',

@@ -94,7 +94,8 @@ import * as eventBus from 'eventBus';
             // Display a message
             let messageInfo = {
               'id': 'CONFIG Server',
-              'message': 'Configuration on server has changed ',
+              'message': this.getTranslation('configChanged',
+                'Configuration on server has changed') + ' ',
               'level': 'info',
               'clickToClose': false,
               'reloadURL': href

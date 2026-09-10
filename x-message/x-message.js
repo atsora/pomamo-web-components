@@ -230,7 +230,7 @@ import * as eventBus from 'eventBus';
         if (!pulseUtility.isNotDefined(data.reloadURL)) {
           let button = document.createElement('a');
           button.className = 'message-reload-button';
-          button.innerHTML = 'Reload';
+          button.innerHTML = this.getTranslation('reload', 'Reload');
           button.setAttribute('href', data.reloadURL);
           /*button.addEventListener('click', function () {
             // RELOAD

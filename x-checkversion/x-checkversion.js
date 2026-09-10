@@ -97,7 +97,8 @@ import * as eventBus from 'eventBus';
             // Display a message
             let messageInfo = {
               'id': 'Version',
-              'message': 'Version has changed ',
+              'message': this.getTranslation('versionChanged',
+                'Version has changed') + ' ',
               'level': 'info',
               'clickToClose': false,
               'reloadURL': href
