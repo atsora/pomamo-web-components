@@ -370,14 +370,14 @@ import 'x-modificationmanager/x-modificationmanager';
         // DO nothing because of autoclose
       };
       //close(); // ???
-      pulseCustomDialog.openDialog(data.ErrorMessage, { type: 'Error', title: 'Error', onClose: close });
+      pulseCustomDialog.openDialog(data.ErrorMessage, { type: 'Error', title: this.getTranslation('errorTitle', 'Error'), onClose: close });
     }
     _saveFail(url) {
       let close = function () {
         // DO nothing because of autoclose
       };
       //close(); // ???
-      pulseCustomDialog.openDialog('Error while saving', { type: 'Error', title: 'Error', onClose: close });
+      pulseCustomDialog.openDialog(this.getTranslation('errorWhileSaving', 'Error while saving'), { type: 'Error', title: this.getTranslation('errorTitle', 'Error'), onClose: close });
     }
 
     onDateTimeRangeChange(event) {

@@ -1064,7 +1064,8 @@ import * as eventBus from 'eventBus';
       //super.manageNotApplicable();
 
       // Immediat error display :
-      this.switchToKey('Error', () => this.displayError('No production information for this machine / group'), () => this.removeError());
+      this.switchToKey('Error', () => this.displayError(this.getTranslation('noProductionInformation',
+              'No production information for this machine / group')), () => this.removeError());
     }
 
     /**

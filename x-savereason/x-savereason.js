@@ -804,7 +804,7 @@ import 'x-datetimerange/x-datetimerange';
     _saveFail(ajaxToken, url, isTimeout, xhrStatus) {
       // ignore ajaxToken
       if (isTimeout) {
-        pulseCustomDialog.openDialog('Timeout', { type: 'Error' });
+        pulseCustomDialog.openDialog(this.getTranslation('timeoutError', 'Timeout'), { type: 'Error' });
       }
       else {
         let message = pulseService.getAjaxErrorMessage(xhrStatus);

@@ -190,7 +190,8 @@ import * as pulseUtility from 'pulseUtility';
       let role = data.Role;
       if (pulseUtility.isNotDefined(role)
         || ('' == role)) {
-        this.displayError('No role defined for this login. Please, change configuration.');
+        this.displayError(this.getTranslation('noRoleDefined',
+              'No role defined for this login. Please, change configuration.'));
         return;
       }
       role = role.toLowerCase();

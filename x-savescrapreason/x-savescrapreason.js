@@ -279,7 +279,7 @@ import 'x-machinedisplay/x-machinedisplay';
      */
     _saveFail(ajaxToken, url, isTimeout, xhrStatus) {
       if (isTimeout) {
-        pulseCustomDialog.openDialog('Timeout', { type: 'Error' });
+        pulseCustomDialog.openDialog(this.getTranslation('timeoutError', 'Timeout'), { type: 'Error' });
       }
       else {
         let message = pulseService.getAjaxErrorMessage(xhrStatus);

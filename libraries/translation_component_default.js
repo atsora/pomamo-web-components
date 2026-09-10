@@ -44,6 +44,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   noDataTooOld: 'N/A',
   missingconfiguration: 'Missing configuration',
   errorColon: 'Error: ',
+  errorTitle: 'Error',
+  errorWhileSaving: 'Error while saving',
+  timeoutError: 'Timeout',
   waitingPath: 'Waiting for path',
   error: {
     emptyRange: 'Empty range',
@@ -180,6 +183,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     pastTooltip: ''
   },
   loginchangepassword: {
+    invalidPassword: 'Invalid password',
+    newPasswordsMismatch: 'The new passwords should be the same !',
     user: 'User:',
     oldPassword: 'Old password:',
     newPassword: 'New password:',
@@ -468,7 +473,15 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   rotationprogress: {
     page: 'Page'
   },
+  partproductionstatuspie: {
+    noProductionInformation: 'No production information for this machine / group'
+  },
+  validatetoken: {
+    noRoleDefined: 'No role defined for this login. Please, change configuration.'
+  },
   workexplorer: {
+    checkLimits: 'Check limits',
+    fillMandatoryField: 'Fill mandatory field !',
     reload: 'Reload',
     saveNew: 'Save New'
   },
@@ -509,6 +522,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   noDataTooOld: 'N/D',
   missingconfiguration: 'Configuration manquante',
   errorColon: 'Erreur : ',
+  errorTitle: 'Erreur',
+  errorWhileSaving: "Erreur lors de l'enregistrement",
+  timeoutError: 'Délai dépassé',
   waitingPath: 'En attente du chemin',
   homeBtn: 'accueil',
   error: {
@@ -646,6 +662,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     pastTooltip: ''
   },
   loginchangepassword: {
+    invalidPassword: 'Mot de passe invalide',
+    newPasswordsMismatch: 'Les nouveaux mots de passe doivent être identiques !',
     user: 'Utilisateur :',
     oldPassword: 'Ancien mot de passe :',
     newPassword: 'Nouveau mot de passe :',
@@ -935,7 +953,15 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   rotationprogress: {
     page: 'Page'
   },
+  partproductionstatuspie: {
+    noProductionInformation: "Pas d'information de production pour cette machine / ce groupe"
+  },
+  validatetoken: {
+    noRoleDefined: "Aucun rôle défini pour cet identifiant. Prière de modifier la configuration."
+  },
   workexplorer: {
+    checkLimits: 'Vérifiez les limites',
+    fillMandatoryField: 'Prière de remplir le champ obligatoire !',
     reload: 'Recharger',
     saveNew: 'Enregistrer nouveau'
   },
@@ -977,6 +1003,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   noDataTooOld: 'k. A.',
   missingconfiguration: 'Konfiguration fehlt',
   errorColon: 'Fehler: ',
+  errorTitle: 'Fehler',
+  errorWhileSaving: 'Fehler beim Speichern',
+  timeoutError: 'Zeitüberschreitung',
   waitingPath: 'Warte auf Pfad',
   error: {
     emptyRange: 'Leerer Bereich',
@@ -1113,6 +1142,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     pastTooltip: ''
   },
   loginchangepassword: {
+    invalidPassword: 'Ungültiges Passwort',
+    newPasswordsMismatch: 'Die neuen Passwörter müssen übereinstimmen !',
     user: 'Benutzer:',
     oldPassword: 'Altes Passwort:',
     newPassword: 'Neues Passwort:',
@@ -1401,7 +1432,15 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   rotationprogress: {
     page: 'Seite'
   },
+  partproductionstatuspie: {
+    noProductionInformation: 'Keine Produktionsinformationen für diese Maschine / Gruppe'
+  },
+  validatetoken: {
+    noRoleDefined: 'Für diese Anmeldung ist keine Rolle definiert. Bitte die Konfiguration ändern.'
+  },
   workexplorer: {
+    checkLimits: 'Grenzwerte prüfen',
+    fillMandatoryField: 'Bitte das Pflichtfeld ausfüllen !',
     reload: 'Neu laden',
     saveNew: 'Neu speichern'
   },

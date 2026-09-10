@@ -115,7 +115,8 @@ import pulseCustomDialog from 'pulseCustomDialog';
 
       let newPass1 = this._newPassEdit1.value;
       if (this._newPassEdit2.value != newPass1) {
-        this.displayError('The new passwords should be the same !');
+        this.displayError(this.getTranslation('newPasswordsMismatch',
+              'The new passwords should be the same !'));
         return;
       }
 
@@ -158,11 +159,11 @@ import pulseCustomDialog from 'pulseCustomDialog';
     }
 
     _changeError (token, error) {
-      this.displayError('Error: ' + error.ErrorMessage);
+      this.displayError(this.getTranslation('errorColon', 'Error: ') + error.ErrorMessage);
     }
 
     _changeFail (token, url, isTimeout, xhrStatus) {
-      this.displayError('Invalid password');
+      this.displayError(this.getTranslation('invalidPassword', 'Invalid password'));
     }
 
     initialize () {

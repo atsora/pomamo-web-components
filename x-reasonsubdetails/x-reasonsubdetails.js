@@ -148,7 +148,7 @@ import * as pulseDetailsPopup from 'pulsecomponent-detailspopup';
       if (this._content) {
         this._content.innerHTML = message;
       }
-      pulseCustomDialog.openDialog(message, { type: 'Error', title: 'Error', onClose: this._close.bind(this) });
+      pulseCustomDialog.openDialog(message, { type: 'Error', title: this.getTranslation('errorTitle', 'Error'), onClose: this._close.bind(this) });
     }
     _close () {
       // Close popup

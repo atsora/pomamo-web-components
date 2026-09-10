@@ -116,13 +116,13 @@ import 'x-datetimepicker/x-datetimepicker';
     _saveError (errorMessage) {
       let close = function () { // Do Nothing
       };
-      pulseCustomDialog.openDialog(errorMessage.ErrorMessage, { type: 'Error', title: 'Error', onClose: close });
+      pulseCustomDialog.openDialog(errorMessage.ErrorMessage, { type: 'Error', title: this.getTranslation('errorTitle', 'Error'), onClose: close });
     }
 
     _saveFail (url, isTimeout, xhrStatus) {
       let close = function () { // Do Nothing
       };
-      pulseCustomDialog.openDialog('Error while saving', { type: 'Error', title: 'Error', onClose: close });
+      pulseCustomDialog.openDialog(this.getTranslation('errorWhileSaving', 'Error while saving'), { type: 'Error', title: this.getTranslation('errorTitle', 'Error'), onClose: close });
     }
 
     initialize () {

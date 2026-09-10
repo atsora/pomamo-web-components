@@ -728,7 +728,7 @@ import pulseCustomDialog from 'pulseCustomDialog';
                 if (prop.Limits.Maxsize) {
                   // Max number of chars
                   if (value.length > prop.Limits.Maxsize) {
-                    pulseCustomDialog.openDialog('Check limits', { type: 'Error' });
+                    pulseCustomDialog.openDialog(this.getTranslation('checkLimits', 'Check limits'), { type: 'Error' });
                     return;
                   }
                 }
@@ -743,13 +743,13 @@ import pulseCustomDialog from 'pulseCustomDialog';
               if (prop.Limits) {
                 if (prop.Limits.Min) {
                   if (value < prop.Limits.Min) {
-                    pulseCustomDialog.openDialog('Check limits', { type: 'Error' });
+                    pulseCustomDialog.openDialog(this.getTranslation('checkLimits', 'Check limits'), { type: 'Error' });
                     return;
                   }
                 }
                 if (prop.Limits.Max) {
                   if (value > prop.Limits.Max) {
-                    pulseCustomDialog.openDialog('Check limits', { type: 'Error' });
+                    pulseCustomDialog.openDialog(this.getTranslation('checkLimits', 'Check limits'), { type: 'Error' });
                     return;
                   }
                 }
@@ -761,13 +761,13 @@ import pulseCustomDialog from 'pulseCustomDialog';
               if (prop.Limits) {
                 if (prop.Limits.Min) {
                   if (value < prop.Limits.Min) {
-                    pulseCustomDialog.openDialog('Check limits', { type: 'Error' });
+                    pulseCustomDialog.openDialog(this.getTranslation('checkLimits', 'Check limits'), { type: 'Error' });
                     return;
                   }
                 }
                 if (prop.Limits.Max) {
                   if (value > prop.Limits.Max) {
-                    pulseCustomDialog.openDialog('Check limits', { type: 'Error' });
+                    pulseCustomDialog.openDialog(this.getTranslation('checkLimits', 'Check limits'), { type: 'Error' });
                     return;
                   }
                 }
@@ -782,13 +782,13 @@ import pulseCustomDialog from 'pulseCustomDialog';
               if (prop.Limits) {
                 if (prop.Limits.Min) {
                   if (value < prop.Limits.Min) {
-                    pulseCustomDialog.openDialog('Check limits', { type: 'Error' });
+                    pulseCustomDialog.openDialog(this.getTranslation('checkLimits', 'Check limits'), { type: 'Error' });
                     return;
                   }
                 }
                 if (prop.Limits.Max) {
                   if (value > prop.Limits.Max) {
-                    pulseCustomDialog.openDialog('Check limits', { type: 'Error' });
+                    pulseCustomDialog.openDialog(this.getTranslation('checkLimits', 'Check limits'), { type: 'Error' });
                     return;
                   }
                 }
@@ -812,7 +812,7 @@ import pulseCustomDialog from 'pulseCustomDialog';
           } // end switch format
 
           if (prop.Required && null == value) {
-            pulseCustomDialog.openDialog('Fill mandatory field ! ', { type: 'Error' });
+            pulseCustomDialog.openDialog(this.getTranslation('fillMandatoryField', 'Fill mandatory field !'), { type: 'Error' });
             return;
           }
 
@@ -885,7 +885,7 @@ import pulseCustomDialog from 'pulseCustomDialog';
     _saveNewFail (ajaxToken, url, isTimeout, xhrStatus) {
       // ignore ajaxToken
       if (isTimeout) {
-        pulseCustomDialog.openDialog('Timeout', { type: 'Error' });
+        pulseCustomDialog.openDialog(this.getTranslation('timeoutError', 'Timeout'), { type: 'Error' });
       }
       else {
         let message = pulseService.getAjaxErrorMessage(xhrStatus);

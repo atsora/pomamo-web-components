@@ -384,12 +384,12 @@ import 'x-milestonesadd/x-milestonesadd';
     _removeError (errorMessage) {
       let close = function () { // Do Nothing
       };
-      pulseCustomDialog.openDialog(errorMessage.ErrorMessage, { type: 'Error', title: 'Error', onClose: close });
+      pulseCustomDialog.openDialog(errorMessage.ErrorMessage, { type: 'Error', title: this.getTranslation('errorTitle', 'Error'), onClose: close });
     }
     _removeFail (url, isTimeout, xhrStatus) {
       let close = function () { // Do Nothing
       };
-      pulseCustomDialog.openDialog(this.getTranslation('errorRemove', 'Error in removing'), { type: 'Error', title: 'Error', onClose: close });
+      pulseCustomDialog.openDialog(this.getTranslation('errorRemove', 'Error in removing'), { type: 'Error', title: this.getTranslation('errorTitle', 'Error'), onClose: close });
     }
 
     // Callback events
