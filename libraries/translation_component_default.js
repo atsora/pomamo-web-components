@@ -50,6 +50,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     emptyPeriod: 'Empty period',
     invalidMachineId: 'Invalid machine-id',
     invalidRange: 'Invalid range',
+    missingMachineContext: 'Missing machine context',
     missingMotionContext: 'Missing motion context',
     missingParam: 'Missing param',
     missingRange: 'Missing range',
@@ -110,6 +111,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     endBeforeStartError: 'End date/time is before start date/time',
     endNotValidError: 'End date/time is not valid',
     invalidDatesError: 'Please, input valid dates',
+    noEnd: 'No end date',
     selectAnd: ' and ',
     selectBetween: 'Select period between ',
     selectFrom: 'Select period from ',
@@ -207,6 +209,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   machinemodecolorlegend: {
     title: 'Machine mode'
   },
+  machinemodecolorlegends: {
+    title: 'Machine mode'
+  },
   machinemodelegends: {
     title: 'Machine mode'
   },
@@ -230,6 +235,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     selectMachines: 'Select machines',
     selectedGroups: 'Selected groups',
     selectedMachines: 'Selected machines',
+    serverUnreachable: 'Server unreachable',
     switchToMachineSelection: 'Switch to machine selection'
   },
   message: {
@@ -509,6 +515,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     emptyPeriod: 'Période vide',
     invalidMachineId: 'machine-id invalide',
     invalidRange: 'Plage invalide',
+    missingMachineContext: 'Attribut machine-context manquant',
     missingMotionContext: 'Attribut motion-context manquant',
     missingParam: 'Attribut param manquant',
     missingRange: 'Période manquante',
@@ -569,6 +576,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     endBeforeStartError: 'La date de fin est antérieure à la date de début',
     endNotValidError: 'La date de fin n’est pas valide',
     invalidDatesError: 'Les dates ne sont pas valides',
+    noEnd: 'Pas de date de fin',
     selectAnd: ' et ',
     selectBetween: 'Sélectionner la période entre ',
     selectFrom: 'Sélectionner la période après ',
@@ -666,6 +674,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   machinemodecolorlegend: {
     title: 'Mode machine'
   },
+  machinemodecolorlegends: {
+    title: 'Mode machine'
+  },
   machinemodelegends: {
     title: 'Mode machine'
   },
@@ -689,6 +700,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     selectMachines: 'Sélectionner des machines',
     selectedGroups: 'Groupes sélectionnés',
     selectedMachines: 'Machines sélectionnées',
+    serverUnreachable: 'Serveur injoignable',
     switchToMachineSelection: 'Passer à la sélection de machines'
   },
   message: {
@@ -969,6 +981,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     emptyPeriod: 'Leerer Zeitraum',
     invalidMachineId: 'Ungültige Maschinen-ID',
     invalidRange: 'Ungültiger Bereich',
+    missingMachineContext: 'Attribut machine-context fehlt',
     missingMotionContext: 'Attribut motion-context fehlt',
     missingParam: 'Parameter fehlt',
     missingRange: 'Zeitraum fehlt',
@@ -1029,6 +1042,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     endBeforeStartError: 'Enddatum/-uhrzeit liegt vor dem Startdatum/-uhrzeit',
     endNotValidError: 'Enddatum/-uhrzeit ist ungültig',
     invalidDatesError: 'Bitte gültige Datumsangaben eingeben',
+    noEnd: 'Kein Enddatum',
     selectAnd: ' und ',
     selectBetween: 'Zeitraum auswählen zwischen ',
     selectFrom: 'Zeitraum auswählen ab ',
@@ -1126,6 +1140,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   machinemodecolorlegend: {
     title: 'Maschinenmodus'
   },
+  machinemodecolorlegends: {
+    title: 'Maschinenmodus'
+  },
   machinemodelegends: {
     title: 'Maschinenmodus'
   },
@@ -1149,6 +1166,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     selectMachines: 'Maschinen auswählen',
     selectedGroups: 'Ausgewählte Gruppen',
     selectedMachines: 'Ausgewählte Maschinen',
+    serverUnreachable: 'Server nicht erreichbar',
     switchToMachineSelection: 'Zur Maschinenauswahl wechseln'
   },
   message: {
