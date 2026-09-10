@@ -192,8 +192,12 @@ export function getAjaxErrorMessage (xhrStatus) {
   if (typeof xhrStatus === 'undefined') {
     return 'Empty XHR status';
   }
+  // 0 is not an HTTP status: the browser could not read a response at all --
+  // service down, wrong URL, or a cross-origin reply it refused to expose.
+  // The former wording ("check the network") sent operators chasing their own
+  // connection while the service simply was not answering.
   let statusMessageMap = {
-    '0': 'Not connected, check the network',
+    '0': 'No response from the server',
     '400': 'Bad request',
     '401': 'Unauthorised access',
     '403': 'Forbidden resource, cannot be accessed',
@@ -205,6 +209,16 @@ export function getAjaxErrorMessage (xhrStatus) {
     '504': 'Gateway Timeout',
     '520': 'Unknown Error'
   };
+  // Localized wording when the catalog is loaded: ATSORA_CATALOG follows the
+  // locale chosen by setAtsoraLocale. The English map above stays the fallback,
+  // so a page that has not loaded the catalog still says something useful.
+  if (typeof ATSORA_CATALOG !== 'undefined'
+    && ATSORA_CATALOG.error
+    && ATSORA_CATALOG.error.ajax
+    && ATSORA_CATALOG.error.ajax[xhrStatus]) {
+    return ATSORA_CATALOG.error.ajax[xhrStatus];
+  }
+
   let message = statusMessageMap[xhrStatus];
   if (typeof message === 'undefined') {
     message = `unknown status ${xhrStatus}`;

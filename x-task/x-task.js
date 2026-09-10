@@ -736,18 +736,24 @@ import * as pulseConfig from 'pulseConfig';
     }
 
     getShortUrl() {
-      let url = 'graphql';
-      return url;
+      return 'g';
     }
 
     /**
-     * PROVISIONAL: the task GraphQL service is not wired into the Pulse backend
-     * yet, so the data is sourced from the local Vue mock (atsora-mocks) instead
-     * of `<path>/graphql`. Override via the `mockGraphqlUrl` config/attribute.
-     * Remove this getter once the real service answers at `<path>/graphql`.
+     * The task GraphQL service answers at `<path>/g`, which the base class
+     * builds from the configured web service path.
+     *
+     * Setting `mockGraphqlUrl` (config or attribute) points the component at a
+     * mock instead -- atsora-mocks serves http://localhost:4000/ -- which is how
+     * the feature is exercised while no backend exposes the endpoint. That mock
+     * URL used to be the DEFAULT: an installed app silently queried a developer
+     * server on the client machine, and the resulting connection failure was
+     * reported as "check the network" rather than as a service that does not
+     * answer. Leave it unset outside development.
      */
     get url() {
-      return this.getConfigOrAttribute('mockGraphqlUrl', 'http://localhost:4000/');
+      const mock = this.getConfigOrAttribute('mockGraphqlUrl', '');
+      return mock ? mock : super.url;
     }
 
     postData() {
