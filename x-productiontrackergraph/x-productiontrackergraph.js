@@ -170,7 +170,7 @@ import Chart from 'chart.js/auto';
       // Loader
       let loader = this.document.createElement('div');
       loader.className = 'pulse-loader';
-      loader.innerHTML = 'Loading...';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
       loader.style.display = 'none';
       // TODO: check if loaderDiv is necessary
       let loaderDiv = this.document.createElement('div');

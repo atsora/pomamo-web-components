@@ -139,7 +139,7 @@ import 'x-revisionprogress/x-revisionprogress';
             // create DOM - loader
             let loader = document.createElement('div');
             loader.classList.add('pulse-loader');
-            loader.innerHTML = 'Loading...';
+            loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
             loader.style.display = 'none';
 
             let loaderDiv = document.createElement('div');

@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as pulseUtility from 'pulseUtility';
+import * as pulseConfig from 'pulseConfig';
 var _svgNS = 'http://www.w3.org/2000/svg';
 
 /**
@@ -750,7 +751,8 @@ export function showPulseMaintenance () {
   }
 
   let text = mkDiv('pulse-maintenance-text');
-  text.innerHTML = 'The system is currently under maintenance';
+  text.innerHTML = pulseConfig.pulseTranslate('content.maintenance',
+          'The system is currently under maintenance');
   let svg = mkDiv('pulse-maintenance-svg');
   let centeredDiv = mkDiv('pulse-maintenance-centered-div');
   centeredDiv.appendChild(svg);

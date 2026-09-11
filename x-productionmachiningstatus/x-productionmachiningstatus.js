@@ -350,13 +350,13 @@ import * as eventBus from 'eventBus';
           linkReport.setAttribute('target', '_blank'); // To open in a new tab
           let shiftLabel = document.createElement('span');
           shiftLabel.classList.add('productionmachiningstatus-shiftlabel');
-          shiftLabel.textContent = 'Shift';
+          shiftLabel.textContent = this.getTranslation('shift', 'Shift');
           linkReport.appendChild(shiftLabel);
           if (data.Shift && data.Shift.Display) {
             linkReport.innerHTML = data.Shift.Display;
           }
           else {
-            linkReport.innerHTML = 'Out of shift';
+            linkReport.innerHTML = this.getTranslation('outOfShift', 'Out of shift');
           }
 
           shiftDiv.appendChild(linkReport);

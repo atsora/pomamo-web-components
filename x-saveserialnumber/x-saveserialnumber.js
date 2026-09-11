@@ -171,7 +171,7 @@ import 'x-datetimerange/x-datetimerange';
       // Create DOM - Content
       this._serialNumberInput = document.createElement('input');
       this._serialNumberInput.type = 'text';
-      this._serialNumberInput.placeholder = 'Serial number...';
+      this._serialNumberInput.placeholder = this.getTranslation('serialNumberPlaceholder', 'Serial number...');
       this._serialNumberInput.autofocus = true;
       this._serialNumberInput.value = this.element.getAttribute('serial-number') || '';
       let divinputtext = document.createElement('div');

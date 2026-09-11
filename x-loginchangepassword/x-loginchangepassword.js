@@ -226,7 +226,7 @@ import pulseCustomDialog from 'pulseCustomDialog';
       // Add button AFTER message
       this._changeButton = document.createElement('button');
       this._changeButton.className = 'loginchangepassword-button';
-      this._changeButton.innerHTML = 'Change';
+      this._changeButton.innerHTML = this.getTranslation('changebutton', 'Change');
       let divBtn = document.createElement('div');
       divBtn.className = 'loginchangepassword-button-div';
       divBtn.appendChild(this._changeButton);

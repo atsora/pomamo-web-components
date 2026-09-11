@@ -289,11 +289,11 @@ import 'x-revisionprogress/x-revisionprogress';
       this._current.classList.remove('pulse-cellbar-cell-missing', 'pulse-cellbar-cell-nodata');
       if (data.SerialNumber == '0') { //it means that serial number is missing
         this._current.classList.add('pulse-cellbar-cell-missing');
-        this._currentText.innerHTML = 'Missing';
+        this._currentText.innerHTML = this.getTranslation('missing', 'Missing');
       }
       else if (data.SerialNumber == '-1') { //it means that there is no serial number
         this._current.classList.add('pulse-cellbar-cell-nodata');
-        this._currentText.innerHTML = 'No Cycle';
+        this._currentText.innerHTML = this.getTranslation('noCycle', 'No Cycle');
       }
       else { //in this case, serial number has a value
         this._currentText.innerHTML = data.SerialNumber;

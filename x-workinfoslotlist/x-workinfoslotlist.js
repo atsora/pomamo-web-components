@@ -220,13 +220,13 @@ import 'x-highlightperiodsbar/x-highlightperiodsbar';
                 let elem3 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
                 elem3.classList.add('nodata');
                 elem3.setAttribute('missing', workinformations[n - 1].Kind);
-                elem3.innerHTML = 'No Operation';
+                elem3.innerHTML = this.getTranslation('noOperation', 'No Operation');
               }
               else { //if operation data comme from Operator
                 let elem3 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
                 elem3.classList.add('missing');
                 elem3.setAttribute('missing', workinformations[n - 1].Kind);
-                elem3.innerHTML = 'Missing Operation';
+                elem3.innerHTML = this.getTranslation('missingOperation', 'Missing Operation');
               }
             }
             else {
@@ -234,13 +234,13 @@ import 'x-highlightperiodsbar/x-highlightperiodsbar';
                 let elem3 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
                 elem3.classList.add('nodata');
                 elem3.setAttribute('missing', workinformations[n - 1].Kind);
-                elem3.innerHTML = 'No Operation';
+                elem3.innerHTML = this.getTranslation('noOperation', 'No Operation');
               }
               else { //if operation data comme from Operator
                 let elem3 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
                 elem3.classList.add('missing');
                 elem3.setAttribute('missing', _getLevel2Kind(workinformations).join(',') + ',' + workinformations[n - 1].Kind);
-                elem3.innerHTML = 'Missing Operation';
+                elem3.innerHTML = this.getTranslation('missingOperation', 'Missing Operation');
               }
             }
           }
@@ -253,20 +253,20 @@ import 'x-highlightperiodsbar/x-highlightperiodsbar';
               let elem4 = tablerow.querySelector('[kind="' + workinformations[0].Kind + '"]');
               elem4.classList.add('missing');
               elem4.setAttribute('missing', workinformations[0].Kind);
-              elem4.innerHTML = 'Missing';
+              elem4.innerHTML = this.getTranslation('missing', 'Missing');
             }
             else if (!config.OnePartPerWorkOrder) { //if not only one part is assigned to a WorkOrder
               _appendLevel2(tablerow, workinformations);
               let elem4 = tablerow.querySelector('[kind="' + workinformations[0].Kind + '"]');
               elem4.classList.add('missing');
               elem4.setAttribute('missing', workinformations[0].Kind);
-              elem4.innerHTML = 'Missing';
+              elem4.innerHTML = this.getTranslation('missing', 'Missing');
             }
             else {
               let elem4 = tablerow.querySelector('[kind="' + workinformations[0].Kind + '"]');
               elem4.classList.add('missing');
               elem4.setAttribute('missing', workinformations[0].Kind + ',' + _getLevel2Kind(workinformations).join(','));
-              elem4.innerHTML = 'Missing';
+              elem4.innerHTML = this.getTranslation('missing', 'Missing');
             }
             let elem5 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
             elem5.classList.add('hasvalue');
@@ -280,13 +280,13 @@ import 'x-highlightperiodsbar/x-highlightperiodsbar';
             if (config.OperationFromCnc) { //if operation data comme from CNC
               let elem6 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
               elem6.classList.add('nodata');
-              elem6.innerHTML = 'No Operation';
+              elem6.innerHTML = this.getTranslation('noOperation', 'No Operation');
             }
             else { //if operation data come from Operator
               let elem6 = tablerow.querySelector('[kind="' + workinformations[n - 1].Kind + '"]');
               elem6.classList.add('missing');
               elem6.setAttribute('missing', m);
-              elem6.innerHTML = 'Missing Operation';
+              elem6.innerHTML = this.getTranslation('missingOperation', 'Missing Operation');
             }
           }
         }
@@ -320,7 +320,7 @@ import 'x-highlightperiodsbar/x-highlightperiodsbar';
           else {
             elem.classList.add('missing');
             elem.setAttribute('missing', workinformations[i].Kind);
-            elem.innerHTML = 'Missing';
+            elem.innerHTML = this.getTranslation('missing', 'Missing');
           }
         }
       }
@@ -398,12 +398,12 @@ import 'x-highlightperiodsbar/x-highlightperiodsbar';
       fixedHeaderDiv.className = 'fixed-header';
       let headerLabel1 = document.createElement('div');
       headerLabel1.className = 'workinfoslotlist-header-label';
-      headerLabel1.innerHTML = '1. Time range';
+      headerLabel1.innerHTML = this.getTranslation('headerTimeRange', '1. Time range');
       fixedHeaderDiv.appendChild(headerLabel1);
       fixedHeaderDiv.appendChild(datetimerangeDiv);
       let headerLabel2 = document.createElement('div');
       headerLabel2.className = 'workinfoslotlist-header-label';
-      headerLabel2.innerHTML = '2. Work informations periods';
+      headerLabel2.innerHTML = this.getTranslation('headerWorkInformations', '2. Work informations periods');
       fixedHeaderDiv.appendChild(headerLabel2);
 
       // - x-operationslotbar + x-highlightperiodsbar

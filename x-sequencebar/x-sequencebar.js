@@ -273,7 +273,7 @@ import * as eventBus from 'eventBus';
             else {
               let noInfo = document.createElement('div');
               noInfo.classList.add('sequencebar-machinemodule-noinfo');
-              noInfo.innerHTML = 'N/A';
+              noInfo.innerHTML = this.getTranslation('noDataTooOld', 'N/A');
               this._content.appendChild(noInfo);
             }
           }

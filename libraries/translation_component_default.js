@@ -165,6 +165,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     scheduledStatus: 'Scheduled status:'
   },
   lastserialnumber: {
+    missing: 'Missing',
+    noCycle: 'No Cycle',
     currentserialnumber: 'Serial Number: ',
     pastserialnumber: 'Past data',
     currentTooltip: 'change current serial number',
@@ -258,6 +260,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     nextMachine: 'Next machine'
   },
   milestonesadd: {
+    addButton: 'ADD',
     shortDescriptionColon: 'Short description: ',
     whenColon: 'When: '
   },
@@ -321,6 +324,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
 
   },
   productionmachiningstatus: {
+    outOfShift: 'Out of shift',
+    shift: 'Shift',
     notavailable: 'Not Available'
   },
   progressbar: {
@@ -372,6 +377,26 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     seeUnansweredOnly: 'Unanswered only',
   },
   reportdatetime: {
+    typeExplicit: 'From... to...',
+    typeSince: 'Since...',
+    typePast: 'Past',
+    typeCurrent: 'Current',
+    unitHours: 'hour(s)',
+    unitShifts: 'shift(s)',
+    unitDays: 'day(s)',
+    unitWeeks: 'week(s)',
+    unitMonths: 'month(s)',
+    unitQuarters: 'quarter(s)',
+    unitYears: 'year(s)',
+    current1Hour: '1 hour',
+    current1Shift: '1 shift',
+    currentToday: 'today',
+    currentTodayYesterday: 'today + yesterday',
+    current1Week: '1 week',
+    current2Weeks: '2 weeks',
+    current1Month: '1 month',
+    current1Quarter: '1 quarter',
+    current1Year: '1 year',
     invalidGroupDisplayForm: 'Invalid groupDisplayForm',
     invalidGroupName: 'Invalid groupName',
     invalidDataType: 'Invalid dataType',
@@ -429,6 +454,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     shiftscrap: 'Shift scrap',
     scrapDeclaration: 'Scrap Declaration'
   },
+  saveserialnumber: {
+    serialNumberPlaceholder: 'Serial number...'
+  },
   sequencebar: {
     'sequence': 'Sequence '
   },
@@ -485,6 +513,13 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     fillMandatoryField: 'Fill mandatory field !',
     reload: 'Reload',
     saveNew: 'Save New'
+  },
+  workinfoslotlist: {
+    noOperation: '3',
+    missingOperation: '3',
+    missing: '4',
+    headerTimeRange: '1',
+    headerWorkInformations: '1'
   },
   workselection: {
     searchPlaceholder: 'Search...'
@@ -645,6 +680,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     scheduledStatus: 'État planifié : '
   },
   lastserialnumber: {
+    missing: 'Manquant',
+    noCycle: 'Pas de cycle',
     currentserialnumber: 'Numéro de série : ',
     pastserialnumber: 'Données passées',
     currentTooltip: "Changer le numéro de série courant",
@@ -738,6 +775,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     nextMachine: 'Machine suivante'
   },
   milestonesadd: {
+    addButton: 'AJOUTER',
     shortDescriptionColon: 'Courte description : ',
     whenColon: 'Quand : '
   },
@@ -800,6 +838,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     target: 'objectif',
   },
   productionmachiningstatus: {
+    outOfShift: 'Hors équipe',
+    shift: 'Équipe',
     notavailable: 'Non disponible'
   },
   progressbar: {
@@ -853,6 +893,26 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     seeAllReasons: 'Voir toutes les raisons',
   },
   reportdatetime: {
+    typeExplicit: "De... à...",
+    typeSince: 'Depuis...',
+    typePast: 'Passé',
+    typeCurrent: 'En cours',
+    unitHours: 'heure(s)',
+    unitShifts: 'équipe(s)',
+    unitDays: 'jour(s)',
+    unitWeeks: 'semaine(s)',
+    unitMonths: 'mois',
+    unitQuarters: 'trimestre(s)',
+    unitYears: 'année(s)',
+    current1Hour: '1 heure',
+    current1Shift: '1 équipe',
+    currentToday: "aujourd'hui",
+    currentTodayYesterday: "aujourd'hui + hier",
+    current1Week: '1 semaine',
+    current2Weeks: '2 semaines',
+    current1Month: '1 mois',
+    current1Quarter: '1 trimestre',
+    current1Year: '1 an',
     invalidGroupDisplayForm: 'Attribut groupDisplayForm invalide',
     invalidGroupName: 'Nom de groupe invalide',
     invalidDataType: 'Type de donnée invalide',
@@ -910,6 +970,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     shiftscrap: 'Rebuts d\'équipe',
     scrapDeclaration: 'Déclarer rebuts'
   },
+  saveserialnumber: {
+    serialNumberPlaceholder: 'Numéro de série...'
+  },
   sequencebar: {
     sequence: 'Séquence '
   },
@@ -966,6 +1029,13 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     fillMandatoryField: 'Prière de remplir le champ obligatoire !',
     reload: 'Recharger',
     saveNew: 'Enregistrer nouveau'
+  },
+  workinfoslotlist: {
+    noOperation: "Pas d'opération",
+    missingOperation: 'Opération manquante',
+    missing: 'Manquant',
+    headerTimeRange: '1. Plage horaire',
+    headerWorkInformations: "2. Périodes d'informations de travail"
   },
   workselection: {
     searchPlaceholder: 'Rechercher…'
@@ -1126,6 +1196,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     scheduledStatus: 'Planungsstatus: '
   },
   lastserialnumber: {
+    missing: 'Fehlt',
+    noCycle: 'Kein Zyklus',
     currentserialnumber: 'Seriennummer: ',
     pastserialnumber: 'Vergangene Daten',
     currentTooltip: 'Aktuelle Seriennummer ändern',
@@ -1219,6 +1291,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     nextMachine: 'Nächste Maschine'
   },
   milestonesadd: {
+    addButton: 'HINZUFÜGEN',
     shortDescriptionColon: 'Kurzbeschreibung: ',
     whenColon: 'Zeitpunkt: '
   },
@@ -1281,6 +1354,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     target: 'Soll',
   },
   productionmachiningstatus: {
+    outOfShift: 'Außerhalb der Schicht',
+    shift: 'Schicht',
     notavailable: 'Nicht verfügbar'
   },
   progressbar: {
@@ -1333,6 +1408,26 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     seeAllReasons: 'Alle Gründe anzeigen',
   },
   reportdatetime: {
+    typeExplicit: 'Von... bis...',
+    typeSince: 'Seit...',
+    typePast: 'Vergangenheit',
+    typeCurrent: 'Aktuell',
+    unitHours: 'Stunde(n)',
+    unitShifts: 'Schicht(en)',
+    unitDays: 'Tag(e)',
+    unitWeeks: 'Woche(n)',
+    unitMonths: 'Monat(e)',
+    unitQuarters: 'Quartal(e)',
+    unitYears: 'Jahr(e)',
+    current1Hour: '1 Stunde',
+    current1Shift: '1 Schicht',
+    currentToday: 'heute',
+    currentTodayYesterday: 'heute + gestern',
+    current1Week: '1 Woche',
+    current2Weeks: '2 Wochen',
+    current1Month: '1 Monat',
+    current1Quarter: '1 Quartal',
+    current1Year: '1 Jahr',
     invalidGroupDisplayForm: 'Ungültiges Attribut groupDisplayForm',
     invalidGroupName: 'Ungültiger Gruppenname',
     invalidDataType: 'Ungültiger Datentyp',
@@ -1390,6 +1485,9 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     shiftscrap: 'Schichtausschuss',
     scrapDeclaration: 'Ausschuss melden'
   },
+  saveserialnumber: {
+    serialNumberPlaceholder: 'Seriennummer...'
+  },
   sequencebar: {
     sequence: 'Sequenz '
   },
@@ -1446,6 +1544,13 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     fillMandatoryField: 'Bitte das Pflichtfeld ausfüllen !',
     reload: 'Neu laden',
     saveNew: 'Neu speichern'
+  },
+  workinfoslotlist: {
+    noOperation: 'Kein Vorgang',
+    missingOperation: 'Vorgang fehlt',
+    missing: 'Fehlt',
+    headerTimeRange: '1. Zeitraum',
+    headerWorkInformations: '2. Zeiträume der Arbeitsinformationen'
   },
   workselection: {
     searchPlaceholder: 'Suche…'

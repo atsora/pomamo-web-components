@@ -184,7 +184,7 @@ import 'x-datetimepicker/x-datetimepicker';
       // Button
       this._button = document.createElement('button');
       this._button.className = 'milestonesadd-button';
-      this._button.innerHTML = 'ADD';
+      this._button.innerHTML = this.getTranslation('addButton', 'ADD');
       let buttonDiv = document.createElement('div');
       buttonDiv.className = 'milestonesadd-button-div';
       buttonDiv.appendChild(this._button);

@@ -266,7 +266,7 @@ import * as eventBus from 'eventBus';
       // HTML structure - Loader
       let loader = document.createElement('div');
       loader.className = 'pulse-loader';
-      loader.innerHTML = 'Loading...';
+      loader.innerHTML = this.getTranslation('loadingDots', 'Loading...');
       loader.style.display = 'none';
       let loaderDiv = document.createElement('div');
       loaderDiv.className = 'pulse-loader-div';
