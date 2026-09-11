@@ -26,15 +26,17 @@ import 'x-reasonslotpie/x-reasonslotpie';
    *
    * Polls `Machine/Pie?GroupId=<group-or-machine-id>` and instantiates an
    * `<x-<PieType>>` (`cycleprogresspie`, `operationprogresspie`,
-   * `partproductionstatuspie`, or `reasonslotpie`) with the same `machine-id`
-   * and `textchange-context` forwarded. When `data.Permanent` is true, switches
-   * to a `Loaded` `StaticState` to stop polling.
+   * `partproductionstatuspie`, or `reasonslotpie`) with the same `machine-id`,
+   * `textchange-context` and `period-context` forwarded. When `data.Permanent`
+   * is true, switches to a `Loaded` `StaticState` to stop polling.
    *
    * @element x-defaultpie
    * @attr {number} machine-id          machine id (takes priority over `group`)
    * @attr {string} group               group id (alternative to `machine-id`)
    * @attr {string} machine-context     event-bus context for `machineIdChangeSignal`
    * @attr {string} textchange-context  forwarded to the chosen sub-component
+   * @attr {string} period-context      forwarded to the chosen sub-component: x-reasonslotpie
+   *                                    takes its range from the period manager of this context
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class DefaultPieComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
@@ -49,6 +51,7 @@ import 'x-reasonslotpie/x-reasonslotpie';
       // DOM -> never in contructor
       self._content = undefined;
       self._messageSpan = undefined;
+      self._pie = undefined; // Sub-component created by refresh
 
       return self;
     }
@@ -159,6 +162,7 @@ import 'x-reasonslotpie/x-reasonslotpie';
       // DOM
       this.element.replaceChildren();
       this._content = undefined;
+      this._pie = undefined;
 
       super.clearInitialization();
     }
@@ -221,17 +225,14 @@ import 'x-reasonslotpie/x-reasonslotpie';
      * @param {{ PieType?: string, Permanent: boolean }} data
      */
     refresh (data) {
-      if (pulseUtility.isNotDefined(data.PieType)) {
-        // Clean any present xtag
-        this._content.replaceChildren();
-      }
-      else {
+      // Remove the pie created before, whatever its type: when the machine
+      // changes, the new one may be of another type, and keeping the old one
+      // displayed both pies side by side. Only the pie is removed, the loader
+      // and the error message stay in place.
+      this._removePie();
+
+      if (!pulseUtility.isNotDefined(data.PieType)) {
         let xtagType = 'x-' + data.PieType;
-        let findXtag = this.element.querySelector(xtagType);
-        if (findXtag != null) {
-          // Clean any present xtag
-          this._content.replaceChildren();
-        }
         // Create xtag with attributes
         let attributes;
         if (this.element.hasAttribute('group')) {
@@ -253,11 +254,27 @@ import 'x-reasonslotpie/x-reasonslotpie';
         if (this.element.hasAttribute('textchange-context')) {
           attributes['textchange-context'] = this.element.getAttribute('textchange-context');
         }
+        // Without it, x-reasonslotpie listens to the global period only, which a
+        // period manager with a period-context never sends: it stayed on 'Missing range'
+        if (this.element.hasAttribute('period-context')) {
+          attributes['period-context'] = this.element.getAttribute('period-context');
+        }
 
         // Create xtag
         let xtag = pulseUtility.createElementWithAttribute(xtagType,
           attributes);
         this._content.appendChild(xtag);
+        this._pie = xtag;
+      }
+    }
+
+    /**
+     * Remove the pie sub-component created by refresh, if any
+     */
+    _removePie () {
+      if (this._pie) {
+        this._pie.remove();
+        this._pie = undefined;
       }
     }
 
