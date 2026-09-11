@@ -515,11 +515,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     saveNew: 'Save New'
   },
   workinfoslotlist: {
-    noOperation: '3',
-    missingOperation: '3',
-    missing: '4',
-    headerTimeRange: '1',
-    headerWorkInformations: '1'
+    noOperation: 'No Operation',
+    missingOperation: 'Missing Operation',
+    missing: 'Missing',
+    headerTimeRange: '1. Time range',
+    headerWorkInformations: '2. Work informations periods'
   },
   workselection: {
     searchPlaceholder: 'Search...'
