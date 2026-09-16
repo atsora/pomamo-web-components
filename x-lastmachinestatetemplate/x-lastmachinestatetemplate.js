@@ -32,7 +32,11 @@ import 'x-revisionprogress/x-revisionprogress';
    * `_orderUsingSince()` to push the surrounding `.group-single` parent down
    * via CSS `order`. When `Category === 2`, hides the label and mounts an
    * `x-setupmachine` child instead. Clicking the label opens a
-   * `x-savemachinestatetemplate` dialog (period-context `savemst<machineId>`).
+   * `x-savemachinestatetemplate` dialog (period-context `savemst<machineId>`);
+   * when `lastmachinestatetemplate.autoOpen` is set, that dialog also opens on
+   * its own as soon as the current MST is one of the
+   * `lastmachinestatetemplate.stoppedIds` (one id, or several separated by
+   * commas), and closes again when the MST leaves that list.
    * Tracks pending modifications via `modificationEvent`: appends an
    * `x-revisionprogress` while a `kind: 'MST'` revision overlaps the current
    * range, then reloads when `pendingModifications === 0`. Reacts to
@@ -87,6 +91,35 @@ import 'x-revisionprogress/x-revisionprogress';
       if (parentsToOrder) {
         parentsToOrder.style.order = Math.round(numberToOrder);
       }
+    }
+
+    /**
+     * Machine state template ids that mean "the machine is stopped", read from
+     * the `lastmachinestatetemplate.stoppedIds` config: one id, or several
+     * separated by commas. Whatever is not a positive integer is dropped, so an
+     * empty config simply leaves the dialog closed.
+     *
+     * @returns {!number[]} ids, [] when nothing is configured
+     */
+    _getStoppedIds() {
+      return pulseConfig.getString('lastmachinestatetemplate.stoppedIds', '')
+        .split(',')
+        .map(id => parseInt(id, 10))
+        .filter(id => !isNaN(id) && id >= 0);
+    }
+
+    /**
+     * Is this machine state template one of the stopped ones ?
+     *
+     * @param {?number} mstId - machine state template id
+     * @param {!number[]} stoppedIds - ids read from the config
+     * @returns {!boolean} the id is in the list
+     */
+    _isStopped(mstId, stoppedIds) {
+      if (mstId == undefined) {
+        return false;
+      }
+      return stoppedIds.includes(Number(mstId));
     }
 
     /*getSinceISO () {
@@ -280,13 +313,14 @@ import 'x-revisionprogress/x-revisionprogress';
       }
 
       if (this.autoOpenSaveMachineStateTemplate) {
-        let stoppedId = pulseConfig.getInt('lastmachinestatetemplate.stoppedId', -1);
-        if (stoppedId != -1 && this._currentMST_id == stoppedId) {
+        let stoppedIds = this._getStoppedIds();
+        if (this._isStopped(this._currentMST_id, stoppedIds)) {
           this.clickOnCurrent();
         }
 
         if (this._lastId) {
-          if (this._lastId == stoppedId && this._currentMST_id != stoppedId) {
+          if (this._isStopped(this._lastId, stoppedIds)
+            && !this._isStopped(this._currentMST_id, stoppedIds)) {
             if (document.querySelector('.customeDialog-machinestatetemplate') != null) {
               pulseCustomDialog.close('.customeDialog-machinestatetemplate');
             }
