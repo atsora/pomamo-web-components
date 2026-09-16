@@ -24,6 +24,24 @@ SPDX-License-Identifier: Apache-2.0
     <x-lastmachinestatetemplate machine-id="3" path='http://localhost:8082/'></x-lastmachinestatetemplate>
   </div>
 
+  <h3>Machine 4 — set-up <small>(machine-id=4)</small></h3>
+  <p>The current state template is in the set-up category (<code>Category: 2</code>): the
+     label gives way to an <code>x-setupmachine</code>, which shows the running operation
+     and how long the set-up has lasted. Past <code>thresholdinseconds</code>, 60 s by
+     default, the elapsed time turns to the bad efficiency color.</p>
+  <div class="pulse-bar-div">
+    <x-lastmachinestatetemplate machine-id="4" path='http://localhost:8082/'></x-lastmachinestatetemplate>
+  </div>
+
+  <h3>Machine 5 — stopped <small>(machine-id=5)</small></h3>
+  <p>State template "Off", id 3. Open this page with <code>?stoppedIds=3</code> to watch the
+     classification dialog open on its own here, and close again as soon as the machine
+     leaves that state template. Several ids are allowed, as in
+     <code>?stoppedIds=3,4</code>.</p>
+  <div class="pulse-bar-div">
+    <x-lastmachinestatetemplate machine-id="5" path='http://localhost:8082/'></x-lastmachinestatetemplate>
+  </div>
+
   <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div class="pulse-bar-div">
     <x-lastmachinestatetemplate machine-id="999" path='http://localhost:8082/'></x-lastmachinestatetemplate>

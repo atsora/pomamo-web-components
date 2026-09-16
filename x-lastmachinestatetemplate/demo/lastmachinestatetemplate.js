@@ -9,6 +9,8 @@ import 'x-savemachinestatetemplate/x-savemachinestatetemplate';
 import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 import '@atsora/pomamo-web-service-simulation/scripts/MachineStateTemplateSlots';
+// Read by the x-setupmachine that the component mounts for a machine in set-up
+import '@atsora/pomamo-web-service-simulation/scripts/CurrentMachineStateTemplateOperation';
 import '@atsora/pomamo-web-service-simulation/scripts/NextMachineStateTemplate';
 import '@atsora/pomamo-web-service-simulation/scripts/SaveMachineStateTemplate';
 import '@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision';
