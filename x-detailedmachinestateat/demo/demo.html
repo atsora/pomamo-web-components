@@ -24,6 +24,13 @@ SPDX-License-Identifier: Apache-2.0
     <x-detailedmachinestateat machine-id="3" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedmachinestateat>
   </div>
 
+  <h3>Machine 4 — set-up <small>(machine-id=4)</small></h3>
+  <p>The slot carries the set-up category (<code>Category: 2</code>), which this
+     component ignores: only <code>x-lastmachinestatetemplate</code> branches on it.</p>
+  <div>
+    <x-detailedmachinestateat machine-id="4" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedmachinestateat>
+  </div>
+
   <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
   <div>
     <x-detailedmachinestateat machine-id="999" path="http://localhost:8082/" when='2026-05-21T00:00:00Z'></x-detailedmachinestateat>
