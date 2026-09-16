@@ -109,6 +109,20 @@ import 'x-revisionprogress/x-revisionprogress';
     }
 
     /**
+     * Create a span of this class holding this text
+     *
+     * @param {!string} className - class of the span
+     * @param {!string} text - text to display
+     * @returns {!HTMLElement} the span
+     */
+    _createSpan(className, text) {
+      let span = document.createElement('span');
+      span.className = className;
+      span.textContent = text;
+      return span;
+    }
+
+    /**
      * Is this machine state template one of the stopped ones ?
      *
      * @param {?number} mstId - machine state template id
@@ -331,9 +345,29 @@ import 'x-revisionprogress/x-revisionprogress';
       }
 
       if (this._currentMST_category != 2) {
-        let textToDisplay = this.getTranslation('lastmachinestatetemplate.scheduledStatus', 'Scheduled status:') + ' ';
-        textToDisplay += this._currentMST_display;
-        this._MST_current.innerHTML = textToDisplay;
+        // The label, its separator and the value go into three spans, so that a
+        // page can lay them out on its own: the machine dashboard puts the label
+        // below the value, smaller, and hides the separator. Splitting the
+        // translation keeps the punctuation of each language, ': ' in English
+        // and ' : ' in French, rather than hard-coding one of them here.
+        let label = this.getTranslation('lastmachinestatetemplate.scheduledStatus', 'Scheduled status:');
+        let separator = ' ';
+        let colon = label.match(/^(.*?)(\s*:\s*)$/);
+        if (colon != null) {
+          label = colon[1];
+          // The English catalog ends on ':' with nothing after it, the French one
+          // on ' : ': the space before the value is added back when it is missing.
+          separator = /\s$/.test(colon[2]) ? colon[2] : colon[2] + ' ';
+        }
+        // The three spans go inside one wrapper: a cell of a bar is laid out with
+        // flex and a gap, so three cells there would space the label, the ':' and
+        // the value apart. Inside the wrapper they stay plain inline text.
+        let text = document.createElement('span');
+        text.className = 'lastmachinestate-text';
+        text.appendChild(this._createSpan('lastmachinestate-label', label));
+        text.appendChild(this._createSpan('lastmachinestate-separator', separator));
+        text.appendChild(this._createSpan('lastmachinestate-value', this._currentMST_display));
+        this._MST_current.replaceChildren(text);
         this._content.style.display = '';
         let setupmachines = this.element.querySelectorAll('x-setupmachine');
         setupmachines.forEach(el => el.remove());
