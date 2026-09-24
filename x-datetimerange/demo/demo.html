@@ -31,6 +31,14 @@ SPDX-License-Identifier: Apache-2.0
   </div>
 
   <div class="testDTR">
+    <label>From now on (from-now = true + NoEnd = true): click it to pick a range, validate to leave the mode</label>
+    <x-datetimerange id="from_now" from-now="true" possible-no-end="true" hide-buttons="true"></x-datetimerange>
+    <button class="from-now-get-range" data-target="from_now">getRangeString()</button>
+    <button class="from-now-reset" data-target="from_now">Back to from-now</button>
+    <span class="from-now-result"></span>
+  </div>
+
+  <div class="testDTR">
     <label>Not editable (same day)</label>
     <x-datetimerange id="not_editable" range="2026-05-21T08:30:00Z;2026-05-21T18:00:00Z" not-editable="true">
     </x-datetimerange>

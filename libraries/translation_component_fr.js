@@ -83,6 +83,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     endBeforeMinError: 'La date de fin est antérieure à la date minimum autorisée',
     endBeforeStartError: 'La date de fin est antérieure à la date de début',
     endNotValidError: 'La date de fin n’est pas valide',
+    fromNow: 'À partir de maintenant, sans fin',
     invalidDatesError: 'Les dates ne sont pas valides',
     selectAnd: ' et ',
     selectBetween: 'Sélectionner la période entre ',

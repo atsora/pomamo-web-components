@@ -37,6 +37,11 @@ import 'x-datetimepicker/x-datetimepicker';
    * @attr {string}  range            ISO datetime range `begin;end`
    * @attr {boolean} not-editable     disables navigation controls and read-only renders the range
    * @attr {boolean} possible-no-end  allows the end bound to be empty
+   * @attr {boolean} from-now         'From now on' mode: displays this text rather
+   *                                  than `range`, and getRangeString() returns
+   *                                  [now, no end) computed at call time. A click
+   *                                  opens the change-range dialog from now, and
+   *                                  validating it leaves the mode
    * @attr {string}  min-begin        ISO datetime bound for the begin input
    * @attr {string}  max-begin        ISO datetime bound for the begin input
    * @attr {string}  min-end          ISO datetime bound for the end input
@@ -154,6 +159,12 @@ import 'x-datetimepicker/x-datetimepicker';
         case 'shift-label':
           if (this.isInitialized()) {
             this._displayRange();
+          }
+          break;
+        case 'from-now':
+          if (this.isInitialized()) {
+            this._displayRange();
+            this._showHideButtons();
           }
           break;
         // 'dialog-title' is read directly when opening the dialog — no live refresh needed
@@ -301,6 +312,11 @@ import 'x-datetimepicker/x-datetimepicker';
         this._displayRange();
         this._dispatchSignal(); // first dispatch — done here, not in initialize
       }
+      else if (!this._dateRange && this._isFromNow()) { // No range needed in this mode
+        this._dateRange = this._getRangeFromNow();
+        this._displayRange();
+        this._dispatchSignal();
+      }
       this.switchToNextContext();
     }
 
@@ -352,6 +368,9 @@ import 'x-datetimepicker/x-datetimepicker';
     }
 
     getRangeString () {
+      if (this._isFromNow()) {
+        return pulseUtility.convertDateRangeForWebService(this._getRangeFromNow());
+      }
       if (undefined == this._dateRange) {
         return '';
       }
@@ -362,12 +381,32 @@ import 'x-datetimepicker/x-datetimepicker';
     // Internal methods //
     //////////////////////
     /**
+     * Is the 'From now on' mode active ? (from-now attribute)
+     *
+     * @returns {!boolean} the mode is active
+     */
+    _isFromNow () {
+      return this.element.hasAttribute('from-now')
+        && (this.element.getAttribute('from-now') != 'false');
+    }
+
+    /**
+     * Range [now, no end), at the time of the call
+     *
+     * @returns {!Object} the date range
+     */
+    _getRangeFromNow () {
+      return pulseRange.createDefaultInclusivity(new Date(), null);
+    }
+
+    /**
      * Show or Hide Buttons
      */
     _showHideButtons () {
       let btns = this.element.querySelectorAll('.datetimerange-li-btn');
       let show = (this.element.getAttribute('hide-buttons') != 'true') &&
         (this.element.getAttribute('not-editable') != 'true') &&
+        !this._isFromNow() && // Nothing to navigate: the begin moves with the time
         ((this.element.getAttribute('min-begin') == undefined) || (this.element.getAttribute('min-begin') == null)) &&
         ((this.element.getAttribute('max-end') == undefined) || (this.element.getAttribute('max-end') == null));
       for (let i = 0; i < btns.length; i++) {
@@ -377,6 +416,15 @@ import 'x-datetimepicker/x-datetimepicker';
 
     _displayRange () {
       let disp = this.element.querySelector('.datetimerange-display');
+      if (this._isFromNow()) {
+        if (disp != null) {
+          let span = document.createElement('span');
+          span.className = 'datetimerange-display-fromnow';
+          span.textContent = this.getTranslation('fromNow', 'From now on, with no end');
+          disp.replaceChildren(span);
+        }
+        return;
+      }
       // Read display-mode directly from attribute so the value is always current
       // even if the attribute was set before connection / before initialize().
       let displayMode = this.element.getAttribute('display-mode') || this._displayMode || 'range';
@@ -638,6 +686,12 @@ import 'x-datetimepicker/x-datetimepicker';
      * Display to change date time range
      */
     _displaySettingDialog (isSplit = false) {
+      if (this._isFromNow()) {
+        // Propose the range from the time of this click, not from the time
+        // the component was created
+        this._dateRange = this._getRangeFromNow();
+      }
+
       let possibleNoEnd = (this.element.hasAttribute('possible-no-end')) &&
         (this.element.getAttribute('possible-no-end').toUpperCase() == 'TRUE');
 
@@ -905,6 +959,9 @@ import 'x-datetimepicker/x-datetimepicker';
       }
 
       let newDateRange = pulseRange.createDefaultInclusivity(beginDateTime, endDateTime);
+      // A range was picked: leave the 'From now on' mode. Cancelling the
+      // dialog instead keeps it.
+      this.element.removeAttribute('from-now');
       this._updateDisplayAndDispatch(newDateRange);
 
       return true;
@@ -914,5 +971,5 @@ import 'x-datetimepicker/x-datetimepicker';
 
   pulseComponent.registerElement('x-datetimerange', ParamDateTimeRangeComponent, ['period-context', 'datetime-context', 'min-begin', 'max-begin',
     'min-end', 'max-end', 'range', 'possible-no-end', 'not-editable', 'hide-buttons',
-    'display-mode', 'shift-label']);
+    'display-mode', 'shift-label', 'from-now']);
 })();

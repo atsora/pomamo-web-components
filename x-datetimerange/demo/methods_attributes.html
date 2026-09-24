@@ -38,6 +38,13 @@ SPDX-License-Identifier: Apache-2.0
     <div class="attribute-description">Tells if datetime range could not have an end value. Default value is false
     </div>
 
+    <div class="attribute-name optional boolean"><code>from-now</code></div>
+    <div class="attribute-description">'From now on' mode: displays 'From now on, with no end' instead of the range,
+      and <code>getRangeString()</code> returns [now, no end) computed at the time of the call. A click opens the
+      dialog to change the range, starting now; validating it leaves the mode (the attribute is removed),
+      cancelling it keeps the mode. The <code>range</code> attribute is optional in this mode. Default value is false
+    </div>
+
     <div class="attribute-name optional string"><code>period-context</code></div>
     <div class="attribute-description">This parameter identify the context for getting period refresh (if not defined, any range is received).
     </div>

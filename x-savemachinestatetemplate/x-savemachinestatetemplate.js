@@ -41,6 +41,8 @@ import 'x-modificationmanager/x-modificationmanager';
    * @attr {number} machine-id (required) machine id
    * @attr {number} mst-id     current machine state template id (filters the next-MST list)
    * @attr {string} range      ISO datetime range `begin;end` of the target slot
+   * @attr {boolean} auto-open  set when the dialog opened on its own: the range
+   *                            starts in the x-datetimerange 'From now on' mode
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class SaveMachineStateTemplateComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
@@ -156,13 +158,24 @@ import 'x-modificationmanager/x-modificationmanager';
         rangeForDisplay.lower = pulseUtility.convertMomentToDateTimeString(moment());
       }
       this._initalDate = rangeForDisplay;
+
+      // Opened on its own because the machine is stopped: the dialog may stay
+      // open a long time, so rather than a range whose begin would be frozen at
+      // the opening time, x-datetimerange is in its 'From now on' mode, until a
+      // range is picked in it
+      let fromNow = this.element.hasAttribute('auto-open');
+
       // FROM / TO = datetimerange
-      this._dtRange = pulseUtility.createElementWithAttribute('x-datetimerange', {
+      let dtRangeAttributes = {
         'possible-no-end': (isoend == null),
         'range': pulseUtility.convertDateRangeForWebService(rangeForDisplay),
         'period-context': 'savemst' + this.element.getAttribute('machine-id'),
         'hide-buttons': 'true'
-      });
+      };
+      if (fromNow) {
+        dtRangeAttributes['from-now'] = 'true';
+      }
+      this._dtRange = pulseUtility.createElementWithAttribute('x-datetimerange', dtRangeAttributes);
 
       let svg = document.createElement('div');
       svg.className = 'savemachinestatetemplate-home-svg';
@@ -174,6 +187,9 @@ import 'x-modificationmanager/x-modificationmanager';
       var self = this;
       homeBtn.addEventListener('click', function () {
         self._dtRange.setAttribute('range', pulseUtility.convertDateRangeForWebService(rangeForDisplay));
+        if (fromNow) {
+          self._dtRange.setAttribute('from-now', 'true');
+        }
       });
 
       let rangeDiv = document.createElement('div');
@@ -321,26 +337,21 @@ import 'x-modificationmanager/x-modificationmanager';
 
     _save(cell) {
       this._optionSelected = cell.getAttribute('id');
-      let range;
-      if (this.element.hasAttribute('auto-open')) {
-        range = pulseUtility.convertDateRangeForWebService(pulseRange.createDefaultInclusivity(new Date(), null))
-      }
-      else {
-        range = this._dtRange.getRangeString();
-      }
+      // In the 'From now on' mode, the range starts at the time of this click
+      let range = this._dtRange.getRangeString();
       let newMST = this._optionSelected;
       let machid = this.element.getAttribute('machine-id'); // Should be copied. This.element disappear before request answer
       let url = this.getConfigOrAttribute('path', '') + 'MachineStateTemplateMachineAssociation/Save?MachineId=' + machid
         + '&Range=' + range + '&MachineStateTemplateId=' + newMST + '&RevisionId=-1';
       return pulseService.runAjaxSimple(url,
         function (data) {
-          this._saveSuccess(data, machid);
+          this._saveSuccess(data, machid, range);
         }.bind(this),
         this._saveError.bind(this),
         this._saveFail.bind(this));
     }
 
-    _saveSuccess(data, machid) {
+    _saveSuccess(data, machid, rangeString) {
       console.log('_saveSuccess');
 
       let revisionId = null;
@@ -353,8 +364,7 @@ import 'x-modificationmanager/x-modificationmanager';
       }
       console.info('MOS revision id=' + revisionId);
 
-      // Store modification
-      let rangeString = this._dtRange.getRangeString();
+      // Store modification, on the range that was actually saved
       let range = pulseRange.createDateRangeFromString(rangeString);
       let ranges = [];
       ranges.push(range);
