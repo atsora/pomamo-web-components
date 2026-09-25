@@ -185,18 +185,24 @@ import 'x-datetimepicker/x-datetimepicker';
         return btn;
       }
 
-      // Single toolbar laid out as: [<] [date] [>]  [🔍+] [🔍-]
-      let toolbar = document.createElement('ol');
-      toolbar.classList.add('datetimerange-toolbar');
+      // Single bar laid out as: [<] [date] [>]  [🔍+] [🔍-]
+      // The .datetimerange-toolbar elements only contain the buttons,
+      // so that they can be hidden without hiding the range display
+      let bar = document.createElement('div');
+      bar.classList.add('datetimerange-bar');
+
+      let prevToolbar = document.createElement('ol');
+      prevToolbar.classList.add('datetimerange-toolbar');
+      bar.appendChild(prevToolbar);
 
       // [<] previous
-      let prev_btn = _addButtonToToolbar(toolbar, 'datetimerange-button-previous');
+      let prev_btn = _addButtonToToolbar(prevToolbar, 'datetimerange-button-previous');
       prev_btn.addEventListener('click',
         function () {
           this._clickAndChangeRange('previous');
         }.bind(this));
 
-      // [date] range display wrapped in an <li> so it participates in the flex toolbar
+      // [date] range display
       let rangedisplay = document.createElement('div');
       rangedisplay.classList.add('datetimerange-rangedisplay');
 
@@ -224,10 +230,11 @@ import 'x-datetimepicker/x-datetimepicker';
       );
       rangedisplay.appendChild(display);
 
-      let displayLi = document.createElement('li');
-      displayLi.classList.add('datetimerange-li-display');
-      displayLi.appendChild(rangedisplay);
-      toolbar.appendChild(displayLi);
+      bar.appendChild(rangedisplay);
+
+      let toolbar = document.createElement('ol');
+      toolbar.classList.add('datetimerange-toolbar');
+      bar.appendChild(toolbar);
 
       // [>] next
       let next_btn = _addButtonToToolbar(toolbar, 'datetimerange-button-next');
@@ -257,7 +264,7 @@ import 'x-datetimepicker/x-datetimepicker';
 
       let div = document.createElement('div');
       div.classList.add('datetimerange');
-      div.appendChild(toolbar);
+      div.appendChild(bar);
       this.element.appendChild(div);
 
       // Listener and dispatchers
@@ -403,14 +410,15 @@ import 'x-datetimepicker/x-datetimepicker';
      * Show or Hide Buttons
      */
     _showHideButtons () {
-      let btns = this.element.querySelectorAll('.datetimerange-li-btn');
+      // Hide the whole toolbars (not only the buttons) so that the spacer goes too
+      let toolbars = this.element.querySelectorAll('.datetimerange-toolbar');
       let show = (this.element.getAttribute('hide-buttons') != 'true') &&
         (this.element.getAttribute('not-editable') != 'true') &&
         !this._isFromNow() && // Nothing to navigate: the begin moves with the time
         ((this.element.getAttribute('min-begin') == undefined) || (this.element.getAttribute('min-begin') == null)) &&
         ((this.element.getAttribute('max-end') == undefined) || (this.element.getAttribute('max-end') == null));
-      for (let i = 0; i < btns.length; i++) {
-        btns[i].style.display = show ? '' : 'none';
+      for (let i = 0; i < toolbars.length; i++) {
+        toolbars[i].style.display = show ? '' : 'none';
       }
     }
 

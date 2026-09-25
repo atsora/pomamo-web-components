@@ -31,25 +31,26 @@ x-datetimerange {
     display: inline-block;
   }
 
-  ol.datetimerange-toolbar {
-    //.bar-rounded-shadow; // Rounded border + shadow
+  // [<] [date] [>]  [🔍+] [🔍-]
+  .datetimerange-bar {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 0 5px 0;
+    vertical-align: top;
+  }
 
+  // Buttons only (not the range display)
+  ol.datetimerange-toolbar {
     display: inline-flex;
     align-items: center;
     padding: 0px;
     list-style-type: none;
-    margin: 0 0 5px 0;
-    vertical-align: top;
+    margin: 0;
   }
 
   .datetimerange-li-btn {
     display: inline-block;
     vertical-align: top;
-  }
-
-  .datetimerange-li-display {
-    display: inline-flex;
-    align-items: center;
   }
 
   // Visual gap between the navigation group ([<] [date] [>]) and the zoom group
