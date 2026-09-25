@@ -1,0 +1,80 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>x-{{pagename}} documentation</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta charset="UTF-8">
+
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- Global libs (classic scripts, served verbatim from the public dir) -->
+  <script src="/lib/moment/moment.js"></script>
+  <!-- Config / translation globals (classic scripts) -->
+  <script src="/scripts/translation_component_default.js"></script>
+  <script src="/scripts/config_component_default.js"></script>
+  <script src="/scripts/config_demo.js"></script>
+
+  <!-- Theme bridge: one CSS of var(--color_*) + the values; .dark on <html> switches.
+       Same stylesheet as index.html. -->
+  <link rel="stylesheet" href="/styles/theme-colors.css">
+  <link rel="stylesheet" href="/styles/index.css">
+  <script>
+    (function () {
+      var t = 'dark';
+      try { t = JSON.parse(localStorage.getItem('PULSE.PulseWebApp.theme')) || 'dark'; }
+      catch (e) { /* ignore */ }
+      if (t === 'dark') document.documentElement.classList.add('dark');
+    })();
+  </script>
+
+  <!-- Demo chrome behaviour (nav + theme): ESM module, bundled by Vite -->
+  <script type="module" src="../demo/common_demo.js"></script>
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="header">
+      <div>Pulse web components, alphabetical order</div>
+      <div class="landing-links">
+        <input type="search" id="demo-filter" placeholder="Filter..." autofocus>
+        <a href="index.html">By category</a>
+      </div>
+    </div>
+    <div id="body">
+      <!-- Generated at build time from the links of index.html -->
+<!--(alphabetical-list)-->
+    </div>
+  </div>
+
+  <script>
+    // Filter on the component name, the category and the label
+    document.getElementById('demo-filter').addEventListener('input', function () {
+      var words = this.value.toLowerCase().split(/\s+/).filter(Boolean);
+      document.querySelectorAll('#body .view-box').forEach(function (box) {
+        var visible = 0;
+        box.querySelectorAll('li').forEach(function (li) {
+          var text = li.textContent.toLowerCase();
+          var match = words.every(function (w) { return text.indexOf(w) !== -1; });
+          li.style.display = match ? '' : 'none';
+          if (match) visible++;
+        });
+        box.style.display = visible ? '' : 'none';
+        box.previousElementSibling.style.display = visible ? '' : 'none'; // letter title
+      });
+    });
+  </script>
+</body>
+
+</html>

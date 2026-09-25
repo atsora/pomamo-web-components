@@ -18,7 +18,7 @@ import {
   readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, statSync, cpSync,
 } from 'node:fs'
 import { isAbsolute, resolve } from 'node:path'
-import { prepDemos, publicDir } from './demos-prep.mjs'
+import { prepDemos, publicDir, bakeLanding } from './demos-prep.mjs'
 
 const PWC = resolve('.')
 const lib = resolve(PWC, 'libraries')
@@ -55,7 +55,7 @@ const demoPathsPlugin = {
 }
 
 // --- prep (bake inputs + public assets + compiled CSS, shared with the other builds)
-const { demos, withIndex } = prepDemos(filter)
+const { demos, landings } = prepDemos(filter)
 
 // --- 1. copy the public assets (lib / classic config scripts / styles / images)
 rmSync(out, { recursive: true, force: true })
@@ -97,12 +97,12 @@ mkdirSync(out, { recursive: true })
 for (const d of demos) {
   writeFileSync(resolve(out, `${d.name}.html`), toFileHtml(tpl.replaceAll('{{pagename}}', d.name), d.name))
 }
-if (withIndex) {
-  // index.html is its own static file (only the common_demo module + relative deps)
-  let idx = readFileSync(resolve(PWC, 'demo/index.html'), 'utf8').replaceAll('{{pagename}}', 'index')
+for (const n of landings) {
+  // landing pages are their own static files (only the common_demo module + relative deps)
+  let idx = bakeLanding(n)
   idx = idx.replaceAll('"/lib/', '"./lib/').replaceAll('"/scripts/', '"./scripts/').replaceAll('"/styles/', '"./styles/')
   idx = idx.replace('<script type="module" src="../demo/common_demo.js"></script>', '<script src="./scripts/common_demo.js"></script>')
-  writeFileSync(resolve(out, 'index.html'), idx)
+  writeFileSync(resolve(out, `${n}.html`), idx)
 }
 
 process.stdout.write(`\nBuilt ${demos.length} demo(s) -> about/demo-file/ (double-clickable file://)\n`)

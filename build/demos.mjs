@@ -18,10 +18,10 @@ import { prepDemos, stagingPages, publicDir } from './demos-prep.mjs'
 const PWC = resolve('.')
 const filter = process.argv[2] || null
 
-const { demos, withIndex } = prepDemos(filter)
+const { demos, landings } = prepDemos(filter)
 
 const input = Object.fromEntries(demos.map(d => [d.name, resolve(stagingPages, `${d.name}.html`)]))
-if (withIndex) input.index = resolve(stagingPages, 'index.html')
+for (const n of landings) input[n] = resolve(stagingPages, `${n}.html`)
 
 await build({
   configFile: resolve(PWC, 'vite.demos.config.mjs'),
