@@ -1,0 +1,21 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="dynamic-tests">
+  <h3>In a dialog (<code>pulseDetailsPopup.openRunningDialog(group)</code>)</h3>
+  <p>
+    <button data-group="100">Main group (100)</button>
+    <button data-group="101">Milling cell (101)</button>
+    <button data-group="3">Machine 3 alone</button>
+  </p>
+</div>
+
+<div class="static-tests">
+  <h3>Inline <small>(group='101')</small></h3>
+  <div class="running-box">
+    <x-runningdialog group="101"></x-runningdialog>
+  </div>
+</div>

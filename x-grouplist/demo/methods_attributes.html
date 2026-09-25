@@ -10,44 +10,36 @@ SPDX-License-Identifier: Apache-2.0
 
   <div class="demo-sub-content attribute-content">
 
-    <div class="attribute-name integer mandatory"><code>templateid</code></div>
-    <div class="attribute-description">Id of the box to clone </div>
+    <div class="attribute-name optional string"><code>templateid</code></div>
+    <div class="attribute-description">Id of the element to clone for each machine (default boxtoclone).</div>
 
     <div class="attribute-name config string"><code>group</code></div>
-    <div class="attribute-description">This parameter is a group to read groups (= list of machines) to display. (ex:
-      Ca1, Co2) (auto read from config).
-    </div>
-
-    <div class="attribute-name config optional string"><code>path</code></div>
-    <div class="attribute-description">This parameter can be used for tests. It is read in configuration filled by
-      x-checkpath.
-    </div>
+    <div class="attribute-description">Group id(s), comma-separated, to read the machines from
+      (auto read from config).</div>
 
     <div class="attribute-name config string"><code>machine</code></div>
-    <div class="attribute-description">This parameter is used if groups is empty. It is a fixed list of machines to
-      display. (ex: 1,2,3) (auto read
-      from config) </div>
-
-    <div class="attribute-name config integer"><code>column</code></div>
-    <div class="attribute-description">Number of columns to display (auto read from config).
-    </div>
-
-    <div class="attribute-name config integer"><code>row</code></div>
-    <div class="attribute-description">Number of rows to display (auto read from config).
-    </div>
-
-    <div class="attribute-name config boolean"><code>canUseRowsToSetHeight</code></div>
-    <div class="attribute-description">True if rows height should be forced using page height and number of rows. (auto
-      read from config).
-    </div>
+    <div class="attribute-description">Fixed list of machine ids (ex: 1,2,3), used when <code>group</code> is empty
+      (auto read from config).</div>
 
     <div class="attribute-name config boolean"><code>forcestaticlist</code></div>
-    <div class="attribute-description">True if group must be loaded only 1 time and never reloaded.
-    </div>
+    <div class="attribute-description">True to load a dynamic group only once (no refresh).</div>
 
-    <div class="attribute-name optional boolean"><code>donotwarngroupreload</code></div>
-    <div class="attribute-description">True to avoid unwanted field legend reload (default false, could try to reload groups and machines everywhere).
-    </div>
+    <div class="attribute-name optional boolean"><code>no-rotation</code></div>
+    <div class="attribute-description">When present, ignore the <code>updateVisibleMachines</code> event.</div>
 
+    <div class="attribute-name config integer"><code>refreshrate</code></div>
+    <div class="attribute-description">Refresh interval of a dynamic group, in seconds (default 30).</div>
+
+    <div class="attribute-name config optional string"><code>path</code></div>
+    <div class="attribute-description">REST base path. Read from configuration when not provided.</div>
+
+  </div>
+</div>
+
+<div class="methods">
+  <div class="demo-sub-title method-title">Methods</div>
+  <div class="demo-sub-content method-content">
+    <div class="method-name"><code>getMachinesList</code> ()</div>
+    <div class="method-description">Current machine ids, comma-separated.</div>
   </div>
 </div>

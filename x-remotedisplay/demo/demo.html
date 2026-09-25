@@ -1,0 +1,38 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="dynamic-tests">
+  <p>
+    <label for="display-context">Context:</label>
+    <select id="display-context">
+      <option value="demo1">demo1</option>
+      <option value="demo2">demo2</option>
+    </select>
+    <label for="display-text">Display:</label>
+    <input type="text" id="display-text" size="40" value="Current job: <b>J-1042</b>">
+    <label for="display-highlight">CSS class <code>demo-highlight</code>:</label>
+    <select id="display-highlight">
+      <option value="">unchanged</option>
+      <option value="add">ClassToAdd</option>
+      <option value="remove">ClassToRemove</option>
+    </select>
+  </p>
+  <p>
+    <button id="send-display">Dispatch displayChangeEvent</button>
+    <button id="clear-display">Dispatch without Display (clears)</button>
+  </p>
+
+  <h3><code>display-context="demo1"</code></h3>
+  <div class="remote-box"><x-remotedisplay display-context="demo1"></x-remotedisplay></div>
+
+  <h3><code>display-context="demo2"</code></h3>
+  <div class="remote-box"><x-remotedisplay display-context="demo2"></x-remotedisplay></div>
+</div>
+
+<div class="static-tests">
+  <h3>Error: missing <code>display-context</code> (nothing displayed, error in the console)</h3>
+  <div class="remote-box"><x-remotedisplay></x-remotedisplay></div>
+</div>

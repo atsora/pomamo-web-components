@@ -1,0 +1,21 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="dynamic-tests">
+  <p>Each button creates a <code>x-reasonsubdetails</code> for one hour ago, at the click position.
+    Click anywhere else in the page to close the popup.</p>
+  <p>
+    <label><input type="checkbox" id="show-score"> Show score and source
+      (<code>reasonsubdetails.showReasonScore</code>)</label>
+  </p>
+  <p>
+    <button data-machine="1">Machine 1 (3 alternatives)</button>
+    <button data-machine="2">Machine 2 (2 alternatives)</button>
+    <button data-machine="3">Machine 3 (1 alternative)</button>
+    <button data-machine="999">Error (machine-id=999)</button>
+  </p>
+  <div id="subdetails-container"></div>
+</div>

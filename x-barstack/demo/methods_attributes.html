@@ -1,0 +1,40 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="attributes">
+  <div class="demo-sub-title attribute-title">Attributes</div>
+  <div class="demo-sub-content attribute-content">
+    <div class="attribute-name integer"><code>machine-id</code></div>
+    <div class="attribute-description">Id of the machine, forwarded to every bar.</div>
+
+    <div class="attribute-name string"><code>period-context</code></div>
+    <div class="attribute-description">Page used to read the configuration. Forwarded to every bar.</div>
+
+    <div class="attribute-name optional string"><code>main-bar</code></div>
+    <div class="attribute-description">reason, running or production: fixed main bar. When missing, the main bar
+      depends on the configuration.</div>
+
+    <div class="attribute-name optional string"><code>range</code></div>
+    <div class="attribute-description">Displayed range, forwarded to every bar.</div>
+
+    <div class="attribute-name optional string"><code>machine-context</code></div>
+    <div class="attribute-description">Forwarded to every bar.</div>
+
+    <div class="attribute-name optional string"><code>motion-context</code></div>
+    <div class="attribute-description">Forwarded to the reason, running and production state bars only.</div>
+
+    <div class="attribute-name optional string"><code>when</code></div>
+    <div class="attribute-description">Position of the time selection line, forwarded to
+      <code>x-bartimeselection</code> only.</div>
+
+    <div class="attribute-name optional string"><code>datetime-context</code></div>
+    <div class="attribute-description">Forwarded to <code>x-bartimeselection</code> only.</div>
+
+    <div class="attribute-name optional string"><code>mainbar-*</code></div>
+    <div class="attribute-description">Forwarded to the main bar without the <code>mainbar-</code> prefix
+      (ex: <code>mainbar-click</code> becomes <code>click</code>).</div>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+Free text display driven by the event bus. It listens to <code>textChangeEvent</code> and renders the
+received text as HTML. When <code>textchange-context</code> contains <code>machine-id</code> (or
+<code>group</code>), the value of that attribute is appended to the context
+(<code>machine-id</code> + <code>machine-id="1"</code> gives <code>machine-id_1</code>).
+At initialization it dispatches <code>askForTextChangeEvent</code> to get the current text.

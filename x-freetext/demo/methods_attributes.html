@@ -1,0 +1,39 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="attributes">
+  <div class="demo-sub-title attribute-title">Attributes</div>
+  <div class="demo-sub-content attribute-content">
+    <div class="attribute-name string"><code>textchange-context</code></div>
+    <div class="attribute-description">Base context of the <code>textChangeEvent</code>. When it contains
+      <code>machine-id</code> or <code>group</code>, <code>_&lt;value&gt;</code> of that attribute is appended.</div>
+
+    <div class="attribute-name optional integer"><code>machine-id</code></div>
+    <div class="attribute-description">Machine id, used to build the context.</div>
+
+    <div class="attribute-name optional string"><code>group</code></div>
+    <div class="attribute-description">Group id, used to build the context.</div>
+  </div>
+</div>
+
+<div class="methods">
+  <div class="demo-sub-title method-title">Methods</div>
+  <div class="demo-sub-content method-content">
+    <div class="method-name"><code>cleanDisplay</code> ()</div>
+    <div class="method-description">Empty the displayed text.</div>
+  </div>
+</div>
+
+<div class="events">
+  <div class="demo-sub-title event-title">Events</div>
+  <div class="demo-sub-content event-content">
+    <div class="event-name"><code>textChangeEvent</code> (listened)</div>
+    <div class="event-description"><code>{ text }</code>: text to display (HTML). An empty text clears the display.</div>
+
+    <div class="event-name"><code>askForTextChangeEvent</code> (dispatched)</div>
+    <div class="event-description">Sent to the context at initialization to get the current text.</div>
+  </div>
+</div>

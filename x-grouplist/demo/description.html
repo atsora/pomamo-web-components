@@ -5,7 +5,9 @@ Copyright (C) 2023-2026 Atsora Solutions
 SPDX-License-Identifier: Apache-2.0
 -->
 
-A widget that display multiple machine displays in ONE group.\r
-WARNING !\n
-Uses global config : group, machine, column, row, canUseRowsToSetHeight, allowpagerotation, rotation,
-refreshrate.
+Single-column list of machines. The machines come from <code>group</code> (web service
+<code>MachinesFromGroups</code>) or, if no group is set, from the <code>machine</code> list.
+Each row is a clone of the element identified by <code>templateid</code>.
+Static groups are loaded once; dynamic groups are refreshed every <code>refreshrate</code> seconds.
+Unless <code>no-rotation</code> is set, the rows are shown or hidden by the <code>updateVisibleMachines</code>
+event (page rotation).

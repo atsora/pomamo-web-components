@@ -1,0 +1,27 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <h3>Static group with children: shown <small>(group='101')</small></h3>
+  <div class="zoom-box"><x-zoominpagebutton group="101"></x-zoominpagebutton></div>
+
+  <h3>Main group: shown <small>(group='100')</small></h3>
+  <div class="zoom-box"><x-zoominpagebutton group="100"></x-zoominpagebutton></div>
+
+  <h3>Group without children: hidden <small>(group='G3.1')</small></h3>
+  <div class="zoom-box"><x-zoominpagebutton group="G3.1"></x-zoominpagebutton></div>
+
+  <h3>Error: server HTTP 400 <small>(group='999')</small></h3>
+  <div class="zoom-box"><x-zoominpagebutton group="999"></x-zoominpagebutton></div>
+
+  <h3>Error: no group and no machine (displayed after the validation timeout)</h3>
+  <div class="zoom-box"><x-zoominpagebutton></x-zoominpagebutton></div>
+</div>
+
+<div class="dynamic-tests">
+  <p>A click reloads this page with the group in the URL.
+    Current URL parameters: <code id="url-params"></code> (<a id="reset-url" href="#">reset</a>)</p>
+</div>

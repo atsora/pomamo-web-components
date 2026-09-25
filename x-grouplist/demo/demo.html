@@ -17,21 +17,28 @@ SPDX-License-Identifier: Apache-2.0
 </div>
 
 <div class="static-tests">
-  <label>Fixed list of 4 machines for the test (instead of dynamic group) column=3</label>
-  <div id="machine" class='group-div'>
-    <x-grouparray templateid='boxtoclone' machine='18,19,20,21' column=3></x-grouparray>
+  <p>Renders one row per machine, cloning <code>boxtoclone</code> for each of them.</p>
+
+  <h3>Fixed machine list <small>(machine='1,2,3,4')</small></h3>
+  <div class='group-div'>
+    <x-grouplist templateid='boxtoclone' machine='1,2,3,4' no-rotation></x-grouplist>
   </div>
 
-  <label>Fixed group (Ca1) 2 rows (+ adapt), 2 columns</label>
-  <div id="group" class='group-div'>
-    <!-- group='Ca1'-->
-    <x-grouparray templateid='boxtoclone' machine='18,19,20,21' column=2 row=2 canUseRowsToSetHeight='true'></x-grouparray>
+  <h3>Static group: milling cell <small>(group='101')</small></h3>
+  <div class='group-div'>
+    <x-grouplist templateid='boxtoclone' group='101' no-rotation></x-grouplist>
   </div>
 
-  <label>Dynamic group (ET) 4 columns</label>
-  <div id="dyn-group" class='group-div'>
-    <!--group='ET'-->
-    <x-grouparray templateid='boxtoclone' machine='18,19,20,21' column=4></x-grouparray>
+  <h3>Empty group <small>(group='997')</small></h3>
+  <div class='group-div'>
+    <x-grouplist templateid='boxtoclone' group='997' no-rotation></x-grouplist>
   </div>
+</div>
 
+<div class="dynamic-tests">
+  <h3>Dynamic group: 2 random machines, refreshed every 5 s <small>(group='Random', refreshrate='5')</small></h3>
+  <div class='group-div'>
+    <x-grouplist id='dynamic-list' templateid='boxtoclone' group='Random' refreshrate='5' no-rotation></x-grouplist>
+  </div>
+  <p><button id="get-machines">getMachinesList()</button> <span id="machines-list"></span></p>
 </div>

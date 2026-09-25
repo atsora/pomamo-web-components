@@ -1,0 +1,23 @@
+// Copyright (C) 2009-2023 Lemoine Automation Technologies
+// Copyright (C) 2023-2026 Atsora Solutions
+//
+// SPDX-License-Identifier: Apache-2.0
+
+import 'x-grouplist/x-grouplist';
+import 'x-machinedisplay/x-machinedisplay';
+import 'x-reasonbutton/x-reasonbutton';
+
+import * as pulseConfig from 'pulseConfig';
+pulseConfig.setGlobal('path', 'http://localhost:8082/');
+import '@atsora/pomamo-web-service-simulation/scripts/GetMachine';
+import '@atsora/pomamo-web-service-simulation/scripts/CurrentReason';
+import '@atsora/pomamo-web-service-simulation/scripts/MachinesFromGroups';
+
+function load () {
+  document.getElementById('get-machines').addEventListener('click', function () {
+    document.getElementById('machines-list').textContent =
+      document.getElementById('dynamic-list').getMachinesList();
+  });
+}
+
+window.onload = load;

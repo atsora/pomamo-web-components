@@ -1,0 +1,10 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+Headless component that opens a popup with the alternative reasons of a machine at a given time.
+It requests <code>Reason/AllAt/Get</code> once and opens the popup at (<code>clientX</code>, <code>clientY</code>).
+The first reason (the applied one) is not listed. The score and the source of each reason are shown when
+<code>reasonsubdetails.showReasonScore</code> is true. In case of error, an error dialog is opened.

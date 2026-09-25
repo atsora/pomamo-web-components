@@ -1,0 +1,39 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <h3>Fixed reason bar <small>(main-bar='reason', mainbar-showoverwriterequired='true', machine-id=3)</small></h3>
+  <div class="barstack-box">
+    <x-barstack machine-id="3" main-bar="reason" period-context="barstack_simple"
+      range="[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)"
+      mainbar-showoverwriterequired="true"></x-barstack>
+  </div>
+
+  <h3>Fixed running bar <small>(main-bar='running', machine-id=2)</small></h3>
+  <div class="barstack-box">
+    <x-barstack machine-id="2" main-bar="running" period-context="barstack_simple"
+      range="[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)"></x-barstack>
+  </div>
+
+  <h3>All the optional bars <small>(period-context='barstack_full', machine-id=1)</small></h3>
+  <p>Thin bars: shift, machine state, observation state, cycle, operation, ISO file.
+    Overlays on the reason bar: CNC alarms, red stack light, time selection.
+    Below: CNC value.</p>
+  <div class="barstack-box barstack-full">
+    <x-barstack machine-id="1" main-bar="reason" period-context="barstack_full"
+      range="[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)"
+      when="2026-05-21T10:00:00.000Z"></x-barstack>
+  </div>
+</div>
+
+<div class="dynamic-tests">
+  <h3>Switchable reason / production bar <small>(no main-bar, period-context='barstack_switch', machine-id=1)</small></h3>
+  <p><label><input type="checkbox" id="show-production"> <code>showproductionbar</code></label></p>
+  <div class="barstack-box">
+    <x-barstack id="switch-barstack" machine-id="1" period-context="barstack_switch"
+      range="[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)"></x-barstack>
+  </div>
+</div>

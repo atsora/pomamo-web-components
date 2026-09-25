@@ -1,0 +1,29 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="dynamic-tests">
+  <p>
+    <label for="text-context">Context:</label>
+    <select id="text-context">
+      <option value="demo">demo</option>
+      <option value="machine-id_1">machine-id_1</option>
+      <option value="machine-id_2">machine-id_2</option>
+    </select>
+    <label for="text-value">Text:</label>
+    <input type="text" id="text-value" size="40" value="New text, <i>HTML allowed</i>">
+    <button id="send-text">Dispatch textChangeEvent</button>
+  </p>
+
+  <h3><code>textchange-context="demo"</code></h3>
+  <div class="freetext-box"><x-freetext id="freetext-demo" textchange-context="demo"></x-freetext></div>
+  <p><button id="clean-display">cleanDisplay()</button></p>
+
+  <h3><code>textchange-context="machine-id"</code> + <code>machine-id="1"</code> (context <code>machine-id_1</code>)</h3>
+  <div class="freetext-box"><x-freetext textchange-context="machine-id" machine-id="1"></x-freetext></div>
+
+  <h3><code>textchange-context="machine-id"</code> + <code>machine-id="2"</code> (context <code>machine-id_2</code>, empty at start)</h3>
+  <div class="freetext-box"><x-freetext textchange-context="machine-id" machine-id="2"></x-freetext></div>
+</div>

@@ -1,0 +1,15 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+Vertical stack of bars for one machine, driven by the configuration of its <code>period-context</code>:
+thin bars on top (<code>showcoloredbar.shift</code>, <code>machinestate</code>, <code>observationstate</code>,
+<code>cycle</code>, <code>operation</code>, <code>isofile</code>), then the main bar with its overlays
+(<code>showcoloredbar.cncalarm</code>, <code>redstacklight</code>, <code>timeselection</code>), then the bars
+below (<code>showcoloredbar.cncvalue</code>, <code>highlightperiods</code>).
+The main bar is set by <code>main-bar</code>; without it, the running bar is used when
+<code>showcoloredbar.running</code> is true, otherwise the reason and production state bars are both created and
+<code>showproductionbar</code> selects the visible one.
+The stack takes the height of its container.

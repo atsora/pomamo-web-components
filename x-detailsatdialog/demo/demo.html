@@ -1,0 +1,25 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <p>Configuration of the demo: <code>showcoloredbar.showdetails</code> =
+    x-detailedreasonat, x-detailedcncvaluesat, x-detailedalarmsat, x-cncalarmbar.</p>
+
+  <h3>Inline <small>(machine-id=1, when=10:00)</small></h3>
+  <div class="details-box">
+    <x-detailsatdialog machine-id="1" when="2026-05-21T10:00:00.000Z"
+      range="[2026-05-21T06:00:00.000Z;2026-05-21T18:00:00.000Z)"></x-detailsatdialog>
+  </div>
+</div>
+
+<div class="dynamic-tests">
+  <h3>In a dialog <small>(when=10:00 UTC, range=06:00-18:00 UTC)</small></h3>
+  <p>
+    <button data-machine="1">Machine 1</button>
+    <button data-machine="2">Machine 2</button>
+    <button data-machine="3">Machine 3</button>
+  </p>
+</div>

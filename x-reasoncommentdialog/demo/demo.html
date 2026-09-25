@@ -1,0 +1,23 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <h3>Inline <small>(machine-id=1)</small></h3>
+  <div class="comment-box">
+    <x-reasoncommentdialog id="inline-comment" machine-id="1"
+      range="[2026-05-21T08:00:00.000Z;2026-05-21T08:30:00.000Z)" reason-name="Operator break"></x-reasoncommentdialog>
+  </div>
+  <p><button id="get-details">getDetails()</button> <span id="details-value"></span></p>
+</div>
+
+<div class="dynamic-tests">
+  <h3>In a dialog <small>(machine-id=2, 09:15-10:00 UTC)</small></h3>
+  <p>
+    <button id="open-optional">Comment optional</button>
+    <button id="open-required">Comment required (OK disabled while empty)</button>
+    <span id="dialog-result"></span>
+  </p>
+</div>

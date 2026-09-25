@@ -1,0 +1,42 @@
+<!--
+Copyright (C) 2023-2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <h3>Information (default type)</h3>
+  <div class="alert-box">
+    <x-alertdialog message="The report has been generated."></x-alertdialog>
+  </div>
+
+  <h3>Warning</h3>
+  <div class="alert-box">
+    <x-alertdialog type="Warning" message="The selected period is longer than <b>one month</b>."></x-alertdialog>
+  </div>
+
+  <h3>Error</h3>
+  <div class="alert-box">
+    <x-alertdialog type="Error" message="Please check server access."></x-alertdialog>
+  </div>
+
+  <h3>Question</h3>
+  <div class="alert-box">
+    <x-alertdialog type="Question" message="Do you really want to remove this milestone?"></x-alertdialog>
+  </div>
+</div>
+
+<div class="dynamic-tests">
+  <h3>Inside a dialog (<code>pulseCustomDialog.openDialog(message, { type })</code>)</h3>
+  <p>
+    <label for="dialog-message">Message:</label>
+    <input type="text" id="dialog-message" size="50" value="This message is displayed by x-alertdialog.">
+  </p>
+  <p>
+    <button data-type="Information">Information</button>
+    <button data-type="Warning">Warning</button>
+    <button data-type="Error">Error</button>
+    <button data-type="Question">Question</button>
+    Result: <span id="dialog-result"></span>
+  </p>
+</div>
