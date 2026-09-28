@@ -5,9 +5,10 @@ or if it was explicitely written in the file.
 The full texts of the licenses are in the LICENSES folder.
 
 Some images have a specific license:
-- validate.png : https://www.iconfinder.com/icons/326572/check_icon#size=24
-  Licence: MIT, Free for commercial use
-  Author: Google(http://www.google.com/design/ https://m3.material.io)
+- validate.png : https://github.com/google/material-design-icons/blob/master/symbols/web/check/materialsymbolsoutlined/check_24px.svg
+  License: Apache License 2.0
+  Author: Google / Material Symbols
+  The PNG is an enlarged and slightly thickened 24 px raster adaptation of the official `check` SVG.
 
 - warning.png : https://www.iconfinder.com/icons/173946/warning_icon#size=32
   Licence:  Free for commercial use
@@ -39,18 +40,6 @@ Some images have a specific license:
   Author: Design revision
   Free for commercial use
   Link: https://www.iconfinder.com/iconsets/glyphpack
-
-- "This is art 2" icon set
-  Creative Commons Attribution-No Derivative Works 3.0 Unported - CC-BY-ND-3.0
-  (http://creativecommons.org/licenses/by-nd/3.0/)
-  Link: https://www.iconfinder.com/iconsets/This_is_ART_2
-  Author: Svengraph http://svengraph.deviantart.com/
-
-- "Farm-fresh" icon set
-  Creative commons Attribution 3.0 United States - CC-BY-3.0-US
-  (http://creativecommons.org/licenses/by/3.0/us/)
-  Link: https://www.iconfinder.com/iconsets/fatcow
-  Author: FatCow web hosting
 
 - Icocentre icon set
   Author: IcoCentre
