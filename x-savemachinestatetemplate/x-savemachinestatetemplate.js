@@ -29,23 +29,28 @@ import 'x-modificationmanager/x-modificationmanager';
    * `<x-savemachinestatetemplate>` — form to assign a machine state
    * template (MST) to a time slot for one machine.
    *
-   * Fetches `NextMachineStateTemplate?MachineId=<id>[&CurrentMachineStateTemplateId=<mst-id>]`
-   * to populate the list of allowed MSTs, plus an `x-datetimerange` for
-   * the target slot. On confirm, POSTs the assignment via
-   * `pulseService.runAjaxSimple` and registers the returned revision id
-   * with the sibling `x-modificationmanager`. Listens to
-   * `dateTimeRangeChangeEvent` on the internal `period-context`
-   * (`savemst<machine-id>`).
+   * Polls `NextMachineStateTemplate?MachineId=<id>&At=<begin>&Cache=No`
+   * to populate the list of allowed MSTs: the ones that may follow the MST
+   * of the machine at the begin of the period displayed in its
+   * `x-datetimerange` ('now' in the 'From now on' mode). The list is
+   * reloaded when the period changes, and refreshed regularly (same rate as
+   * x-lastmachinestatetemplate), since the MST at the begin may change.
+   * On confirm, POSTs the assignment via `pulseService.runAjaxSimple` and
+   * registers the returned revision id with the sibling
+   * `x-modificationmanager`. Listens to `dateTimeRangeChangeEvent` on the
+   * internal `period-context` (`savemst<machine-id>`).
+   * Closing the dialog removes the element (which stops the refresh), and
+   * removing the element closes the dialog.
    *
    * @element x-savemachinestatetemplate
    * @attr {number} machine-id (required) machine id
-   * @attr {number} mst-id     current machine state template id (filters the next-MST list)
+   * @attr {number} mst-id     not used any more: the MST at the begin of the period is used
    * @attr {string} range      ISO datetime range `begin;end` of the target slot
    * @attr {boolean} auto-open  set when the dialog opened on its own: the range
    *                            starts in the x-datetimerange 'From now on' mode
-   * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
+   * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
-  class SaveMachineStateTemplateComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
+  class SaveMachineStateTemplateComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
     /**
      * Constructor
      *
@@ -57,8 +62,30 @@ import 'x-modificationmanager/x-modificationmanager';
       // DOM - not here
       //this._content = undefined;
       self._optionSelected = null;
+      self._listSignature = null; // Displayed list, to redraw it only when it changes
+      self._keepElementOnClose = false;
+
+      self.methods = {
+        'closeDialog': self.closeDialog
+      };
 
       return self;
+    }
+
+    /**
+     * Close the dialog of this component, with the period dialog of its
+     * x-datetimerange if it is open over it. Nothing if already closed.
+     */
+    closeDialog() {
+      if (this._dtRange && this._dtRange._webComponent) {
+        let periodDialogId = this._dtRange._webComponent._settingsDialogId;
+        if (periodDialogId && (document.getElementById(periodDialogId) != null)) {
+          pulseCustomDialog.close('#' + periodDialogId);
+        }
+      }
+      if (this._saveDialogId && (document.getElementById(this._saveDialogId) != null)) {
+        pulseCustomDialog.close('#' + this._saveDialogId);
+      }
     }
 
     //get content () { return this._content; } // Optional
@@ -72,12 +99,7 @@ import 'x-modificationmanager/x-modificationmanager';
           }
           this.start();
           break;
-        case 'range':
-          if (pulseUtility.convertDateRangeForWebService(this._initalDate) != newVal) {
-            this._mstId = this.element.getAttribute('mst-id');
-            this.element.removeAttribute('mst-id');
-          }
-          else this.element.setAttribute('mst-id', this._mstId);
+        case 'range': // New period: new begin, so possibly new next MSTs
           this.start();
           break;
         case 'period-context':
@@ -190,6 +212,9 @@ import 'x-modificationmanager/x-modificationmanager';
         if (fromNow) {
           self._dtRange.setAttribute('from-now', 'true');
         }
+        // The x-datetimerange does not dispatch any change when back to the
+        // 'From now on' mode: reload the list for its begin
+        self.start();
       });
 
       let rangeDiv = document.createElement('div');
@@ -200,10 +225,9 @@ import 'x-modificationmanager/x-modificationmanager';
       this._dialog.appendChild(rangeDiv);
       this._dialog.appendChild(MST_CB);
 
-      this._mstId = this.element.getAttribute('mst-id');
-
       let title = this.getTranslation('changeMachineStateTitle', 'Change machine state');
 
+      let element = this.element; // this.element is reset when the component is destroyed
       let saveDialogId = pulseCustomDialog.openDialog(this._dialog, {
         title: title,
         autoClose: true,
@@ -211,18 +235,18 @@ import 'x-modificationmanager/x-modificationmanager';
         bigSize: true,
         okButton: 'hidden',
         helpName: 'savemachinestatetemplate',
-        className: 'machinestatetemplate'
+        className: 'machinestatetemplate',
+        // Once the dialog is closed, the component has nothing more to do:
+        // removing it stops the refresh of the list
+        onClose: function () {
+          if (!this._keepElementOnClose) {
+            element.remove();
+          }
+        }.bind(this)
       });
 
       // Store the dialog ID for later use
       this._saveDialogId = saveDialogId;
-
-      // Disable OK button initially
-      //this._updateOkButtonState()
-
-      /* // This DO NOT WORK [TODO] find a way to reload parent
-        onClose :
-          //$(this).parent().reload(); // to find x-lastmachinestatetemplate ???  -> msg ? */
 
       // Initialization OK => switch to the next context
       this.switchToNextContext();
@@ -230,7 +254,19 @@ import 'x-modificationmanager/x-modificationmanager';
     }
 
     clearInitialization() {
+      // The dialog is outside the element: close it, else it would stay
+      // without any component behind it (element removed, re-initialization)
+      this._keepElementOnClose = true;
+      try {
+        this.closeDialog();
+      }
+      finally {
+        this._keepElementOnClose = false;
+      }
+
       // Parameters
+      this._listSignature = null;
+
       // DOM
       this.element.replaceChildren();
 
@@ -271,41 +307,72 @@ import 'x-modificationmanager/x-modificationmanager';
       this.displayError('');
     }
 
-    getShortUrl() {
-      let url = 'NextMachineStateTemplate?'
-      let nbParam = 0;
-      if (this.element.hasAttribute('mst-id')) {
-        url += 'CurrentMachineStateTemplateId=' + this.element.getAttribute('mst-id');
-        url += '&';
+    get refreshRate() {
+      // Same rate as x-lastmachinestatetemplate
+      return 1000 * 6 * Number(this.getConfigOrAttribute('refreshingRate.barSlowUpdateMinutes', 10));
+    }
+
+    /**
+     * Begin of the period displayed in the x-datetimerange: 'now' in the
+     * 'From now on' mode. Until the x-datetimerange has its range, the range
+     * of this component is used.
+     *
+     * @returns {?Date} begin, null if unknown
+     */
+    _getBegin() {
+      let rangeString = this._dtRange ? this._dtRange.getRangeString() : '';
+      if (!rangeString) {
+        rangeString = this.element.hasAttribute('range')
+          ? this.element.getAttribute('range')
+          : pulseUtility.convertDateRangeForWebService(this._initalDate);
       }
-      else if (this.element.hasAttribute('range')) {
-        let range = pulseUtility.convertDateForWebService(pulseRange.createDateRangeFromString(this.element.getAttribute('range'))._lower);
-        url += 'At=' + range;
-        nbParam++;
-        if (this.element.hasAttribute('machine-id')) {
-          url += '&MachineId=' + this.element.getAttribute('machine-id');
-          url += '&';
-        }
+      if (!rangeString) {
+        return null;
+      }
+      return pulseRange.createDateRangeFromString(rangeString).lower;
+    }
+
+    getShortUrl() {
+      // The next MSTs are the ones that may follow the MST of the machine at
+      // the begin of the period
+      let url = 'NextMachineStateTemplate?MachineId=' + this.element.getAttribute('machine-id');
+      let begin = this._getBegin();
+      if (begin) {
+        url += '&At=' + pulseUtility.convertDateForWebService(begin);
       }
 
       let role = pulseLogin.getRole(); // or getAppContextOrRole ?
       //TODO : change and use 'rolekey=' + role WHEN READY in pulse
       if (role == 'manager')
-        url += 'RoleId=5'; // manager
+        url += '&RoleId=5'; // manager
       else
-        url += 'RoleId=1'; // operator
+        url += '&RoleId=1'; // operator
+
+      // Changes with the MST at the begin, and At changes at each request in
+      // the 'From now on' mode: nothing to take from or to put in the cache
+      url += '&Cache=No';
 
       return url;
     }
 
     refresh(data) {
+      // Redraw the list only when it changes, not to lose a tap during a
+      // refresh
+      let signature = JSON.stringify(data.MachineStateTemplates
+        .map(mst => [mst.Id, mst.Display, mst.BgColor]));
+      if (signature == this._listSignature) {
+        return;
+      }
+      let wasEmpty = (this._listSignature == '[]');
+      this._listSignature = signature;
+
       // Combobox
       this._MSTselectCB.innerHTML = '';
 
       for (let index = 0; index < data.MachineStateTemplates.length; index++) {
         this._drawCell(data.MachineStateTemplates[index]);
       }
-      if (0 == data.MachineStateTemplates.length) {
+      if ((0 == data.MachineStateTemplates.length) && !wasEmpty) { // Once, not at each refresh
         pulseCustomDialog.openDialog(
           this.getTranslation('error.noFlowDefined', 'No flow is defined. Please contact support'),
           { type: 'Error', title: this.getTranslation('error.noData', 'No data') });
@@ -341,17 +408,18 @@ import 'x-modificationmanager/x-modificationmanager';
       let range = this._dtRange.getRangeString();
       let newMST = this._optionSelected;
       let machid = this.element.getAttribute('machine-id'); // Should be copied. This.element disappear before request answer
+      let dialogId = this._saveDialogId; // Same: cleared if the component is re-initialized before the answer
       let url = this.getConfigOrAttribute('path', '') + 'MachineStateTemplateMachineAssociation/Save?MachineId=' + machid
         + '&Range=' + range + '&MachineStateTemplateId=' + newMST + '&RevisionId=-1';
       return pulseService.runAjaxSimple(url,
         function (data) {
-          this._saveSuccess(data, machid, range);
+          this._saveSuccess(data, machid, range, dialogId);
         }.bind(this),
         this._saveError.bind(this),
         this._saveFail.bind(this));
     }
 
-    _saveSuccess(data, machid, rangeString) {
+    _saveSuccess(data, machid, rangeString, dialogId) {
       console.log('_saveSuccess');
 
       let revisionId = null;
@@ -372,7 +440,12 @@ import 'x-modificationmanager/x-modificationmanager';
       let modificationManager = pulseUtility.getOrCreateSingleton('x-modificationmanager');
       modificationManager.addModification(data.Revision.Id, 'MST', machid, ranges);
 
-      pulseCustomDialog.close('.customeDialog-machinestatetemplate');
+      // Close the dialog of this component, not the first dialog of this class
+      // in the page: another one may still be there. It may also have been
+      // closed by the user in the meantime.
+      if (dialogId && (document.getElementById(dialogId) != null)) {
+        pulseCustomDialog.close('#' + dialogId);
+      }
     }
 
     _saveError(data) {

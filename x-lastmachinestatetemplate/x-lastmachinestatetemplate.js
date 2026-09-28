@@ -13,7 +13,6 @@ import * as pulseUtility from 'pulseUtility';
 import * as pulseRange from 'pulseRange';
 import * as pulseConfig from 'pulseConfig';
 import * as eventBus from 'eventBus';
-import pulseCustomDialog from 'pulseCustomDialog';
 
 import 'x-savemachinestatetemplate/x-savemachinestatetemplate';
 import 'x-setupmachine/x-setupmachine';
@@ -34,9 +33,12 @@ import 'x-revisionprogress/x-revisionprogress';
    * `x-setupmachine` child instead. Clicking the label opens a
    * `x-savemachinestatetemplate` dialog (period-context `savemst<machineId>`);
    * when `lastmachinestatetemplate.autoOpen` is set, that dialog also opens on
-   * its own as soon as the current MST is one of the
+   * its own when the current MST is one of the
    * `lastmachinestatetemplate.stoppedIds` (one id, or several separated by
-   * commas), and closes again when the MST leaves that list.
+   * commas) in two refreshes in a row with the same slot, unless an MST
+   * modification is pending, and closes again when the MST leaves that list.
+   * If the MST changes for another one of the list, the dialog updates its
+   * list on its own.
    * Tracks pending modifications via `modificationEvent`: appends an
    * `x-revisionprogress` while a `kind: 'MST'` revision overlaps the current
    * range, then reloads when `pendingModifications === 0`. Reacts to
@@ -63,7 +65,6 @@ import 'x-revisionprogress/x-revisionprogress';
       self._since = ''; // ISO since
 
       self._forceReload = true;
-      self._lastId = undefined;
       self._currentMST_display = undefined;
       self._currentMST_id = undefined;
       self._current_MST_range = undefined;
@@ -75,6 +76,7 @@ import 'x-revisionprogress/x-revisionprogress';
 
       self.isCreatingSaveMachineStateTemplate = false;
       self.autoOpenSaveMachineStateTemplate = pulseConfig.getBool('lastmachinestatetemplate.autoOpen', true);
+      self._autoOpenSlot = null; // Stopped slot seen by the last refresh, to confirm
 
       return self;
     }
@@ -136,6 +138,61 @@ import 'x-revisionprogress/x-revisionprogress';
       return stoppedIds.includes(Number(mstId));
     }
 
+    /**
+     * Open the dialog on its own once the same stopped slot (same state
+     * template, same range) is returned by two refreshes in a row: the first
+     * one only records it
+     */
+    _autoOpenIfConfirmed() {
+      let slot = this._currentMST_id + ';' + this._current_MST_range;
+      if (this._autoOpenSlot === slot) {
+        this.clickOnCurrent();
+      }
+      else {
+        this._autoOpenSlot = slot;
+      }
+    }
+
+    /**
+     * Forget the stopped slot seen by the last refresh: the next one will have
+     * to be confirmed again
+     */
+    _resetAutoOpen() {
+      this._autoOpenSlot = null;
+    }
+
+    /**
+     * Is a machine state template modification of this machine still being
+     * processed on the current time ? Until it is, the web service may still
+     * return the state before the modification.
+     *
+     * The list is read from x-modificationmanager, not from
+     * this._mapOfModifications: the manager also drops the revisions it gave
+     * up on (web service failures), without any event to clean this map.
+     *
+     * @returns {!boolean} a modification is pending
+     */
+    _hasPendingCurrentModification() {
+      let modifMgr = document.body.querySelector('x-modificationmanager');
+      if (!modifMgr) {
+        return false;
+      }
+      let now = new Date();
+      let modifications = modifMgr.getModifications('MST', this.element.getAttribute('machine-id'));
+      for (let modif of modifications.values()) {
+        if (modif.pendingModifications === 0) {
+          continue;
+        }
+        for (let i = 0; i < modif.ranges.length; i++) {
+          if ((modif.ranges[i].lower < now)
+            && (modif.ranges[i].upper == null || modif.ranges[i].upper > now)) { // == is Current
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
     /*getSinceISO () {
       let setups = this.element.querySelector('x-setupmachine');
       if (setups.length > 0) {
@@ -151,6 +208,7 @@ import 'x-revisionprogress/x-revisionprogress';
       switch (attr) {
         case 'machine-id': {
           // CLEAN display
+          this._resetAutoOpen(); // It was for the previous machine
           this._MST_current.innerHTML = '';
           let setupmachines = this.element.querySelectorAll('x-setupmachine');
           setupmachines.forEach(el => el.remove());
@@ -250,6 +308,8 @@ import 'x-revisionprogress/x-revisionprogress';
 
     clearInitialization() {
       // Parameters
+      this._resetAutoOpen();
+
       // DOM
       this.element.replaceChildren();
 
@@ -328,20 +388,27 @@ import 'x-revisionprogress/x-revisionprogress';
 
       if (this.autoOpenSaveMachineStateTemplate) {
         let stoppedIds = this._getStoppedIds();
-        if (this._isStopped(this._currentMST_id, stoppedIds)) {
-          this.clickOnCurrent();
+        // Only once the same stopped slot is returned twice in a row, and not
+        // while a modification is pending: the stopped state may be the one
+        // before it, the dialog would open again right after a choice.
+        // After the modification, the confirmation starts again.
+        if (this._isStopped(this._currentMST_id, stoppedIds)
+          && !this._hasPendingCurrentModification()) {
+          this._autoOpenIfConfirmed();
+        }
+        else {
+          this._resetAutoOpen();
         }
 
-        if (this._lastId) {
-          if (this._isStopped(this._lastId, stoppedIds)
-            && !this._isStopped(this._currentMST_id, stoppedIds)) {
-            if (document.querySelector('.customeDialog-machinestatetemplate') != null) {
-              pulseCustomDialog.close('.customeDialog-machinestatetemplate');
-            }
-
-          }
+        // The machine is not stopped any more: the dialog that opened on its
+        // own is not needed now. Only this machine's one, and not a dialog
+        // opened by a click, where a state may be planned at any time.
+        // If it is stopped in another state template, the dialog updates its
+        // list on its own.
+        if (!this._isStopped(this._currentMST_id, stoppedIds)) {
+          this.element.querySelectorAll('x-savemachinestatetemplate[auto-open]')
+            .forEach(saveMST => saveMST.closeDialog());
         }
-        this._lastId = this._currentMST_id;
       }
 
       if (this._currentMST_category != 2) {
@@ -453,6 +520,9 @@ import 'x-revisionprogress/x-revisionprogress';
           if ((modif.ranges[i].lower < now)
             && (modif.ranges[i].upper == null || modif.ranges[i].upper > now)) {
 
+            // Bypass the web service cache, else the state before the
+            // modification may still be returned
+            this._forceReload = true;
             this.switchToContext('Reload');
           }
         }
