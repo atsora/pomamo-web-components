@@ -203,7 +203,7 @@ import 'x-reasonsubdetails/x-reasonsubdetails';
       this.element.appendChild(this._content);
 
       { // Reasons
-        let title = this.getTranslation('detailsViewSubTitles.reason', 'motion status');
+        let title = this.getTranslation('detailsViewSubTitles.reason', 'reason');
         let spanTitle = document.createElement('span');
         spanTitle.className = 'detailedreasonat-title-span';
         spanTitle.innerHTML = title;

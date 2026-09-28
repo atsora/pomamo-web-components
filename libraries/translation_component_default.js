@@ -139,10 +139,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     ignored: 'Ignored'
   },
   detailsViewSubTitles: {
-    reason: 'motion status',
+    reason: 'reason',
     machinemode: 'machine mode',
     machinestatetemplate: 'scheduled status',
-    observationstate: 'machine state',
+    observationstate: 'planned state',
     operationcycle: 'cycle',
     productionstate: 'production state',
     shift: 'shift',
@@ -158,7 +158,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   },
   lastmachinestatus: {
     currentReasonColon: 'Current reason:',
-    pastReasonData: 'Past motion status details',
+    pastReasonData: 'Past reason details',
     pastTooltip: 'Look or change past reason details',
     tooOld: 'Reason is too old'
   },
@@ -655,7 +655,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     ignored: 'Ignorées'
   },
   detailsViewSubTitles: {
-    reason: "raison d'arrêt",
+    reason: "raison",
     machinemode: "mode d'exécution",
     machinestatetemplate: "calendrier de planification",
     observationstate: 'état planifié',
@@ -674,8 +674,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   lastmachinestatus: {
     currentReasonColon: 'Raison courante :',
-    pastReasonData: "Raisons d'arret passees",
-    pastTooltip: 'Consulter ou changer une raison passee',
+    pastReasonData: "Raisons passées",
+    pastTooltip: 'Consulter ou changer une raison passée',
     tooOld: 'La raison est trop ancienne'
   },
   lastmachinestatetemplate: {
@@ -848,7 +848,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     processingTitle: 'En cours de traitement....'
   },
   reasongroups: {
-    title: "Raison d'arrêt",
+    title: "Raison",
     textidleDefaultValue: 'Arrêtée',
     idleTime: "Temps d'inactivité"
   },
@@ -866,7 +866,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   unansweredreasonnumber: {
     dataToClassified: 'arrêt à classifier',
     dataToClassifiedPlural: 'arrêts à classifier',
-    pastReasonData: "Raisons d'arrêt passées",
+    pastReasonData: "Raisons passées",
     pastTooltip: "Consulter ou changer une raison passée",
   },
   unansweredreasonslotlist: {
@@ -1172,10 +1172,10 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     ignored: 'Ignoriert'
   },
   detailsViewSubTitles: {
-    reason: 'Stillstandsgrund',
+    reason: 'Grund',
     machinemode: 'Maschinenmodus',
     machinestatetemplate: 'Planungsstatus',
-    observationstate: 'Maschinenzustand',
+    observationstate: 'Geplanter Zustand',
     operationcycle: 'Zyklus',
     productionstate: 'Produktionsstatus',
     shift: 'Schicht',
@@ -1191,8 +1191,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   },
   lastmachinestatus: {
     currentReasonColon: 'Aktueller Grund:',
-    pastReasonData: 'Vergangene Stillstandsgrunde',
-    pastTooltip: 'Vergangene Stillstandsgrunde einsehen oder andern',
+    pastReasonData: 'Vergangene Gründe',
+    pastTooltip: 'Vergangene Gründe einsehen oder ändern',
     tooOld: 'Grund ist zu alt'
   },
   lastmachinestatetemplate: {
@@ -1365,7 +1365,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     processingTitle: 'Verarbeitung läuft...'
   },
   reasongroups: {
-    title: 'Stillstandsgrund',
+    title: 'Grund',
     textidleDefaultValue: 'Stillstand . Kurzstillstand . Stopp',
     idleTime: 'Stillstandszeit'
   },
@@ -1383,8 +1383,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   unansweredreasonnumber: {
     dataToClassified: 'Stillstand zu klassifizieren',
     dataToClassifiedPlural: 'Stillstände zu klassifizieren',
-    pastReasonData: 'Vergangene Stillstandsgründe',
-    pastTooltip: 'Vergangene Stillstandsgründe einsehen oder ändern',
+    pastReasonData: 'Vergangene Gründe',
+    pastTooltip: 'Vergangene Gründe einsehen oder ändern',
   },
   unansweredreasonslotlist: {
     idle: 'Stillstand',

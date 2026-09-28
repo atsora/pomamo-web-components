@@ -194,7 +194,7 @@ import 'x-stopclassification/x-stopclassification';
 
       // Past reason
       let pastreasonlabel = document.createElement('span');
-      pastreasonlabel.innerHTML = this.getTranslation('pastReasonData', 'Past motion status details');
+      pastreasonlabel.innerHTML = this.getTranslation('pastReasonData', 'Past reason details');
 
       let interrogationPastMark = document.createElement('i');
       interrogationPastMark.setAttribute('class', 'fa-solid fa-circle-question');
@@ -418,7 +418,7 @@ import 'x-stopclassification/x-stopclassification';
         }
         let pastSpan = this.element.querySelector('.pulse-cellbar-past-data span');
         if (pastSpan) {
-          pastSpan.textContent = this.getTranslation('pastReasonData', 'Past motion status details');
+          pastSpan.textContent = this.getTranslation('pastReasonData', 'Past reason details');
         }
       }
       eventBus.EventBus.dispatchToContext('reasonStatusChange',

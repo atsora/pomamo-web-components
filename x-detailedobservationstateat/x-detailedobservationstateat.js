@@ -116,7 +116,7 @@ import * as eventBus from 'eventBus';
 
       // OS - title
       let title = this.getTranslation(
-        'detailsViewSubTitles.observationstate', 'machine state');
+        'detailsViewSubTitles.observationstate', 'planned state');
       let spanTitle = document.createElement('span');
       spanTitle.className = 'detailedobservationstateat-title-span';
       spanTitle.innerHTML = title;

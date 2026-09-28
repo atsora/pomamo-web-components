@@ -32,7 +32,7 @@ import 'x-stopclassification/x-stopclassification';
    * Polls `ReasonUnanswered?MachineId=<id>&Number=True&Range=<range>[&Cache=No]`
    * and renders a past-data cell with "N STOP(s) to be classified" (with
    * `pulse-cellbar-cell-missing` and a question-mark) when unanswered
-   * periods exist, or "Past motion status details" otherwise. Clicking
+   * periods exist, or "Past reason details" otherwise. Clicking
    * the cell opens the reason history dialog via `pulseDetailsPopup`.
    * Pending revisions of `kind: 'reason'` on the current machine trigger
    * a reload once `pendingModifications === 0`. Waits for an initial
@@ -161,7 +161,7 @@ import 'x-stopclassification/x-stopclassification';
 
       // Past reason
       let pastreasonlabel = document.createElement('span');
-      pastreasonlabel.textContent = this.getTranslation('pastReasonData', 'Past motion status details');
+      pastreasonlabel.textContent = this.getTranslation('pastReasonData', 'Past reason details');
 
       let interrogationPastMark = document.createElement('i');
       interrogationPastMark.setAttribute('class', 'fa-solid fa-circle-question');
@@ -352,7 +352,7 @@ import 'x-stopclassification/x-stopclassification';
           questionMark.style.display = 'none';
         }
         if (pastDataSpan) {
-          pastDataSpan.textContent = this.getTranslation('pastReasonData', 'Past motion status details');
+          pastDataSpan.textContent = this.getTranslation('pastReasonData', 'Past reason details');
         }
       }
       eventBus.EventBus.dispatchToContext('reasonStatusChange',

@@ -102,7 +102,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     seeAllReasons: "Cliquer pour voir toutes les raisons"
   },
   detailsViewSubTitles: {
-    reason: "raison d'arrêt",
+    reason: "raison",
     machinemode: "mode d'exécution",
     machinestatetemplate: "calendrier de planification",
     observationstate: 'état planifié',
@@ -125,8 +125,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   lastmachinestatus: {
     loading: 'En chargement...',
     currentReasonColon: 'Raison courante :',
-    pastReasonData: "Raisons d'arret passees",
-    pastTooltip: 'Consulter ou changer une raison passee',
+    pastReasonData: "Raisons passées",
+    pastTooltip: 'Consulter ou changer une raison passée',
     tooOld: 'La raison est trop ancienne'
   },
   lastserialnumber: {
@@ -271,7 +271,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     processingTitle: 'En cours de traitement....'
   },
   reasongroups: {
-    title: "Raison d'arrêt",
+    title: "Raison",
     textidleDefaultValue: 'Arrêtée'
   },
   reasonslotlist: {
@@ -288,7 +288,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   unansweredreasonnumber: {
     dataToClassified: 'arrêt à classifier',
     dataToClassifiedPlural: 'arrêts à classifier',
-    pastReasonData: "Raisons d'arrêt passées",
+    pastReasonData: "Raisons passées",
     pastTooltip: "Consulter ou changer une raison passée",
   },
     unansweredreasonslotlist: {
