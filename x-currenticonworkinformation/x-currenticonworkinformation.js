@@ -316,6 +316,7 @@ import * as eventBus from 'eventBus';
       let newRange = event.target.daterange;
       // Maybe check if range is OK somewhere... where ? RR
       this._range = newRange;
+      this.element.removeAttribute('range'); // To avoid reset in validateParameters
       this.start();
     }
 

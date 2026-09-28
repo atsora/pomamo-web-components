@@ -921,6 +921,7 @@ import 'x-unansweredreasonslotlist/x-unansweredreasonslotlist';
       if (!pulseRange.equals(newRange, this._range, (a, b) => a.getTime() == b.getTime())) {
         this._range = newRange;
         this.element.setAttribute('skip1periodlist', 'false');
+        this.element.removeAttribute('range'); // To avoid reset in validateParameters
         this.start();
       }
     }

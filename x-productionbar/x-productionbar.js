@@ -749,6 +749,7 @@ import * as eventBus from 'eventBus';
       if (!isIncluded) this._range = newRange;
       else this._range = undefined;
 
+      this.element.removeAttribute('range'); // To avoid reset in validateParameters
       this.start();
     }
   }
