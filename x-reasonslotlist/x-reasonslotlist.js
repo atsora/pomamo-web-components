@@ -746,6 +746,7 @@ import 'x-revisionprogress/x-revisionprogress';
           this._xsaveReason.closeAfterSave(false);
         }
 
+        this.element.removeAttribute('range'); // To avoid reset in validateParameters
         this.start();
       }
     }

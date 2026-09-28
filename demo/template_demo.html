@@ -97,14 +97,25 @@ SPDX-License-Identifier: Apache-2.0
         }
       }
 
-      new MutationObserver(function (muts) {
+      function patchMutations (muts) {
         muts.forEach(function (m) {
           m.addedNodes && m.addedNodes.forEach(function (n) {
             patch(n);
             if (n.querySelectorAll) n.querySelectorAll('*').forEach(patch);
           });
         });
-      }).observe(document.documentElement, { childList: true, subtree: true });
+      }
+      var observer = new MutationObserver(patchMutations);
+      observer.observe(document.documentElement, { childList: true, subtree: true });
+      // Only the markup of the demo page is rebased. The elements the
+      // components create afterwards (e.g. the x-datetimerange of a list after
+      // a zoom, or the x-datetimepicker of its dialog) already carry real dates:
+      // rebasing them would change the displayed range, and would shift the
+      // begin and the end of a range dialog independently.
+      document.addEventListener('DOMContentLoaded', function () {
+        patchMutations(observer.takeRecords());
+        observer.disconnect();
+      });
     })();
   </script>
 

@@ -28,6 +28,17 @@ tagConfig.refreshingRate.barSlowUpdateMinutes = 5;
 tagConfig.stopRefreshingRate.freezeMinutes = 1; // For Lionel tests
 tagConfig.stopRefreshingRate.pastDataFreezeMinutes = 2; // For Lionel tests
 
+// Grey bar under the colored bar showing the periods selected in the list,
+// as in the web app (see pomamo-web-app-config/config_default.js)
+PULSE_DEFAULT_CONFIG.pages = PULSE_DEFAULT_CONFIG.pages || {};
+['reasonslotlist', 'unansweredreasonslotlist', 'classifiedreasonslotlist'].forEach(function (context) {
+  PULSE_DEFAULT_CONFIG.pages[context] = {
+    showcoloredbar: {
+      highlightperiods: true
+    }
+  };
+});
+
 // tagConfig.displayedPages (left navigation) is not defined here: build/demos-prep.mjs
 // generates it from the links of index.html and appends it to the published copy of
 // this file. Add a demo to index.html and it appears in the navigation too.

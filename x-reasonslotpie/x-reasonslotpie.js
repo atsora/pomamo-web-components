@@ -586,6 +586,7 @@ import * as eventBus from 'eventBus';
       if ((this._dateRange == undefined) ||
         (!pulseRange.equals(newRange, this._dateRange, (a, b) => (a >= b) && (a <= b)))) {
         this._setRange(newRange);
+        this.element.removeAttribute('range'); // To avoid reset in validateParameters
         this.start();
       }
     }

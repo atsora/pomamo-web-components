@@ -321,6 +321,7 @@ import * as eventBus from 'eventBus';
      */
     onDateTimeRangeChange(event) {
       this._range = event.target.daterange;
+      this.element.removeAttribute('range'); // To avoid reset in validateParameters
       this.start();
     }
 
