@@ -45,6 +45,7 @@ import 'x-freetext/x-freetext';
    * @attr {string}  pulse-machines     (in-report output) selected machine ids, comma-separated
    * @attr {string}  pulse-groups       (in-report output) selected group ids, comma-separated
    * @fires machineListChanged          `{ ids: string[], source?: 'url'|'url-early'|'user', error?: 'network' }`
+   * @fires selectionDisplayChanged     DOM event (bubbles) when the displayed selection or its names change
    * @method changeMachineSelection     opens the selection dialog
    * @method fillExternalSummaryDisplay writes the current selection summary into a given element
    * @method getMachinesArray           copy of the current machine id selection
@@ -52,6 +53,8 @@ import 'x-freetext/x-freetext';
    * @method getMachinesString          current machine ids, comma-separated
    * @method getGroupsString            current group ids, comma-separated
    * @method getResolvedMachineIds      copy of the resolved machine ids (after group → machine)
+   * @method getSelectionDisplays       current selection (groups or machines) with its display names
+   * @method getDisplay                 display name of a group or machine id ('' when unknown)
    * @method isReady                    `true` once the first resolution completed
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
@@ -114,6 +117,8 @@ import 'x-freetext/x-freetext';
         'getMachinesString': self.getMachinesString,
         'getGroupsString': self.getGroupsString,
         'getResolvedMachineIds': self.getResolvedMachineIds,
+        'getSelectionDisplays': self.getSelectionDisplays,
+        'getDisplay': self.getDisplay,
         'isReady': self.isReady
       };
 
@@ -1746,6 +1751,11 @@ import 'x-freetext/x-freetext';
         if (this.element.parentElement && this.element.parentElement.parentElement)
           this.element.parentElement.parentElement.classList.remove('missing-config');
       }
+
+      // The displayed selection changed (or got its names): tell the listeners of the
+      // page (getSelectionDisplays). machineListChanged is not enough: it is not
+      // re-emitted when the resolved machines are the same (boot: early emit first).
+      this.element.dispatchEvent(new CustomEvent('selectionDisplayChanged', { bubbles: true }));
     }
 
     /**
@@ -1811,6 +1821,33 @@ import 'x-freetext/x-freetext';
     /** @returns {string} Comma-separated group ids from the current selection. */
     getGroupsString() {
       return this._groupSelectionArray.join();
+    }
+
+    /**
+     * @param {string} id - group or machine id
+     * @returns {string} Its display name, or `''` when unknown (or not loaded yet).
+     */
+    getDisplay(id) {
+      let displayClass = this._groupDisplays.get(String(id));
+      return displayClass ? displayClass.display : '';
+    }
+
+    /**
+     * Current selection (not resolved) with the names shown in the summary.
+     *
+     * @returns {{ kind: string, items: { id: string, display: string }[] }} `kind` is
+     *   `'machine'` for a selection of individual machines, else `'group'`. `display`
+     *   is the id while the group/machine names are not loaded yet.
+     */
+    getSelectionDisplays() {
+      let ids = this._useMachineSelection ? this._machineSelectionArray : this._groupSelectionArray;
+      return {
+        kind: this._useMachineSelection ? 'machine' : 'group',
+        items: ids.map(id => {
+          let displayClass = this._groupDisplays.get(id.toString());
+          return { id: id.toString(), display: displayClass ? displayClass.display : id.toString() };
+        })
+      };
     }
 
     /**
