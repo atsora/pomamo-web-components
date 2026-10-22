@@ -25,6 +25,10 @@ import * as eventBus from 'eventBus';
    * values via `pulse-cellbar-cell-missing`. Reacts to
    * `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
    *
+   * TODO: `Option=TrackTask` is the former name of `TrackManufacturingOrder`.
+   * Replace it by `TrackManufacturingOrder` once release 19 of Atsora
+   * Tracking Server is out and installed at the customers' sites.
+   *
    * @element x-productionmachiningstatus
    * @attr {number} machine-id      (required) machine id
    * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
@@ -258,6 +262,9 @@ import * as eventBus from 'eventBus';
 
       let url = 'Operation/ProductionMachiningStatus?MachineId='
         + this.element.getAttribute('machine-id')
+        // TODO: replace TrackTask by TrackManufacturingOrder once release 19 of
+        // Atsora Tracking Server is out and installed at the customers' sites
+        // (TrackTask is its former name, still accepted by the server)
         + '&Option=' + 'TrackTask';
 
       return url;
