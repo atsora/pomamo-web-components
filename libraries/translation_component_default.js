@@ -3,8 +3,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-var ATSORA_LOCALE_COMPONENT_CATALOG = ATSORA_LOCALE_COMPONENT_CATALOG || { default: {}, fr: {}, de: {} };
-var ATSORA_LOCALE_CATALOG = ATSORA_LOCALE_CATALOG || { default: {}, fr: {}, de: {} };
+var ATSORA_LOCALE_COMPONENT_CATALOG = ATSORA_LOCALE_COMPONENT_CATALOG || { default: {}, fr: {}, de: {}, ja: {} };
+var ATSORA_LOCALE_CATALOG = ATSORA_LOCALE_CATALOG || { default: {}, fr: {}, de: {}, ja: {} };
 
 var ATSORA_COMPONENT_CATALOG = ATSORA_COMPONENT_CATALOG || {};
 var ATSORA_CATALOG = ATSORA_CATALOG || {};
@@ -1557,6 +1557,522 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   },
   workselection: {
     searchPlaceholder: 'Suche…'
+  }
+};
+
+// - ja translation
+
+ATSORA_LOCALE_CATALOG.ja.general = {
+  title: 'Atsora Tracking',
+  roles: {
+    operator: 'オペレーター',
+    manager: 'マネージャー',
+    live: 'ライブ',
+    support: 'サポート',
+    dev: '開発',
+    liveadmin: 'ライブ'
+  },
+  toolLabels: {
+    exp: '期限切れのみ',
+    in1h: '1時間以内に期限切れ',
+    in2h: '2時間以内に期限切れ',
+    in4h: '4時間以内に期限切れ',
+    in8h: '8時間以内に期限切れ',
+    in12h: '12時間以内に期限切れ'
+  }
+};
+
+/*
+ * Components translations
+ */
+ATSORA_LOCALE_COMPONENT_CATALOG.ja = {
+  homeBtn: 'ホーム',
+  changebutton: '変更',
+  contactsupport: 'サポートにお問い合わせください',
+  loadingDots: '読み込み中…',
+  noDataTooOld: 'N/A',
+  missingconfiguration: '設定がありません',
+  errorColon: 'エラー：',
+  errorTitle: 'エラー',
+  errorWhileSaving: '保存中にエラーが発生しました',
+  timeoutError: 'タイムアウト',
+  waitingPath: 'パスを待機中',
+  error: {
+    emptyRange: '範囲が空です',
+    emptyPeriod: '期間が空です',
+    invalidMachineId: '無効な machine-id',
+    invalidRange: '無効な範囲',
+    missingMachineContext: '設備コンテキストがありません',
+    missingMotionContext: '稼働コンテキストがありません',
+    missingParam: 'パラメーターがありません',
+    missingRange: '範囲がありません',
+    missingWhen: '日時がありません',
+    noData: 'データなし',
+    noDataAvailable: '利用可能なデータがありません',
+    noFlowDefined: 'フローが定義されていません。サポートにお問い合わせください',
+    noMachineOrGroupToDisplay: '表示する設備またはグループがありません',
+    selectMachine: '設備を選択してください',
+    selectMachineGroup: '設備または設備グループを選択してください',
+  },
+  checkconfigupdate: {
+    configChanged: 'サーバーの設定が変更されました'
+  },
+  checkversion: {
+    versionChanged: 'バージョンが変更されました'
+  },
+  checkcurrenttime: {
+    syncTime: '日付と時刻を同期してください'
+  },
+  checkserveraccess: {
+    errorDatabaseAccess: 'データベースへのアクセスを確認してください',
+    errorServerAccess: 'サーバーへのアクセスを確認してください'
+  },
+  checkpath: {
+    errorServerAccessOrPath: 'サーバーへのアクセス（またはパス）を確認してください',
+    skipWebService: 'Web サービスのパスをスキップ'
+  },
+  currentcncvalue: {
+    noDataTooOld: 'N/A'
+  },
+  currenticoncncalarm: {
+    iconTooltip: ' ' // Never used because specific alarm tooltip
+  },
+  currenticonnextstop: {
+    iconTooltip: '次の停止'
+  },
+  currenticonunansweredreason: {
+    iconTooltip: '未回答の設備状態'
+  },
+  currenticonworkinformation: {
+    iconTooltip: 'ジョブまたは工程が未定義'
+  },
+  currenttool: {
+    noDataTooOld: 'N/A'
+  },
+  currentsequence: {
+    noDataTooOld: '-', // N/A'
+  },
+  cyclesinperiod: {
+    missing: 'なし',
+    saveSerialNumber: 'シリアル番号を保存'
+  },
+  datetimerange: {
+    emptyPeriodError: '期間が空です',
+    emptyPeriodMessage: '警告：期間が空です',
+    endAfterMaxError: '終了日時が許容される最大日時より後です',
+    endBeforeMinError: '終了日時が許容される最小日時より前です',
+    endBeforeStartError: '終了日時が開始日時より前です',
+    endNotValidError: '終了日時が無効です',
+    fromNow: '現在から終了なし',
+    invalidDatesError: '有効な日付を入力してください',
+    noEnd: '終了日なし',
+    selectAnd: ' から ',
+    selectBetween: '期間を選択：',
+    selectFrom: '期間を選択：',
+    splitPeriod: '期間を分割',
+    selectPeriod: '期間を選択',
+    startAfterMaxError: '開始日時が許容される最大日時より後です',
+    startBeforeMinError: '開始日時が許容される最小日時より前です',
+    startNotValidError: '開始日時が無効です'
+  },
+  detailedcncvaluesat: {
+    true: '真',
+    false: '偽'
+  },
+  detailedreasonat: {
+    seeAllReasons: 'クリックしてすべての理由を表示'
+  },
+  detailedalarmsat: {
+    focused: '注目',
+    unknown: '不明',
+    ignored: '無視'
+  },
+  detailsViewSubTitles: {
+    reason: '理由',
+    machinemode: '設備モード',
+    machinestatetemplate: '予定ステータス',
+    observationstate: '計画状態',
+    operationcycle: 'サイクル',
+    productionstate: '生産状態',
+    shift: 'シフト',
+    cncvalue: 'CNC 値',
+    cncalarms: 'CNC アラーム',
+    workinfo: 'ジョブ',
+    sequence: '加工シーケンス',
+    isofile: 'NC プログラム',
+    partgoal: '個数'
+  },
+  groupArray: {
+    noMachine: '選択に設備がありません'
+  },
+  lastmachinestatus: {
+    currentReasonColon: '現在の理由：',
+    pastReasonData: '過去の理由の詳細',
+    pastTooltip: '過去の理由の詳細を表示または変更',
+    tooOld: '理由が古すぎます'
+  },
+  lastmachinestatetemplate: {
+    scheduledStatus: '予定ステータス：'
+  },
+  lastserialnumber: {
+    missing: 'なし',
+    noCycle: 'サイクルなし',
+    currentserialnumber: 'シリアル番号：',
+    pastserialnumber: '過去のデータ',
+    currentTooltip: '現在のシリアル番号を変更',
+    pastTooltip: '過去のシリアル番号',
+    save: 'シリアル番号を保存',
+    selectPeriod: '期間を選択'
+  },
+  lastworkinformation: {
+    noOperation: ' ',
+    pastdata: '過去のデータ',
+    pastTooltip: ''
+  },
+  lastworkinformationbar: {
+    noOperation: '工程なし',
+    pastdata: '過去のデータ',
+    pastTooltip: ''
+  },
+  loginchangepassword: {
+    invalidPassword: '無効なパスワード',
+    newPasswordsMismatch: '新しいパスワードが一致しません',
+    user: 'ユーザー：',
+    oldPassword: '現在のパスワード：',
+    newPassword: '新しいパスワード：',
+  },
+  loginchangepasswordbutton: {
+    changePassword: 'パスワードを変更'
+  },
+  loginconnection: {
+    user: 'ユーザー：',
+    connectWith: '接続方法：'
+  },
+  loginpassword: {
+    deniedError: 'ユーザー名またはパスワードが無効です',
+    noRoleError: 'このログインにはロールが定義されていません。設定を変更してください',
+    user: 'ユーザー：',
+    password: 'パスワード：',
+    stayConnected: 'ログインしたままにする',
+    loginButton: 'ログイン'
+  },
+  loginpasswordbutton: {
+    login: 'ログイン',
+    label: 'ユーザー／パスワードでログイン',
+    tooltip: 'パスワードでログイン'
+  },
+  machinedisplay: {
+    invalidMachineGroup: '無効な設備またはグループ'
+  },
+  machinemodecolorlegend: {
+    title: '設備モード'
+  },
+  machinemodecolorlegends: {
+    title: '設備モード'
+  },
+  machinemodelegends: {
+    title: '設備モード'
+  },
+  machineselection: {
+    selectedTitle: '選択済み',
+    clearButton: 'クリア',
+    dynamicKey: '動的',
+    errorMissingUnique: '設備を1台選択してください',
+    errorMissing: '設備を1台以上選択してください',
+    errorMissingGroup: 'グループを1つ以上選択してください',
+    errorMissingMachineInGroup: '設備を1台以上含むグループを選択してください',
+    groupKey: 'G',
+    groupsButton: 'グループ別',
+    machineKey: 'M',
+    machinesButton: '設備別',
+    noMachineSelection: '設備が選択されていません',
+    noSelectedMachine: '選択された設備がありません',
+    noSelection: '選択なし',
+    previewMachines: '設備をプレビュー',
+    searchDots: '検索…',
+    selectMachine: '設備を選択',
+    selectMachines: '設備を選択',
+    selectedGroups: '選択したグループ',
+    selectedMachines: '選択した設備',
+    serverUnreachable: 'サーバーに接続できません',
+    switchToMachineSelection: '設備選択に切り替え'
+  },
+  message: {
+    reload: '再読み込み'
+  },
+  machinetab: {
+    previousMachine: '前の設備',
+    nextMachine: '次の設備',
+    serverUnreachable: 'サーバーに接続できません'
+  },
+  machinetabnav: {
+    previousMachine: '前の設備',
+    nextMachine: '次の設備'
+  },
+  milestonesadd: {
+    addButton: '追加',
+    shortDescriptionColon: '概要：',
+    whenColon: '日時：'
+  },
+  milestonesmanager: {
+    add: 'マイルストーンを追加',
+    day: '日',
+    description: '説明',
+    errorRemove: '項目の削除中にエラーが発生しました',
+    machine: '設備'
+  },
+  performancetarget: {
+    target: '目標'
+  },
+  periodmanager: {
+    today: '今日'
+  },
+  periodtoolbar: {
+    dialogTitle: '日時範囲の設定',
+    dayBtn: '日',
+    shiftBtn: 'シフト',
+    weekBtn: '週',
+    monthBtn: '月',
+    quarterBtn: '四半期',
+    semesterBtn: '半期',
+    yearBtn: '年',
+    emptyPeriodError: '期間が空です',
+    endAfterMaxError: '終了日時が許容される最大日時より後です',
+    endBeforeMinError: '終了日時が許容される最小日時より前です',
+    endBeforeStartError: '終了日時が開始日時より前です',
+    endNotValidError: '終了日時が無効です',
+    startAfterMaxError: '開始日時が許容される最大日時より後です',
+    startBeforeMinError: '開始日時が許容される最小日時より前です',
+    startNotValidError: '開始日時が無効です'
+  },
+  production: {
+    actual: '実績',
+    target: '目標',
+    preposition: '時刻'
+  },
+  productionshiftgoal: {
+    productionshiftgoal: 'シフト生産目標'
+  },
+  productionstatelegend: {
+    title: '生産状態'
+  },
+  productionstatelegends: {
+    title: '生産状態'
+  },
+  productiontrackergraph: {
+    parts: '個'
+  },
+  productiontrackertable: {
+    actual: '実績',
+    capacity: '能力',
+    cumulative: '累計',
+    hourly: '時間別',
+    partsToMachine: '加工予定数',
+    reserveCapacity: '余力',
+    summary: '集計',
+    target: '目標',
+
+  },
+  productionmachiningstatus: {
+    outOfShift: 'シフト外',
+    shift: 'シフト',
+    notavailable: '利用不可'
+  },
+  progressbar: {
+    processingTitle: '処理中…'
+  },
+  reasongroups: {
+    title: '理由',
+    textidleDefaultValue: 'アイドル・短時間停止・停止',
+    idleTime: 'アイドル時間'
+  },
+  reasonslotlist: {
+    idle: 'アイドル',
+    motion: '稼働',
+    allPeriodsClassified: 'すべての期間が分類済みです',
+    noPeriod: '指定範囲に選択可能な期間がありません',
+    sectionTimeRangeTitle: '時間範囲を選択',
+    sectionPeriodTitle: 'アイドル期間を1つ以上選択',
+    sectionReasonTitle: '選択した期間に理由を適用',
+    optionIdentified: '特定済みのアイドル期間を表示',
+    optionRunning: '稼働期間を表示',
+  },
+  unansweredreasonnumber: {
+    dataToClassified: '件の未分類の停止',
+    dataToClassifiedPlural: '件の未分類の停止',
+    pastReasonData: '過去の理由の詳細',
+    pastTooltip: '過去の理由の詳細を表示または変更',
+  },
+  unansweredreasonslotlist: {
+    idle: 'アイドル',
+    motion: '稼働',
+    noPeriod: '指定範囲に選択可能な期間がありません',
+    allReasons: 'すべての理由',
+    defineReason: '理由を設定',
+    sectionTimeRangeTitle: '時間範囲を選択',
+    sectionPeriodTitle: 'アイドル期間を1つ以上選択',
+    sectionReasonTitle: '選択した期間に理由を適用',
+    optionIdentified: '特定済みのアイドル期間を表示',
+    optionRunning: '稼働期間を表示',
+    advanced: '詳細',
+    seeAllReasons: 'すべての理由を表示',
+  },
+  classifiedreasonslotlist: {
+    idle: 'アイドル',
+    motion: '稼働',
+    noPeriod: '指定範囲に選択可能な期間がありません',
+    allPeriodsClassified: 'すべての停止期間が分類済みです',
+    defineReason: '理由を設定',
+    advanced: '詳細',
+    seeUnansweredOnly: '未回答のみ',
+  },
+  reportdatetime: {
+    typeExplicit: '期間指定',
+    typeSince: '開始日時から',
+    typePast: '過去',
+    typeCurrent: '現在',
+    unitHours: '時間',
+    unitShifts: 'シフト',
+    unitDays: '日',
+    unitWeeks: '週',
+    unitMonths: 'か月',
+    unitQuarters: '四半期',
+    unitYears: '年',
+    current1Hour: '1時間',
+    current1Shift: '1シフト',
+    currentToday: '今日',
+    currentTodayYesterday: '今日＋昨日',
+    current1Week: '1週間',
+    current2Weeks: '2週間',
+    current1Month: '1か月',
+    current1Quarter: '1四半期',
+    current1Year: '1年',
+    invalidGroupDisplayForm: '無効な groupDisplayForm',
+    invalidGroupName: '無効な groupName',
+    invalidDataType: '無効な dataType',
+  },
+  runninglegends: {
+    title: '稼働状態',
+    textidle: 'アイドル・短時間停止・停止',
+    textrunning: '稼働中'
+  },
+  savemachinestatetemplate: {
+    changeMachineStateButton: '設備状態を変更',
+    changeMachineStateTitle: '設備状態を変更',
+    switch: '切り替え先：'
+  },
+  savereason: {
+    applicableReasons: '適用可能な理由',
+    apply: '適用',
+    applyWithComment: 'コメント付きで適用',
+    comment: 'コメント',
+    currentReasonColon: '現在の理由：',
+    errorNoDetails: 'コメントを入力してください',
+    machineColon: '設備：',
+    modesColon: 'モード：',
+    multiple: '複数',
+    noPeriod: '期間なし',
+    noSelectedPeriod: '期間が選択されていません',
+    nSelectedPeriods: '件の選択期間',
+    periodColon: '期間：',
+    periods: '期間',
+    reasonColon: '理由：',
+    reasonDetailsTitle: '理由の詳細',
+    resetReasonButton: '既定に戻す',
+    saveReasonTitle: '理由を設定',
+    selectedPeriodsColon: '選択した期間：',
+    split: '分割',
+    withComment: 'コメント付き'
+  },
+  savescrapreason: {
+    submitbutton: '送信',
+    detailsbutton: '詳細付き',
+    machineColon: '設備：',
+    reasonColon: '理由：',
+    scrapreasons: '不良分類',
+    reasonDetailsTitle: '理由の詳細',
+    errorNoDetails: 'コメントを入力してください',
+    validparts: '良品数'
+  },
+  scrapclassification: {
+    title: '不良を登録',
+    partcount: '生産数：',
+    scrapcount: '不良数：',
+    unproducedcount: '未生産数：',
+  },
+  scrapstatus: {
+    shiftscrap: 'シフトの不良',
+    scrapDeclaration: '不良登録'
+  },
+  saveserialnumber: {
+    serialNumberPlaceholder: 'シリアル番号…'
+  },
+  sequencebar: {
+    'sequence': 'シーケンス '
+  },
+  setupmachine: {
+    noOperation: '工程なし',
+    setupsince: '段取り開始：'
+  },
+  stopclassification: {
+    title: '停止',
+    options: '詳細オプション',
+    reasonDetailsTitle: '理由の詳細',
+  },
+  reasoncommentdialog: {
+    machineColon: '設備：',
+    periodColon: '期間：',
+    reasonColon: '理由：',
+  },
+  taskslist: {
+    Late: '遅延',
+    lateTextAfter: '前',
+    lateTextBefore: '',
+    Todo: '未実施',
+    todoTextAfter: '',
+    todoTextBefore: '残り ',
+    Upcoming: '予定',
+    upcomingTextAfter: '後',
+    upcomingTextBefore: ''
+  },
+  task: {
+    Late: '遅延',
+    Todo: '未実施',
+    Upcoming: '予定',
+  },
+  toollifemachine: {
+    noOperation: '工程なし'
+  },
+  tr: {
+    invalidKey: '無効なキー',
+  },
+  saveworkinfo: {
+    WorkInfoTitle: '作業情報'
+  },
+  rotationprogress: {
+    page: 'ページ'
+  },
+  partproductionstatuspie: {
+    noProductionInformation: 'この設備／グループの生産情報がありません'
+  },
+  validatetoken: {
+    noRoleDefined: 'このログインにはロールが定義されていません。設定を変更してください。'
+  },
+  workexplorer: {
+    checkLimits: '制限を確認',
+    fillMandatoryField: '必須項目を入力してください',
+    reload: '再読み込み',
+    saveNew: '新規保存'
+  },
+  workinfoslotlist: {
+    noOperation: '工程なし',
+    missingOperation: '工程がありません',
+    missing: 'なし',
+    headerTimeRange: '1. 時間範囲',
+    headerWorkInformations: '2. 作業情報の期間'
+  },
+  workselection: {
+    searchPlaceholder: '検索…'
   }
 };
 
