@@ -18,12 +18,31 @@ import localeFr from 'd3-time-format/locale/fr-FR.json';
 import localeEn from 'd3-time-format/locale/en-US.json';
 import localeDe from 'd3-time-format/locale/de-DE.json';
 import localeEs from 'd3-time-format/locale/es-ES.json';
+import localeJa from 'd3-time-format/locale/ja-JP.json';
 const locales = {
   'fr': localeFr,
   'en': localeEn,
   'de': localeDe,
   'es': localeEs,
+  'ja': localeJa,
 };
+
+// Format of the day ticks, by language (default: '%a %d', for example 'Mon 05')
+const dayFormats = {
+  'ja': '%-d日(%a)', // for example 5日(月)
+};
+
+/**
+ * Language of the current Moment locale, among the supported ones
+ *
+ * The region is ignored (en-gb => en), and an unsupported language falls back to English
+ *
+ * @returns {string} key of locales
+ */
+function getLanguage() {
+  const language = (moment.locale() || 'en').split('-')[0];
+  return (language in locales) ? language : 'en';
+}
 
 (function () {
 
@@ -33,7 +52,8 @@ const locales = {
    * Renders a horizontal graduation axis for `range` using `d3-time-format`,
    * with a fixed 25 px height and a tick density computed from the container
    * width (~one tick per 70 px, min 3). Date/time formatting locale is selected
-   * from `moment.locale()` (`fr` / `en` / `de` / `es`). A `ResizeObserver` on
+   * from `moment.locale()` (`fr` / `en` / `de` / `es` / `ja`, English for another
+   * language). A `ResizeObserver` on
    * the host element triggers a redraw on width changes.
    *
    * @element x-datetimegraduation
@@ -118,20 +138,13 @@ const locales = {
         .domain([new Date(this._range.lower), new Date(this._range.upper)])
         .range([0, bar_width]);
 
-      const language = moment.locale();
-      let localeData = locales[language];
+      const language = getLanguage();
+      const locale = d3TimeFormat.timeFormatLocale(locales[language]);
 
-      // d3TimeFormat is imported at module level (was a lazy require here)
-      const locale = d3TimeFormat.timeFormatLocale(localeData);
-
-      const formatDay = locale.format('%a %d');
-      let formatHour;
-      if (language === 'en') {
-        formatHour = locale.format('%I %p');
-      }
-      else {
-        formatHour = locale.format('%H:%M');
-      }
+      const formatDay = locale.format(dayFormats[language] || '%a %d');
+      // 12h when the time format of the Moment locale is a 12h one ('h:mm A' for en), 24h otherwise
+      const use12HourFormat = /h/.test(moment.localeData().longDateFormat('LT').replace(/\[[^\]]*\]/g, ''));
+      const formatHour = locale.format(use12HourFormat ? '%I %p' : '%H:%M');
 
       function customTickFormat(date) {
         if (date.getHours() === 0 && date.getMinutes() === 0) {

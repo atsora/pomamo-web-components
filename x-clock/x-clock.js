@@ -18,12 +18,12 @@ import * as pulseComponent from 'pulsecomponent';
    *
    * Self-rescheduling `setTimeout` loop in `_startTime()` aligned on the next
    * second boundary (or minute boundary when seconds are hidden) to avoid drift.
-   * Time format depends on the current Moment locale: 24h for `fr` / `de`, 12h
-   * otherwise. No AJAX.
+   * Time format depends on the current Moment locale: 12h when its time format
+   * is a 12h one (`en`), 24h otherwise (`fr`, `de`, `es`, `ja`...). No AJAX.
    *
    * @element x-clock
    * @attr {boolean} display-seconds  `'true'` shows seconds (`HH:mm:ss` / `hh:mm:ss a`); default hides them
-   * @attr {boolean} display-date     `'true'` shows the date (`dddd DD/MM/YYYY`, or `dddd MM/DD/YYYY` for `en`) instead of the time
+   * @attr {boolean} display-date     `'true'` shows the date (`dddd L`: `MM/DD/YYYY` for `en`, `DD/MM/YYYY` for `fr`, `YYYY/MM/DD` for `ja`...) instead of the time
    * @extends pulseComponent.PulseInitializedComponent
    */
   class ClockComponent extends pulseComponent.PulseInitializedComponent {
@@ -62,9 +62,9 @@ import * as pulseComponent from 'pulsecomponent';
      * @returns {boolean} true for 24h format, false for 12h format
      */
     _shouldUse24HourFormat() {
-      const locale = moment.locale();
-      // Use 24h format for French and German locales
-      return locale === 'fr' || locale === 'de' || locale.startsWith('fr-') || locale.startsWith('de-');
+      // The time format of the Moment locale tells it: 'h:mm A' (en) is 12h, 'HH:mm' (fr, de, ja...) or 'H:mm' (es) is 24h
+      const timeFormat = moment.localeData().longDateFormat('LT');
+      return !/h/.test(timeFormat.replace(/\[[^\]]*\]/g, ''));
     }
 
     /**
@@ -123,12 +123,8 @@ import * as pulseComponent from 'pulsecomponent';
       if (this.element.hasAttribute('display-date')) {
         if (this.element.getAttribute('display-date') === 'true'
           || this.element.getAttribute('display-date') === true) {
-          if (moment.locale() === 'en') {
-            stringToDisplay += "dddd MM/DD/YYYY ";
-          }
-          else {
-            stringToDisplay += "dddd DD/MM/YYYY ";
-          }
+          // L: numeric date of the Moment locale, for example MM/DD/YYYY (en), DD/MM/YYYY (fr), DD.MM.YYYY (de), YYYY/MM/DD (ja)
+          stringToDisplay += 'dddd L';
         }
       }
       else {
