@@ -94,6 +94,11 @@ import 'x-datetimerange/x-datetimerange';
       this._textarea.setAttribute('placeholder', 'Details...');
       this._textarea.setAttribute('maxlength', '255');
       this._textarea.addEventListener('keydown', function (event) {
+        // While an IME composes a text (Japanese, Chinese...), Enter only validates the conversion:
+        // it must not validate the dialog (keyCode 229 for the browsers that do not set isComposing)
+        if (event.isComposing || event.keyCode === 229) {
+          return;
+        }
         if (event.keyCode == 13) {
           let btn = document.querySelector('a.dialog-button-frame-validate');
           if (btn) btn.click();
