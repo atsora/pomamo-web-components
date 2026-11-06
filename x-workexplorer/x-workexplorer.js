@@ -543,7 +543,7 @@ import pulseCustomDialog from 'pulseCustomDialog';
       // data.Kind == attr
 
       // HEADER : title / revisions
-      this._titleDisplay.innerHTML = data.Display;
+      this._titleDisplay.innerHTML = data.Display ?? '';
       this._reloadBtn.style.display = '';
 
       // PARENTS
@@ -649,6 +649,11 @@ import pulseCustomDialog from 'pulseCustomDialog';
           let valueDiv = this._properties.querySelector('.workexplorer-value[name="' + prop.Key + '"]');
           let inputDiv = valueDiv.querySelector('input');
 
+          // No value: keep the default value (jQuery .val(undefined) used to be a no-op)
+          if (prop.Value === undefined) {
+            continue;
+          }
+
           // Special set value
           if ('Boolean' == valueDiv.getAttribute('propformat')) {
             inputDiv.checked = prop.Value;
@@ -678,8 +683,7 @@ import pulseCustomDialog from 'pulseCustomDialog';
           }
           else { // Default
             // Default set value (text, number...)
-            inputDiv.value = prop.Value;
-            // same as inputDiv.value = prop.Value;
+            inputDiv.value = prop.Value ?? '';
           }
         }
       }

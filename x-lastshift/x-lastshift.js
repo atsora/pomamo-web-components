@@ -179,9 +179,6 @@ import * as pulseUtility from 'pulseUtility';
      * @param {{ Shift?: { Display: string } }} data
      */
     refresh (data) {
-      this._content.innerHTML = data.Name;
-
-
       let label = this.element.querySelector('.lastshift-shiftlabel');
       if (label) {
         if (data.Shift && data.Shift.Display) {
