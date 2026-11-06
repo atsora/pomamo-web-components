@@ -21,7 +21,74 @@ function _resolveTimeout (timeout) {
   return timeout;
 }
 
+/** Query parameter that sets the language of the translated strings of the web service */
+var CULTURE_PARAMETER = 'culture';
+
+/**
+ * Culture of the translated strings the web service returns: the locale of the page,
+ * set by setAtsoraLocale ('default' is English)
+ *
+ * @memberof module:pulseService
+ * @function getRequestCulture
+ *
+ * @return {string} for example 'en', 'fr', 'de' or 'ja', '' if the page has no locale
+ */
+export function getRequestCulture () {
+  if (typeof document === 'undefined' || !document.documentElement) {
+    return '';
+  }
+  let lang = document.documentElement.getAttribute('lang');
+  if (!lang) {
+    return '';
+  }
+  return (lang === 'default') ? 'en' : lang;
+}
+
+/**
+ * Add the culture of the page to the URL of a web service request (?culture=fr),
+ * so that its translated strings are in the language of the page.
+ *
+ * A web service that does not know this parameter ignores it and answers in its own language.
+ * A URL that already sets the culture is kept as it is.
+ *
+ * @memberof module:pulseService
+ * @function addCultureToUrl
+ *
+ * @param {string} url - URL of the request
+ * @param {string} [culture] - culture to set, default is getRequestCulture ()
+ * @return {string} URL with the culture parameter
+ */
+export function addCultureToUrl (url, culture) {
+  if (typeof culture === 'undefined') {
+    culture = getRequestCulture();
+  }
+  if ((typeof url !== 'string') || (url === '') || !culture) {
+    return url;
+  }
+  let hash = '';
+  let hashIndex = url.indexOf('#');
+  if (hashIndex >= 0) {
+    hash = url.substring(hashIndex);
+    url = url.substring(0, hashIndex);
+  }
+  if (new RegExp('[?&]' + CULTURE_PARAMETER + '=', 'i').test(url)) {
+    return url + hash;
+  }
+  let separator;
+  if (url.indexOf('?') < 0) {
+    separator = '?';
+  }
+  else if (url.endsWith('?') || url.endsWith('&')) {
+    separator = '';
+  }
+  else {
+    separator = '&';
+  }
+  return url + separator + CULTURE_PARAMETER + '=' + encodeURIComponent(culture) + hash;
+}
+
 // Internal: perform a fetch with timeout via AbortController.
+// The culture of the page is added to the URL (see addCultureToUrl).
 // Resolves with one of:
 //   { ok: true, data: <json> }
 //   { ok: false, status: <number>, isTimeout: <boolean>, error?: Error, kind?: <string> }
@@ -33,7 +100,7 @@ function _doFetch (url, init, timeoutMs) {
     controller.abort();
   }, _resolveTimeout(timeoutMs));
 
-  return fetch(url, Object.assign({ signal: controller.signal }, init))
+  return fetch(addCultureToUrl(url), Object.assign({ signal: controller.signal }, init))
     .then(function (response) {
       clearTimeout(id);
       if (!response.ok) {
