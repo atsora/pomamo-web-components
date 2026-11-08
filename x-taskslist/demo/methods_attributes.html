@@ -15,5 +15,20 @@ SPDX-License-Identifier: Apache-2.0
       complete motion-context when using x-grouparray.
     </div>
 
+    <div class="attribute-name optional string"><code>machine-group</code></div>
+    <div class="attribute-description">Machine group of the task service, when no machine-id is set: a group id, or
+      machine ids separated by ','.
+    </div>
+
+    <div class="attribute-name optional boolean"><code>all-machines</code></div>
+    <div class="attribute-description">Tasks of the machines selected in the page (x-machineselection), when neither
+      machine-id nor machine-group is set.
+    </div>
+
+    <div class="attribute-name config optional string"><code>mockGraphqlUrl</code></div>
+    <div class="attribute-description">For the development only: GraphQL endpoint to use instead of
+      <code>&lt;path&gt;optasks</code>, for example <code>http://localhost:4000/optasks</code> (atsora-mocks).
+    </div>
+
   </div>
 </div>

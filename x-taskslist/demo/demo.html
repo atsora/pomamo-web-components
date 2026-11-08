@@ -12,21 +12,26 @@ SPDX-License-Identifier: Apache-2.0
 
   <h3>Machine 1 — several tasks across Quality / Maintenance / ShiftChange <small>(machine-id=1)</small></h3>
   <div class='forceHeight'>
-    <x-taskslist machine-id="1"></x-taskslist>
+    <x-taskslist machine-id="1" path="http://localhost:8080/"></x-taskslist>
   </div>
 
   <h3>Machine 2 — single long-running task (multi-day DocAck) <small>(machine-id=2)</small></h3>
   <div class='forceHeight'>
-    <x-taskslist machine-id="2"></x-taskslist>
+    <x-taskslist machine-id="2" path="http://localhost:8080/"></x-taskslist>
   </div>
 
   <h3>Machine 3 — current + upcoming maintenance/quality tasks <small>(machine-id=3)</small></h3>
   <div class='forceHeight'>
-    <x-taskslist machine-id="3"></x-taskslist>
+    <x-taskslist machine-id="3" path="http://localhost:8080/"></x-taskslist>
   </div>
 
   <h3>Machine 4 — no tasks, empty list <small>(machine-id=4)</small></h3>
   <div class='forceHeight'>
-    <x-taskslist machine-id="4"></x-taskslist>
+    <x-taskslist machine-id="4" path="http://localhost:8080/"></x-taskslist>
+  </div>
+
+  <h3>Milling cell — tasks of machines 1 and 2 <small>(machine-group=101)</small></h3>
+  <div class='forceHeight'>
+    <x-taskslist machine-group="101" path="http://localhost:8080/"></x-taskslist>
   </div>
 </div>

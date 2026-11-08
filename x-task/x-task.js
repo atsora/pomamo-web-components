@@ -18,13 +18,13 @@ import * as pulseConfig from 'pulseConfig';
 (function () {
 
   /**
-   * `<x-task>` — current task panel for one machine, sourced from
-   * GraphQL.
+   * `<x-task>` — current task panel for one machine, sourced from the task
+   * GraphQL service of the web service (`<path>/optasks`).
    *
-   * Polls a GraphQL endpoint with
-   * `{ allTaskInstances(machineId: $machineId) { id start end result
-   * taskTemplate { name role } } }` (refresh =
-   * `refreshingRate.currentRefreshSeconds`, default 10 s) and renders
+   * Polls `taskInstancesNext(role, machineGroup: machine-id)` (refresh =
+   * `refreshingRate.currentRefreshSeconds`, default 10 s): the tasks that
+   * are due, not done yet. A due task has no id: it is identified by
+   * `<taskTemplateId>-<machineId>`, the key of the Vue execution dialog. Renders
    * the main task — title, category icon (maintenance / quality /
    * documentation / …), timer, state — plus up to `_numberOfTasks` (3)
    * tabs for pending tasks; selecting a tab updates the main panel and
@@ -77,7 +77,23 @@ import * as pulseConfig from 'pulseConfig';
       return self;
     }
 
-    _getCategoryIconClass(role) {
+    /**
+     * Icon of a task: by type of task template, else by role
+     *
+     * @param {string} role
+     * @param {object} [taskTemplate] with its __typename
+     */
+    _getCategoryIconClass(role, taskTemplate) {
+      switch (taskTemplate && taskTemplate.__typename) {
+        case 'ITaskTemplateMaintenance':
+          return 'fa-wrench';
+        case 'ITaskTemplateQuality':
+          return 'fa-ruler';
+        case 'ITaskTemplateDocAck':
+          return 'fa-book';
+        default:
+          break;
+      }
       const value = (role == null) ? '' : String(role).trim().toLowerCase();
       switch (value) {
         case 'maintenance':
@@ -142,7 +158,7 @@ import * as pulseConfig from 'pulseConfig';
           && this._mainTaskInstance.taskTemplate.role)
           ? this._mainTaskInstance.taskTemplate.role
           : '';
-        const iconClass = this._getCategoryIconClass(role);
+        const iconClass = this._getCategoryIconClass(role, this._mainTaskInstance && this._mainTaskInstance.taskTemplate);
         this._mainTaskCategoryIcon.className = `fa-solid ${iconClass}`;
         this._mainTaskCategoryIcon.setAttribute('title', role || '');
       }
@@ -414,7 +430,7 @@ import * as pulseConfig from 'pulseConfig';
         && taskInstance.taskTemplate.role)
         ? taskInstance.taskTemplate.role
         : '';
-      const iconClass = this._getCategoryIconClass(role);
+      const iconClass = this._getCategoryIconClass(role, taskInstance && taskInstance.taskTemplate);
       icon.className = `fa-solid ${iconClass} task-tab-icon`;
       icon.setAttribute('aria-hidden', 'true');
       icon.setAttribute('title', role || '');
@@ -736,20 +752,17 @@ import * as pulseConfig from 'pulseConfig';
     }
 
     getShortUrl() {
-      return 'g';
+      return 'optasks';
     }
 
     /**
-     * The task GraphQL service answers at `<path>/g`, which the base class
-     * builds from the configured web service path.
+     * The task GraphQL service answers at `<path>/optasks` (the endpoint of
+     * atsora-vue), which the base class builds from the configured web
+     * service path.
      *
      * Setting `mockGraphqlUrl` (config or attribute) points the component at a
-     * mock instead -- atsora-mocks serves http://localhost:4000/ -- which is how
-     * the feature is exercised while no backend exposes the endpoint. That mock
-     * URL used to be the DEFAULT: an installed app silently queried a developer
-     * server on the client machine, and the resulting connection failure was
-     * reported as "check the network" rather than as a service that does not
-     * answer. Leave it unset outside development.
+     * mock instead, for example atsora-mocks: http://localhost:4000/optasks.
+     * Leave it unset outside development.
      */
     get url() {
       const mock = this.getConfigOrAttribute('mockGraphqlUrl', '');
@@ -757,13 +770,15 @@ import * as pulseConfig from 'pulseConfig';
     }
 
     postData() {
-      // Single machine (machines page), scoped to the current role.
-      let request = `query ($machineId: ID!, $role: String) { allTaskInstances(machineId: $machineId, role: $role) { id start end result { __typename } taskTemplate { name role __typename } } }`;
+      // Single machine (machines page), scoped to the current role: a machine
+      // id is a machine group of the service. TaskTemplate is a union whose
+      // types all implement ITaskTemplate.
+      let request = `query ($role: String!, $machineGroup: String!) { taskInstancesNext(role: $role, machineGroup: $machineGroup) { machineId start end taskTemplate { __typename ... on ITaskTemplate { id name role } } } }`;
       return {
         query: request,
         variables: {
-          machineId: this.element.getAttribute('machine-id'),
-          role: pulseConfig.getAppContextOrRole()
+          role: pulseConfig.getAppContextOrRole(),
+          machineGroup: String(this.element.getAttribute('machine-id'))
         }
       };
     }
@@ -773,17 +788,17 @@ import * as pulseConfig from 'pulseConfig';
     }
 
     refresh(data) {
-      let allTaskInstances = [];
+      let tasksDue = [];
       if (!pulseUtility.isNotDefined(data) && !pulseUtility.isNotDefined(data.data)) {
-        allTaskInstances = data.data.allTaskInstances || [];
-      }
-      else if (!pulseUtility.isNotDefined(data)) {
-        allTaskInstances = data.allTaskInstances || [];
+        tasksDue = data.data.taskInstancesNext || [];
       }
 
-      // Only keep tasks that are not completed/validated (no result)
-      const pendingTasks = Array.isArray(allTaskInstances)
-        ? allTaskInstances.filter(t => t && t.result == null)
+      // A due task is not done yet and has no id: identify it by task
+      // template + machine, like the Vue execution dialog
+      const pendingTasks = Array.isArray(tasksDue)
+        ? tasksDue.filter(t => t && t.taskTemplate).map(t => Object.assign({}, t, {
+          id: `${t.taskTemplate.id}-${t.machineId}`
+        }))
         : [];
 
       // Sort all pending tasks by ascending end date.
@@ -836,7 +851,7 @@ import * as pulseConfig from 'pulseConfig';
 
     displayError(message) {
       this._messageSpan.innerHTML = message;
-      console.error('x-taskslist: ' + message);
+      console.error('x-task: ' + message);
     }
 
     removeError() {

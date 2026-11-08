@@ -18,17 +18,27 @@ import * as pulseConfig from 'pulseConfig';
 (function () {
 
   /**
-   * `<x-taskslist>` — list of task instances sourced from GraphQL.
+   * `<x-taskslist>` — list of the tasks that are due, sourced from the task
+   * GraphQL service of the web service (`<path>/optasks`).
    *
-   * Polls a GraphQL endpoint with `{ allTaskInstances(machineId: $machineId) { … } }`
-   * (refresh = `refreshingRate.currentRefreshSeconds`, default 10 s) and
-   * renders one `<li>` per task instance with its status, name and
-   * timing inside a `.taskslist-content > <ol>`. Reacts to
-   * `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
+   * Polls `taskInstancesNext(role, machineGroup)` (refresh =
+   * `refreshingRate.currentRefreshSeconds`, default 10 s) and renders one
+   * `<li>` per due task (late, to do, upcoming) with its name, machine, role
+   * and timing inside a `.taskslist-content > <ol>`. A due task carries no
+   * id: it is identified by `<taskTemplateId>-<machineId>`, the key of the
+   * Vue execution dialog. Reacts to `machineIdChangeSignal` on
+   * `machine-context` (updates `machine-id`).
+   *
+   * The machines, the `machineGroup` argument, are in this order:
+   * `machine-id`, `machine-group`, else with `all-machines` the machines of
+   * the page selection (`x-machineselection`, groups resolved into their
+   * machines: the service does not accept a group in a list).
    *
    * @element x-taskslist
-   * @attr {number} machine-id      machine id used to filter the GraphQL query
-   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
+   * @attr {number}  machine-id      machine whose tasks are listed
+   * @attr {string}  machine-group   machine group of the service (a group id, or machine ids separated by ',')
+   * @attr {boolean} all-machines    tasks of the machines selected in the page
+   * @attr {string}  machine-context event-bus context for `machineIdChangeSignal`
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class TasksListComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
@@ -41,6 +51,8 @@ import * as pulseConfig from 'pulseConfig';
       const self = super(...args);
 
       self._content = undefined;
+      // Machines of the page selection, for all-machines
+      self._selectedMachineIds = [];
 
       return self;
     }
@@ -53,6 +65,7 @@ import * as pulseConfig from 'pulseConfig';
 
       switch (attr) {
         case 'machine-id':
+        case 'machine-group':
           this.start();
           break;
         case 'machine-context':
@@ -110,12 +123,22 @@ import * as pulseConfig from 'pulseConfig';
 
       // Follow the current machine published on `machine-context` (e.g. the
       // machine tab selected on machinedashboard/machines). In `all-machines`
-      // mode (operationstatus) no single machine is tracked.
+      // mode (operationstatus, running) the machines of the page selection.
       if (this.element.hasAttribute('machine-context')) {
         eventBus.EventBus.addEventListener(this,
           'machineIdChangeSignal',
           this.element.getAttribute('machine-context'),
           this.onMachineIdChange.bind(this));
+      }
+      if (this.element.hasAttribute('all-machines')) {
+        // x-machineselection may have emitted machineListChanged before this
+        // component was initialized: read its current resolution first
+        const machineSelection = document.querySelector('x-machineselection');
+        if (machineSelection && typeof machineSelection.getResolvedMachineIds === 'function') {
+          this._selectedMachineIds = machineSelection.getResolvedMachineIds().map(String);
+        }
+        eventBus.EventBus.addGlobalEventListener(this, 'machineListChanged',
+          this.onMachineListChanged.bind(this));
       }
 
       this.switchToNextContext();
@@ -146,13 +169,44 @@ import * as pulseConfig from 'pulseConfig';
     }
 
     /**
-     * Validate required parameters and the internal range format
+     * all-machines: the page selection changed (resolved machine ids)
+     *
+     * @param {{ target: { ids: string[] } }} event
+     */
+    onMachineListChanged (event) {
+      const ids = ((event.target && event.target.ids) || event.ids || [])
+        .map(id => String(id).trim())
+        .filter(id => id !== '');
+      if (ids.join(',') === this._selectedMachineIds.join(',')) {
+        return;
+      }
+      this._selectedMachineIds = ids;
+      this.start();
+    }
+
+    /**
+     * machineGroup argument of taskInstancesNext, '' if no machine is known yet
+     * @returns {string}
+     */
+    get machineGroup() {
+      if (this.element.hasAttribute('machine-id')) {
+        return String(this.element.getAttribute('machine-id')).trim();
+      }
+      if (this.element.hasAttribute('machine-group')) {
+        return String(this.element.getAttribute('machine-group')).trim();
+      }
+      if (this.element.hasAttribute('all-machines')) {
+        return this._selectedMachineIds.join(',');
+      }
+      return '';
+    }
+
+    /**
+     * Validate required parameters: a machine, a group or a machine selection
      */
     validateParameters() {
-      // `all-machines` (operationstatus): tasks across all machines, no single
-      // machine required. Otherwise a machine-id must be resolved first.
-      if (!this.element.hasAttribute('all-machines') && !this.element.hasAttribute('machine-id')) {
-        this.setError(this.getTranslation('error.selectMachine', 'Please select a machine'));
+      if (this.machineGroup === '') {
+        this.switchToKey('Error', () => this.displayError(this.getTranslation('error.selectMachine', 'Please select a machine')), () => this.removeError());
         return;
       }
 
@@ -164,20 +218,17 @@ import * as pulseConfig from 'pulseConfig';
      * @returns {string}
      */
     getShortUrl() {
-      return 'g';
+      return 'optasks';
     }
 
     /**
-     * The task GraphQL service answers at `<path>/g`, which the base class
-     * builds from the configured web service path.
+     * The task GraphQL service answers at `<path>/optasks` (the endpoint of
+     * atsora-vue), which the base class builds from the configured web
+     * service path.
      *
      * Setting `mockGraphqlUrl` (config or attribute) points the component at a
-     * mock instead -- atsora-mocks serves http://localhost:4000/ -- which is how
-     * the feature is exercised while no backend exposes the endpoint. That mock
-     * URL used to be the DEFAULT: an installed app silently queried a developer
-     * server on the client machine, and the resulting connection failure was
-     * reported as "check the network" rather than as a service that does not
-     * answer. Leave it unset outside development.
+     * mock instead, for example atsora-mocks: http://localhost:4000/optasks.
+     * Leave it unset outside development.
      */
     get url() {
       const mock = this.getConfigOrAttribute('mockGraphqlUrl', '');
@@ -195,48 +246,59 @@ import * as pulseConfig from 'pulseConfig';
     }
 
     postData() {
-      // Per-page scope:
-      //  - single machine (machinedashboard/machines): filter by the resolved machine-id
-      //  - all-machines (operationstatus): no machine filter
-      // Both are scoped to the current role (manager/operator/…).
-      let allMachines = this.element.hasAttribute('all-machines');
-      let request = `query ($machineId: ID, $role: String) { allTaskInstances(machineId: $machineId, role: $role) { id start end result { __typename } taskTemplate { name role machineGroup __typename } } }`;
+      // The due tasks of the current role (operator, manager…) on the machines.
+      // TaskTemplate is a union whose types all implement ITaskTemplate.
+      let request = `query ($role: String!, $machineGroup: String!) { taskInstancesNext(role: $role, machineGroup: $machineGroup) { machineId start end taskTemplate { __typename ... on ITaskTemplate { id name role machineGroup } } } }`;
       return {
         query: request,
         variables: {
-          machineId: allMachines ? null : this.element.getAttribute('machine-id'),
-          role: pulseConfig.getAppContextOrRole()
+          role: pulseConfig.getAppContextOrRole(),
+          machineGroup: this.machineGroup
         }
       };
     }
 
     /**
-     * Store fetched reasons and render tiles
+     * Display of a machine: its name in the page selection, else its id
+     * @param {string} machineId
+     * @returns {string}
+     */
+    _getMachineDisplay(machineId) {
+      const machineSelection = document.querySelector('x-machineselection');
+      const display = (machineSelection && typeof machineSelection.getDisplay === 'function')
+        ? machineSelection.getDisplay(machineId)
+        : '';
+      return display || String(machineId);
+    }
+
+    /**
+     * Render the due tasks
      * @param {*} data
      */
     refresh(data) {
       const now = moment();
 
-      // Group tasks by time category (Late, Todo, Upcoming)
+      // Group tasks by time category (Late, Todo, Upcoming). A TaskDue is not
+      // done yet and has no id: it is identified by task template + machine.
       const pastTasks = [];
       const currentTasks = [];
       const upcomingTasks = [];
 
-      const nowIso = now.toISOString();
+      const nowMs = now.valueOf();
 
-      for (const taskInstance of data.data.allTaskInstances) {
-        if (taskInstance.result == null) {
-          const startIso = taskInstance.start;
-          const endIso = taskInstance.end;
-          if (Date.parse(endIso) < Date.parse(nowIso)) {
-            pastTasks.push(taskInstance);
-          }
-          else if (Date.parse(startIso) > Date.parse(nowIso)) {
-            upcomingTasks.push(taskInstance);
-          }
-          else {
-            currentTasks.push(taskInstance);
-          }
+      for (const taskDue of data.data.taskInstancesNext) {
+        const taskInstance = Object.assign({}, taskDue, {
+          id: `${taskDue.taskTemplate.id}-${taskDue.machineId}`
+        });
+        const endMs = Date.parse(taskInstance.end); // NaN if it never becomes late
+        if (endMs < nowMs) {
+          pastTasks.push(taskInstance);
+        }
+        else if (Date.parse(taskInstance.start) > nowMs) {
+          upcomingTasks.push(taskInstance);
+        }
+        else {
+          currentTasks.push(taskInstance);
         }
       }
 
@@ -330,8 +392,13 @@ import * as pulseConfig from 'pulseConfig';
         classStatus = 'taskslist-status-todo';
         textTimeAfter = this.getTranslation('todoTextAfter', 'left');
         textTimeBefore = this.getTranslation('todoTextBefore', '');
-        timeTarget = Math.abs(moment(taskInstance.end).diff(now, 'seconds'));
-        timeDisplay = textTimeBefore + pulseUtility.getTextDuration(timeTarget) + ' ' + textTimeAfter;
+        if (taskInstance.end) {
+          timeTarget = Math.abs(moment(taskInstance.end).diff(now, 'seconds'));
+          timeDisplay = textTimeBefore + pulseUtility.getTextDuration(timeTarget) + ' ' + textTimeAfter;
+        }
+        else { // It never becomes late
+          timeDisplay = '';
+        }
       }
       if (timeCategory === 'Upcoming') {
         classStatus = 'taskslist-status-upcoming';
@@ -352,8 +419,9 @@ import * as pulseConfig from 'pulseConfig';
       title.classList.add('taskslist-title');
       displayContent.appendChild(title);
 
+      // Machine the task is due on (the template applies to a whole group)
       const group = document.createElement('span');
-      group.innerText = taskInstance.taskTemplate.machineGroup || '(no group)';
+      group.innerText = this._getMachineDisplay(taskInstance.machineId);
       group.classList.add('taskslist-group');
       displayContent.appendChild(group);
 
@@ -392,5 +460,5 @@ import * as pulseConfig from 'pulseConfig';
     }
   }
 
-  pulseComponent.registerElement('x-taskslist', TasksListComponent, ['machine-id', 'machine-context']);
+  pulseComponent.registerElement('x-taskslist', TasksListComponent, ['machine-id', 'machine-group', 'machine-context']);
 })();
