@@ -19,7 +19,7 @@ import * as eventBus from 'eventBus';
   /**
    * `<x-cycletask>` — donut widget for one machine's current task instance.
    *
-   * Polls the GraphQL endpoint (POST) with a `taskInstanceByMachineId(machineId)`
+   * Polls the task GraphQL service (POST) with `taskInstancesNext(role, machineGroup: machine-id)`
    * query at `currentRefreshSeconds` interval. Renders a two-ring SVG donut:
    * an outer state ring (grey when no task, white when in progress, red when
    * overdue) and an inner progress ring that fills proportionally with elapsed
@@ -222,19 +222,18 @@ import * as eventBus from 'eventBus';
      * @returns {string} CSS class name.
      */
     _getTaskStateRingClass (serverNow) {
-      if (pulseUtility.isNotDefined(this._taskStartDateTime)
-        || pulseUtility.isNotDefined(this._taskEndDateTime)) {
+      if (pulseUtility.isNotDefined(this._taskStartDateTime)) {
         return 'cycletask-taskstate-none';
       }
 
       // Negative timer == after end
-      if (serverNow.getTime() > this._taskEndDateTime.getTime()) {
+      if (!pulseUtility.isNotDefined(this._taskEndDateTime)
+        && serverNow.getTime() > this._taskEndDateTime.getTime()) {
         return 'cycletask-taskstate-negative';
       }
 
-      // White only if task is in progress
-      if (this._taskStartDateTime.getTime() <= serverNow.getTime()
-        && serverNow.getTime() <= this._taskEndDateTime.getTime()) {
+      // White only if task is in progress (a task with no end never becomes late)
+      if (this._taskStartDateTime.getTime() <= serverNow.getTime()) {
         return 'cycletask-taskstate-inprogress';
       }
 
@@ -310,7 +309,7 @@ import * as eventBus from 'eventBus';
     /**
      * Updates both rings and the center countdown text, then schedules itself to run again in 1 second.
      * Stops the previous timer before rescheduling to prevent duplicate timers.
-     * Displays `Loading` when no task instance exists; a formatted countdown otherwise.
+     * Displays nothing when there is no task; a formatted countdown otherwise.
      */
     _updateTaskTimerAndSchedule () {
       this._stopDashTimeRefreshTimer();
@@ -321,30 +320,31 @@ import * as eventBus from 'eventBus';
       this._updateTaskStateRing(serverNow);
       this._updateTaskProgressRing(serverNow);
 
-      if (pulseUtility.isNotDefined(this._taskStartDateTime)
-        || pulseUtility.isNotDefined(this._taskEndDateTime)) {
-        // No task => show Loading, no timer
-        if (!this._hasTaskInstance) {
-          this._setTextContent('.time-in-pie', this.getTranslation('loadingDots', 'Loading'));
-        }
-        else {
-          this._setTextContent('.time-in-pie', '');
-        }
+      if (pulseUtility.isNotDefined(this._taskStartDateTime)) {
+        // No task => empty grey donut, no timer (the loading is shown by the
+        // loader of the component, the donut is only drawn from a response)
+        this._setTextContent('.time-in-pie', '');
         return;
       }
       let target = null;
 
       if (serverNow.getTime() < this._taskStartDateTime.getTime()) {
-        // Countdown to task start
+        // Task to come: countdown to task start
         target = this._taskStartDateTime;
       }
       else {
-        // Countdown to task end (can become negative after end)
+        // Task to do: countdown to task end. Late task: negative, the delay counts up
         target = this._taskEndDateTime;
       }
 
-      let seconds = Math.trunc((target.getTime() - serverNow.getTime()) / 1000);
-      this._translateSecondsToTextAndDisplay(seconds);
+      if (pulseUtility.isNotDefined(target)) {
+        // Task to do with no end: no time to display
+        this._setTextContent('.time-in-pie', '');
+      }
+      else {
+        let seconds = Math.trunc((target.getTime() - serverNow.getTime()) / 1000);
+        this._translateSecondsToTextAndDisplay(seconds);
+      }
 
       // Refresh every second for a smooth timer
       this._dashTimeRefreshTimer = setTimeout(
@@ -663,48 +663,105 @@ import * as eventBus from 'eventBus';
     }
 
     /**
-     * GraphQL endpoint path.
+     * Path of the task GraphQL endpoint, appended to the web service path.
      *
-     * @returns {string} `'graphql'`
+     * @returns {string} `'optasks'`
      */
     getShortUrl() {
-      return 'graphql';
+      return 'optasks';
     }
 
     /**
-     * POST body for the GraphQL request: `taskInstanceByMachineId(machineId)` query
-     * returning `start`, `end`, and `taskTemplate { name }`.
+     * Setting `mockGraphqlUrl` (config or attribute) points the component at a
+     * mock instead, for example atsora-mocks: http://localhost:4000/optasks.
+     * Leave it unset outside development.
+     */
+    get url() {
+      const mock = this.getConfigOrAttribute('mockGraphqlUrl', '');
+      return mock ? mock : super.url;
+    }
+
+    /**
+     * The GraphQL service needs a JSON body: with the default 'text/plain' of
+     * postAjax, the web service answers 404 on /optasks
+     * @returns {string}
+     */
+    get postContentType() {
+      return 'application/json';
+    }
+
+    /**
+     * POST body for the GraphQL request: `taskInstancesNext(role, machineGroup)`
+     * returning the machine, `start`, `end`, and the id and name of the task template.
      *
-     * @returns {{ query: string, variables: { machineId: string } }}
+     * @returns {{ query: string, variables: { role: string, machineGroup: string } }}
      */
     postData() {
-      let request = `query ($machineId: ID!) { taskInstanceByMachineId(machineId: $machineId) { id start end taskTemplate { name } } }`;
+      // The due tasks of the current role on the machine (a machine id is a
+      // machine group of the service). TaskTemplate is a union whose types all
+      // implement ITaskTemplate.
+      let request = `query ($role: String!, $machineGroup: String!) { taskInstancesNext(role: $role, machineGroup: $machineGroup) { machineId start end taskTemplate { __typename ... on ITaskTemplate { id name } } } }`;
       return {
         query: request,
         variables: {
-          machineId: this.element.getAttribute('machine-id')
+          role: pulseConfig.getAppContextOrRole(),
+          machineGroup: String(this.element.getAttribute('machine-id')).trim()
         }
       };
     }
 
     /**
-     * Processes the GraphQL response.
-     * Extracts `taskInstanceByMachineId` (or `taskInstance`) from `data.data` or `data` directly.
-     * When no task instance: resets to defaults and redraws empty donut.
+     * The task to display among the due tasks of the machine:
+     * - the late task whose end is the oldest (the timer counts the delay up),
+     * - else the task to do whose end is the nearest (the timer counts down to
+     *   its end; no timer if it has no end),
+     * - else the next task to come (the timer counts down to its start).
+     *
+     * @param {Array<{ start: string, end: ?string }>} tasksDue
+     * @param {number} nowMs - Current server-adjusted time
+     * @returns {?Object} the task, null if there is none
+     */
+    _selectTask(tasksDue, nowMs) {
+      const startMs = t => Date.parse(t.start);
+      const endMs = t => (pulseUtility.isNotDefined(t.end) ? NaN : Date.parse(t.end));
+      // Earliest first, NaN (no date) last
+      const byDate = getMs => (a, b) => {
+        const x = getMs(a);
+        const y = getMs(b);
+        if (isNaN(x)) {
+          return isNaN(y) ? 0 : 1;
+        }
+        return isNaN(y) ? -1 : x - y;
+      };
+
+      const late = tasksDue.filter(t => endMs(t) < nowMs);
+      if (late.length > 0) {
+        return late.sort(byDate(endMs))[0];
+      }
+      const toDo = tasksDue.filter(t => !(startMs(t) > nowMs));
+      if (toDo.length > 0) {
+        return toDo.sort(byDate(endMs))[0];
+      }
+      const toCome = tasksDue.slice().sort(byDate(startMs));
+      return (toCome.length > 0) ? toCome[0] : null;
+    }
+
+    /**
+     * Processes the GraphQL response (`taskInstancesNext`), see _selectTask.
+     * When no task: resets to defaults and redraws empty donut.
      * When task data changed: resets, stores new name/start/end, and redraws.
      * When task data unchanged: no-op (avoids unnecessary redraws and timer restarts).
      *
-     * @param {{ data: { taskInstanceByMachineId?: { start: string, end: string, taskTemplate: { name: string } } } }} data
+     * @param {{ data: { taskInstancesNext: Array<{ machineId: string, start: string, end: ?string, taskTemplate: { id: string, name: string } }> } }} data
      */
     refresh(data) {
-      // GraphQL responses typically are: { data: { taskInstanceByMachineId: { start, end, taskTemplate: { name } } } }
-      let taskInstance = null;
-      if (!pulseUtility.isNotDefined(data) && !pulseUtility.isNotDefined(data.data)) {
-        taskInstance = data.data.taskInstanceByMachineId || data.data.taskInstance;
+      let tasksDue = [];
+      if (!pulseUtility.isNotDefined(data) && !pulseUtility.isNotDefined(data.data)
+        && Array.isArray(data.data.taskInstancesNext)) {
+        tasksDue = data.data.taskInstancesNext.filter(t => t && t.taskTemplate);
       }
-      else if (!pulseUtility.isNotDefined(data)) {
-        taskInstance = data.taskInstanceByMachineId || data.taskInstance;
-      }
+      const nowMs = (new Date()).getTime() + pulseConfig.getInt('diffServerTimeMinusNowMSec', 0);
+      const taskInstance = this._selectTask(tasksDue, nowMs);
 
       if (pulseUtility.isNotDefined(taskInstance)) {
         this._restoreDefaultValues();
@@ -716,7 +773,9 @@ import * as eventBus from 'eventBus';
         return;
       }
 
-      this._taskInstanceId = taskInstance.id;
+      // A due task has no id: it is identified by task template + machine, the
+      // key of the Vue execution dialog
+      this._taskInstanceId = `${taskInstance.taskTemplate.id}-${taskInstance.machineId}`;
 
       let nextName = (taskInstance.taskTemplate && taskInstance.taskTemplate.name)
         ? taskInstance.taskTemplate.name
@@ -726,8 +785,10 @@ import * as eventBus from 'eventBus';
 
       let hasChanged =
         (this._taskName !== nextName)
-        || (pulseUtility.isNotDefined(this._taskStartDateTime) || this._taskStartDateTime.toISOString() !== nextStart)
-        || (pulseUtility.isNotDefined(this._taskEndDateTime) || this._taskEndDateTime.toISOString() !== nextEnd);
+        // Compare the times, not the strings: the service does not write the milliseconds
+        || (pulseUtility.isNotDefined(this._taskStartDateTime) || this._taskStartDateTime.getTime() !== Date.parse(nextStart))
+        || (pulseUtility.isNotDefined(this._taskEndDateTime) !== pulseUtility.isNotDefined(nextEnd))
+        || (!pulseUtility.isNotDefined(nextEnd) && this._taskEndDateTime.getTime() !== Date.parse(nextEnd));
 
       if (hasChanged) {
         this._restoreDefaultValues();
