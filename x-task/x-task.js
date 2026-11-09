@@ -757,7 +757,7 @@ import * as pulseConfig from 'pulseConfig';
 
     /**
      * The task GraphQL service answers at `<path>/optasks` (the endpoint of
-     * atsora-vue), which the base class builds from the configured web
+     * atracking-optasks), which the base class builds from the configured web
      * service path.
      *
      * Setting `mockGraphqlUrl` (config or attribute) points the component at a
