@@ -167,15 +167,17 @@ function _buildGetInit (withToken) {
   return init;
 }
 
-function _buildPostInit (jsonData, withToken) {
+function _buildPostInit (jsonData, withToken, contentType) {
   let init = {
     method: 'POST',
     mode: 'cors',
     cache: 'no-store',
     credentials: 'same-origin',
-    // 'text/plain' kept to match the legacy jQuery $.ajax contentType — the server-side parser
-    // doesn't accept 'application/json' (cf. original comment in the legacy file).
-    headers: { 'Content-Type': 'text/plain' },
+    // 'text/plain' by default, as the legacy jQuery $.ajax contentType — the parser of
+    // the REST services doesn't accept 'application/json' (cf. original comment in the
+    // legacy file). The GraphQL services need 'application/json' instead: with
+    // 'text/plain', /optasks answers 404 and /graphql a CSRF error.
+    headers: { 'Content-Type': contentType || 'text/plain' },
     body: JSON.stringify(jsonData)
   };
   if (withToken) {
@@ -295,15 +297,18 @@ export function getAjaxErrorMessage (xhrStatus) {
 
 /**
  * Utility method to call a POST Ajax request
+ *
+ * @param {string} [contentType] - Content-Type of the request, 'text/plain' by
+ *   default (REST services); 'application/json' for a GraphQL service
  */
-export function postAjax (token, url, jsonData, timeout, success, error, fail) {
+export function postAjax (token, url, jsonData, timeout, success, error, fail, contentType) {
   if (typeof url === 'undefined') {
     console.error(`postAjax(${token}): no valid url`);
     if (fail) fail(token, url, false, null);
     return;
   }
   let withToken = ("" != pulseLogin.getAccessToken());
-  _doFetch(url, _buildPostInit(jsonData, withToken), timeout).then(function (result) {
+  _doFetch(url, _buildPostInit(jsonData, withToken, contentType), timeout).then(function (result) {
     if (result.ok) {
       if (result.data && result.data.ErrorMessage) {
         console.error(`postAjax(${token}): error, url=${url} message=${result.data.ErrorMessage}`);

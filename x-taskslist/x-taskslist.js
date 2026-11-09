@@ -222,6 +222,15 @@ import * as pulseConfig from 'pulseConfig';
     }
 
     /**
+     * The GraphQL service needs a JSON body: with the default 'text/plain' of
+     * postAjax, the web service answers 404 on /optasks
+     * @returns {string}
+     */
+    get postContentType() {
+      return 'application/json';
+    }
+
+    /**
      * The task GraphQL service answers at `<path>/optasks` (the endpoint of
      * atracking-optasks), which the base class builds from the configured web
      * service path.

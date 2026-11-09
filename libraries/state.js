@@ -655,7 +655,8 @@ class RequestState extends State {
 
         if (this.component.postData) { // savereason for example of use
           let jsondata = this.component.postData();
-          pulseService.postAjax(this.token, this.url, jsondata, this.component.timeout, this._success.bind(this), this._error.bind(this), this._fail.bind(this));
+          // postContentType: 'application/json' for a GraphQL component
+          pulseService.postAjax(this.token, this.url, jsondata, this.component.timeout, this._success.bind(this), this._error.bind(this), this._fail.bind(this), this.component.postContentType);
         }
         else { // Normal behavior
           pulseService.runAjax(this.token, this.url, this.component.timeout, this._success.bind(this), this._error.bind(this), this._fail.bind(this));
