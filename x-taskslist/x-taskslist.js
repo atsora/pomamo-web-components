@@ -140,6 +140,9 @@ import * as pulseConfig from 'pulseConfig';
         eventBus.EventBus.addGlobalEventListener(this, 'machineListChanged',
           this.onMachineListChanged.bind(this));
       }
+      // A task was completed in the execution dialog: refresh at once
+      eventBus.EventBus.addGlobalEventListener(this, 'taskCompleted',
+        this.onTaskCompleted.bind(this));
 
       this.switchToNextContext();
       return;
@@ -182,6 +185,20 @@ import * as pulseConfig from 'pulseConfig';
       }
       this._selectedMachineIds = ids;
       this.start();
+    }
+
+    /**
+     * A task was completed (validated or error) in the execution dialog:
+     * switch to the Reload context to query the due tasks now, instead of
+     * waiting for the next poll. Only from the polling context, so that the
+     * parameter validation or an error state are not bypassed.
+     *
+     * @param {{ target: { id: string, completion: string } }} event
+     */
+    onTaskCompleted (event) {
+      if (this.stateContext === 'Normal') {
+        this.switchToContext('Reload');
+      }
     }
 
     /**
