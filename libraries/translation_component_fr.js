@@ -393,7 +393,14 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     todoTextBefore: 'encore',
     Upcoming: 'À venir',
     upcomingTextAfter: '',
-    upcomingTextBefore: 'dans'
+    upcomingTextBefore: 'dans',
+    type: {
+      ITaskTemplateMaintenance: 'Maintenance',
+      ITaskTemplateQuality: 'Qualité',
+      ITaskTemplateDocAck: 'Documentation',
+      ITaskTemplateShiftChangeAck: 'Début de poste',
+      ITaskTemplateShiftChangeMessage: 'Fin de poste'
+    }
   },
   task: {
     Late: 'En retard',

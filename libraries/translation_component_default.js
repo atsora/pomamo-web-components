@@ -484,7 +484,14 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     todoTextBefore: '',
     Upcoming: 'Upcoming',
     upcomingTextAfter: '',
-    upcomingTextBefore: 'in '
+    upcomingTextBefore: 'in',
+    type: {
+      ITaskTemplateMaintenance: 'Maintenance',
+      ITaskTemplateQuality: 'Quality',
+      ITaskTemplateDocAck: 'Documentation',
+      ITaskTemplateShiftChangeAck: 'Shift start',
+      ITaskTemplateShiftChangeMessage: 'Shift end'
+    }
   },
   task: {
     Late: 'Late',
@@ -1001,7 +1008,14 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     todoTextBefore: 'encore',
     Upcoming: 'À venir',
     upcomingTextAfter: '',
-    upcomingTextBefore: 'dans'
+    upcomingTextBefore: 'dans',
+    type: {
+      ITaskTemplateMaintenance: 'Maintenance',
+      ITaskTemplateQuality: 'Qualité',
+      ITaskTemplateDocAck: 'Documentation',
+      ITaskTemplateShiftChangeAck: 'Début de poste',
+      ITaskTemplateShiftChangeMessage: 'Fin de poste'
+    }
   },
   task: {
     Late: 'En retard',
@@ -1517,7 +1531,14 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     todoTextBefore: 'noch',
     Upcoming: 'Bevorstehend',
     upcomingTextAfter: '',
-    upcomingTextBefore: 'in '
+    upcomingTextBefore: 'in',
+    type: {
+      ITaskTemplateMaintenance: 'Wartung',
+      ITaskTemplateQuality: 'Qualität',
+      ITaskTemplateDocAck: 'Dokumentation',
+      ITaskTemplateShiftChangeAck: 'Schichtbeginn',
+      ITaskTemplateShiftChangeMessage: 'Schichtende'
+    }
   },
   task: {
     Late: 'Überfällig',
@@ -2033,7 +2054,14 @@ ATSORA_LOCALE_COMPONENT_CATALOG.ja = {
     todoTextBefore: '残り ',
     Upcoming: '予定',
     upcomingTextAfter: '後',
-    upcomingTextBefore: ''
+    upcomingTextBefore: '',
+    type: {
+      ITaskTemplateMaintenance: 'メンテナンス',
+      ITaskTemplateQuality: '品質',
+      ITaskTemplateDocAck: 'ドキュメント',
+      ITaskTemplateShiftChangeAck: 'シフト開始',
+      ITaskTemplateShiftChangeMessage: 'シフト終了'
+    }
   },
   task: {
     Late: '遅延',

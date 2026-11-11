@@ -14,8 +14,23 @@ import * as pulseComponent from 'pulsecomponent';
 import * as pulseUtility from 'pulseUtility';
 import * as eventBus from 'eventBus';
 import * as pulseConfig from 'pulseConfig';
+import * as pulseService from 'pulseService';
 
 (function () {
+
+  // Icons of the task types, as in the Vue app (currentColor, to follow the
+  // theme). Wrench, book and user: Feather icons (MIT, https://feathericons.com)
+  const svgIcon = body => '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" '
+    + 'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + body + '</svg>';
+  const userIcon = svgIcon('<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>');
+  const TASK_TYPE_ICONS = {
+    ITaskTemplateMaintenance: svgIcon('<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>'),
+    // Ruler
+    ITaskTemplateQuality: svgIcon('<rect x="2" y="7" width="20" height="10" rx="1"/><path d="M6 7v4M10 7v3M14 7v4M18 7v3"/>'),
+    ITaskTemplateDocAck: svgIcon('<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'),
+    ITaskTemplateShiftChangeAck: userIcon,
+    ITaskTemplateShiftChangeMessage: userIcon
+  };
 
   /**
    * `<x-taskslist>` — list of the tasks that are due, sourced from the task
@@ -23,8 +38,8 @@ import * as pulseConfig from 'pulseConfig';
    *
    * Polls `taskInstancesNext(role, machineGroup)` (refresh =
    * `refreshingRate.currentRefreshSeconds`, default 10 s) and renders one
-   * `<li>` per due task (late, to do, upcoming) with its name, machine, role
-   * and timing inside a `.taskslist-content > <ol>`. A due task carries no
+   * `<li>` per due task (late, to do, upcoming) with the icon of its type,
+   * its name, machine, role (`show-role`) and timing inside a `.taskslist-content > <ol>`. A due task carries no
    * id: it is identified by `<taskTemplateId>-<machineId>`, the key of the
    * Vue execution dialog. Reacts to `machineIdChangeSignal` on
    * `machine-context` (updates `machine-id`).
@@ -39,6 +54,7 @@ import * as pulseConfig from 'pulseConfig';
    * @attr {string}  machine-group   machine group of the service (a group id, or machine ids separated by ',')
    * @attr {boolean} all-machines    tasks of the machines selected in the page
    * @attr {string}  machine-context event-bus context for `machineIdChangeSignal`
+   * @attr {boolean} show-role       displays the role of each task (by default not: the page lists the tasks of one role)
    * @extends pulseComponent.PulseParamAutoPathRefreshingComponent
    */
   class TasksListComponent extends pulseComponent.PulseParamAutoPathRefreshingComponent {
@@ -53,6 +69,10 @@ import * as pulseConfig from 'pulseConfig';
       self._content = undefined;
       // Machines of the page selection, for all-machines
       self._selectedMachineIds = [];
+      // Machine names got from the web service, when the page selection does
+      // not know them: machine id -> name, and the requests already sent
+      self._machineNames = {};
+      self._machineNameRequests = new Set();
 
       return self;
     }
@@ -290,11 +310,53 @@ import * as pulseConfig from 'pulseConfig';
      * @returns {string}
      */
     _getMachineDisplay(machineId) {
+      const id = String(machineId);
       const machineSelection = document.querySelector('x-machineselection');
       const display = (machineSelection && typeof machineSelection.getDisplay === 'function')
-        ? machineSelection.getDisplay(machineId)
+        ? machineSelection.getDisplay(id)
         : '';
-      return display || String(machineId);
+      if (display) {
+        return display;
+      }
+      // Not known by the page selection (its names are not loaded yet, or the
+      // machine is not in it, e.g. on the machine dashboard): ask the web
+      // service once, then display the id meanwhile
+      if (this._machineNames[id]) {
+        return this._machineNames[id];
+      }
+      this._requestMachineName(id);
+      return id;
+    }
+
+    /**
+     * Get the name of a machine from the web service (Machine/Name), once per
+     * machine, and display it in the tasks of that machine
+     * @param {string} machineId
+     */
+    _requestMachineName(machineId) {
+      if (this._machineNameRequests.has(machineId) || !this.path) {
+        return;
+      }
+      this._machineNameRequests.add(machineId);
+      const url = this.path + 'Machine/Name?MachineId=' + encodeURIComponent(machineId);
+      pulseService.runAjaxSimple(url,
+        data => {
+          const name = (data && (data.Display || data.Name)) || '';
+          if (!name) {
+            return;
+          }
+          this._machineNames[machineId] = name;
+          if (this._tasksList) {
+            for (const span of this._tasksList.querySelectorAll('.taskslist-group')) {
+              if (span.dataset.machineId === machineId) {
+                span.innerText = name;
+              }
+            }
+          }
+        },
+        // Error or failure: the id stays displayed, try again at the next refresh
+        () => this._machineNameRequests.delete(machineId),
+        () => this._machineNameRequests.delete(machineId));
     }
 
     /**
@@ -402,36 +464,20 @@ import * as pulseConfig from 'pulseConfig';
 
     _updateTaskDisplay(li, taskInstance, timeCategory, now) {
       let classStatus;
-      let textTimeAfter;
-      let textTimeBefore;
-      let timeTarget;
       let timeDisplay;
 
       if (timeCategory === 'Late') {
         classStatus = 'taskslist-status-late';
-        textTimeAfter = this.getTranslation('lateTextAfter', 'ago ');
-        textTimeBefore = this.getTranslation('lateTextBefore', '');
-        timeTarget = Math.abs(moment(taskInstance.end).diff(now, 'seconds'));
-        timeDisplay = textTimeBefore + pulseUtility.getTextDuration(timeTarget) + ' ' + textTimeAfter;
+        timeDisplay = this._timeText('late', moment(taskInstance.end), now);
       }
       if (timeCategory === 'Todo') {
         classStatus = 'taskslist-status-todo';
-        textTimeAfter = this.getTranslation('todoTextAfter', 'left');
-        textTimeBefore = this.getTranslation('todoTextBefore', '');
-        if (taskInstance.end) {
-          timeTarget = Math.abs(moment(taskInstance.end).diff(now, 'seconds'));
-          timeDisplay = textTimeBefore + pulseUtility.getTextDuration(timeTarget) + ' ' + textTimeAfter;
-        }
-        else { // It never becomes late
-          timeDisplay = '';
-        }
+        // Without an end, it never becomes late: no time
+        timeDisplay = taskInstance.end ? this._timeText('todo', moment(taskInstance.end), now) : '';
       }
       if (timeCategory === 'Upcoming') {
         classStatus = 'taskslist-status-upcoming';
-        textTimeAfter = this.getTranslation('upcomingTextAfter', '');
-        textTimeBefore = this.getTranslation('upcomingTextBefore', 'in ');
-        timeTarget = Math.abs(moment(taskInstance.start).diff(now, 'seconds'));
-        timeDisplay = textTimeBefore + pulseUtility.getTextDuration(timeTarget) + ' ' + textTimeAfter;
+        timeDisplay = this._timeText('upcoming', moment(taskInstance.start), now);
       }
 
       // Rebuild the content of the <li> while keeping the element itself
@@ -441,20 +487,33 @@ import * as pulseConfig from 'pulseConfig';
       displayContent.classList.add('taskslist-display');
 
       const title = document.createElement('span');
-      title.innerText = taskInstance.taskTemplate.name;
       title.classList.add('taskslist-title');
+      const typeIcon = this._createTypeIcon(taskInstance.taskTemplate.__typename);
+      if (typeIcon) {
+        title.appendChild(typeIcon);
+      }
+      // A long name is truncated: the full name is in the tooltip
+      const name = document.createElement('span');
+      name.classList.add('taskslist-name');
+      name.innerText = taskInstance.taskTemplate.name;
+      name.title = taskInstance.taskTemplate.name;
+      title.appendChild(name);
       displayContent.appendChild(title);
 
       // Machine the task is due on (the template applies to a whole group)
       const group = document.createElement('span');
+      group.dataset.machineId = String(taskInstance.machineId);
       group.innerText = this._getMachineDisplay(taskInstance.machineId);
       group.classList.add('taskslist-group');
       displayContent.appendChild(group);
 
-      const role = document.createElement('span');
-      role.innerText = taskInstance.taskTemplate.role || '(no role)';
-      role.classList.add('taskslist-role');
-      displayContent.appendChild(role);
+      // The page already lists the tasks of one role: its display is an option
+      if (this.element.hasAttribute('show-role')) {
+        const role = document.createElement('span');
+        role.innerText = taskInstance.taskTemplate.role || '(no role)';
+        role.classList.add('taskslist-role');
+        displayContent.appendChild(role);
+      }
 
       li.appendChild(displayContent);
 
@@ -473,6 +532,53 @@ import * as pulseConfig from 'pulseConfig';
       li.appendChild(timeContent);
     }
 
+    /**
+     * Text of the time before / since a date, e.g. "in 8 min", "dans 8 min".
+     * The words before and after the duration are separated by a space here,
+     * so that a translation does not need to carry it.
+     *
+     * @param {string} prefix late, todo or upcoming (translation keys <prefix>TextBefore / <prefix>TextAfter)
+     * @param {moment} date
+     * @param {moment} now
+     * @returns {string}
+     */
+    _timeText(prefix, date, now) {
+      const defaults = {
+        late: ['', 'ago'],
+        todo: ['', 'left'],
+        upcoming: ['in', '']
+      }[prefix];
+      const seconds = Math.abs(date.diff(now, 'seconds'));
+      return [
+        this.getTranslation(prefix + 'TextBefore', defaults[0]),
+        pulseUtility.getTextDuration(seconds),
+        this.getTranslation(prefix + 'TextAfter', defaults[1])
+      ].map(part => String(part || '').trim())
+        .filter(part => part !== '')
+        .join(' ');
+    }
+
+    /**
+     * Icon of the type of a task (maintenance, quality...), as in the Vue app
+     *
+     * @param {string} typename __typename of the task template
+     * @returns {HTMLElement|undefined}
+     */
+    _createTypeIcon(typename) {
+      const svg = TASK_TYPE_ICONS[typename];
+      if (!svg) {
+        return undefined;
+      }
+      const icon = document.createElement('span');
+      icon.classList.add('taskslist-type-icon');
+      icon.innerHTML = svg;
+      const label = this.getTranslation('type.' + typename, '');
+      if (label) {
+        icon.title = label;
+        icon.setAttribute('aria-label', label);
+      }
+      return icon;
+    }
 
     /** Display a localized error message in the component */
     displayError(message) {

@@ -27,18 +27,49 @@
             padding: 17.5px;
             justify-content: space-between;
 
+            gap: 8px;
+
             .taskslist-display {
-                flex: 0 0 auto;
+                // Takes the room left by the status, and may shrink below its content
+                flex: 1 1 auto;
+                min-width: 0;
                 display: flex;
                 flex-direction: column;
                 gap: 7px;
 
                 .taskslist-title {
                     font-size: 14px;
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 6px;
+                    min-width: 0;
+
+                    // A long name is truncated (full name in the tooltip)
+                    .taskslist-name {
+                        min-width: 0;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+
+                    // Icon of the task type (maintenance, quality...)
+                    .taskslist-type-icon {
+                        flex: 0 0 auto;
+                        display: inline-flex;
+                        margin-top: 1px;
+
+                        svg {
+                            width: 16px;
+                            height: 16px;
+                        }
+                    }
                 }
 
                 .taskslist-group {
                     font-size: 12px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
 
                 .taskslist-role {
@@ -52,15 +83,20 @@
             }
 
             .taskslist-time-content {
+                flex: 0 0 auto;
                 display: flex;
                 flex-direction: column;
                 font-size: 12px;
                 align-items: flex-end;
                 justify-content: space-between;
+                // Space between the status and the time below it
+                gap: 6px;
+                white-space: nowrap;
             }
 
             .taskslist-status {
                 margin: 0 0 0 auto;
+                white-space: nowrap;
                 border-radius: 4px;
                 padding: 6px;
                 font-weight: bold;

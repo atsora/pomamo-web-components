@@ -10,6 +10,17 @@ import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8080/');
 
 import '@atsora/pomamo-web-service-simulation/scripts/Tasks';
+// Machine/Name: the names of the machines, without x-machineselection
+import '@atsora/pomamo-web-service-simulation/scripts/GetMachine';
+
+// The tasks are filtered by the role of the user, else by the PulseRole cookie
+// that the web app may have left on localhost (the same for every port):
+// show the tasks of the operator, unless the URL sets the role (?AppContext=)
+if (!new URLSearchParams(window.location.search).has('AppContext')) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('AppContext', 'operator');
+  window.history.replaceState(null, '', url);
+}
 
 function load () {
 
