@@ -1,0 +1,94 @@
+/*
+ * Copyright (C) 2026 Atsora Solutions
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+x-oeegauge {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  /* Positioning context of the loader overlay */
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+.oeegauge-content {
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.oeegauge-label {
+  flex: 0 0 auto;
+  text-align: center;
+  font-weight: bold;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.oeegauge-gauge {
+  flex: 1 1 100%;
+  width: 100%;
+  min-height: 0;
+  min-width: 0;
+  position: relative;
+}
+
+/* While loading, hide the background arc and the text: only the loader shows.
+   !important beats the app-global `svg { visibility: visible !important }` rule */
+x-oeegauge.pulse-component-loading .oeegauge-svg,
+x-oeegauge.pulse-component-loading .oeegauge-text {
+  visibility: hidden !important;
+}
+
+.oeegauge-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.oeegauge-text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 5%;
+  z-index: 2;
+  pointer-events: none;
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1;
+}
+
+.oeegauge-text.oee-poor {
+  color: @color_red;
+}
+
+.oeegauge-text.oee-medium {
+  color: @color_orange;
+}
+
+.oeegauge-text.oee-good {
+  color: @color_green;
+}
+
+.oeegauge-svg .tick {
+  stroke: #333333;
+  stroke-width: 1;
+}
+
+.oeegauge-svg .needle {
+  fill: @color_needle;
+}

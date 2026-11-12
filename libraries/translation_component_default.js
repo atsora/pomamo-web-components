@@ -273,6 +273,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     errorRemove: 'Error in removing an item',
     machine: 'Machine'
   },
+  oeegauge: {
+    oee: 'OEE',
+    ooe: 'OOE',
+    teep: 'TEEP'
+  },
   performancetarget: {
     target: 'Target'
   },
@@ -796,6 +801,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     description: 'Description',
     errorRemove: 'Erreur en enlevant un jalon',
     machine: 'Machine'
+  },
+  oeegauge: {
+    oee: 'TRS',
+    ooe: 'TRG',
+    teep: 'TRE'
   },
   performancetarget: {
     target: 'Objectif'
@@ -1322,6 +1332,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     errorRemove: 'Fehler beim Entfernen eines Eintrags',
     machine: 'Maschine'
   },
+  oeegauge: {
+    oee: 'OEE',
+    ooe: 'OOE',
+    teep: 'TEEP'
+  },
   performancetarget: {
     target: 'Zielwert'
   },
@@ -1845,6 +1860,11 @@ ATSORA_LOCALE_COMPONENT_CATALOG.ja = {
     description: '説明',
     errorRemove: '項目の削除中にエラーが発生しました',
     machine: '設備'
+  },
+  oeegauge: {
+    oee: 'OEE',
+    ooe: 'OOE',
+    teep: 'TEEP'
   },
   performancetarget: {
     target: '目標'

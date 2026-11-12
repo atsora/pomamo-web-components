@@ -1,0 +1,44 @@
+<!--
+Copyright (C) 2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<style>
+  .gauge-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .gauge-wrapper {
+    width: 240px;
+    height: 200px;
+    border: 1px dashed #555;
+  }
+</style>
+
+<div class="static-tests">
+  <h3>Machine 1 — OEE 82 %, OOE 71 %, TEEP 55 % <small>(machine-id=1)</small></h3>
+  <div class="gauge-row">
+    <div class="gauge-wrapper"><x-oeegauge machine-id="1" oee-type="oee" path="http://localhost:8082/"></x-oeegauge></div>
+    <div class="gauge-wrapper"><x-oeegauge machine-id="1" oee-type="ooe" path="http://localhost:8082/"></x-oeegauge></div>
+    <div class="gauge-wrapper"><x-oeegauge machine-id="1" oee-type="teep" path="http://localhost:8082/"></x-oeegauge></div>
+  </div>
+
+  <h3>Group 101 (milling cell) — OEE 73 %, OOE 62 %, TEEP 47 % <small>(machine-id=101)</small></h3>
+  <div class="gauge-row">
+    <div class="gauge-wrapper"><x-oeegauge machine-id="101" oee-type="oee" path="http://localhost:8082/"></x-oeegauge></div>
+    <div class="gauge-wrapper"><x-oeegauge machine-id="101" oee-type="ooe" path="http://localhost:8082/"></x-oeegauge></div>
+    <div class="gauge-wrapper"><x-oeegauge machine-id="101" oee-type="teep" path="http://localhost:8082/"></x-oeegauge></div>
+  </div>
+
+  <h3>No data — non-monitored machine <small>(machine-id=4)</small></h3>
+  <div class="gauge-row">
+    <div class="gauge-wrapper"><x-oeegauge machine-id="4" path="http://localhost:8082/"></x-oeegauge></div>
+  </div>
+
+  <h3>Error — server HTTP 400 <small>(machine-id=999)</small></h3>
+  <div class="gauge-row">
+    <div class="gauge-wrapper"><x-oeegauge machine-id="999" path="http://localhost:8082/"></x-oeegauge></div>
+  </div>
+</div>
