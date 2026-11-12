@@ -42,6 +42,7 @@ PULSE_DEFAULT_CONFIG.general = {
   roles: [ // Used ONLY to enumerate roles - noAccess/display resolved via PULSE_DEFAULT_CONFIG.roles[role] and ATSORA_CATALOG
     { role: 'operator' },
     { role: 'manager' },
+    { role: 'maintenance' },
     { role: 'live' },      // Not a role, but AppContext - keep here
     { role: 'support' },   // invisible: noAccess in PULSE_DEFAULT_CONFIG.roles
     { role: 'dev' },       // invisible: noAccess in PULSE_DEFAULT_CONFIG.roles
@@ -62,6 +63,11 @@ PULSE_DEFAULT_CONFIG.roles = {
     displayedApps: [
       'PulseWebApp',
       'Reports'
+    ]
+  },
+  maintenance: {
+    displayedApps: [
+      'PulseWebApp'
     ]
   },
   support: { // == idem manager + live + reports

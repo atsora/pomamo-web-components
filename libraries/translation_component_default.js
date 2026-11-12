@@ -18,6 +18,7 @@ ATSORA_LOCALE_CATALOG.default.general = {
   roles: {
     operator: 'Operator',
     manager: 'Manager',
+    maintenance: 'Maintenance',
     live: 'Live',
     support: 'Support',
     dev: 'Dev',
@@ -541,6 +542,7 @@ ATSORA_LOCALE_CATALOG.fr.general = {
   roles: {
     operator: 'Opérateur',
     manager: 'Manager',
+    maintenance: 'Maintenance',
     live: 'Live',
     support: 'Support',
     dev: 'Dev',
@@ -1065,6 +1067,7 @@ ATSORA_LOCALE_CATALOG.de.general = {
   roles: {
     operator: 'Bediener',
     manager: 'Manager',
+    maintenance: 'Instandhaltung',
     live: 'Live',
     support: 'Support',
     dev: 'Dev',
@@ -1588,6 +1591,7 @@ ATSORA_LOCALE_CATALOG.ja.general = {
   roles: {
     operator: 'オペレーター',
     manager: 'マネージャー',
+    maintenance: '保全',
     live: 'ライブ',
     support: 'サポート',
     dev: '開発',
