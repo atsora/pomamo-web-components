@@ -24,6 +24,12 @@ import * as state from 'state';
 
 (function () {
 
+  // The kinds of work information that carry documents, in the order of the dialog
+  const DOC_KINDS = ['Operation', 'Part', 'Component'];
+
+  // Font Awesome Free 6.7.2 book (CC BY 4.0), see the LICENSE of pomamo-web-app
+  const BOOK_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"><path fill="currentColor" d="M96 0C43 0 0 43 0 96L0 416c0 53 43 96 96 96l288 0 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L384 0 96 0zm0 384l256 0 0 64L96 448c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zm16 48l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>';
+
   /**
    * `<x-lastworkinformation>` — inline current work-information cells for one
    * machine (no past-data block, no click handlers).
@@ -87,6 +93,42 @@ import * as state from 'state';
         }
         this._content.insertBefore(div, this._between);
       }
+
+      this._displayDocsButton(workinformations);
+    }
+
+    /**
+     * Book button that opens the documents of the operation and of the part (or the
+     * component), in the dialog of the Vue app (window event `atsora:open-workinfo-docs`,
+     * handled by vue_bridge.js of the web app). Only when the web service gives their ids
+     * (`Id` of the work informations): without it, there is no button.
+     */
+    _displayDocsButton (workinformations) {
+      [...this._content.querySelectorAll('.lastworkinformation-docs')].forEach(el => el.remove());
+
+      let items = [];
+      for (let kind of DOC_KINDS) {
+        for (let workinformation of workinformations) {
+          if ((workinformation.Kind == kind) && !pulseUtility.isNotDefined(workinformation.Id)) {
+            items.push({ kind: kind, id: String(workinformation.Id), display: workinformation.Value || '' });
+          }
+        }
+      }
+      if (items.length == 0) {
+        return;
+      }
+
+      let button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'lastworkinformation-docs';
+      button.title = this.getTranslation('documents', 'Documents');
+      button.setAttribute('aria-label', button.title);
+      button.innerHTML = BOOK_ICON;
+      button.addEventListener('click', function (event) {
+        event.stopPropagation();
+        window.dispatchEvent(new CustomEvent('atsora:open-workinfo-docs', { detail: { items: items } }));
+      });
+      this._content.insertBefore(button, this._between);
     }
 
     getStartKey (context) {
@@ -245,6 +287,7 @@ import * as state from 'state';
     refresh (data) {
       let status = false;
       if (data.SlotMissing) {
+        this._displayDocsButton([]);
         let div = document.createElement('div');
         div.className = 'workinformation-slotmissing';
         div.innerHTML = this._noOperationDisplay;

@@ -16,6 +16,35 @@ x-lastworkinformation {
   &.lwi-no-operation {
     display: none;
   }
+
+  // Book button: the documents of the operation and of the part
+  .lastworkinformation-docs {
+    flex: 0 0 auto;
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.6em;
+    height: 1.6em;
+    margin: 0 0.3em;
+    padding: 0.25em;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: inherit;
+    opacity: 0.7;
+    cursor: pointer;
+
+    &:hover, &:focus-visible {
+      opacity: 1;
+      background: rgba(127, 127, 127, 0.2);
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
 }
 
 .lastworkinformation-dialog {
