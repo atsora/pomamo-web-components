@@ -14,10 +14,13 @@ x-oeegauge {
   min-height: 0;
 }
 
+/* The label, then the gauge right below it (fixed gap), the whole being
+   centered vertically. When the room is short, the gauge shrinks. */
 .oeegauge-content {
   flex: 1 1 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   width: 100%;
   height: 100%;
   min-width: 0;
@@ -26,6 +29,7 @@ x-oeegauge {
 
 .oeegauge-label {
   flex: 0 0 auto;
+  margin-bottom: 0.3em;
   text-align: center;
   font-weight: bold;
   line-height: 1.2;
@@ -34,54 +38,42 @@ x-oeegauge {
   text-overflow: ellipsis;
 }
 
+/* The SVG is a flex item of .oeegauge-content */
 .oeegauge-gauge {
-  flex: 1 1 100%;
-  width: 100%;
-  min-height: 0;
-  min-width: 0;
-  position: relative;
-}
-
-/* While loading, hide the background arc and the text: only the loader shows.
-   !important beats the app-global `svg { visibility: visible !important }` rule */
-x-oeegauge.pulse-component-loading .oeegauge-svg,
-x-oeegauge.pulse-component-loading .oeegauge-text {
-  visibility: hidden !important;
+  display: contents;
 }
 
 .oeegauge-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
+  flex: 0 1 auto;
+  display: block;
   width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
+  height: auto;
+  min-height: 0;
 }
 
-.oeegauge-text {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 5%;
-  z-index: 2;
-  pointer-events: none;
-  font-size: 30px;
+/* While loading, hide the background arc: only the loader shows.
+   !important beats the app-global `svg { visibility: visible !important }` rule */
+x-oeegauge.pulse-component-loading .oeegauge-svg {
+  visibility: hidden !important;
+}
+
+/* Value, in the SVG, in user units of the 240-wide gauge */
+.oeegauge-svg .oeegauge-text {
+  font-size: 44px;
   font-weight: bold;
-  text-align: center;
-  line-height: 1;
+  fill: currentColor;
 }
 
-.oeegauge-text.oee-poor {
-  color: @color_red;
+.oeegauge-svg .oeegauge-text.oee-poor {
+  fill: @color_red;
 }
 
-.oeegauge-text.oee-medium {
-  color: @color_orange;
+.oeegauge-svg .oeegauge-text.oee-medium {
+  fill: @color_orange;
 }
 
-.oeegauge-text.oee-good {
-  color: @color_green;
+.oeegauge-svg .oeegauge-text.oee-good {
+  fill: @color_green;
 }
 
 .oeegauge-svg .tick {

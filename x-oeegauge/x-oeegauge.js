@@ -277,13 +277,11 @@ import * as eventBus from 'eventBus';
       this._label.textContent = this._getLabel();
       this._content.appendChild(this._label);
 
+      // Container of the SVG gauge (display: contents: the SVG follows the label
+      // in the flow, at a fixed distance). The value is a text of the SVG.
       this._gaugeContainer = document.createElement('div');
       this._gaugeContainer.classList.add('oeegauge-gauge');
       this._content.appendChild(this._gaugeContainer);
-
-      this._textDisplay = document.createElement('div');
-      this._textDisplay.classList.add('oeegauge-text');
-      this._gaugeContainer.appendChild(this._textDisplay);
 
       this.element.appendChild(this._content);
 
@@ -489,12 +487,25 @@ import * as eventBus from 'eventBus';
       for (let i = 0; i < segments.length; i++) {
         minY = Math.min(minY, Math.sin(segments[i].minAngle), Math.sin(segments[i].maxAngle));
       }
-      svg.setAttribute('viewBox', '0 0 ' + (EXTERNAL_RADIUS * 2) + ' ' + (EXTERNAL_RADIUS * (1 - minY)));
+      let height = EXTERNAL_RADIUS * (1 - minY);
+      svg.setAttribute('viewBox', '0 0 ' + (EXTERNAL_RADIUS * 2) + ' ' + height);
       svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      this._gaugeContainer.insertBefore(svg, this._textDisplay);
+
+      // Value, between the two ends of the arc: part of the SVG so that it keeps
+      // its place and its proportion whatever the size of the gauge
+      let text = document.createElementNS(pulseSvg.get_svgNS(), 'text');
+      text.setAttribute('class', 'oeegauge-text');
+      text.setAttribute('x', EXTERNAL_RADIUS);
+      text.setAttribute('y', height - 8);
+      text.setAttribute('text-anchor', 'middle');
+      svg.appendChild(text);
+      this._textDisplay = text;
+
+      this._gaugeContainer.appendChild(svg);
       this._svgGauge = svg;
 
       this._drawNeedle();
+      this._updateTextDisplay();
     }
 
     onMachineIdChange (event) {
