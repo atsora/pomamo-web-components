@@ -76,8 +76,10 @@ import * as state from 'state';
     _displayWorkInformations (workinformations, config) {
       [...this._content.querySelectorAll('.pulse-cellbar-first')].forEach(el => el.remove());
 
+      let cells = [];
       for (let i = 0; i < workinformations.length; i++) {
         let div = document.createElement('div');
+        cells.push(div);
         div.className = 'pulse-cellbar-first pulse-cellbar-current-data';
         div.setAttribute('kind', workinformations[i].Kind);
 
@@ -94,7 +96,7 @@ import * as state from 'state';
         this._content.insertBefore(div, this._between);
       }
 
-      this._displayDocsButton(workinformations);
+      this._displayDocsButton(workinformations, cells);
     }
 
     /**
@@ -102,8 +104,14 @@ import * as state from 'state';
      * component), in the dialog of the Vue app (window event `atsora:open-workinfo-docs`,
      * handled by vue_bridge.js of the web app). Only when the web service gives their ids
      * (`Id` of the work informations): without it, there is no button.
+     *
+     * The button is at the right of the last of these work informations, in its cell: the
+     * text of the cell is then in a span, that keeps its '...' when the cell is too narrow.
+     *
+     * @param {Array} workinformations - work informations of the web service
+     * @param {HTMLElement[]} cells - their cells, in the same order
      */
-    _displayDocsButton (workinformations) {
+    _displayDocsButton (workinformations, cells) {
       [...this._content.querySelectorAll('.lastworkinformation-docs')].forEach(el => el.remove());
 
       let items = [];
@@ -118,6 +126,14 @@ import * as state from 'state';
         return;
       }
 
+      let cell = null;
+      for (let i = workinformations.length - 1; i >= 0; i--) {
+        if (DOC_KINDS.includes(workinformations[i].Kind) && !pulseUtility.isNotDefined(workinformations[i].Id) && cells[i]) {
+          cell = cells[i];
+          break;
+        }
+      }
+
       let button = document.createElement('button');
       button.type = 'button';
       button.className = 'lastworkinformation-docs';
@@ -128,7 +144,16 @@ import * as state from 'state';
         event.stopPropagation();
         window.dispatchEvent(new CustomEvent('atsora:open-workinfo-docs', { detail: { items: items } }));
       });
-      this._content.insertBefore(button, this._between);
+      if (cell) {
+        let text = document.createElement('span');
+        text.className = 'lastworkinformation-value';
+        text.append(...cell.childNodes);
+        cell.classList.add('lastworkinformation-with-docs');
+        cell.append(text, button);
+      }
+      else {
+        this._content.insertBefore(button, this._between);
+      }
     }
 
     getStartKey (context) {
@@ -287,7 +312,7 @@ import * as state from 'state';
     refresh (data) {
       let status = false;
       if (data.SlotMissing) {
-        this._displayDocsButton([]);
+        this._displayDocsButton([], []);
         let div = document.createElement('div');
         div.className = 'workinformation-slotmissing';
         div.innerHTML = this._noOperationDisplay;

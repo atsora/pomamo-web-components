@@ -17,6 +17,21 @@ x-lastworkinformation {
     display: none;
   }
 
+  // The cell of the work information with the book button: its text (with its '...'),
+  // then the button at its right
+  .pulse-cellbar-current-data.lastworkinformation-with-docs {
+    display: flex;
+    align-items: center;
+
+    .lastworkinformation-value {
+      flex: 0 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
   // Book button: the documents of the operation and of the part
   .lastworkinformation-docs {
     flex: 0 0 auto;
@@ -24,10 +39,10 @@ x-lastworkinformation {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 1.6em;
-    height: 1.6em;
-    margin: 0 0.3em;
-    padding: 0.25em;
+    width: 1.4em;
+    height: 1.4em;
+    margin: 0 0 0 0.3em;
+    padding: 0.2em;
     border: none;
     border-radius: 4px;
     background: transparent;
