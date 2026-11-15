@@ -15,6 +15,7 @@ import * as pulseUtility from 'pulseUtility';
 import * as pulseSvg from 'pulseSvg';
 import * as eventBus from 'eventBus';
 import * as state from 'state';
+import 'x-workinfodocs/x-workinfodocs';
 
 // Visibility contract:
 // This component NEVER sets inline `display` on `this.element` or any ancestor.
@@ -24,11 +25,8 @@ import * as state from 'state';
 
 (function () {
 
-  // The kinds of work information that carry documents, in the order of the dialog
+  // The kinds of work information that carry documents
   const DOC_KINDS = ['Operation', 'Part', 'Component'];
-
-  // Font Awesome Free 6.7.2 book (CC BY 4.0), see the LICENSE of pomamo-web-app
-  const BOOK_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"><path fill="currentColor" d="M96 0C43 0 0 43 0 96L0 416c0 53 43 96 96 96l288 0 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L384 0 96 0zm0 384l256 0 0 64L96 448c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zm16 48l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>';
 
   /**
    * `<x-lastworkinformation>` — inline current work-information cells for one
@@ -44,6 +42,11 @@ import * as state from 'state';
    * and switches to a `Loaded` `StaticState` to stop polling. Reacts to
    * `machineIdChangeSignal` on `machine-context` and to
    * `dateTimeRangeChangeEvent` on `period-context` (just tracks the range).
+   *
+   * When the web service gives the `Id` of the operation and/or of the part, an
+   * `x-workinfodocs` (book button, shown only when they have documents) is at the
+   * right of the last of them. The cells are rebuilt only when the work informations
+   * change, so that it asks for the documents only then.
    *
    * @element x-lastworkinformation
    * @attr {number} machine-id      (required) machine id
@@ -64,6 +67,9 @@ import * as state from 'state';
       self._between = undefined;
       self._messageSpan = undefined;
       self._content = undefined;
+      self._docs = undefined;
+      // Work informations of the cells, to rebuild them only when they change
+      self._displayedWorkInformations = null;
 
       return self;
     }
@@ -71,10 +77,26 @@ import * as state from 'state';
     get content () { return this._content; }
 
     /**
+     * Remove the cells of the work informations, and take the book button out of them
+     */
+    _removeCells () {
+      if (this._docs) {
+        this._docs.remove();
+      }
+      [...this._content.querySelectorAll('.pulse-cellbar-first')].forEach(el => el.remove());
+      this._displayedWorkInformations = null;
+    }
+
+    /**
      * Builds and inserts `.pulse-cellbar-first` cells for each work information item.
      */
     _displayWorkInformations (workinformations, config) {
-      [...this._content.querySelectorAll('.pulse-cellbar-first')].forEach(el => el.remove());
+      let signature = JSON.stringify(workinformations);
+      if (signature === this._displayedWorkInformations) {
+        return; // Same cells: nothing to rebuild, no new request for the documents
+      }
+      this._removeCells();
+      this._displayedWorkInformations = signature;
 
       let cells = [];
       for (let i = 0; i < workinformations.length; i++) {
@@ -96,63 +118,70 @@ import * as state from 'state';
         this._content.insertBefore(div, this._between);
       }
 
-      this._displayDocsButton(workinformations, cells);
+      this._displayDocs(workinformations, cells);
     }
 
     /**
-     * Book button that opens the documents of the operation and of the part (or the
-     * component), in the dialog of the Vue app (window event `atsora:open-workinfo-docs`,
-     * handled by vue_bridge.js of the web app). Only when the web service gives their ids
-     * (`Id` of the work informations): without it, there is no button.
-     *
-     * The button is at the right of the last of these work informations, in its cell: the
-     * text of the cell is then in a span, that keeps its '...' when the cell is too narrow.
+     * The x-workinfodocs of the operation and of the part (or the component), at the
+     * right of the last of them, in its cell: the text of the cell is then in a span,
+     * that keeps its '...' when the cell is too narrow. Only when the web service gives
+     * their ids (`Id` of the work informations).
      *
      * @param {Array} workinformations - work informations of the web service
      * @param {HTMLElement[]} cells - their cells, in the same order
      */
-    _displayDocsButton (workinformations, cells) {
-      [...this._content.querySelectorAll('.lastworkinformation-docs')].forEach(el => el.remove());
-
-      let items = [];
-      for (let kind of DOC_KINDS) {
-        for (let workinformation of workinformations) {
-          if ((workinformation.Kind == kind) && !pulseUtility.isNotDefined(workinformation.Id)) {
-            items.push({ kind: kind, id: String(workinformation.Id), display: workinformation.Value || '' });
-          }
+    _displayDocs (workinformations, cells) {
+      let operation = null;
+      let component = null;
+      let cell = null;
+      for (let i = 0; i < workinformations.length; i++) {
+        let workinformation = workinformations[i];
+        if (!DOC_KINDS.includes(workinformation.Kind) || pulseUtility.isNotDefined(workinformation.Id)) {
+          continue;
         }
+        if (workinformation.Kind == 'Operation') {
+          operation = workinformation;
+        }
+        else {
+          component = workinformation;
+        }
+        cell = cells[i];
       }
-      if (items.length == 0) {
+      if (!cell) {
         return;
       }
 
-      let cell = null;
-      for (let i = workinformations.length - 1; i >= 0; i--) {
-        if (DOC_KINDS.includes(workinformations[i].Kind) && !pulseUtility.isNotDefined(workinformations[i].Id) && cells[i]) {
-          cell = cells[i];
-          break;
-        }
+      if (!this._docs) {
+        this._docs = document.createElement('x-workinfodocs');
+      }
+      this._setDocsAttribute('operation-id', operation ? String(operation.Id) : null);
+      this._setDocsAttribute('operation-display', operation ? (operation.Value || '') : null);
+      this._setDocsAttribute('component-id', component ? String(component.Id) : null);
+      this._setDocsAttribute('component-display', component ? (component.Value || '') : null);
+      this._setDocsAttribute('component-kind', component ? component.Kind : null);
+      if (this.element.hasAttribute('path')) {
+        this._setDocsAttribute('path', this.element.getAttribute('path'));
       }
 
-      let button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'lastworkinformation-docs';
-      button.title = this.getTranslation('documents', 'Documents');
-      button.setAttribute('aria-label', button.title);
-      button.innerHTML = BOOK_ICON;
-      button.addEventListener('click', function (event) {
-        event.stopPropagation();
-        window.dispatchEvent(new CustomEvent('atsora:open-workinfo-docs', { detail: { items: items } }));
-      });
-      if (cell) {
-        let text = document.createElement('span');
-        text.className = 'lastworkinformation-value';
-        text.append(...cell.childNodes);
-        cell.classList.add('lastworkinformation-with-docs');
-        cell.append(text, button);
+      let text = document.createElement('span');
+      text.className = 'lastworkinformation-value';
+      text.append(...cell.childNodes);
+      cell.classList.add('lastworkinformation-with-docs');
+      cell.append(text, this._docs);
+    }
+
+    /**
+     * Set (or remove, with null) an attribute of the x-workinfodocs, only when it
+     * changes: a change of id sends a new request
+     */
+    _setDocsAttribute (name, value) {
+      if (value === null) {
+        if (this._docs.hasAttribute(name)) {
+          this._docs.removeAttribute(name);
+        }
       }
-      else {
-        this._content.insertBefore(button, this._between);
+      else if (this._docs.getAttribute(name) !== value) {
+        this._docs.setAttribute(name, value);
       }
     }
 
@@ -178,7 +207,7 @@ import * as state from 'state';
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id':
-          [...this._content.querySelectorAll('.pulse-cellbar-first')].forEach(el => el.remove());
+          this._removeCells();
           this.element.classList.remove('lwi-no-operation');
           this.start();
           break;
@@ -268,6 +297,7 @@ import * as state from 'state';
       this._between = undefined;
       this._messageSpan = undefined;
       this._content = undefined;
+      this._displayedWorkInformations = null;
 
       super.clearInitialization();
     }
@@ -312,7 +342,7 @@ import * as state from 'state';
     refresh (data) {
       let status = false;
       if (data.SlotMissing) {
-        this._displayDocsButton([], []);
+        this._removeCells();
         let div = document.createElement('div');
         div.className = 'workinformation-slotmissing';
         div.innerHTML = this._noOperationDisplay;
@@ -344,14 +374,14 @@ import * as state from 'state';
     }
 
     /**
-     * Overrides base success handler: clears current cells, signals "no operation"
-     * via host class if `MonitoredMachineOperationBar == 'None'` (and stops polling),
-     * otherwise clears the signal and delegates to `refresh(data)`.
+     * Overrides base success handler: signals "no operation" via host class (and
+     * clears the cells) if `MonitoredMachineOperationBar == 'None'` (and stops
+     * polling), otherwise clears the signal and delegates to `refresh(data)`, which
+     * rebuilds the cells only when the work informations changed.
      */
     manageSuccess (data) {
-      [...this._content.querySelectorAll('.pulse-cellbar-first')].forEach(el => el.remove());
-
       if (data.MonitoredMachineOperationBar == 'None') {
+        this._removeCells();
         console.info('No operation for this machine : '
           + this.element.getAttribute('machine-id'));
         this.element.classList.add('lwi-no-operation');

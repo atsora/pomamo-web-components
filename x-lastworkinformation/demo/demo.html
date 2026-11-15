@@ -8,14 +8,14 @@ SPDX-License-Identifier: Apache-2.0
 <div class="static-tests">
   <p>Shows the last work info (WorkOrder / Part / Operation) inline for a machine.</p>
 
-  <h3>Machine 1 — full work info (WO-1001 / PART-A1 / OP-1001-A) <small>(machine-id=1)</small></h3>
+  <h3>Machine 1 — full work info (WO-1001 / PART-A1 / OP-1001-A), with documents: book button <small>(machine-id=1)</small></h3>
   <div class="machine-component">
     <div class="box-div" width='120px'>
       <x-lastworkinformation machine-id="1" path='http://localhost:8082/'></x-lastworkinformation>
     </div>
   </div>
 
-  <h3>Machine 2 — full work info (WO-1002 / PART-B2 / OP-1002-B) <small>(machine-id=2)</small></h3>
+  <h3>Machine 2 — full work info (WO-1002 / PART-B2 / OP-1002-B), no document: no book button <small>(machine-id=2)</small></h3>
   <div class="machine-component">
     <div class="box-div" width='120px'>
       <x-lastworkinformation machine-id="2" path='http://localhost:8082/'></x-lastworkinformation>

@@ -1,0 +1,7 @@
+<!--
+Copyright (C) 2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+A book button that opens the documents of an operation and/or of a part (or a component), shown only when the web service says that at least one document is attached to them (`Doc/WorkInfoDocCount`, sent once, and again when `operation-id` or `component-id` changes). A click dispatches the window event `atsora:open-workinfo-docs`, that the web app handles by opening the documents dialog of its Vue app (nothing opens in this demo). Used by `x-lastworkinformation`, at the right of the operation.

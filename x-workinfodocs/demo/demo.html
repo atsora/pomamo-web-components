@@ -1,0 +1,36 @@
+<!--
+Copyright (C) 2026 Atsora Solutions
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="static-tests">
+  <p>The book button is shown only when the operation or the part has documents. Clicking it dispatches <code>atsora:open-workinfo-docs</code> (logged below).</p>
+
+  <h3>Operation 1 and part 1 — documents: book button</h3>
+  <div class="machine-component">
+    <x-workinfodocs operation-id="1" operation-display="OP-1001-A" component-id="1" component-display="PART-A1" path="http://localhost:8082/"></x-workinfodocs>
+  </div>
+
+  <h3>Part 1 only — documents: book button</h3>
+  <div class="machine-component">
+    <x-workinfodocs component-id="1" component-display="PART-A1" path="http://localhost:8082/"></x-workinfodocs>
+  </div>
+
+  <h3>Operation 2 and part 2 — no document: nothing</h3>
+  <div class="machine-component">
+    <x-workinfodocs operation-id="2" operation-display="OP-1002-B" component-id="2" component-display="PART-B2" path="http://localhost:8082/"></x-workinfodocs>
+  </div>
+
+  <h3>No id — nothing, no request</h3>
+  <div class="machine-component">
+    <x-workinfodocs path="http://localhost:8082/"></x-workinfodocs>
+  </div>
+
+  <h3>Error — server HTTP 400: nothing <small>(operation-id=999)</small></h3>
+  <div class="machine-component">
+    <x-workinfodocs operation-id="999" path="http://localhost:8082/"></x-workinfodocs>
+  </div>
+
+  <p>Last event: <code id="workinfodocs-event">none</code></p>
+</div>

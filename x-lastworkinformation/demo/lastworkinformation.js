@@ -8,5 +8,6 @@ import 'x-lastworkinformation/x-lastworkinformation';
 import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 import '@atsora/pomamo-web-service-simulation/scripts/GetLastWorkInformationV3';
+import '@atsora/pomamo-web-service-simulation/scripts/WorkInfoDocCount';
 import '@atsora/pomamo-web-service-simulation/scripts/GetListOfOperationSlotV2';
 import '@atsora/pomamo-web-service-simulation/scripts/GetPendingModificationsFromRevision';

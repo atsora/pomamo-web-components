@@ -1,0 +1,47 @@
+/*
+ * Copyright (C) 2026 Atsora Solutions
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+// === IMPORTS ===
+@import "pulsewebcomponents-common.less";
+
+// === CONTENT ===
+// Hidden until the web service says that there is at least one document
+x-workinfodocs {
+  display: none;
+  flex: 0 0 auto;
+  align-self: center;
+  vertical-align: middle;
+
+  &.workinfodocs-visible {
+    display: inline-flex;
+  }
+
+  .workinfodocs-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.4em;
+    height: 1.4em;
+    margin: 0 0 0 0.3em;
+    padding: 0.2em;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: inherit;
+    opacity: 0.7;
+    cursor: pointer;
+
+    &:hover, &:focus-visible {
+      opacity: 1;
+      background: rgba(127, 127, 127, 0.2);
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
