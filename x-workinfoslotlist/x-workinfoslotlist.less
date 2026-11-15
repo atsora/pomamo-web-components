@@ -6,6 +6,7 @@
  */
 
 @import "pulsewebcomponents-common.less";
+@import "x-workinfodocs/x-workinfodocs.less"; // Book button of the documents
 @import "pulse.customdialog.less";
 
 @import "x-savereason/x-savereason.less";
@@ -112,6 +113,12 @@ x-workinfoslotlist {
     width: 20%;
     box-sizing: border-box;
     display: inline-block;
+
+    // With the book button of the documents (x-workinfodocs): stays in the row
+    &.workinfodocs-cell {
+      display: inline-flex;
+      vertical-align: top;
+    }
 
     &.missing {
       font-style: italic;

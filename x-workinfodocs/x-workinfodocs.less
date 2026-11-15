@@ -8,6 +8,21 @@
 @import "pulsewebcomponents-common.less";
 
 // === CONTENT ===
+// A cell of a work information with the book button (appendWorkInfoDocsToCell): its
+// text (with its '...'), then the button at its right
+.workinfodocs-cell.workinfodocs-cell {
+  display: flex;
+  align-items: center;
+
+  .workinfodocs-value {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
 // Hidden until the web service says that there is at least one document
 x-workinfodocs {
   display: none;

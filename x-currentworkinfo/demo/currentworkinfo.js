@@ -8,3 +8,4 @@ import 'x-currentworkinfo/x-currentworkinfo';
 import * as pulseConfig from 'pulseConfig';
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 import '@atsora/pomamo-web-service-simulation/scripts/GetLastWorkInformationV3';
+import '@atsora/pomamo-web-service-simulation/scripts/WorkInfoDocCount'; // Book button of the documents

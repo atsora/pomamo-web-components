@@ -25,6 +25,7 @@ import 'x-operationslotbar/x-operationslotbar';
 //require('x-savereason/x-savereason');
 import 'x-datetimerange/x-datetimerange';
 import 'x-highlightperiodsbar/x-highlightperiodsbar';
+import { findWorkInfoDocItems, updateWorkInfoDocs, appendWorkInfoDocsToCell } from 'x-workinfodocs/x-workinfodocs';
 
 
 (function () {
@@ -38,7 +39,10 @@ import 'x-highlightperiodsbar/x-highlightperiodsbar';
    * operation labels. An embedded `x-operationslotbar` provides a visual
    * summary, and `x-highlightperiodsbar` shows the currently-hovered
    * slot. Reacts to `dateTimeRangeChangeEvent` on `period-context` and
-   * to `machineIdChangeSignal` on `machine-context`.
+   * to `machineIdChangeSignal` on `machine-context`. When the web service gives
+   * the `Id` of the operation and/or of the part of a slot, an `x-workinfodocs`
+   * (book button, shown only when they have documents) is at the right of the
+   * last of them.
    *
    * @element x-workinfoslotlist
    * @attr {number} machine-id      (required) machine id
@@ -187,9 +191,30 @@ import 'x-highlightperiodsbar/x-highlightperiodsbar';
         this._table.appendChild(tr);
 
         this._displayWorkInformations(tr, item.WorkInformations, this._data.Config);
+        this._displayDocs(tr, item.WorkInformations);
       }
 
       this._firstLoad = false;
+    }
+
+    /**
+     * Book button (x-workinfodocs, shown only when there are documents) of the
+     * operation and of the part (or component) of a slot, at the right of the last of
+     * them that is displayed, when the web service gives their `Id`
+     *
+     * @param {HTMLElement} tablerow - row of the slot
+     * @param {Array} workinformations - work informations of the slot
+     */
+    _displayDocs (tablerow, workinformations) {
+      let items = findWorkInfoDocItems(workinformations.map(w => (w.Value ? w : null)));
+      if (items.lastIndex < 0) {
+        return;
+      }
+      let cell = tablerow.querySelector('[kind="' + workinformations[items.lastIndex].Kind + '"]');
+      if (!cell) {
+        return;
+      }
+      appendWorkInfoDocsToCell(cell, updateWorkInfoDocs(undefined, items, this.element));
     }
 
     // Used by Fill Table

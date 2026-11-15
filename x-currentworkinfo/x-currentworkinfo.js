@@ -11,6 +11,7 @@
  * @requires module:detailspopup
  */
 import * as pulseComponent from 'pulsecomponent';
+import { findWorkInfoDocItems, updateWorkInfoDocs, appendWorkInfoDocsToCell } from 'x-workinfodocs/x-workinfodocs';
 
 (function () {
 
@@ -24,6 +25,8 @@ import * as pulseComponent from 'pulsecomponent';
    * the kind/value list actually changes (diffed against
    * `_displayedWorkInformations`). Hides the element and switches to
    * `NotApplicable` when the server reports `MonitoredMachineOperationBar === 'None'`.
+   * When the web service gives the `Id` of the operation and/or of the part, an
+   * `x-workinfodocs` (book button, shown only when they have documents) ends the line.
    *
    * @element x-currentworkinfo
    * @attr {number} machine-id  machine id (used when `group` is absent)
@@ -42,6 +45,7 @@ import * as pulseComponent from 'pulsecomponent';
       self._displayedWorkInformations = null;
 
       self._content = undefined;
+      self._docs = undefined; // x-workinfodocs, kept while the operation / part do not change
 
       return self;
     }
@@ -97,6 +101,7 @@ import * as pulseComponent from 'pulsecomponent';
       this._displayedWorkInformations = null;
 
       this._content = undefined;
+      this._docs = undefined;
 
       super.clearInitialization();
     }
@@ -115,8 +120,7 @@ import * as pulseComponent from 'pulsecomponent';
     }
 
     displayError (message) {
-      this._content.replaceChildren();
-      this._displayedWorkInformations = null;
+      this._clearContent();
     }
 
     removeError () {
@@ -156,8 +160,7 @@ import * as pulseComponent from 'pulsecomponent';
      */
     refresh (data) {
       if (data.SlotMissing) {
-        this._content.replaceChildren();
-        this._displayedWorkInformations = null;
+        this._clearContent();
         return;
       }
 
@@ -173,11 +176,14 @@ import * as pulseComponent from 'pulsecomponent';
         else if (this._displayedWorkInformations[index].Value != data.WorkInformations[index].Value) {
           needToRefresh = true;
         }
+        else if (this._displayedWorkInformations[index].Id != data.WorkInformations[index].Id) {
+          needToRefresh = true;
+        }
         index++;
       }
 
       if (needToRefresh) {
-        this._content.replaceChildren();
+        this._clearContent();
         let operationDisplay = ''; // Will be changed with operationslot.display ASAP
         for (const workInformation of data.WorkInformations) {
           if (workInformation.Value) {
@@ -190,7 +196,26 @@ import * as pulseComponent from 'pulsecomponent';
         div.innerHTML = operationDisplay;
         this._content.appendChild(div);
         this._displayedWorkInformations = data.WorkInformations;
+
+        // Book button of the operation and of the part (or component), at the end of
+        // the line, when the web service gives their ids
+        let items = findWorkInfoDocItems(data.WorkInformations);
+        if (items.lastIndex >= 0) {
+          this._docs = updateWorkInfoDocs(this._docs, items, this.element);
+          appendWorkInfoDocsToCell(div, this._docs);
+        }
       }
+    }
+
+    /**
+     * Empty the content, taking the book button out of it
+     */
+    _clearContent () {
+      if (this._docs) {
+        this._docs.remove();
+      }
+      this._content.replaceChildren();
+      this._displayedWorkInformations = null;
     }
 
     /**

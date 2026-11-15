@@ -14,6 +14,7 @@ pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
 import '@atsora/pomamo-web-service-simulation/scripts/OperationPartProductionRange';
 import '@atsora/pomamo-web-service-simulation/scripts/OperationProductionMachiningStatus';
+import '@atsora/pomamo-web-service-simulation/scripts/WorkInfoDocCount'; // Book button of the documents
 
 import * as eventBus from 'eventBus';
 
@@ -22,8 +23,8 @@ if (document.readyState !== 'loading') {
     eventBus.EventBus.dispatchToContext('operationChangeEvent', '999', {
       workinformations: [
         { Kind: 'WorkOrder', Value: 'WO-MANUAL-001' },
-        { Kind: 'Part',      Value: 'PART-MANUAL' },
-        { Kind: 'Operation', Value: 'OP-MANUAL' }
+        { Kind: 'Part',      Value: 'PART-MANUAL', Id: 1 },
+        { Kind: 'Operation', Value: 'OP-MANUAL', Id: 1 }
       ]
     });
   });
@@ -33,8 +34,8 @@ if (document.readyState !== 'loading') {
       eventBus.EventBus.dispatchToContext('operationChangeEvent', '999', {
         workinformations: [
           { Kind: 'WorkOrder', Value: 'WO-MANUAL-001' },
-          { Kind: 'Part',      Value: 'PART-MANUAL' },
-          { Kind: 'Operation', Value: 'OP-MANUAL' }
+          { Kind: 'Part',      Value: 'PART-MANUAL', Id: 1 },
+          { Kind: 'Operation', Value: 'OP-MANUAL', Id: 1 }
         ]
       });
     });

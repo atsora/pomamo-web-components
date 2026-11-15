@@ -10,6 +10,95 @@
 import * as pulseComponent from 'pulsecomponent';
 import * as pulseUtility from 'pulseUtility';
 
+/**
+ * Kinds of work information that may have documents
+ */
+export const DOC_KINDS = ['Operation', 'Part', 'Component'];
+
+/**
+ * The operation and the part (or the component) of work informations of the web
+ * service (`{ Kind, Value, Id }`), among the ones that have an `Id`
+ *
+ * @param {Array<{Kind: string, Value: string, Id: number}>} workinformations
+ * @returns {{operation: Object, component: Object, lastIndex: number}} `lastIndex`: index
+ *   of the last of them, -1 when none of them has an id
+ */
+export function findWorkInfoDocItems (workinformations) {
+  let result = { operation: null, component: null, lastIndex: -1 };
+  (workinformations || []).forEach((workinformation, index) => {
+    if (!workinformation || !DOC_KINDS.includes(workinformation.Kind)
+      || pulseUtility.isNotDefined(workinformation.Id)) {
+      return;
+    }
+    if (workinformation.Kind == 'Operation') {
+      result.operation = workinformation;
+    }
+    else {
+      result.component = workinformation;
+    }
+    result.lastIndex = index;
+  });
+  return result;
+}
+
+/**
+ * Set (or remove, with null) an attribute, only when it changes: a change of id
+ * sends a new request
+ */
+function setAttributeIfChanged (element, name, value) {
+  if (value === null) {
+    if (element.hasAttribute(name)) {
+      element.removeAttribute(name);
+    }
+  }
+  else if (element.getAttribute(name) !== value) {
+    element.setAttribute(name, value);
+  }
+}
+
+/**
+ * Update an x-workinfodocs (created when `docs` is not defined) for the operation and
+ * the part (or component) of work informations of the web service
+ *
+ * @param {HTMLElement|undefined} docs - existing x-workinfodocs, to keep (no new request
+ *   when the ids do not change)
+ * @param {Object} items - result of findWorkInfoDocItems
+ * @param {HTMLElement} [host] - component that displays it, to copy its `path` attribute
+ * @returns {HTMLElement} the x-workinfodocs
+ */
+export function updateWorkInfoDocs (docs, items, host) {
+  if (!docs) {
+    docs = document.createElement('x-workinfodocs');
+  }
+  let operation = items.operation;
+  let component = items.component;
+  setAttributeIfChanged(docs, 'operation-id', operation ? String(operation.Id) : null);
+  setAttributeIfChanged(docs, 'operation-display', operation ? (operation.Value || '') : null);
+  setAttributeIfChanged(docs, 'component-id', component ? String(component.Id) : null);
+  setAttributeIfChanged(docs, 'component-display', component ? (component.Value || '') : null);
+  setAttributeIfChanged(docs, 'component-kind', component ? component.Kind : null);
+  if (host && host.hasAttribute('path')) {
+    setAttributeIfChanged(docs, 'path', host.getAttribute('path'));
+  }
+  return docs;
+}
+
+/**
+ * Put an x-workinfodocs at the right of the text of a cell: the text goes into a span
+ * `workinfodocs-value`, that keeps its '...' when the cell is too narrow, and the cell
+ * gets the class `workinfodocs-cell` (see x-workinfodocs.less)
+ *
+ * @param {HTMLElement} cell
+ * @param {HTMLElement} docs - x-workinfodocs
+ */
+export function appendWorkInfoDocsToCell (cell, docs) {
+  let text = document.createElement('span');
+  text.className = 'workinfodocs-value';
+  text.append(...cell.childNodes);
+  cell.classList.add('workinfodocs-cell');
+  cell.append(text, docs);
+}
+
 (function () {
 
   // Font Awesome Free 6.7.2 book (CC BY 4.0), see the LICENSE of pomamo-web-app

@@ -11,6 +11,7 @@
 import * as pulseUtility from 'pulseUtility';
 import * as pulseComponent from 'pulsecomponent';
 import * as eventBus from 'eventBus';
+import { findWorkInfoDocItems, updateWorkInfoDocs, appendWorkInfoDocsToCell } from 'x-workinfodocs/x-workinfodocs';
 
 (function () {
 
@@ -23,6 +24,9 @@ import * as eventBus from 'eventBus';
    * `WorkInformations[].Value` entries (re-rendered only when the
    * payload actually changes). Reacts to `machineIdChangeSignal` on
    * `machine-context` (updates `machine-id` and re-binds the listener).
+   * When the work informations give the `Id` of the operation and/or of the part
+   * (ProductionMachiningStatus does), an `x-workinfodocs` (book button, shown only
+   * when they have documents) ends the line.
    *
    * @element x-workinfo
    * @attr {number} machine-id      (required) machine id (also used as event-bus context)
@@ -42,6 +46,7 @@ import * as eventBus from 'eventBus';
       self._displayedWorkInformations = null;
 
       self._content = undefined;
+      self._docs = undefined; // x-workinfodocs, kept while the operation / part do not change
 
       return self;
     }
@@ -132,13 +137,14 @@ import * as eventBus from 'eventBus';
 
       //this._messageSpan = undefined;
       this._content = undefined;
+      this._docs = undefined;
+      this._displayedWorkInformations = null;
 
       super.clearInitialization();
     }
 
     displayError (message) {
-      this._content.replaceChildren();
-      this._displayedWorkInformations = null;
+      this._clearContent();
       console.error('x-workinfo: ' + message);
     }
 
@@ -151,8 +157,7 @@ import * as eventBus from 'eventBus';
      */
     onOperationChange (event) {
       if (pulseUtility.isNotDefined(event.target.workinformations)) {
-        this._content.replaceChildren();
-        this._displayedWorkInformations = null;
+        this._clearContent();
         return;
       }
       // 1 - Verify if display need to be changed
@@ -168,11 +173,14 @@ import * as eventBus from 'eventBus';
         else if (this._displayedWorkInformations[index].Value != event.target.workinformations[index].Value) {
           needToRefresh = true;
         }
+        else if (this._displayedWorkInformations[index].Id != event.target.workinformations[index].Id) {
+          needToRefresh = true;
+        }
         index++;
       }
 
       if (needToRefresh) {
-        this._content.replaceChildren();
+        this._clearContent();
         let operationDisplay = ''; // Will be changed with operationslot.display ASAP
         for (const workInformation of event.target.workinformations) {
           if (workInformation.Value) {
@@ -185,7 +193,26 @@ import * as eventBus from 'eventBus';
         div.innerHTML = operationDisplay;
         this._content.appendChild(div);
         this._displayedWorkInformations = event.target.workinformations;
+
+        // Book button of the operation and of the part (or component), at the end of
+        // the line, when the work informations give their ids
+        let items = findWorkInfoDocItems(event.target.workinformations);
+        if (items.lastIndex >= 0) {
+          this._docs = updateWorkInfoDocs(this._docs, items, this.element);
+          appendWorkInfoDocsToCell(div, this._docs);
+        }
       }
+    }
+
+    /**
+     * Empty the content, taking the book button out of it
+     */
+    _clearContent () {
+      if (this._docs) {
+        this._docs.remove();
+      }
+      this._content.replaceChildren();
+      this._displayedWorkInformations = null;
     }
 
     /**

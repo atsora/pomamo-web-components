@@ -15,7 +15,7 @@ import * as pulseUtility from 'pulseUtility';
 import * as pulseSvg from 'pulseSvg';
 import * as eventBus from 'eventBus';
 import * as state from 'state';
-import 'x-workinfodocs/x-workinfodocs';
+import { findWorkInfoDocItems, updateWorkInfoDocs, appendWorkInfoDocsToCell } from 'x-workinfodocs/x-workinfodocs';
 
 // Visibility contract:
 // This component NEVER sets inline `display` on `this.element` or any ancestor.
@@ -24,9 +24,6 @@ import 'x-workinfodocs/x-workinfodocs';
 // the host when this class is present.
 
 (function () {
-
-  // The kinds of work information that carry documents
-  const DOC_KINDS = ['Operation', 'Part', 'Component'];
 
   /**
    * `<x-lastworkinformation>` — inline current work-information cells for one
@@ -131,58 +128,12 @@ import 'x-workinfodocs/x-workinfodocs';
      * @param {HTMLElement[]} cells - their cells, in the same order
      */
     _displayDocs (workinformations, cells) {
-      let operation = null;
-      let component = null;
-      let cell = null;
-      for (let i = 0; i < workinformations.length; i++) {
-        let workinformation = workinformations[i];
-        if (!DOC_KINDS.includes(workinformation.Kind) || pulseUtility.isNotDefined(workinformation.Id)) {
-          continue;
-        }
-        if (workinformation.Kind == 'Operation') {
-          operation = workinformation;
-        }
-        else {
-          component = workinformation;
-        }
-        cell = cells[i];
-      }
-      if (!cell) {
+      let items = findWorkInfoDocItems(workinformations);
+      if (items.lastIndex < 0) {
         return;
       }
-
-      if (!this._docs) {
-        this._docs = document.createElement('x-workinfodocs');
-      }
-      this._setDocsAttribute('operation-id', operation ? String(operation.Id) : null);
-      this._setDocsAttribute('operation-display', operation ? (operation.Value || '') : null);
-      this._setDocsAttribute('component-id', component ? String(component.Id) : null);
-      this._setDocsAttribute('component-display', component ? (component.Value || '') : null);
-      this._setDocsAttribute('component-kind', component ? component.Kind : null);
-      if (this.element.hasAttribute('path')) {
-        this._setDocsAttribute('path', this.element.getAttribute('path'));
-      }
-
-      let text = document.createElement('span');
-      text.className = 'lastworkinformation-value';
-      text.append(...cell.childNodes);
-      cell.classList.add('lastworkinformation-with-docs');
-      cell.append(text, this._docs);
-    }
-
-    /**
-     * Set (or remove, with null) an attribute of the x-workinfodocs, only when it
-     * changes: a change of id sends a new request
-     */
-    _setDocsAttribute (name, value) {
-      if (value === null) {
-        if (this._docs.hasAttribute(name)) {
-          this._docs.removeAttribute(name);
-        }
-      }
-      else if (this._docs.getAttribute(name) !== value) {
-        this._docs.setAttribute(name, value);
-      }
+      this._docs = updateWorkInfoDocs(this._docs, items, this.element);
+      appendWorkInfoDocsToCell(cells[items.lastIndex], this._docs);
     }
 
     getStartKey (context) {

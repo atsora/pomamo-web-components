@@ -11,6 +11,7 @@
 import * as pulseComponent from 'pulsecomponent';
 import * as pulseUtility from 'pulseUtility';
 import * as eventBus from 'eventBus';
+import { findWorkInfoDocItems, updateWorkInfoDocs, appendWorkInfoDocsToCell } from 'x-workinfodocs/x-workinfodocs';
 
 (function () {
 
@@ -22,7 +23,9 @@ import * as eventBus from 'eventBus';
    * (interval = `refreshingRate.currentRefreshSeconds`, default 10 s) and
    * diff-renders one `.pulse-cellbar-first` per entry in
    * `WorkInformations` (keyed by `{ Kind, Value }`), flagging missing
-   * values via `pulse-cellbar-cell-missing`. Reacts to
+   * values via `pulse-cellbar-cell-missing`. When the web service gives the `Id`
+   * of the operation and/or of the part, an `x-workinfodocs` (book button, shown
+   * only when they have documents) is at the right of the last of them. Reacts to
    * `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
    *
    * TODO: `Option=TrackTask` is the former name of `TrackManufacturingOrder`.
@@ -46,6 +49,7 @@ import * as eventBus from 'eventBus';
       // DOM -> never in contructor
       self._content = undefined; // Optional
       self._displayedWorkInformations = null;
+      self._docs = undefined; // x-workinfodocs, kept while the operation / part do not change
 
       return self;
     }
@@ -89,15 +93,18 @@ import * as eventBus from 'eventBus';
         if (this._displayedWorkInformations[index].Value != workInformations[index].Value) {
           needToRefresh = true;
         }
+        if (this._displayedWorkInformations[index].Id != workInformations[index].Id) {
+          needToRefresh = true;
+        }
         index++
       }
 
 
       if (needToRefresh) {
         // empty
-        let cells = this._content.querySelectorAll('.pulse-cellbar-first');
-        cells.forEach(cell => cell.remove());
+        this._removeCells();
 
+        let cells = [];
         for (const workInformation of workInformations) {
           // workinformation value is defined
           if (workInformation.Value) {
@@ -106,10 +113,43 @@ import * as eventBus from 'eventBus';
             div.setAttribute('kind', workInformation.Kind);
             div.innerHTML = workInformation.Value;
             this._between.parentNode.insertBefore(div, this._between);
+            cells.push(div);
+          }
+          else {
+            cells.push(null);
           }
         } // end for
         this._displayedWorkInformations = workInformations;
+        this._displayDocs(workInformations, cells);
       }
+    }
+
+    /**
+     * Remove the cells of the work informations, and take the book button out of them
+     */
+    _removeCells () {
+      if (this._docs) {
+        this._docs.remove();
+      }
+      let cells = this._content.querySelectorAll('.pulse-cellbar-first');
+      cells.forEach(cell => cell.remove());
+    }
+
+    /**
+     * The x-workinfodocs (book button, shown only when there are documents) of the
+     * operation and of the part (or component), at the right of the last of them,
+     * when the web service gives their `Id`
+     *
+     * @param {Array} workInformations - work informations of the web service
+     * @param {Array<HTMLElement|null>} cells - their cells, in the same order (null: not displayed)
+     */
+    _displayDocs (workInformations, cells) {
+      let items = findWorkInfoDocItems(workInformations.map((w, i) => (cells[i] ? w : null)));
+      if (items.lastIndex < 0) {
+        return;
+      }
+      this._docs = updateWorkInfoDocs(this._docs, items, this.element);
+      appendWorkInfoDocsToCell(cells[items.lastIndex], this._docs);
     }
 
     attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
@@ -127,7 +167,8 @@ import * as eventBus from 'eventBus';
           break;
         case 'machine-id':
           // Empty excepted message and loaded
-          let cells = this._content.querySelectorAll('.pulse-cellbar-first, .pulse-cellbar-last');
+          this._removeCells();
+          let cells = this._content.querySelectorAll('.pulse-cellbar-last');
           cells.forEach(cell => cell.remove());
           this._displayedWorkInformations = null;
 
@@ -201,6 +242,7 @@ import * as eventBus from 'eventBus';
       this._between = undefined;
       this._messageSpan = undefined;
       this._content = undefined;
+      this._docs = undefined;
 
       super.clearInitialization();
     }

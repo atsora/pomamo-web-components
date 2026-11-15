@@ -17,6 +17,7 @@ import * as pulseDetailsPopup from 'pulsecomponent-detailspopup';
 import * as pulseSvg from 'pulseSvg';
 import * as eventBus from 'eventBus';
 import * as state from 'state';
+import { findWorkInfoDocItems, updateWorkInfoDocs, appendWorkInfoDocsToCell } from 'x-workinfodocs/x-workinfodocs';
 
 // Visibility contract:
 // This component NEVER sets inline `display` on `this.element` or any ancestor.
@@ -44,6 +45,11 @@ import * as state from 'state';
    * `machine-context` and to `dateTimeRangeChangeEvent` on `period-context`
    * (tracks the range, used by the past dialog).
    *
+   * When the web service gives the `Id` of the operation and/or of the part, an
+   * `x-workinfodocs` (book button, shown only when they have documents) is at the
+   * right of the last of them. The current cells are rebuilt only when the work
+   * informations change, so that it asks for the documents only then.
+   *
    * @element x-lastworkinformationbar
    * @attr {number} machine-id      (required) machine id
    * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
@@ -63,6 +69,9 @@ import * as state from 'state';
       self._between = undefined;
       self._messageSpan = undefined;
       self._content = undefined;
+      self._docs = undefined; // x-workinfodocs, kept while the operation / part do not change
+      // Work informations of the cells, to rebuild them only when they change
+      self._displayedWorkInformations = null;
 
       return self;
     }
@@ -74,10 +83,17 @@ import * as state from 'state';
      * Missing values get a red dot and a `missing` attribute; known values are set as HTML.
      */
     _displayWorkInformations (workinformations, config) {
-      [...this._content.querySelectorAll('.pulse-cellbar-first')].forEach(el => el.remove());
+      let signature = JSON.stringify(workinformations);
+      if (signature === this._displayedWorkInformations) {
+        return; // Same cells: nothing to rebuild, no new request for the documents
+      }
+      this._removeCells();
+      this._displayedWorkInformations = signature;
 
+      let cells = [];
       for (let i = 0; i < workinformations.length; i++) {
         let div = document.createElement('div');
+        cells.push(div);
         div.className = 'pulse-cellbar-first pulse-cellbar-current-data';
         div.setAttribute('kind', workinformations[i].Kind);
 
@@ -99,6 +115,25 @@ import * as state from 'state';
         }
         this._content.insertBefore(div, this._between);
       }
+
+      // Book button of the operation and of the part (or component), at the right of
+      // the last of them, when the web service gives their ids
+      let items = findWorkInfoDocItems(workinformations);
+      if (items.lastIndex >= 0) {
+        this._docs = updateWorkInfoDocs(this._docs, items, this.element);
+        appendWorkInfoDocsToCell(cells[items.lastIndex], this._docs);
+      }
+    }
+
+    /**
+     * Remove the cells of the work informations, and take the book button out of them
+     */
+    _removeCells () {
+      if (this._docs) {
+        this._docs.remove();
+      }
+      [...this._content.querySelectorAll('.pulse-cellbar-first')].forEach(el => el.remove());
+      this._displayedWorkInformations = null;
     }
 
     getStartKey (context) {
@@ -123,7 +158,8 @@ import * as state from 'state';
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id':
-          [...this._content.querySelectorAll('.pulse-cellbar-first, .pulse-cellbar-last')].forEach(el => el.remove());
+          this._removeCells();
+          [...this._content.querySelectorAll('.pulse-cellbar-last')].forEach(el => el.remove());
           this.element.classList.remove('lwi-no-operation');
           this.start();
           break;
@@ -213,6 +249,8 @@ import * as state from 'state';
       this._between = undefined;
       this._messageSpan = undefined;
       this._content = undefined;
+      this._docs = undefined;
+      this._displayedWorkInformations = null;
 
       super.clearInitialization();
     }
@@ -257,6 +295,7 @@ import * as state from 'state';
     refresh (data) {
       let status = false;
       if (data.SlotMissing) {
+        this._removeCells();
         let div = document.createElement('div');
         div.className = 'workinformation-slotmissing';
         div.innerHTML = this._noOperationDisplay;
@@ -312,9 +351,11 @@ import * as state from 'state';
      * otherwise clears the signal and delegates to `refresh(data)`.
      */
     manageSuccess (data) {
-      [...this._content.querySelectorAll('.pulse-cellbar-first, .pulse-cellbar-last')].forEach(el => el.remove());
+      // The cells of the work informations are rebuilt only when they change
+      [...this._content.querySelectorAll('.pulse-cellbar-last')].forEach(el => el.remove());
 
       if (data.MonitoredMachineOperationBar == 'None') {
+        this._removeCells();
         console.info('No operation for this machine : '
           + this.element.getAttribute('machine-id'));
         this.element.classList.add('lwi-no-operation');
