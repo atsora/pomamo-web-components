@@ -20,8 +20,10 @@ x-production {
     display: flex;
   }
 
+  // Baseline: the text, the preposition and the clock (line-height of its own) on the same line
   .production-content-text-actual {
     display: inline-flex;
+    align-items: baseline;
     column-gap: 5px;
   }
 
@@ -32,11 +34,13 @@ x-production {
 
   .production-content-text-target {
     display: inline-flex;
+    align-items: baseline;
     column-gap: 5px;
   }
 
   .production-clock-content {
     display: inline-flex;
+    align-items: baseline;
     column-gap: 5px;
   }
 
