@@ -13,6 +13,7 @@ import * as pulseComponent from 'pulsecomponent';
 import * as pulseRange from 'pulseRange';
 import * as pulseUtility from 'pulseUtility';
 import * as eventBus from 'eventBus';
+import { findWorkInfoDocItems, updateWorkInfoDocs, appendWorkInfoDocsToCell } from 'x-workinfodocs/x-workinfodocs';
 
 (function () {
 
@@ -21,9 +22,12 @@ import * as eventBus from 'eventBus';
    * (work information) at a given point in time for one machine.
    *
    * Fetches
-   * `OperationSlots?MachineId=<id>&Range=<single-point-range>&SkipDetails=false`
+   * `OperationSlots?MachineId=<id>&Range=<single-point-range>&SkipDetails=false&WorkInformations=true`
    * on each `machine-id` / `when` change and renders the operation range and
-   * display label. Reacts to `dateTimeChangeEvent` on `datetime-context`
+   * display label. When the details give the work informations with the `Id` of
+   * the operation and/or of the part (web service with the `WorkInformations`
+   * parameter, an older one ignores it), an `x-workinfodocs` (book button, shown
+   * only when they have documents) ends the label. Reacts to `dateTimeChangeEvent` on `datetime-context`
    * (updates `when`) and to `machineIdChangeSignal` on `machine-context`
    * (updates `machine-id`).
    *
@@ -46,6 +50,7 @@ import * as eventBus from 'eventBus';
       // DOM - not here
       self._content = undefined;
       self._detailedContent = undefined;
+      self._docs = undefined; // x-workinfodocs, kept while the operation / part do not change
 
       return self;
     }
@@ -53,6 +58,9 @@ import * as eventBus from 'eventBus';
     get content () { return this._content; } // Optional
 
     _cleanDisplay () {
+      if (this._docs) { // Taken out first, to be reused
+        this._docs.remove();
+      }
       this._detailedContent.replaceChildren();
     }
 
@@ -164,6 +172,7 @@ import * as eventBus from 'eventBus';
 
       this._detailedContent = undefined;
       this._content = undefined;
+      this._docs = undefined;
 
       super.clearInitialization();
     }
@@ -225,11 +234,12 @@ import * as eventBus from 'eventBus';
       return 'OperationSlots?MachineId='
         + this.element.getAttribute('machine-id')
         + '&Range=' + pulseUtility.createSingleRangeForWebService(this.element.getAttribute('when'))
-        + '&SkipDetails=false'; // range = ONE datetime
+        + '&SkipDetails=false' // range = ONE datetime
+        + '&WorkInformations=true'; // Ids of the operation and of the part, for the documents
     }
 
     refresh (data) {
-      this._detailedContent.replaceChildren();
+      this._cleanDisplay();
 
       if (0 < data.Blocks.length) {
         let divRange = document.createElement('div');
@@ -249,6 +259,15 @@ import * as eventBus from 'eventBus';
         spanDisplay.className = 'detailed-single-data';
         spanDisplay.innerHTML = display;
         divDetails.appendChild(spanDisplay);
+        // Book button of the operation and of the part (or component), at the end of
+        // the label, when the web service gives their ids
+        let details = data.Blocks[0].Details;
+        let workInformations = (details && (0 < details.length)) ? details[0].WorkInformations : null;
+        let items = findWorkInfoDocItems(workInformations);
+        if (items.lastIndex >= 0) {
+          this._docs = updateWorkInfoDocs(this._docs, items, this.element);
+          appendWorkInfoDocsToCell(spanDisplay, this._docs);
+        }
         //let w = this._content.clientWidth;
         //w = w - this.element.querySelector(".detailed-title").clientWidth;
         //w = w - divRange.clientWidth;
