@@ -52,7 +52,7 @@ x-oeegauge {
 }
 
 /* While loading, hide the background arc: only the loader shows.
-   !important beats the app-global `svg { visibility: visible !important }` rule */
+   !important beats the app-global `svg { visibility: inherit !important }` rule */
 x-oeegauge.pulse-component-loading .oeegauge-svg {
   visibility: hidden !important;
 }
