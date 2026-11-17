@@ -515,8 +515,7 @@ import * as pulseService from 'pulseService';
         displayContent.appendChild(role);
       }
 
-      li.appendChild(displayContent);
-
+      // Below the name and the machine: the status, then the time
       const timeContent = document.createElement('div');
       timeContent.classList.add('taskslist-time-content');
 
@@ -527,9 +526,11 @@ import * as pulseService from 'pulseService';
 
       const time = document.createElement('span');
       time.innerText = timeDisplay;
+      time.classList.add('taskslist-time');
       timeContent.appendChild(time);
 
-      li.appendChild(timeContent);
+      displayContent.appendChild(timeContent);
+      li.appendChild(displayContent);
     }
 
     /**

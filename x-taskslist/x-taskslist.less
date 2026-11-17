@@ -25,12 +25,9 @@
             background-color: @current_background_color;
             border-radius: 12px;
             padding: 17.5px;
-            justify-content: space-between;
-
-            gap: 8px;
 
             .taskslist-display {
-                // Takes the room left by the status, and may shrink below its content
+                // The whole width of the card: the status is below the name
                 flex: 1 1 auto;
                 min-width: 0;
                 display: flex;
@@ -44,12 +41,15 @@
                     gap: 6px;
                     min-width: 0;
 
-                    // A long name is truncated (full name in the tooltip)
+                    // A long name wraps on two lines, then is truncated (full name in the tooltip)
                     .taskslist-name {
                         min-width: 0;
                         overflow: hidden;
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
+                        overflow-wrap: anywhere;
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
+                        -webkit-line-clamp: 2;
+                        line-clamp: 2;
                     }
 
                     // Icon of the task type (maintenance, quality...)
@@ -82,20 +82,23 @@
                 }
             }
 
+            // Status on the left, time on the right (below the status when there is no room)
             .taskslist-time-content {
-                flex: 0 0 auto;
                 display: flex;
-                flex-direction: column;
-                font-size: 12px;
-                align-items: flex-end;
+                flex-wrap: wrap;
+                align-items: center;
                 justify-content: space-between;
-                // Space between the status and the time below it
-                gap: 6px;
+                gap: 4px 8px;
+                font-size: 12px;
+                margin-top: 2px;
+            }
+
+            .taskslist-time {
                 white-space: nowrap;
+                opacity: 0.85;
             }
 
             .taskslist-status {
-                margin: 0 0 0 auto;
                 white-space: nowrap;
                 border-radius: 4px;
                 padding: 6px;
