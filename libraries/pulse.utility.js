@@ -924,23 +924,26 @@ export function getTextDuration (duration) {
   let mins = Math.floor((seconds - (days * 24 * 60 * 60) - (hours * 60 * 60)) / 60);
   let secs = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (mins * 60);
 
+  // Units in the language of the page (content.durationUnits), e.g. "1 j 3 h 5 min" in French
+  let unit = (key, defaultUnit) => pulseConfig.pulseTranslate('content.durationUnits.' + key, defaultUnit);
+
   let text = '';
 
   if (days > 0) {
-    text += days + ' d  ';
+    text += days + ' ' + unit('day', 'd') + ' ';
   }
 
   if (hours > 0) {
-    text += hours + ' h ';
+    text += hours + ' ' + unit('hour', 'h') + ' ';
   }
 
   if (mins > 0) {
-    text += mins + ' min ';
+    text += mins + ' ' + unit('minute', 'min') + ' ';
   }
 
   if ((days == 0) && (hours == 0) && (mins <= 5)) {
     if (secs > 0) {
-      text += secs + ' sec ';
+      text += secs + ' ' + unit('second', 'sec') + ' ';
     }
   }
   return text;
