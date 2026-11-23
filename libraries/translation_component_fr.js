@@ -371,6 +371,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   scrapstatus: {
     shiftscrap: 'Rebuts d\'équipe',
+    dayscrap: 'Rebuts du jour',
     scrapDeclaration: 'Déclarer Rebuts'
   },
   sequencebar: {

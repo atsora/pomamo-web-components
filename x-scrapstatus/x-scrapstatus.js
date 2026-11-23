@@ -23,9 +23,11 @@ import 'x-scrapclassification/x-scrapclassification';
    * `<x-scrapstatus>` — current-shift scrap count and "Scrap Declaration"
    * button for one machine.
    *
-   * Polls `GetLastMachineStatusV2?Id=<machine-id>` (interval =
+   * Polls `Scrap/CurrentShift?MachineId=<machine-id>` (interval =
    * `refreshingRate.currentRefreshSeconds`, default 10 s) and renders a
-   * "Shift scrap" label, a numeric span and a button that calls
+   * "Shift scrap" label ("Day scrap" when there is no shift), the number of
+   * scrap parts of the current shift (`ScrapCount`: the scrap reports the
+   * analysis counted in the operation slots) and a button that calls
    * `pulseDetailsPopup.openChangeScrapClassificationDialog()`. Reacts to
    * `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
    *
@@ -46,6 +48,8 @@ import 'x-scrapclassification/x-scrapclassification';
             // DOM
             self._messageSpan = undefined;
             self._content = undefined;
+            self._scrapTextSpan = undefined;
+            self._scrapValueSpan = undefined;
 
             return self;
         }
@@ -126,6 +130,7 @@ import 'x-scrapclassification/x-scrapclassification';
          */
         _buildUI() {
             let textSpan = document.createElement('span');
+            this._scrapTextSpan = textSpan;
             textSpan.classList.add('scrapstatus-text');
             textSpan.innerHTML = this.getTranslation('shiftscrap', 'Shift scrap');
             this._content.appendChild(textSpan);
@@ -162,6 +167,8 @@ import 'x-scrapclassification/x-scrapclassification';
 
             this._messageSpan = undefined;
             this._content = undefined;
+            this._scrapTextSpan = undefined;
+            this._scrapValueSpan = undefined;
 
             super.clearInitialization();
         }
@@ -214,8 +221,7 @@ import 'x-scrapclassification/x-scrapclassification';
          * @returns {string} URL
          */
         getShortUrl() {
-            let url = 'GetLastMachineStatusV2?Id=' + this.element.getAttribute('machine-id');
-            return url;
+            return 'Scrap/CurrentShift?MachineId=' + this.element.getAttribute('machine-id');
         }
 
         /**
@@ -224,7 +230,10 @@ import 'x-scrapclassification/x-scrapclassification';
          * @param {Object} data - Server response
          */
         refresh(data) {
-            this._scrapValueSpan.innerHTML = 25;
+            this._scrapTextSpan.innerHTML = (data && data.Shift)
+                ? this.getTranslation('shiftscrap', 'Shift scrap')
+                : this.getTranslation('dayscrap', 'Day scrap');
+            this._scrapValueSpan.innerHTML = (data && Number.isInteger(data.ScrapCount)) ? data.ScrapCount : 0;
         }
 
         /**

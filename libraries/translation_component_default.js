@@ -459,6 +459,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
   },
   scrapstatus: {
     shiftscrap: 'Shift scrap',
+    dayscrap: 'Day scrap',
     scrapDeclaration: 'Scrap Declaration'
   },
   saveserialnumber: {
@@ -989,6 +990,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
   },
   scrapstatus: {
     shiftscrap: 'Rebuts d\'équipe',
+    dayscrap: 'Rebuts du jour',
     scrapDeclaration: 'Déclarer rebuts'
   },
   saveserialnumber: {

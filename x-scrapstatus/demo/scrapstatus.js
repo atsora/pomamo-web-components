@@ -8,4 +8,4 @@ import 'x-scrapstatus/x-scrapstatus';
 
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
-import '@atsora/pomamo-web-service-simulation/scripts/GetLastMachineStatusV2';
+import '@atsora/pomamo-web-service-simulation/scripts/ScrapCurrentShift';
