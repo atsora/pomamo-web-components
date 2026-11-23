@@ -284,6 +284,12 @@ var initTheme = function () {
 ///////////////////
 
 var initDemoChrome = function () {
+  // index.html and alphabetical.html load this module too, but have no demo chrome
+  // (panels, header buttons, theme toggle): only apply the theme there.
+  if (!document.getElementById('pulse-inner')) {
+    themeManager.load(themeManager.current());
+    return;
+  }
   populateConfigPanel();
   populateNavigationPanel();
   setNavigationLinks();
