@@ -9,27 +9,32 @@
 @import "x-scrapclassification/x-scrapclassification.less";
 
 // === CONTENT & HIDDEN CONTENT ===
+// Base font size from the screen size (readable on a 4K screen as on a phone),
+// every other size in em of it
 x-scrapstatus {
+    font-size: clamp(0.75rem, 1vmin + 0.125rem, 2rem);
+
     .scrapstatus-content {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+        gap: 0.5em;
 
         .scrapstatus-text {
             font-weight: bolder;
-            font-size: 20px;
+            font-size: 1.25em;
         }
 
         .scrapstatus-value {
             font-weight: bold;
-            font-size: 80px;
+            font-size: 3.5em;
+            line-height: 1;
         }
 
         .scrapstatus-button-content {
-            font-size: 1.5em;
-            padding: 12px 24px;
-            border-radius: 4px;
+            font-size: 1.25em;
+            padding: 0.5em 1em;
+            border-radius: 0.25em;
             background-color: #FF7C35;
             color: #101521;
             transition: 0.1s;
