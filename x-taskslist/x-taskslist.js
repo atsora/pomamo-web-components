@@ -535,6 +535,7 @@ import * as pulseService from 'pulseService';
 
     /**
      * Text of the time before / since a date, e.g. "in 8 min", "dans 8 min".
+     * Beyond a day, only the days and hours are displayed, e.g. "6 d 18 h ago".
      * The words before and after the duration are separated by a space here,
      * so that a translation does not need to carry it.
      *
@@ -549,7 +550,11 @@ import * as pulseService from 'pulseService';
         todo: ['', 'left'],
         upcoming: ['in', '']
       }[prefix];
-      const seconds = Math.abs(date.diff(now, 'seconds'));
+      let seconds = Math.abs(date.diff(now, 'seconds'));
+      if (seconds >= 24 * 60 * 60) {
+        // Beyond a day, the minutes do not matter and would wrap the text on a second line
+        seconds -= seconds % (60 * 60);
+      }
       return [
         this.getTranslation(prefix + 'TextBefore', defaults[0]),
         pulseUtility.getTextDuration(seconds),
