@@ -456,6 +456,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     partcount: 'Part count: ',
     scrapcount: 'Scrap count: ',
     unproducedcount: 'Unproduced count: ',
+    setupcount: 'Set-up parts: ',
   },
   scrapstatus: {
     shiftscrap: 'Shift scrap',
@@ -987,6 +988,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     partcount: 'Nombre de pièces : ',
     scrapcount: 'Nombre de rebuts : ',
     unproducedcount: 'Pièces non-produites : ',
+    setupcount: 'Pièces de réglage : ',
   },
   scrapstatus: {
     shiftscrap: 'Rebuts d\'équipe',
@@ -1517,6 +1519,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     partcount: 'Teileanzahl: ',
     scrapcount: 'Ausschussanzahl: ',
     unproducedcount: 'Nicht produzierte Teile: ',
+    setupcount: 'Einrichtteile: ',
   },
   scrapstatus: {
     shiftscrap: 'Schichtausschuss',
@@ -2046,6 +2049,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.ja = {
     partcount: '生産数：',
     scrapcount: '不良数：',
     unproducedcount: '未生産数：',
+    setupcount: '段取り品数：',
   },
   scrapstatus: {
     shiftscrap: 'シフトの不良',

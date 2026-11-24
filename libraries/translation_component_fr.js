@@ -368,6 +368,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     partcount: 'Nombre de pièces : ',
     scrapcount: 'Nombre de rebuts : ',
     unproducedcount: 'Pièces non-produites : ',
+    setupcount: 'Pièces de réglage : ',
   },
   scrapstatus: {
     shiftscrap: 'Rebuts d\'équipe',

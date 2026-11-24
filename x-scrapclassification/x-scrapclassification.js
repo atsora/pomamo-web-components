@@ -52,6 +52,7 @@ import 'x-savescrapreason/x-savescrapreason';
       self._parts = 0;
       self._scrap = 0;
       self._unproduced = 0;
+      self._setup = 0;
 
       self._dateRange = undefined;
       self._operationRange = undefined;
@@ -243,6 +244,31 @@ import 'x-savescrapreason/x-savescrapreason';
 
       partsContent.appendChild(numberUnproduced);
 
+      // Number of set-up parts (for example sent to metrology before the validation of the set-up)
+      let numberSetup = document.createElement('div');
+      numberSetup.classList.add('number-setup', 'number-parts-content');
+
+      let setupLabel = document.createElement('span');
+      setupLabel.classList.add('parts-label');
+      setupLabel.innerHTML = this.getTranslation('setupcount', 'Set-up parts: ');
+      numberSetup.appendChild(setupLabel);
+
+      let partsSetupValue = document.createElement('span');
+      partsSetupValue.classList.add('parts-value', 'total-setup');
+      numberSetup.appendChild(partsSetupValue);
+
+      // Add event listener for SetupUpdateSignal (reasons of category Setup)
+      eventBus.EventBus.removeEventListenerBySignal(this, 'SetupUpdateSignal');
+      eventBus.EventBus.addEventListener(this,
+        'SetupUpdateSignal',
+        'scrap-context',
+        (event) => {
+          this._setup += event.target;
+          partsSetupValue.innerHTML = this._setup;
+        });
+
+      partsContent.appendChild(numberSetup);
+
       this._content.appendChild(partsContent);
 
       this.savescrapreason = pulseUtility.createElementWithAttribute('x-savescrapreason', { 'machine-id': this.element.getAttribute('machine-id'), 'range': this._dateRange });
@@ -328,20 +354,19 @@ import 'x-savescrapreason/x-savescrapreason';
      * @param {Object} data - Server response
      */
     refresh(data) {
-      if (data.ScrapCount !== undefined) {
-        this._scrap = data.ScrapCount;
-        let numberscrap = document.querySelector('.total-scrap');
-        if (numberscrap) {
-          numberscrap.innerHTML = this._scrap;
+      // Counters of the existing report, 0 when the period has no report yet
+      this._scrap = data.ScrapCount || 0;
+      this._unproduced = data.FixableCount || 0;
+      this._setup = data.SetupCount || 0;
+      const setCounter = (selector, value) => {
+        let element = document.querySelector(selector);
+        if (element) {
+          element.innerHTML = value;
         }
-      }
-      if (data.FixableCount !== undefined) {
-        this._unproduced = data.FixableCount;
-        let numberUnproduced = document.querySelector('.total-unproduced');
-        if (numberUnproduced) {
-          numberUnproduced.innerHTML = this._unproduced;
-        }
-      }
+      };
+      setCounter('.total-scrap', this._scrap);
+      setCounter('.total-unproduced', this._unproduced);
+      setCounter('.total-setup', this._setup);
       if (data.TotalCount !== undefined) {
         this._parts = data.TotalCount;
         let numberParts = document.querySelector('.total-parts');
@@ -390,7 +415,7 @@ import 'x-savescrapreason/x-savescrapreason';
       }
 
       let sendParts = undefined;
-      if (data.ValidCount !== undefined && (data.ValidCount + data.ScrapCount + data.FixableCount) !== 0) {
+      if (data.ValidCount !== undefined && (data.ValidCount + (data.ScrapCount || 0) + (data.FixableCount || 0) + (data.SetupCount || 0)) !== 0) {
         sendParts = data.ValidCount;
       } else {
         sendParts = data.TotalCount;
