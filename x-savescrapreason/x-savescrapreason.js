@@ -258,12 +258,8 @@ import 'x-machinedisplay/x-machinedisplay';
           errorMessage = 'undefined error data status';
         }
         else {
-          if (typeof (status) != 'undefined') {
-            errorMessage = `unknown status ${status}, ${data.ErrorMessage}`;
-          }
-          else {
-            errorMessage = data.ErrorMessage;
-          }
+          // Message of the web service, for example a refused range
+          errorMessage = data.ErrorMessage || `unknown status ${status}`;
         }
       }
       pulseCustomDialog.openDialog(errorMessage, { type: 'Error' });
@@ -301,6 +297,8 @@ import 'x-machinedisplay/x-machinedisplay';
       validCount.value = event.target.ValidCount;
       this._validParts = event.target.ValidCount;
 
+      // A period with no report yet: a new report, not the update of the report of the previous displayed period
+      this._scrapReportId = undefined;
       if (event.target.ScrapReport) {
         this._scrapReportId = event.target.ScrapReport.Id;
         // Reasons of the existing report (Scrap/At): { Reason: { Id, Display... }, Quantity }

@@ -23,7 +23,8 @@ import 'x-savescrapreason/x-savescrapreason';
    * `<x-scrapclassification>` — current scrap count for one machine with
    * an inline "edit scrap reason" dialog.
    *
-   * Fetches `Scrap/At/Get?MachineId=<id>&At=<range>&NextPeriod=<n>` and
+   * Fetches `Scrap/At/Get?MachineId=<id>[&At=<date/time>&NextPeriod=<n>]` (no At: the
+   * current period, the latest cycles) and
    * renders the produced / scrap / unproduced counts; the edit button
    * mounts an `x-savescrapreason` to record a reason. Reacts to
    * `dateTimeRangeChangeEvent` on `period-context` and to
@@ -56,6 +57,8 @@ import 'x-savescrapreason/x-savescrapreason';
 
       self._dateRange = undefined;
       self._operationRange = undefined;
+      // Date/time of the requested period (At parameter), undefined for the current period (the latest cycles)
+      self._at = undefined;
       self._nextPeriod = 0;
 
       self.savescrapreason = undefined;
@@ -74,6 +77,7 @@ import 'x-savescrapreason/x-savescrapreason';
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
       switch (attr) {
         case 'machine-id':
+          this._at = undefined;
           this.start();
           break;
         default:
@@ -88,8 +92,9 @@ import 'x-savescrapreason/x-savescrapreason';
       // Clear element in case of clone
       this.element.innerHTML = '';
 
-      // Initial date range with current date and time
-      this._dateRange = pulseUtility.convertDateForWebService(new Date());
+      // Initially the current period (the latest cycles): no At
+      this._dateRange = undefined;
+      this._at = undefined;
 
       // Create DOM - Content
       this._content = document.createElement('div');
@@ -283,19 +288,20 @@ import 'x-savescrapreason/x-savescrapreason';
      */
     _changePeriod(nextPeriod, range) {
       // Scrap/At returns the period at the date/time At (NextPeriod is ignored by the web service):
-      // just before the lower bound (excluded) for the previous period, the upper bound for the next one
+      // just before the lower bound (excluded) for the previous period,
+      // just after the upper bound for the next one (a scrap report (lower,upper] includes its upper bound)
       switch (nextPeriod) {
         case -1:
           if (range && range.lower) {
-            this._dateRange = pulseUtility.convertDateForWebService(new Date(range.lower.getTime() - 1000));
+            this._at = pulseUtility.convertDateForWebService(new Date(range.lower.getTime() - 1000));
           }
           break;
         case 1:
           if (range && range.upper) {
-            this._dateRange = pulseUtility.convertDateForWebService(range.upper);
+            this._at = pulseUtility.convertDateForWebService(new Date(range.upper.getTime() + (range.upperInclusive ? 1000 : 0)));
           }
           else { // Open period: the current one
-            this._dateRange = pulseUtility.convertDateForWebService(new Date());
+            this._at = undefined;
           }
           break;
         default:
@@ -342,8 +348,9 @@ import 'x-savescrapreason/x-savescrapreason';
      */
     getShortUrl() {
       let url = 'Scrap/At/Get?MachineId=' + this.element.getAttribute('machine-id');
-      if (this._dateRange !== undefined) {
-        url += '&At=' + this._dateRange + '&NextPeriod=' + this._nextPeriod;
+      // No At for the current period: the latest cycles
+      if (this._at !== undefined) {
+        url += '&At=' + this._at + '&NextPeriod=' + this._nextPeriod;
       }
       return url;
     }
@@ -389,13 +396,18 @@ import 'x-savescrapreason/x-savescrapreason';
         this._operationRange = pulseRange.createDateRangeFromString(data.OperationSlot.Range);
       }
 
-      if (data.Range !== undefined && data.ExtendedRange !== undefined) {
+      // ExtendedRange: range of the report to save, and of the navigation. Range: the cycles, for the display
+      // (empty when there is no completed cycle to declare)
+      if (data.ExtendedRange) {
         this._dateRange = pulseRange.createDateRangeFromString(data.ExtendedRange);
         this.savescrapreason.setAttribute('range', pulseUtility.convertDateRangeForWebService(this._dateRange));
-        let rangeDisplay = document.querySelector('.range-display');
-        if (rangeDisplay) {
-          rangeDisplay.innerHTML = pulseUtility.displayDateRange(data.Range);
-        }
+      }
+      else {
+        this.savescrapreason.removeAttribute('range');
+      }
+      let rangeDisplay = document.querySelector('.range-display');
+      if (rangeDisplay) {
+        rangeDisplay.innerHTML = data.Range ? pulseUtility.displayDateRange(data.Range) : '';
       }
 
       let btn = document.querySelector('.range-content').querySelector('.btn-next');
