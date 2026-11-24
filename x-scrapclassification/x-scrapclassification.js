@@ -246,7 +246,7 @@ import 'x-savescrapreason/x-savescrapreason';
       this._content.appendChild(partsContent);
 
       this.savescrapreason = pulseUtility.createElementWithAttribute('x-savescrapreason', { 'machine-id': this.element.getAttribute('machine-id'), 'range': this._dateRange });
-      this._content.appendChild(this.savescrapreason[0]);
+      this._content.appendChild(this.savescrapreason);
     }
 
     /**
@@ -256,12 +256,21 @@ import 'x-savescrapreason/x-savescrapreason';
      * @param {Object} range - Current date range object
      */
     _changePeriod(nextPeriod, range) {
+      // Scrap/At returns the period at the date/time At (NextPeriod is ignored by the web service):
+      // just before the lower bound (excluded) for the previous period, the upper bound for the next one
       switch (nextPeriod) {
         case -1:
-          this._dateRange = pulseUtility.convertDateForWebService(range.lower);
+          if (range && range.lower) {
+            this._dateRange = pulseUtility.convertDateForWebService(new Date(range.lower.getTime() - 1000));
+          }
           break;
         case 1:
-          this._dateRange = pulseUtility.convertDateForWebService(range.upper);
+          if (range && range.upper) {
+            this._dateRange = pulseUtility.convertDateForWebService(range.upper);
+          }
+          else { // Open period: the current one
+            this._dateRange = pulseUtility.convertDateForWebService(new Date());
+          }
           break;
         default:
           break;
@@ -341,10 +350,14 @@ import 'x-savescrapreason/x-savescrapreason';
         }
       }
 
-      if (data.OperationSlot !== undefined && data.OperationSlot.Operation.Name !== undefined) {
+      // OperationDTO of the web service: Display (Name in older versions)
+      let operationDisplay = (data.OperationSlot && data.OperationSlot.Operation)
+        ? (data.OperationSlot.Operation.Display || data.OperationSlot.Operation.Name)
+        : undefined;
+      if (operationDisplay !== undefined) {
         let operationName = document.querySelector('.operation-name');
         if (operationName) {
-          operationName.innerHTML = data.OperationSlot.Operation.Name;
+          operationName.innerHTML = operationDisplay;
         }
       }
       if (data.OperationSlot !== undefined && data.OperationSlot.Range !== undefined) {
@@ -353,7 +366,7 @@ import 'x-savescrapreason/x-savescrapreason';
 
       if (data.Range !== undefined && data.ExtendedRange !== undefined) {
         this._dateRange = pulseRange.createDateRangeFromString(data.ExtendedRange);
-        this.savescrapreason[0].setAttribute('range', pulseUtility.convertDateRangeForWebService(this._dateRange));
+        this.savescrapreason.setAttribute('range', pulseUtility.convertDateRangeForWebService(this._dateRange));
         let rangeDisplay = document.querySelector('.range-display');
         if (rangeDisplay) {
           rangeDisplay.innerHTML = pulseUtility.displayDateRange(data.Range);

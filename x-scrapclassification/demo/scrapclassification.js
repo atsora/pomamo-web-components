@@ -8,8 +8,8 @@ import 'x-scrapclassification/x-scrapclassification';
 
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
-import '@atsora/pomamo-web-service-simulation/scripts/GetPartsInformation';
 import '@atsora/pomamo-web-service-simulation/scripts/ScrapReasons';
+import '@atsora/pomamo-web-service-simulation/scripts/ScrapAt';
 import '@atsora/pomamo-web-service-simulation/scripts/SaveReason';
 
 
