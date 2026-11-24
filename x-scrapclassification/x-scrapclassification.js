@@ -231,10 +231,10 @@ import 'x-savescrapreason/x-savescrapreason';
       partsUnproducedValue.classList.add('parts-value', 'total-unproduced');
       numberUnproduced.appendChild(partsUnproducedValue);
 
-      // Add event listener for UnproducedUpdateSignal
-      eventBus.EventBus.removeEventListenerBySignal(this, 'RemachiningUpdateSignal');
+      // Add event listener for FixableUpdateSignal (reasons of category Fixable)
+      eventBus.EventBus.removeEventListenerBySignal(this, 'FixableUpdateSignal');
       eventBus.EventBus.addEventListener(this,
-        'RemachiningUpdateSignal',
+        'FixableUpdateSignal',
         'scrap-context',
         (event) => {
           this._unproduced += event.target;

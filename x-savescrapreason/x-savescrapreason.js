@@ -25,7 +25,8 @@ import 'x-machinedisplay/x-machinedisplay';
    * for a machine cycle.
    *
    * Fetches the allowed scrap reasons via
-   * `ReasonScrapSelection/Name?MachineId=<id>` and renders a scrap-reason
+   * `Scrap/Reasons?MachineId=<id>` (`Reasons`: Id, Display, Color, Category
+   * Scrap or Fixable) and renders a scrap-reason
    * dropdown plus a quantity input. Confirming POSTs the assignment via
    * `pulseService` and surfaces errors with `pulseCustomDialog` /
    * `pulseDetailsPopup`. Shows the target machine through an embedded
@@ -302,12 +303,16 @@ import 'x-machinedisplay/x-machinedisplay';
 
       if (event.target.ScrapReport) {
         this._scrapReportId = event.target.ScrapReport.Id;
-        let reason = undefined;
-        for (reason of event.target.ScrapReport.Reasons) {
-          let reasonInput = document.getElementById(reason.Id);
+        // Reasons of the existing report (Scrap/At): { Reason: { Id, Display... }, Quantity }
+        for (const scrapReason of (event.target.ScrapReport.Reasons || [])) {
+          if (!scrapReason.Reason) {
+            continue;
+          }
+          let box = this.element.querySelector(`.savescrapreason-cell-box[reason-id="${scrapReason.Reason.Id}"]`);
+          let reasonInput = box ? box.querySelector('input.savescrapreason-cell-input') : null;
           if (reasonInput) {
-            reasonInput.value = reason.Number;
-            reasonInput.setAttribute('oldValue', reason.Number);
+            reasonInput.value = scrapReason.Quantity;
+            reasonInput.setAttribute('oldValue', scrapReason.Quantity);
           }
         }
       }
@@ -349,7 +354,7 @@ import 'x-machinedisplay/x-machinedisplay';
      * @returns {string} URL
      */
     getShortUrl() {
-      let url = 'ReasonScrapSelection/Name?MachineId=' + this.element.getAttribute('machine-id');
+      let url = 'Scrap/Reasons?MachineId=' + this.element.getAttribute('machine-id');
       return url;
     }
 
@@ -359,7 +364,7 @@ import 'x-machinedisplay/x-machinedisplay';
      * @param {Object} data - Server response
      */
     refresh(data) {
-      this._data = data;
+      this._data = (data && data.Reasons) ? data.Reasons : [];
       this._drawReasons();
     }
 
@@ -420,14 +425,14 @@ import 'x-machinedisplay/x-machinedisplay';
 
       let box = document.createElement('div');
       box.classList.add('savescrapreason-cell-box');
-      box.style.borderLeftColor = reason.NonConformanceColor;
+      box.style.borderLeftColor = reason.Color;
 
       let boxText = document.createElement('div');
       boxText.classList.add('savescrapreason-cell-box-text');
 
       let spanText = document.createElement('span');
       spanText.classList.add('savescrapreason-cell-text');
-      spanText.innerHTML = reason.NonConformanceDisplay;
+      spanText.innerHTML = reason.Display;
       boxText.appendChild(spanText);
 
       box.appendChild(boxText);
@@ -442,7 +447,7 @@ import 'x-machinedisplay/x-machinedisplay';
         if (currentValue > 0) {
           input.value = currentValue - 1;
           input.setAttribute('oldValue', input.value);
-          this._updateValidParts(1, reason.NonConformanceCategory);
+          this._updateValidParts(1, reason.Category);
         }
       });
       boxInput.appendChild(minus);
@@ -451,23 +456,23 @@ import 'x-machinedisplay/x-machinedisplay';
       input.type = 'number';
       input.classList.add('savescrapreason-cell-input');
       input.value = '0';
-      input.setAttribute('id', reason.NonConformanceReasonId);
+      input.setAttribute('id', reason.Id);
       input.setAttribute('oldValue', 0);
       input.addEventListener('change', (e) => {
         let currentValue = parseInt(e.target.value) || 0;
         if (currentValue < 0) {
           input.value = 0;
-          this._updateValidParts(parseInt(input.getAttribute('oldValue')), reason.NonConformanceCategory);
+          this._updateValidParts(parseInt(input.getAttribute('oldValue')), reason.Category);
         }
         else if (currentValue > this._validParts && currentValue > parseInt(input.getAttribute('oldValue'))) {
           input.value = parseInt(input.getAttribute('oldValue')) + this._validParts;
-          this._updateValidParts(-this._validParts, reason.NonConformanceCategory);
+          this._updateValidParts(-this._validParts, reason.Category);
         }
         else if (currentValue > parseInt(input.getAttribute('oldValue'))) {
-          this._updateValidParts(-(currentValue - parseInt(input.getAttribute('oldValue'))), reason.NonConformanceCategory);
+          this._updateValidParts(-(currentValue - parseInt(input.getAttribute('oldValue'))), reason.Category);
         }
         else {
-          this._updateValidParts(parseInt(input.getAttribute('oldValue')) - currentValue, reason.NonConformanceCategory);
+          this._updateValidParts(parseInt(input.getAttribute('oldValue')) - currentValue, reason.Category);
         }
         input.setAttribute('oldValue', input.value);
       });
@@ -480,15 +485,15 @@ import 'x-machinedisplay/x-machinedisplay';
         if (this._validParts > 0) {
           input.value = currentValue + 1;
           input.setAttribute('oldValue', input.value);
-          this._updateValidParts(-1, reason.NonConformanceCategory);
+          this._updateValidParts(-1, reason.Category);
         }
       });
       boxInput.appendChild(plus);
 
       box.appendChild(boxInput);
 
-      box.setAttribute('reason-id', reason.NonConformanceReasonId);
-      box.setAttribute('reason-text', reason.NonConformanceDisplay);
+      box.setAttribute('reason-id', reason.Id);
+      box.setAttribute('reason-text', reason.Display);
 
       cellItem.appendChild(box);
 

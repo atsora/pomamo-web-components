@@ -8,5 +8,5 @@ import 'x-savescrapreason/x-savescrapreason';
 
 pulseConfig.setGlobal('path', 'http://localhost:8082/');
 
-import '@atsora/pomamo-web-service-simulation/scripts/ReasonScrapSelection';
+import '@atsora/pomamo-web-service-simulation/scripts/ScrapReasons';
 import '@atsora/pomamo-web-service-simulation/scripts/SaveReason';
