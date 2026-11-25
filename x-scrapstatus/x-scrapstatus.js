@@ -9,11 +9,13 @@
  * @requires module:pulseRange
  * @requires module:pulseComponent
  * @requires module:pulsecomponent-detailspopup
+ * @requires module:eventBus
  */
 
 import * as pulseUtility from 'pulseUtility';
 import * as pulseComponent from 'pulsecomponent';
 import * as pulseDetailsPopup from 'pulsecomponent-detailspopup';
+import * as eventBus from 'eventBus';
 
 import 'x-scrapclassification/x-scrapclassification';
 

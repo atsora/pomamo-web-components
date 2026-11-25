@@ -12,6 +12,7 @@
 import * as pulseComponent from 'pulsecomponent';
 import * as pulseUtility from 'pulseUtility';
 import * as pulseService from 'pulseService';
+import * as pulseRange from 'pulseRange';
 import pulseCustomDialog from 'pulseCustomDialog';
 import * as pulseDetailsPopup from 'pulsecomponent-detailspopup';
 import * as eventBus from 'eventBus';

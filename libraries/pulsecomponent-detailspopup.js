@@ -346,13 +346,20 @@ export var openChangeScrapClassificationDialog = function (component) {
   let dialog = document.createElement('div');
   dialog.className = 'dialog-scrapclassification';
 
+  // The machine is known once the page has loaded it (from the web service):
+  // no empty declaration form before
   let machid = component.element.getAttribute('machine-id');
+  if (!pulseUtility.isInteger(machid)) {
+    pulseCustomDialog.openDialog(component.getTranslation('error.selectMachine', 'Please select a machine'), { type: 'Warning' });
+    return;
+  }
+
   let xscrapclassification = pulseUtility.createElementWithAttribute('x-scrapclassification', {
     'machine-id': machid,
   });
   dialog.appendChild(xscrapclassification);
 
-  pulseCustomDialog.openDialog(dialog, {
+  let dialogId = pulseCustomDialog.openDialog(dialog, {
     title: component.getTranslation('scrapclassification.title', 'Declare scrap'),
     onClose: function () {
       _fadeOutPopupBlocks();
@@ -366,6 +373,13 @@ export var openChangeScrapClassificationDialog = function (component) {
     helpName: 'savereason',
     className: 'scrapclassification'
   });
+
+  // The machine in the title, as in the reason dialog
+  let xMachine = pulseUtility.createElementWithAttribute('x-machinedisplay', {
+    'machine-id': machid
+  });
+  let titleEl = document.querySelector('#' + dialogId + ' .customDialogTitle');
+  if (titleEl != null) titleEl.appendChild(xMachine);
 }
 
 /**

@@ -10,6 +10,9 @@
 
 // === CONTENT & HIDDEN CONTENT ===
 x-scrapclassification {
+    // Base font size from the screen: readable on a TV, not too big on a 4K screen.
+    // Every other size is in em of it
+    font-size: clamp(0.9rem, 1.2vmin + 0.5rem, 2.2rem);
     display: flex;
     flex-direction: column; // column so the single content child stretches to full width
     flex: 1;
@@ -46,10 +49,10 @@ x-scrapclassification {
 
             .operation-name,
             .range-display {
-                font-size: 1.1em;
+                font-size: 1.2em;
                 font-weight: 600;
                 color: @color_text;
-                min-width: 12em;
+                min-width: ~"min(16em, 55vw)"; // fits a phone in portrait
                 text-align: center;
             }
         }
@@ -80,6 +83,7 @@ x-scrapclassification {
                 align-items: center;
                 gap: 0.5em;
                 padding: 0.8em 1.4em;
+                min-width: 10em;
                 background-color: @color_window;
                 border: 1px solid @color_window_border;
                 border-left: 0.7em solid @color_window_border;
@@ -93,7 +97,7 @@ x-scrapclassification {
                 }
 
                 .parts-value {
-                    font-size: 1.2em;
+                    font-size: 1.5em;
                     font-weight: 700;
                     color: @color_text;
                 }
