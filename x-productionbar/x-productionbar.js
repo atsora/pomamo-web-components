@@ -675,9 +675,6 @@ import * as eventBus from 'eventBus';
     refresh(data) {
       this.removeError();
 
-      // Store previous target to detect changes
-      let previousTargetProduction = this._targetProduction;
-
       // Update production data
       if (this._range != undefined) {
         this._actualProduction = (data.NbPieces !== undefined) ? data.NbPieces : 0;
@@ -695,11 +692,10 @@ import * as eventBus from 'eventBus';
         this._productionRatio = 0;
       }
 
-      // if the production goal changed, we need to redraw the entire bar
-      // because the target line position depends on the current production goal
-      if (previousTargetProduction !== this._targetProduction) {
-        this._draw();
-      }
+      // Redraw the bar at each refresh: the cursor follows the production, and
+      // the bar must be drawn even when the goal did not change (for example
+      // 0 after a machine change, which removed the bar)
+      this._draw();
 
       this._updateTextDisplay();
     }
