@@ -363,6 +363,10 @@ export var openChangeScrapClassificationDialog = function (component) {
     title: component.getTranslation('scrapclassification.title', 'Declare scrap'),
     onClose: function () {
       _fadeOutPopupBlocks();
+      // x-scrapstatus: a declaration may have been made
+      if (typeof component.onScrapDeclarationClosed === 'function') {
+        component.onScrapDeclarationClosed();
+      }
     }.bind(component),
     autoClose: false,
     autoDelete: true,

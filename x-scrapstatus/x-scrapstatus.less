@@ -12,7 +12,7 @@
 // Base font size from the screen size (readable on a 4K screen as on a phone),
 // every other size in em of it
 x-scrapstatus {
-    font-size: clamp(0.75rem, 1vmin + 0.125rem, 2rem);
+    font-size: ~"clamp(0.75rem, 1vmin + 0.125rem, 2rem)"; // Escaped: Less would add 1vmin and 0.125rem
 
     .scrapstatus-content {
         display: flex;
@@ -36,8 +36,11 @@ x-scrapstatus {
             font-size: 1.25em;
             padding: 0.5em 1em;
             border-radius: 0.25em;
-            background-color: #FF7C35;
-            color: #101521;
+            box-sizing: border-box;
+            // Neutral while no cycle completed since the last declaration
+            border: 1px solid @color_window_border;
+            background-color: transparent;
+            color: @color_text;
             transition: background-color 0.1s;
             cursor: pointer;
             display: flex;
@@ -45,8 +48,20 @@ x-scrapstatus {
             column-gap: 0.5em;
 
             &:hover {
-                background-color: #FCA975;
+                background-color: @color_window_border;
             }
+        }
+    }
+
+    // At least one cycle completed since the last declaration: highlighted,
+    // as the reasons to classify
+    &.scrapstatus-todo .scrapstatus-content .scrapstatus-button-content {
+        border-color: transparent;
+        background-color: #FF7C35;
+        color: #101521;
+
+        &:hover {
+            background-color: #FCA975;
         }
     }
 

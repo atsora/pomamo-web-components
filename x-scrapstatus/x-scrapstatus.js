@@ -6,6 +6,7 @@
 /**
  * @module x-scrapstatus
  * @requires module:pulseUtility
+ * @requires module:pulseService
  * @requires module:pulseRange
  * @requires module:pulseComponent
  * @requires module:pulsecomponent-detailspopup
@@ -13,6 +14,7 @@
  */
 
 import * as pulseUtility from 'pulseUtility';
+import * as pulseService from 'pulseService';
 import * as pulseComponent from 'pulsecomponent';
 import * as pulseDetailsPopup from 'pulsecomponent-detailspopup';
 import * as eventBus from 'eventBus';
@@ -33,6 +35,11 @@ import 'x-scrapclassification/x-scrapclassification';
    * `pulseDetailsPopup.openChangeScrapClassificationDialog()`. Reacts to
    * `machineIdChangeSignal` on `machine-context` (updates `machine-id`).
    *
+   * After each answer, `Scrap/At/Get?MachineId=<machine-id>` (no At: the
+   * current period, the latest cycles) tells whether a cycle completed since
+   * the last declaration (`FullCycleCount` > 0): the button is then
+   * highlighted (class `scrapstatus-todo`), else it stays neutral.
+   *
    * @element x-scrapstatus
    * @attr {number} machine-id      (required) machine id
    * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
@@ -52,6 +59,9 @@ import 'x-scrapclassification/x-scrapclassification';
             self._content = undefined;
             self._scrapTextSpan = undefined;
             self._scrapValueSpan = undefined;
+
+            // A request Scrap/At/Get is running (no second one meanwhile)
+            self._newCyclesRequestRunning = false;
 
             return self;
         }
@@ -174,6 +184,7 @@ import 'x-scrapclassification/x-scrapclassification';
                 this._scrapValueSpan.innerHTML = '';
             }
             this.element.classList.add('scrapstatus-pending');
+            this.element.classList.remove('scrapstatus-todo'); // Not known for this machine yet
         }
 
         /**
@@ -273,6 +284,47 @@ import 'x-scrapclassification/x-scrapclassification';
                 ? this.getTranslation('shiftscrap', 'Shift scrap')
                 : this.getTranslation('dayscrap', 'Day scrap');
             this._setValue((data && Number.isInteger(data.ScrapCount)) ? data.ScrapCount : '–');
+            this._checkNewCycles();
+        }
+
+        /**
+         * Highlight the button when a cycle completed since the last declaration:
+         * cycles of the current period of Scrap/At/Get (the latest cycles).
+         * When the answer is not known (error), the button is highlighted:
+         * a declaration may be needed.
+         */
+        _checkNewCycles() {
+            if (this._newCyclesRequestRunning) {
+                return;
+            }
+            let machineId = this.element.getAttribute('machine-id');
+            if (!pulseUtility.isInteger(machineId)) {
+                return;
+            }
+            // path ends with '/', as in x-savescrapreason
+            let url = this.getConfigOrAttribute('path', '') + 'Scrap/At/Get?MachineId=' + machineId;
+            let apply = (todo) => {
+                this._newCyclesRequestRunning = false;
+                // Answer for a previous machine, or no count any more
+                if ((this.element.getAttribute('machine-id') !== machineId) || this._isPending()) {
+                    return;
+                }
+                this.element.classList.toggle('scrapstatus-todo', todo);
+            };
+            this._newCyclesRequestRunning = true;
+            pulseService.runAjaxSimple(url,
+                (data) => apply(!data || !Number.isInteger(data.FullCycleCount) || (data.FullCycleCount > 0)),
+                () => apply(true),
+                () => apply(true),
+                this.timeout);
+        }
+
+        /**
+         * Callback once the scrap declaration dialog is closed:
+         * check again whether a declaration is still needed
+         */
+        onScrapDeclarationClosed() {
+            this._checkNewCycles();
         }
 
         /**
