@@ -67,6 +67,7 @@ import 'x-scrapclassification/x-scrapclassification';
             super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
             switch (attr) {
                 case 'machine-id':
+                    this._setPending(); // The count of the previous machine is not valid any more
                     this.start();
                     break;
                 case 'machine-context':
@@ -94,6 +95,7 @@ import 'x-scrapclassification/x-scrapclassification';
             this._content.classList.add('scrapstatus-content');
 
             this._buildUI();
+            this._setPending(); // No count before the first answer (machine not known yet, or loading)
 
             this.element.appendChild(this._content);
 
@@ -140,12 +142,14 @@ import 'x-scrapclassification/x-scrapclassification';
             let valueSpan = document.createElement('span');
             this._scrapValueSpan = valueSpan;
             valueSpan.classList.add('scrapstatus-value');
-            valueSpan.innerHTML = '0';
             this._content.appendChild(valueSpan);
 
             let buttonContent = document.createElement('div');
             buttonContent.classList.add('scrapstatus-button-content');
             buttonContent.addEventListener('click', () => {
+                if (this._isPending()) { // Machine not known yet
+                    return;
+                }
                 pulseDetailsPopup.openChangeScrapClassificationDialog(this);
             });
 
@@ -159,6 +163,36 @@ import 'x-scrapclassification/x-scrapclassification';
             buttonContent.appendChild(button);
 
             this._content.appendChild(buttonContent);
+        }
+
+        /**
+         * No count to display yet (no machine, or first answer not received):
+         * the value shows a loading animation and the button is inactive
+         */
+        _setPending() {
+            if (this._scrapValueSpan) {
+                this._scrapValueSpan.innerHTML = '';
+            }
+            this.element.classList.add('scrapstatus-pending');
+        }
+
+        /**
+         * @returns {boolean} true while no count has been received for the machine
+         */
+        _isPending() {
+            return this.element.classList.contains('scrapstatus-pending');
+        }
+
+        /**
+         * Show a count (or '–' when the count is unknown) and leave the pending state
+         *
+         * @param {number|string} value
+         */
+        _setValue(value) {
+            this.element.classList.remove('scrapstatus-pending');
+            if (this._scrapValueSpan) {
+                this._scrapValueSpan.innerHTML = value;
+            }
         }
 
         /**
@@ -198,7 +232,10 @@ import 'x-scrapclassification/x-scrapclassification';
          */
         displayError(message) {
             this._messageSpan.innerHTML = message;
-            console.error('x-scrapstatus : ' + message);
+            this._setValue('–'); // Count unknown, not 0
+            if (message) {
+                console.error('x-scrapstatus : ' + message);
+            }
         }
 
         /**
@@ -235,7 +272,7 @@ import 'x-scrapclassification/x-scrapclassification';
             this._scrapTextSpan.innerHTML = (data && data.Shift)
                 ? this.getTranslation('shiftscrap', 'Shift scrap')
                 : this.getTranslation('dayscrap', 'Day scrap');
-            this._scrapValueSpan.innerHTML = (data && Number.isInteger(data.ScrapCount)) ? data.ScrapCount : 0;
+            this._setValue((data && Number.isInteger(data.ScrapCount)) ? data.ScrapCount : '–');
         }
 
         /**

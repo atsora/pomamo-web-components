@@ -29,6 +29,7 @@ x-scrapstatus {
             font-weight: bold;
             font-size: 3.5em;
             line-height: 1;
+            min-height: 1em; // Same height with or without a count
         }
 
         .scrapstatus-button-content {
@@ -37,7 +38,7 @@ x-scrapstatus {
             border-radius: 0.25em;
             background-color: #FF7C35;
             color: #101521;
-            transition: 0.1s;
+            transition: background-color 0.1s;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -48,4 +49,24 @@ x-scrapstatus {
             }
         }
     }
+
+    // No count yet (machine not known, or first answer not received):
+    // animated dots instead of a number, inactive button
+    &.scrapstatus-pending {
+        .scrapstatus-value::after {
+            content: '···';
+            animation: scrapstatus-pending-blink 1.2s ease-in-out infinite;
+        }
+
+        .scrapstatus-button-content {
+            opacity: 0.5;
+            cursor: default;
+            pointer-events: none;
+        }
+    }
+}
+
+@keyframes scrapstatus-pending-blink {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 1; }
 }
