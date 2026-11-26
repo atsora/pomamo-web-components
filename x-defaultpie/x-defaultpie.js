@@ -92,6 +92,7 @@ import 'x-reasonslotpie/x-reasonslotpie';
       switch (attr) {
         case 'group': // Not group-id because of url compatibility
         case 'machine-id':
+        case 'period-context': // Transferred to the pie, which refresh creates again
           this.start();
           break;
         case 'machine-context':
@@ -304,5 +305,5 @@ import 'x-reasonslotpie/x-reasonslotpie';
 
   }
 
-  pulseComponent.registerElement('x-defaultpie', DefaultPieComponent, ['group', 'machine-id', 'machine-context']);
+  pulseComponent.registerElement('x-defaultpie', DefaultPieComponent, ['group', 'machine-id', 'machine-context', 'period-context']);
 })();

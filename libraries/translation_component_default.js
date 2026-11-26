@@ -1523,6 +1523,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
   },
   scrapstatus: {
     shiftscrap: 'Schichtausschuss',
+    dayscrap: 'Tagesausschuss',
     scrapDeclaration: 'Ausschuss melden'
   },
   saveserialnumber: {
@@ -2053,6 +2054,7 @@ ATSORA_LOCALE_COMPONENT_CATALOG.ja = {
   },
   scrapstatus: {
     shiftscrap: 'シフトの不良',
+    dayscrap: '当日の不良',
     scrapDeclaration: '不良登録'
   },
   saveserialnumber: {

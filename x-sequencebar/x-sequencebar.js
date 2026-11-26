@@ -56,7 +56,7 @@ import * as eventBus from 'eventBus';
           break;
         case 'machine-context':
           if (this.isInitialized()) {
-            eventBus.EventBus.removeEventListenerBySignal(this, 'dateTimeRangeChangeEvent');
+            eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
             eventBus.EventBus.addEventListener(this,
               'machineIdChangeSignal',
               newVal, this.onMachineIdChange.bind(this));

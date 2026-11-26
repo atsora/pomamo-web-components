@@ -79,7 +79,10 @@ import * as eventBus from 'eventBus';
               'dateTimeRangeChangeEvent',
               newVal,
               this._onDateTimeRangeChange.bind(this));
+            // Period of the new context
+            eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent', newVal);
           }
+          break;
         default:
           break;
       }
@@ -295,5 +298,5 @@ import * as eventBus from 'eventBus';
 
   }
 
-  pulseComponent.registerElement('x-productionshiftgoal', ProductionShiftGoalComponent, ['machine-context', 'machine-id']);
+  pulseComponent.registerElement('x-productionshiftgoal', ProductionShiftGoalComponent, ['machine-context', 'machine-id', 'period-context']);
 })();

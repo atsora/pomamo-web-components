@@ -73,10 +73,23 @@ import 'x-milestonesadd/x-milestonesadd';
 
     attributeChangedWhenConnectedOnce (attr, oldVal, newVal) {
       super.attributeChangedWhenConnectedOnce(attr, oldVal, newVal);
-      /*switch (attr) {
+      switch (attr) {
+        case 'machine-id': // For example set by machineIdChangeSignal
+          this.start();
+          break;
+        case 'machine-context': // For example added after the creation of the component by javascript
+          if (this.isInitialized()) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'machineIdChangeSignal');
+            if (newVal) {
+              eventBus.EventBus.addEventListener(this,
+                'machineIdChangeSignal', newVal,
+                this.onMachineIdChange.bind(this));
+            }
+          }
+          break;
         default:
           break;
-      }*/
+      }
     }
 
     initialize () {
@@ -100,7 +113,7 @@ import 'x-milestonesadd/x-milestonesadd';
       eventBus.EventBus.addGlobalEventListener(this,
         'milestonesChangeEvent',
         this.onMilestonesChange.bind(this));
-      1
+
       // In case of clone, need to be empty :
       this.element.replaceChildren();
 
@@ -431,5 +444,5 @@ import 'x-milestonesadd/x-milestonesadd';
 
   }
 
-  pulseComponent.registerElement('x-milestonesmanager', MilestonesManagerComponent, []);
+  pulseComponent.registerElement('x-milestonesmanager', MilestonesManagerComponent, ['machine-id', 'machine-context']);
 })();

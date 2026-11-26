@@ -239,6 +239,7 @@ import * as eventBus from 'eventBus';
       let minHeight = 5;
       let defaultHeight = 60;
 
+      this._height = this.element.getAttribute('height'); // null without attribute => default height
       if (!pulseUtility.isNumeric(this._height)) {
         this._height = defaultHeight;
       }
@@ -378,6 +379,10 @@ import * as eventBus from 'eventBus';
           break;
         case 'height':
           this._setHeight();
+          // Draw the bar again if it is already drawn
+          if (this.isInitialized() && this._content && this._content.querySelector('.productionbar-svg')) {
+            this._draw();
+          }
           break;
         case 'period-context':
           if (this.isInitialized()) {
@@ -750,5 +755,5 @@ import * as eventBus from 'eventBus';
     }
   }
 
-  pulseComponent.registerElement('x-productionbar', ProductionBarComponent, ['machine-id', 'range', 'period-context', 'machine-context', 'display-mode']);
+  pulseComponent.registerElement('x-productionbar', ProductionBarComponent, ['machine-id', 'range', 'period-context', 'machine-context', 'display-mode', 'height']);
 })();

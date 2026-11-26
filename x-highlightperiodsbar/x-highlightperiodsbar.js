@@ -398,5 +398,5 @@ import * as eventBus from 'eventBus';
     }
   }
 
-  pulseComponent.registerElement('x-highlightperiodsbar', HighlightPeriodsBarComponent, ['height', 'range']);
+  pulseComponent.registerElement('x-highlightperiodsbar', HighlightPeriodsBarComponent, ['height', 'range', 'period-context']);
 })();

@@ -76,6 +76,23 @@ import 'x-saveserialnumber/x-saveserialnumber';
             let newRange = pulseRange.createDateRangeFromString(newVal);
             this._setRange(newRange);
           } break;
+        case 'period-context': // For example added after the creation of the component by javascript
+          if (this.isInitialized()) {
+            eventBus.EventBus.removeEventListenerBySignal(this, 'dateTimeRangeChangeEvent');
+            if (newVal) {
+              eventBus.EventBus.addEventListener(this,
+                'dateTimeRangeChangeEvent', newVal,
+                this.onDateTimeRangeChange.bind(this));
+              // Period of the new context
+              eventBus.EventBus.dispatchToContext('askForDateTimeRangeEvent', newVal);
+            }
+            else {
+              eventBus.EventBus.addGlobalEventListener(this, 'dateTimeRangeChangeEvent',
+                this.onDateTimeRangeChange.bind(this));
+            }
+          }
+          this.start(); // To re-validate parameters (asks for the range of the context)
+          break;
         default:
           break;
       }
@@ -374,5 +391,5 @@ import 'x-saveserialnumber/x-saveserialnumber';
 
   }
 
-  pulseComponent.registerElement('x-cyclesinperiod', CyclesInPeriodComponent, ['machine-context', 'machine-id', 'range']);
+  pulseComponent.registerElement('x-cyclesinperiod', CyclesInPeriodComponent, ['machine-context', 'machine-id', 'range', 'period-context']);
 })();

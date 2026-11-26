@@ -54,6 +54,15 @@ import 'x-machinedisplay/x-machinedisplay';
 
       self._validParts = 0;
 
+      // Reasons of Scrap/Reasons, undefined until they are drawn
+      self._data = undefined;
+      // Last data of x-scrapclassification (partsUpdateSignal), applied once the reasons are drawn:
+      // the two requests may answer in any order
+      self._partsData = undefined;
+      self._scrapReportId = undefined;
+      // Range of the declaration being saved, for x-modificationmanager
+      self._savedRangeString = null;
+
       return self;
     }
 
@@ -112,7 +121,7 @@ import 'x-machinedisplay/x-machinedisplay';
       eventBus.EventBus.addEventListener(this,
         'partsUpdateSignal',
         'scrap-context',
-        this._updateUI.bind(this));
+        this._onPartsUpdate.bind(this));
 
       // Initialization OK => switch to next context
       this.switchToNextContext();
@@ -166,16 +175,21 @@ import 'x-machinedisplay/x-machinedisplay';
 
       let range = this.element.getAttribute('range');
 
-      let url = this.getConfigOrAttribute('path', '') + '/Scrap/ScrapSave/Post/'
+      // path ends with '/', as in x-savereason
+      let url = this.getConfigOrAttribute('path', '') + 'Scrap/ScrapSave/Post'
         + '?MachineId=' + machineId;
 
 
       let timeout = this.timeout;
       let reasons = [];
-      let postData = { 'Range': range, 'ValidCount': document.getElementById('savescrapreason-validcount-input').value };
+      let validCountInput = this.element.querySelector('.savescrapreason-validcount-input');
+      if (!validCountInput) { // Reasons not received yet
+        return;
+      }
+      let postData = { 'Range': range, 'ValidCount': validCountInput.value };
       if (details) postData.Details = details;
 
-      document.querySelectorAll('.savescrapreason-cell-box').forEach((box) => {
+      this.element.querySelectorAll('.savescrapreason-cell-box').forEach((box) => {
         let input = box.querySelector('input.savescrapreason-cell-input');
         let count = parseInt(input.value) || 0;
         if (box.hasAttribute('reason-id')) {
@@ -194,6 +208,10 @@ import 'x-machinedisplay/x-machinedisplay';
         postData.Id = this._scrapReportId;
       }
 
+      this._savedRangeString = range;
+
+      // The dialog is closed once the declaration is saved (_saveSuccess):
+      // after an error, the input is kept so that it can be corrected and sent again
       pulseService.postAjax(0, url,
         postData,
         timeout,
@@ -202,9 +220,6 @@ import 'x-machinedisplay/x-machinedisplay';
         }.bind(this),
         this._saveError.bind(this),
         this._saveFail.bind(this));
-
-      pulseCustomDialog.close('.customeDialog-scrapclassification');
-
     }
 
     /**
@@ -227,19 +242,21 @@ import 'x-machinedisplay/x-machinedisplay';
      */
     _saveSuccess(ajaxToken, data, machid) {
       console.log('_saveSuccess');
-      console.info('Reason revision id=' + data.Revision.Id);
 
       // Store modification (align with x-savereason)
-      if (this._savedRangeString) {
+      if (this._savedRangeString && data && data.Revision) {
+        console.info('Scrap revision id=' + data.Revision.Id);
         let rangeObj = pulseRange.createDateRangeFromString(this._savedRangeString);
         try {
           pulseUtility.getOrCreateSingleton('x-modificationmanager')
             .addModification(data.Revision.Id, 'reason', machid, [rangeObj]);
         } catch (e) {
-          console.warn('x-stopclassification: unable to push modification', e);
+          console.warn('x-savescrapreason: unable to push modification', e);
         }
-        this._savedRangeString = null;
       }
+      this._savedRangeString = null;
+
+      pulseCustomDialog.close('.customeDialog-scrapclassification');
     }
 
     /**
@@ -286,24 +303,41 @@ import 'x-machinedisplay/x-machinedisplay';
     }
 
     /**
-     * Update the UI when parts data changes (triggered by event bus)
+     * Callback of partsUpdateSignal (x-scrapclassification): keep the data,
+     * and apply it once the reasons are drawn
      *
      * @param {Object} event - Event containing parts count and scrap report data
      */
-    _updateUI(event) {
-      document.querySelectorAll('.savescrapreason-cell-input').forEach((input) => {
+    _onPartsUpdate(event) {
+      this._partsData = event.target;
+      this._updateUI();
+    }
+
+    /**
+     * Update the UI with the last parts data, if the reasons are already drawn
+     */
+    _updateUI() {
+      let partsData = this._partsData;
+      if (!partsData || !this._content) {
+        return;
+      }
+      let validCount = this.element.querySelector('.savescrapreason-validcount-input');
+      if (!validCount) { // Reasons not drawn yet: applied by _drawReasons
+        return;
+      }
+      this.element.querySelectorAll('.savescrapreason-cell-input').forEach((input) => {
         input.value = '0';
+        input.setAttribute('oldValue', 0);
       });
-      let validCount = document.getElementById('savescrapreason-validcount-input');
-      validCount.value = event.target.ValidCount;
-      this._validParts = event.target.ValidCount;
+      validCount.value = partsData.ValidCount;
+      this._validParts = partsData.ValidCount;
 
       // A period with no report yet: a new report, not the update of the report of the previous displayed period
       this._scrapReportId = undefined;
-      if (event.target.ScrapReport) {
-        this._scrapReportId = event.target.ScrapReport.Id;
+      if (partsData.ScrapReport) {
+        this._scrapReportId = partsData.ScrapReport.Id;
         // Reasons of the existing report (Scrap/At): { Reason: { Id, Display... }, Quantity }
-        for (const scrapReason of (event.target.ScrapReport.Reasons || [])) {
+        for (const scrapReason of (partsData.ScrapReport.Reasons || [])) {
           if (!scrapReason.Reason) {
             continue;
           }
@@ -326,6 +360,9 @@ import 'x-machinedisplay/x-machinedisplay';
 
       this._content = undefined;
       this._messageSpan = undefined;
+      this._data = undefined;
+      this._partsData = undefined;
+      this._scrapReportId = undefined;
 
       super.clearInitialization();
     }
@@ -371,6 +408,8 @@ import 'x-machinedisplay/x-machinedisplay';
      * Draw all reason tiles including valid parts counter
      */
     _drawReasons() {
+      // Drawn again on a restart (machine change...): no duplicated tile
+      this._clearPanel();
       let cellsList = this._content.querySelector('.savescrapreason-cells-list');
 
       let cellItem = document.createElement('li');
@@ -396,8 +435,8 @@ import 'x-machinedisplay/x-machinedisplay';
       let input = document.createElement('input');
       input.type = 'number';
       input.readOnly = true;
-      input.classList.add('savescrapreason-cell-input');
-      input.setAttribute('id', 'savescrapreason-validcount-input');
+      // Class, not id: found from this.element, whatever the other elements of the page
+      input.classList.add('savescrapreason-cell-input', 'savescrapreason-validcount-input');
       input.value = '0';
       boxInput.appendChild(input);
 
@@ -410,6 +449,9 @@ import 'x-machinedisplay/x-machinedisplay';
       for (const reason of this._data) {
         this._drawCell(reason, false);
       }
+
+      // Data of x-scrapclassification received before the reasons
+      this._updateUI();
     }
 
     /**
@@ -455,7 +497,7 @@ import 'x-machinedisplay/x-machinedisplay';
       input.type = 'number';
       input.classList.add('savescrapreason-cell-input');
       input.value = '0';
-      input.setAttribute('id', reason.Id);
+      // No id (a number, which may be the id of another element of the page): the reason is in reason-id of the box
       input.setAttribute('oldValue', 0);
       input.addEventListener('change', (e) => {
         let currentValue = parseInt(e.target.value) || 0;
@@ -514,9 +556,11 @@ import 'x-machinedisplay/x-machinedisplay';
      * @param {string} category - Non-conformance category for event dispatching
      */
     _updateValidParts(value, category) {
-      let validCount = document.getElementById('savescrapreason-validcount-input');
+      let validCount = this.element.querySelector('.savescrapreason-validcount-input');
       this._validParts += value;
-      validCount.value = this._validParts;
+      if (validCount) {
+        validCount.value = this._validParts;
+      }
 
       let signal = category + 'UpdateSignal';
       eventBus.EventBus.dispatchToContext(signal,

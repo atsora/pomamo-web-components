@@ -25,15 +25,14 @@ import 'x-savescrapreason/x-savescrapreason';
    *
    * Fetches `Scrap/At/Get?MachineId=<id>[&At=<date/time>&NextPeriod=<n>]` (no At: the
    * current period, the latest cycles) and
-   * renders the produced / scrap / unproduced counts; the edit button
-   * mounts an `x-savescrapreason` to record a reason. Reacts to
-   * `dateTimeRangeChangeEvent` on `period-context` and to
-   * `machineIdChangeSignal` on `machine-context`.
+   * renders the produced / scrap / unproduced / set-up counts, with an embedded
+   * `x-savescrapreason` to record the reasons. The previous / next buttons
+   * navigate between the periods (of the scrap reports, and of the operations).
+   * Opened by `pulseDetailsPopup.openChangeScrapClassificationDialog()`
+   * (x-scrapstatus), with the machine-id of the page: no period or machine context.
    *
    * @element x-scrapclassification
    * @attr {number} machine-id      (required) machine id
-   * @attr {string} machine-context event-bus context for `machineIdChangeSignal`
-   * @attr {string} period-context  event-bus context for `dateTimeRangeChangeEvent`
    * @extends pulseComponent.PulseParamAutoPathSingleRequestComponent
    */
   class ScrapClassificationComponent extends pulseComponent.PulseParamAutoPathSingleRequestComponent {
@@ -366,7 +365,7 @@ import 'x-savescrapreason/x-savescrapreason';
       this._unproduced = data.FixableCount || 0;
       this._setup = data.SetupCount || 0;
       const setCounter = (selector, value) => {
-        let element = document.querySelector(selector);
+        let element = this.element.querySelector(selector);
         if (element) {
           element.innerHTML = value;
         }
@@ -376,7 +375,7 @@ import 'x-savescrapreason/x-savescrapreason';
       setCounter('.total-setup', this._setup);
       if (data.TotalCount !== undefined) {
         this._parts = data.TotalCount;
-        let numberParts = document.querySelector('.total-parts');
+        let numberParts = this.element.querySelector('.total-parts');
         if (numberParts) {
           numberParts.innerHTML = this._parts;
         }
@@ -387,7 +386,7 @@ import 'x-savescrapreason/x-savescrapreason';
         ? (data.OperationSlot.Operation.Display || data.OperationSlot.Operation.Name)
         : undefined;
       if (operationDisplay !== undefined) {
-        let operationName = document.querySelector('.operation-name');
+        let operationName = this.element.querySelector('.operation-name');
         if (operationName) {
           operationName.innerHTML = operationDisplay;
         }
@@ -405,12 +404,12 @@ import 'x-savescrapreason/x-savescrapreason';
       else {
         this.savescrapreason.removeAttribute('range');
       }
-      let rangeDisplay = document.querySelector('.range-display');
+      let rangeDisplay = this.element.querySelector('.range-display');
       if (rangeDisplay) {
         rangeDisplay.innerHTML = data.Range ? pulseUtility.displayDateRange(data.Range) : '';
       }
 
-      let btn = document.querySelector('.range-content').querySelector('.btn-next');
+      let btn = this.element.querySelector('.range-content').querySelector('.btn-next');
       if (data.Current !== undefined && data.Current) {
         btn.style.visibility = 'hidden';
       }
@@ -418,7 +417,7 @@ import 'x-savescrapreason/x-savescrapreason';
         btn.style.visibility = 'visible';
       }
 
-      btn = document.querySelector('.operation-content').querySelector('.btn-next');
+      btn = this.element.querySelector('.operation-content').querySelector('.btn-next');
       if (data.OperationSlot !== undefined && data.OperationSlot.Current) {
         btn.style.visibility = 'hidden';
       }
