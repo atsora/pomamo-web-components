@@ -450,6 +450,14 @@ import 'x-machinedisplay/x-machinedisplay';
         this._drawCell(reason, false);
       }
 
+      // No reason: say it, else the dialog shows only the valid parts, with nothing to click
+      if (this._data.length == 0) {
+        let noReasonItem = document.createElement('li');
+        noReasonItem.classList.add('savescrapreason-noreason');
+        noReasonItem.innerHTML = this.getTranslation('noreason', 'No scrap reason is configured for this machine');
+        cellsList.appendChild(noReasonItem);
+      }
+
       // Data of x-scrapclassification received before the reasons
       this._updateUI();
     }

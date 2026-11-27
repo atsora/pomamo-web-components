@@ -36,6 +36,19 @@ x-savescrapreason {
                 overflow-x: hidden;
                 box-sizing: border-box;
 
+                // Message when no scrap reason is configured: the rest of the row, next to the valid parts
+                .savescrapreason-noreason {
+                    list-style-type: none;
+                    // Not grid-column: 2 / -1, which Less computes as a division
+                    grid-column-start: 2;
+                    grid-column-end: -1;
+                    display: flex;
+                    align-items: center;
+                    font-size: 1.1em;
+                    font-style: italic;
+                    color: @color_text_alternate;
+                }
+
                 .savescrapreason-cell-item {
                     list-style-type: none;
 

@@ -361,7 +361,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     scrapreasons: 'Classification des rebuts',
     reasonDetailsTitle: 'Détails de la raison',
     errorNoDetails: 'Veuillez ajouter un commentaire',
-    validparts: 'Pièces valides'
+    validparts: 'Pièces valides',
+    noreason: 'Aucune raison de rebut n\'est configurée pour cette machine'
   },
   scrapclassification: {
     title: 'Declarer un rebut',

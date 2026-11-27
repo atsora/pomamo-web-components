@@ -449,7 +449,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.default = {
     scrapreasons: 'scrap classification',
     reasonDetailsTitle: 'Reason details',
     errorNoDetails: 'Please add a comment',
-    validparts: 'Valid parts'
+    validparts: 'Valid parts',
+    noreason: 'No scrap reason is configured for this machine'
   },
   scrapclassification: {
     title: 'Declare scrap',
@@ -981,7 +982,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.fr = {
     scrapreasons: 'Classification des rebuts',
     reasonDetailsTitle: 'Détails de la raison',
     errorNoDetails: 'Veuillez ajouter un commentaire',
-    validparts: 'Pièces valides'
+    validparts: 'Pièces valides',
+    noreason: 'Aucune raison de rebut n\'est configurée pour cette machine'
   },
   scrapclassification: {
     title: 'Declarer un rebut',
@@ -1512,7 +1514,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.de = {
     scrapreasons: 'Ausschussklassifizierung',
     reasonDetailsTitle: 'Grunddetails',
     errorNoDetails: 'Bitte einen Kommentar hinzufügen',
-    validparts: 'Gutteile'
+    validparts: 'Gutteile',
+    noreason: 'Für diese Maschine ist kein Ausschussgrund konfiguriert'
   },
   scrapclassification: {
     title: 'Ausschuss melden',
@@ -2043,7 +2046,8 @@ ATSORA_LOCALE_COMPONENT_CATALOG.ja = {
     scrapreasons: '不良分類',
     reasonDetailsTitle: '理由の詳細',
     errorNoDetails: 'コメントを入力してください',
-    validparts: '良品数'
+    validparts: '良品数',
+    noreason: 'この機械には不良理由が設定されていません'
   },
   scrapclassification: {
     title: '不良を登録',
