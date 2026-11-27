@@ -24,4 +24,12 @@ x-currentworkinfo { // See x-workinfo
     // OR
     //word-wrap: break-word; // break words and go to next line == 2 lines cf js
   }
+  // With the book button (workinfodocs-cell, a flex box), inline-flex and not flex:
+  // the line keeps the text-align of the parent (centered in operationstatus)
+  .workinfo-singledata.workinfodocs-cell {
+    display: inline-flex;
+    max-width: 100%;
+    box-sizing: border-box;
+    vertical-align: top;
+  }
 }
