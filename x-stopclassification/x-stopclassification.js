@@ -406,7 +406,7 @@ import 'x-revisionprogress/x-revisionprogress';
                 }
 
                 for (const groupName of groupNames) {
-                    this._drawCell(groupName, this._groups[groupName][0].Color, true);
+                    this._drawCell(groupName, this._getGroupColor(this._groups[groupName]), true);
                     tileCount += 1;
                 }
 
@@ -428,12 +428,23 @@ import 'x-revisionprogress/x-revisionprogress';
 
 
                 for (const group of groupNames) {
-                    this._drawCell(group, this._groups[group][0].Color, true);
+                    this._drawCell(group, this._getGroupColor(this._groups[group]), true);
                 }
                 if (!this._hideAdvancedOptions && this._getRangesList().length <= 1) {
                   this._drawAdvancedButton(groupNames.length);
                 }
             }
+        }
+
+        /**
+         * Color of a reason group tile: the color of the reason group,
+         * else (older web service without ReasonGroupColor) the color of its first reason
+         * @param {Object[]} reasons - reasons of the group
+         * @returns {string}
+         */
+        _getGroupColor(reasons) {
+            const first = reasons[0];
+            return first.ReasonGroupColor || first.Color;
         }
 
         /**
