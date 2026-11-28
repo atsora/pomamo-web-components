@@ -395,10 +395,11 @@ import 'x-savescrapreason/x-savescrapreason';
         this._operationRange = pulseRange.createDateRangeFromString(data.OperationSlot.Range);
       }
 
-      // ExtendedRange: range of the report to save, and of the navigation. Range: the cycles, for the display
-      // (empty when there is no completed cycle to declare)
-      if (data.ExtendedRange) {
-        this._dateRange = pulseRange.createDateRangeFromString(data.ExtendedRange);
+      // ExtendedRange: range of the report to save, and of the navigation (open when the detection
+      // is not after the previous report yet). Range: the cycles, for the display
+      // (empty when there is no completed cycle to declare: the extended range is displayed instead)
+      this._dateRange = data.ExtendedRange ? pulseRange.createDateRangeFromString(data.ExtendedRange) : undefined;
+      if (this._dateRange && this._dateRange.upper) {
         this.savescrapreason.setAttribute('range', pulseUtility.convertDateRangeForWebService(this._dateRange));
       }
       else {
@@ -406,7 +407,8 @@ import 'x-savescrapreason/x-savescrapreason';
       }
       let rangeDisplay = this.element.querySelector('.range-display');
       if (rangeDisplay) {
-        rangeDisplay.innerHTML = data.Range ? pulseUtility.displayDateRange(data.Range) : '';
+        let displayedRange = data.Range || data.ExtendedRange;
+        rangeDisplay.innerHTML = displayedRange ? pulseUtility.displayDateRange(displayedRange) : '';
       }
 
       let btn = this.element.querySelector('.range-content').querySelector('.btn-next');
